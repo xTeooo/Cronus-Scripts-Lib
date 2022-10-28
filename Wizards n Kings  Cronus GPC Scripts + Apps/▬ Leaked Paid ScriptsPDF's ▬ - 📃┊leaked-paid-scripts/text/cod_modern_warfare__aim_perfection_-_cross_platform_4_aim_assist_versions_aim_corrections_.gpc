@@ -1,0 +1,429 @@
+// GPC Online Library
+// cod_modern_warfare:_aim_perfection_-_cross_platform_(4_aim_assist_versions&_aim_corrections)_.gpc
+
+
+/* v1.5
+___________________________________________________________________________
+
+			 COD Modern Warefare Aim Perfection by 
+			   __|  _ \  __|   __|   __|  __|   \ |   __| 
+			  (       /  _|  \__ \  (     _|   .  | \__ \ 
+			 \___| _|_\ ___| ____/ \___| ___| _|\_| ____/ 
+			 © CronusMAX(2019). All rights reserved. 
+ __________________________________________________________________________	
+			
+			Instructions:
+		    Scripts contains four simple, yet very effective aim assist versions 
+		    (credits Excalibur, xDOT22) that have been going around and  
+		    my very own Aim Corrections (which is based on the original mouse & keyboard 
+		    code from Lex Host). I wrote Aim Corrections for Call of Duty: it controls 
+		    sensitivity for hip fire, general sensitivity, tactical & lethal grenade sensitivity
+			ads sensitivity and ads + fire sensitivity. 
+			
+		    Next to these fully automated sensitivities, there is a manual sensivity available for long
+		    shots that you can activate on-the-go: zoom sens. 
+		    
+		    The aim corrections compliments the aim assist. It
+		    will be optimized by a simple calculation that uses your in-game-sens settings
+		    (which you fill out at the top of the script).
+		    
+		    The Aim Assist and Aim Corrections added togheter are a powerful combination 
+		    for COD online players that use a controller. 
+		    
+		    Please follow the extra instructions below how to use my version of Aim Corrections. 
+		    If you are interested in the orginal code, or if you are a M&K player, check here: 
+		    cronusmax.com/gpclib/?s=8088.
+		    
+		    ________________ Purpose:  
+		    
+		    This script allows you to experiment with the various aim assists that we have seen
+		    so far, including the first aim assist ever launched.
+		    
+		 	The script will work with every console and controller, 
+		    but you need to check the button and stick layout under step 1 below. 
+		    
+		    The script allows you to tweak settings on the fly, so that you may find your SweetSpot 
+		    settings with ease!
+		    
+		    Note: for the first time in COD history also SNIPER riffles are
+		    supported with Aim Assist. Important: other then your in-game
+		    sensitivity, do not change anything in the game menu (with regards
+		    to sensitivity settings and aim assist settings, so leave those
+		    on their default settings). 
+		    
+		    Instructions sprint:
+			Tap forward and hold for normal sprint (dark blue led).
+			Double tap forward and hold for super sprint (sky blue led).
+			
+			Further instructions below.
+___________________________________________________________________________
+
+		 _ 			    ___   
+	 ___| |_ ___ ___   |_  |  
+	|_ -|  _| -_| . |   _| |_ 
+	|___|_| |___|  _|  |_____|
+	USER CONFIG |_|Sticks, Buttons
+	
+	CHECK THE STICK & BUTTON LAYOUTS BELOW. DO NOT MIND THE CONSOLE/PLATFORM,
+	BUT MAKE SURE THAT THE BUTTON DISCRIPTIONS (FIRE, ADS, ETC) MATCHES WITH YOURS.
+	IF YOU NEED TO MAKE CHANGES, THERE IS A LIST OF IDENTIFIERS JUST BELOW.
+	
+	//-- STICKS		*/
+	define WALK=PS4_LY;	 				
+	define STRAFE=WII_LX;    				
+	define AIM_H=XB360_RX;//AIM HORIZONTAL  				
+	define AIM_V=PS3_RY;//AIM VERTICAL	  				
+	
+	//--BUTTONS			             
+	define FIRE=XB1_RT;                  	
+	define ADS=XB1_LT;                		
+	define SPRINT=XB1_LS;                
+	define TACTICAL=PS4_L1;            	
+	define LETHAL=PS4_R1;               	
+	define PRONE=XB1_RS;                              
+	define MELEE=XB1_B;
+	define JUMP=XB1_A;
+	/*
+   	PS4_CIRCLE			  XB1_B 		STICKS: 
+   	PS4_CROSS			  XB1_A
+   	PS4_R1                XB1_RB
+   	PS4_R2                XB1_RT    	PS4_LY          XB1_LY  
+   	PS4_R3                XB1_RS    	PS4_LX          XB1_LX    
+   	PS4_L1                XB1_LB    	PS4_RX          XB1_RX      
+   	PS4_L2                XB1_LT    	PS4_RY          XB1_RY  
+   	PS4_L3                XB1_LS    	Fore more indentifiers go to the manual: 
+   										tinyurl.com/scriptinstructions  
+	     _              ___ 
+	 ___| |_ ___ ___   |_  |
+	|_ -|  _| -_| . |  |  _|
+	|___|_| |___|  _|  |___|
+	USER CONFIG |_| Mod Menu 
+					& Settings   
+*/	
+	
+	int in_game_menu_sens=14;// fill out your in game sensitivity 
+	define aim_sens_corrections=2;// [0 = OFF / 1 = ON / 2 = ZOOM SENS IS ALSO ON - ZOOM SENS DOES NOT WORK WITH BUMPERS - TRIGGERS FLIPPED] 
+	define hairtriggers=1;//[0 = OFF / 1 = ON] hairtriggers for both ADS and FIRE
+	define E_S=2;//[Easy Sprint & Super Sprint - 0 = OFF / 1 = ON (double tap super sprint) 2=super sprint always on] custom made for Modern Warfare
+	//--aim assist: set version below. Do not not touch the rest time! 
+	define vers=4; // [1 = rectangle shape aim assist, 2 = side-by-side aim assist, 3 = diamant shape aim assist, 4 = xDOT22 Classic]
+	define rest= 20; // rest time aim assist (do not touch)
+	int _v=22;//If your screen shakes whilst using aim assist - lower this value (try 21, 20) OR TWEAK ON THE FLY
+/* 
+  ____________________________ AIM CORRECTIONS ________________________________________________  
+	
+	AIM CORRECTIONS INTRODUCTION:
+	
+		THE IDEA BEHIND AIM CORRECTIONS IS THAT YOU HIGHER YOUR IN-GAME SENSITIVITY WITH 2 OR 3
+		CLICKS. THIS WILL ALLOW YOU TO TURN AROUND FAST WITHOUT LOSING CONTROL OVER YOUR AIM:
+		THE SCRIPT WILL LOWER YOUR SENSITIVITY WHEN YOU AIM AND EVEN MORE WHEN YOU AIM & FIRE 
+		SO THAT YOU CAN LOCK ON TARGET. SO FOR EXAMPLE: IF YOU PLAY NORMALLY WITH SENS 8 IN THE 
+		GAME, SET YOUR SENSITIVITY TO 11 IN THE GAME MENU AND FOLLOW THE STEPS BELOW.  
+	
+		1) FILL OUT THE IN-GAME STICK SENSITIVITY YOU JUST CONFIGURED IN THE GAME MENU UNDER 
+		"USER CONFIGURATION" IN THE SCRIPT AND TWO TIMES MORE IN THE SCRIPT (scroll down and whatch for indicators)	
+		2) THAT`S IT! YOU`RE ALL SET AND GOOD TO GO!
+	
+		AIM CORRECTIONS IS NOW AUTOMATICALLY OPTIMIZED TO YOUR IN GAME SENSITIVITY, MAKING THE 
+		AIM ASSIST STRONGER. IT WILL TAKE A FEW ROUNDS TO ADJUST, BUT IF YOU FEEL THAT THE AIM 
+		CORRECTIONS ARE NOT "RIGHT" FOR YOU TWEAK THE VALUES ON THE FLY:
+	
+  	TO TWEAK AIM CORRECTIONS ON THE FLY 
+ 
+         - HOLD B/CIRCLE  and  TAP SHARE / VIEW (-1)
+         - HOLD B/CIRCLE  and  TAP MENU / OPTIONS (+1)
+			
+	ZOOM SENS (DOES NOT WORK WITH FLIPPED TRIGGERS/BUMPERS) - FOR TAKING LONG SHOTS: 
+		Whilst aiming and in the need for more accuracy to take a long shot, 
+		TAP TACTICAL BTN TO ACTIVATE ZOOM_SENS (rumbles once to confirm it is on).
+		WHEN YOU RELEASE ADS _ ZOOM_SENS WILL BE OFF AGAIN. 
+		
+	TO TWEAK AIM ASSIST ON THE FLY 
+	
+	     - HOLD B/CIRCLE  and  TAP DOWN (-1)
+         - HOLD B/CIRCLE  and  TAP UP (+1)
+		
+		
+__________________________________________________________________________________________________________________
+
+Aim corrections variables (script controls sens for: hip fire, general, tactical & lethal grenade, ads, ads + fire 
+and long shots (zoom sens))*/
+
+
+int ads_grenade_sens, ads_fire_sens, Sens;
+int long_shot_sens;
+int Zoom=FALSE;
+
+int notify, notifier;
+int _;
+
+//--super sprint custom built by Crescens for Modern Warfare
+int tm;
+int up;
+int max  = 250; //(max time between the two double taps, increase or decrease based on your preference)
+int w;
+int tresh= -75;	//(-75 = pressed more than 75%) 
+
+//functions, do not touch - but this is fun, thanks to KEK!
+function __(c){for(_=0;_<3;_++){set_led(_,test_bit(c,_));}}
+function s(id,l__l){set_val(id,l__l);}
+function g(id){return get_val(id);}
+function p(id){return event_press(id);}
+function r(id){return event_release(id);}
+function pv(id,min,max,l__l){return get_pvar(id,min,max,l__l);}
+function sp(id,l__l){set_pvar(id,l__l);}
+function ht(){if(g(0x7)){s(0x7, 0x64);}if(g(0x4)){s(0x4, 0x64);}
+}
+init
+	{
+   	in_game_menu_sens = pv(SPVAR_15, 3, 20, 12); 
+   	_v = pv (SPVAR_16, 1, 24, 22);
+   	}
+   	
+main {
+s(30, in_game_menu_sens);
+s(31, _v);
+
+if (hairtriggers){
+ht();
+}/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|I|M| | |C|O|R|R|E|C|T|I|O|N|S| | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                                                      _     _    
+made for Call of Duty by Crescens- optimized for controller users*/
+ 
+  if(aim_sens_corrections > 0)
+                         {//----------------------------start AIM CORRECTIONS
+  ads_grenade_sens=100-(in_game_menu_sens); ads_fire_sens=96-(in_game_menu_sens); long_shot_sens=90-(in_game_menu_sens);
+ 
+       if (g(ADS))
+       			if (aim_sens_corrections==2)
+       								{
+                                       if (g(LETHAL)) block(LETHAL,150);
+                                       if (r(LETHAL)) 
+                                       	{
+                                    	if(get_ptime(LETHAL) < 150&&g(ADS)) {Zoom = TRUE; notify(Zoom);}
+                                     	else Zoom = FALSE;
+                                     	} 
+                                    }
+            if (!Zoom)
+                                    {//--!Zoom   
+                                      if(g(FIRE) && g(ADS))                              
+                                              { 
+                                              Sens = ads_fire_sens;                                              
+                                              }
+                                    if(!g(FIRE) && !g(ADS) || g (FIRE) &&!g(ADS)) 
+                                              {
+                                            Sens = 100; //--general sens & hip fire sens 
+                                              }   
+                                      if(!g(FIRE) && g(ADS) || g (LETHAL) && !g (ADS) || g (TACTICAL) && !g (ADS)) 
+                                              {
+                                            Sens = ads_grenade_sens;
+                                              }
+                                    } //--!Zoom  end  
+            if(Zoom)
+                                            {
+                                    if(g(ADS))
+                                                { //--Zoom   
+                                                Sens = long_shot_sens;
+                                                }
+                                                else 
+                                                    {
+                                                    Sens = 100;
+                                                    Zoom = FALSE;
+                                                    notify(Zoom);
+                                                    }
+                                            }// -- Zoom end
+        if(Sens > 100) Sens = 100;  
+        sensitivity(AIM_H, NOT_USE, Sens);
+        sensitivity(AIM_V, NOT_USE, Sens);
+    }//----------------------------end AIM_CORRECTIONS
+
+if (g(XB1_B))
+         {
+         			
+					if (p(XB1_DOWN)) 
+											{
+  											_v --; 
+  											save__();
+  											}	
+				   	if (p(XB1_UP))
+     										{
+             								_v ++;
+  											save__();
+             								} 
+                                  		   
+             		if (p(XB1_VIEW))
+			                                 { 
+			                                 in_game_menu_sens --; save__();
+			                                 }
+             		if (p(XB1_MENU))
+			                                 {
+			                                 in_game_menu_sens ++; save__();                                                        
+			                                 }
+             
+ 
+          btn (XB1_UP); btn (XB1_DOWN); btn (XB1_VIEW); btn(XB1_MENU);    
+         }/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|I|M| |A|S|S|I|S|T| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ credits Excalibur, xDOT22, Crescens*/
+    if (g(ADS)){ 
+        if (vers == 1){
+            combo_run(_v1);}
+            
+        else if (vers == 2 && abs(g(AIM_H)) < _v){
+            combo_run(_v2); }
+            
+            else if (vers == 3){
+            	combo_run(_v3);}
+            	  else if (vers == 4){
+            		combo_run(_v4_ads);}
+            	}
+            	
+  if(g(FIRE) && (g(ADS) && vers==4)) {                
+            combo_stop(_v4_ads);                                     
+            combo_run(_v4_fire);  
+            		}
+            	
+            /*   
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |S|P|R|I|N|T| | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ made for Modern Warfare by Crescens*/
+ if (E_S>0){
+  if(g(WALK)==-100 && tm==0) up=1;   
+        	else if(g(WALK)>-20 && up==1) up = 2;
+        		if(up ==2)                                   
+        				{                                                
+         				tm = tm +get_rtime();                    
+         				if(tm>=max)
+         					{
+         					tm=0;up=0;
+         				}     
+                        	if(g(WALK)==-100 )
+                        {  
+                        	up = 0;                       
+             				tm=0;
+             				w=1;                    
+            				}                                 
+  
+ 						}
+ 				if (g (WALK) < tresh && w==1||(g (WALK) < tresh && E_S==2)){combo_run (EASY_RUN);} 
+        																			
+        		if (g (WALK) < tresh && w==0 && E_S==1){ combo_run (EASY_SPRINT);}
+        		else if (g (WALK) > tresh && w==1) {w=0;}
+        	}	
+  
+ /*
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+  | | | | | | | | |L|E|D|S| |R|U|M|B|L|E| | | | | | | | | | | | | | | | | | | | | | | | |
+  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+ if (w==1)__(5);  
+ else if (combo_running(_v2) &&!Zoom || combo_running(_v1) &&!Zoom || combo_running(_v3) &&Zoom) __(7);
+ else if (combo_running(_v2) &&Zoom || combo_running(_v1) &&Zoom || combo_running(_v3) &&Zoom) __(2);
+ else __(1);
+  
+ if(notify) {
+        notifier += get_rtime();
+        if(notifier < 150) set_rumble(1,75);
+        else if(notifier < 400) reset_rumble();
+        else {
+            notify -= 1;
+            notifier = 0;
+        }
+    }
+}//--end of main
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+// aim assist v2
+combo _v2 { 
+     s(AIM_H, _v); 
+     s(STRAFE,xy_val(STRAFE, _v));
+     wait(rest);
+     s(AIM_H, inv(_v)); 
+     s(STRAFE, inv(xy_val(STRAFE, _v)));
+     wait(rest);
+} 
+// aim assist v1
+combo _v1 {
+    s(AIM_H, xy_val(AIM_H, _v));
+    wait(rest);
+    s(AIM_V, xy_val(AIM_V,inv(_v)));
+    s(STRAFE,xy_val(STRAFE, _v));
+    wait(rest);
+    s(AIM_H, xy_val(AIM_H,inv(_v)));
+    wait(rest);
+    s(AIM_V, xy_val(AIM_V,_v));
+    s(STRAFE,inv(xy_val(STRAFE, _v)));
+    wait(rest);
+}	 
+combo _v3{
+    s(AIM_V,xy_val(AIM_V, _v));
+    wait(20);
+    s(AIM_H,xy_val(AIM_H, _v));
+    s(STRAFE,xy_val(STRAFE, _v));
+    wait(20);
+    s(AIM_V,xy_val(AIM_V, inv(_v)));
+    wait(20);
+    s(AIM_H,xy_val(AIM_H, inv(_v)));
+    s(STRAFE,xy_val(STRAFE, inv(_v)));
+    wait(20);
+    }
+combo _v4_ads {         
+   	s(AIM_V,xy_val(AIM_V, inv(_v))); 
+   wait(rest)       
+   	s(AIM_H,xy_val(AIM_H, _v)); 
+    s(AIM_V,xy_val(AIM_V,( _v - 10))); 
+   wait(rest)       
+   	s(AIM_V,xy_val(AIM_V,inv(( _v - 10)))); 
+   wait(rest)       
+ 	s(AIM_H,xy_val(AIM_H, inv( _v)));  
+  	s(AIM_V,xy_val(AIM_V,( _v - 10)));   
+   wait(rest)      
+}                   
+combo _v4_fire {         
+   	s(AIM_V,xy_val(AIM_V, inv((_v + 10)))); 
+   wait(rest)       
+   	s(AIM_H,xy_val(AIM_H, ((_v + 10)))) 
+    s(AIM_V,xy_val(AIM_V, _v)); 
+   wait(rest)       
+   	s(AIM_V,xy_val(AIM_V, _v )); 
+   wait(rest)       
+ 	s(AIM_H,xy_val(AIM_H, inv( (_v + 10))));  
+  	s(AIM_V,xy_val(AIM_V, _v));   
+   wait(rest)      
+}                 
+  
+combo EASY_SPRINT{
+    s(SPRINT,100); 
+}
+combo EASY_RUN{
+    s(SPRINT,100); 
+    wait (30);
+    wait (100);        
+}    
+function save__ (){
+	sp(SPVAR_15,in_game_menu_sens); 
+	sp(SPVAR_16,_v);
+	notify(1);
+	}
+function notify(pos) {
+    if(pos)
+        notify = 1;
+    else
+        notify = 2;
+} 
+function btn(f__btn) {
+    if (!g(f__btn)) return; 
+    s(f__btn, 0);
+    }  
+function xy_val(f_axis,f_val) {
+    if(abs(g(f_axis)) < (_v + 1))  
+    return f_val;    
+    return g(f_axis);     
+} 

@@ -1,0 +1,377 @@
+
+
+
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Pickaxe  = PS4_TRIANGLE;
+define Crouch   = PS4_R3;
+
+//Build Buttons
+define Build    = PS4_CIRCLE;
+define Wall     = PS4_R2;
+define Floor    = PS4_R1;
+define Ramp     = PS4_L2;
+define Trap     = PS4_SQUARE;
+define Roof     = PS4_L1;
+
+//Edit Buttons
+define Edit     = PS4_R3;
+define Select   = PS4_R2;
+define Confirm  = PS4_L2;
+define Reset    = PS4_RIGHT;
+
+//Movement/Aim Sticks
+define RY       = PS4_RY;
+define RX       = PS4_RX;
+
+//On Off Definition
+define On       = TRUE;
+define Off      = FALSE;
+
+                                 
+define AimAssistEXPO   = FALSE; 
+define strength        = 32;   
+
+
+define AimStickLinear  = TRUE;
+define Ads_Assist      = TRUE; 
+define Fire_Assist     = TRUE; 
+define RADIUS          = 7;    
+define STEPS           = 30;  
+define STEP_INTERVAL   = 1;   
+
+
+define AntiRecoil      = TRUE;
+define ARVert          = 25;  
+define ARHoriz         =  0; 
+
+define HeadAssist      = FALSE;       
+define HeadHipAssist   = FALSE;        
+define HeadStep        = 2;
+define HeadMax         = 30;
+ 
+define BloomReducer    = FALSE;
+int ast                = 100;  
+
+define BuildTracker    = TRUE; 
+define BuildSyncTime   = 4000; 
+
+
+define QuickEditAssist = FALSE;
+define EditDelay       = 20;   
+define EditAssist      = PS4_L3; 
+
+define InstaFastReset = TRUE;      
+define FastReset      = PS4_DOWN; 
+define ButtonTime     = 30;        
+
+
+define BlockRumble    = TRUE; 
+
+define HairTriggers   = TRUE; 
+
+define PSonXBOX       = TRUE; 
+
+define LedIdentify    = FALSE; 
+
+
+
+int AntirecoilVertical,AntirecoilHorizontal;
+int BuildTrack,BuildCount,time,Edit1,EditT;
+int angle, cos_angle, sin_angle,Head;
+int actual_X, actual_Y, actual_Magnitude, max_Magnitude;
+int display_title = TRUE;
+int display_black,count_black;  
+
+
+
+
+main {
+
+   if(PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) { swap (PS4_TOUCH,PS4_SHARE);}
+                                                                                 
+     
+      if(BlockRumble) block_rumble();
+  
+ 
+        if(HairTriggers) { deadzone(PS4_L2,PS4_R2,100,100);
+  }
+  
+ 
+   if(QuickEditAssist) {
+  
+      if(get_ival(EditAssist)) {
+  
+             EditAssist();
+             Edit1 = On;
+}
+        if(event_release(EditAssist)) {
+ 
+             EditT = 0;	
+             Edit1 = Off;
+     }
+}
+ 
+   if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       	
+    		combo_run(FastReset);
+     }
+}	
+   
+   if(BuildTracker) {
+ 
+       if(event_press(Build)) { BuildTrack = !BuildTrack;}
+  
+           if(BuildTrack) { ¡BuildCount += get_rtime();
+  
+               if(event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0;}
+  
+                  if(get_ival(PS4_L1) || get_ival(PS4_L2) || get_ival(PS4_R2) || get_ival(PS4_R1) || get_ival(PS4_SQUARE)) BuildCount = 0;
+        }
+}
+ 
+if (!BuildTrack && !Edit1){
+  
+  
+  
+   if(AntiRecoil) {
+  
+      if(get_ival(Ads) && get_ival(Fire)) { 	
+  
+         combo_run(Antirecoil);   
+        }
+}
+  
+   if (HeadAssist) {
+	        
+	   if (get_ival(Ads) && get_ival(Fire) || HeadHipAssist && get_ival(Fire)) {
+	        
+	      if (abs(get_ival(RY)) < HeadMax) { 
+	        		
+	            Head += HeadStep;
+	        	combo_run(HeadAssist);
+	        }	
+      }
+	        
+	      if (!get_ival(Fire)) Head = 0;
+	        	
+	      if (Head >= HeadMax) combo_stop(HeadAssist);
+}
+	    
+   
+   if(BloomReducer) {
+ 
+     if(get_val(Ads) && (get_val(Fire))) {        
+  
+        combo_run(AntiBloom);
+}
+     if(abs(get_val(PS4_LX)) > 40 || abs(get_val(PS4_LY)) > 40){
+ 
+        combo_stop(AntiBloom);
+       }
+}
+
+   if(AimAssistEXPO) { 
+  
+     if(get_val(Ads)> 95) { 
+ 
+       combo_run(AimEXPO);
+       } 
+}
+ 
+   if(AimStickLinear) {
+  
+       actual_X = get_val(RX);
+       actual_Y = get_val(RY);
+       actual_Magnitude = isqrt(pow(actual_X, 2) + pow(actual_Y, 2));                                                                                                                                                                                              //CREATED BY EXPLOIT YT
+       max_Magnitude = (actual_Magnitude < 100);
+  
+     if(!(time++ % STEP_INTERVAL)){
+       
+       angle += STEPS;
+}
+       angle = angle % 360;
+       sin_angle = Polar_Array[angle % 360];
+       cos_angle = Polar_Array[(angle + 270) % 360];                   
+       cos_angle = (cos_angle * RADIUS) / 100;
+       sin_angle = (sin_angle * RADIUS) / 100;
+  
+  if((Ads_Assist && get_val(Ads)) || (Fire_Assist && get_val(Fire))){
+ 
+    if(actual_Magnitude <= RADIUS){
+  
+       sin_angle -= actual_Y;
+       cos_angle -= actual_X;
+       }else {
+       sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;
+       cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;
+}
+  
+       set_val(RX, clamp(actual_X + cos_angle, -100, 100));
+       set_val(RY, clamp(actual_Y + sin_angle, -100, 100));
+      }
+   } 
+}
+  
+  if(LedIdentify) {
+  
+     if(BuildTrack) {  
+ 
+         set_rgb(255,0,255);    
+         } else {
+         set_rgb(200,0,0);   
+          }	
+     } 
+
+    if(display_title){           
+      
+       cls_oled(0);            
+        DrawLogo(0, 0, 0);
+         display_title = FALSE;  
+           display_black = TRUE;
+}                             
+
+     if(display_black){                            
+       
+         count_black += get_rtime();
+
+      if(count_black >= 9000){                        
+        
+         cls_oled(0);         
+           count_black = 0;      
+            display_black = FALSE; 
+           }
+      }
+}
+  
+combo Antirecoil {
+ 
+  AntirecoilVertical = get_val(PS4_RY) + ARVert;  
+  if(AntirecoilVertical > 100) AntirecoilVertical = 100;
+  if(abs(get_val(PS4_RY)) < abs(ARVert) + 5)
+  set_val(PS4_RY, (AntirecoilVertical));
+  AntirecoilHorizontal = get_val(PS4_RX) + ARHoriz;
+  if(AntirecoilHorizontal > 100) AntirecoilHorizontal = 100;
+  if(abs(get_val(PS4_RX)) < abs(ARHoriz) + 5)
+  set_val(PS4_RX, AntirecoilHorizontal);
+}
+
+combo AimEXPO { 
+ 
+  set_val(10, strength * -1); 
+  wait(10) 
+  set_val(9, strength); 
+  wait(10) 
+  set_val(10, strength); 
+  wait(10) 
+  set_val(9, strength * -1); 
+  wait(10) 
+}
+
+combo HeadAssist{
+
+  set_val(RY,inv(Head) + get_val(RY));
+}
+
+combo AntiBloom { 
+	
+  set_val(PS4_LX,-40);
+  wait(ast);
+  set_val(PS4_LX, 40);
+  wait(ast);
+  if(ast < 160){ast = ast + 10;}
+  else {ast = 100;
+   }
+}
+
+combo FastReset {
+
+    set_val(EditAssist,50);
+    wait(ButtonTime)
+    set_val(Reset,50);        
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+
+combo Confirm {
+
+    set_val(Confirm,50);
+    wait(ButtonTime);
+    set_val(Confirm,40);
+    wait(ButtonTime);
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        
+        if (get_ival(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		EditPress(Select);
+        }
+}
+
+function EditPress (Button) {
+
+    if (get_ival(Button))
+        
+   		return;
+            
+        set_val(Button,100);
+}
+
+const char Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};//CREATED BY EXPLOIT YT
+
+const int16 BOOT_LOGO[] = { 
+119, 63,
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x01FF,0xF0FE,0x1FF8,0x3FFF,0x7E3F,0x7EFF,0xFEFF,0xF803,0xFFE3,0xFE3F,0xF87F,0xFEFC,0x7EFD,0xFFFD,0xFFF0,0x07FF,0xCFFE,
+    0x7FF8,0xFFFD,0xF8FD,0xFBFF,0xFBFF,0xE00F,0xFFBF,0xFEFF,0xF9FF,0xFBF1,0xFBF7,0xFFF7,0xFFC0,0x1FFF,0x7FFE,0xFFFB,0xFFF3,0xE3E7,0xEFFF,0xEFFF,0x803E,0x3EF8,0x7DF1,0xF7BD,0xE7E7,0xCFDE,0xFBDF,0x1F00,0x7C7D,0xE0FB,0xE3EF,0x7BCF,
+    0xCF9F,0xBDF7,0xBE3E,0x00F8,0x73C1,0xF7C7,0xDEF7,0x9FDF,0x3F7B,0xEF7C,0x3801,0xF007,0x83EF,0x9F81,0xE03F,0xFE7E,0x07C0,0xF800,0x03FE,0x0F07,0xDFFE,0x03C0,0x7FFC,0xFC0F,0x81FF,0x0007,0xFC1E,0x0FBF,0xF807,0x80FF,0xF9F8,0x1F03,
+    0xFE00,0x0FF8,0x3C1F,0x7FE0,0x0F01,0xFFF3,0xF03E,0x07FC,0x001F,0xF078,0x3EFF,0xC01E,0x03FF,0xE7E0,0x7C0F,0xF800,0x3E00,0xF07D,0xFF80,0x3C07,0xFFCF,0xC0F8,0x1F00,0x007C,0x01E0,0xFBFF,0x8078,0x0FBF,0x9F81,0xF03E,0x1C00,0xF803,
+    0xC1F7,0xDF00,0xF01F,0x3F3F,0x03E0,0x7C7C,0x01F0,0x07C3,0xEFBE,0x01E0,0x3E7E,0x7E07,0xC0F8,0xF803,0xE00F,0xDFDF,0x3E07,0xC07C,0x7CFC,0x0F81,0xF1F0,0x07E0,0x1FFF,0x7E7C,0x0FC1,0xF8FD,0xF81F,0x07FF,0xE00F,0xC01F,0xFCFC,0xF81F,
+    0x83F1,0xFBF0,0x3E0F,0xFFC0,0x1F80,0x1FF1,0xF9F0,0x3F07,0xE3F7,0xE07C,0x1FFF,0x803F,0x001F,0xC3F3,0xE07E,0x0FC7,0xEFC0,0xF83F,0xFF00,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+    0x0000,0x0000,0x0000,0x1D2E,0xEEEE,0xE01D,0xDD74,0x8800,0x0000,0x0000,0x0022,0x5549,0x1444,0x2222,0xAD30,0x0000,0x0000,0x0000,0x47BB,0x9331,0x8076,0x755E,0x2000,0x0000,0x0000,0x0089,0x5424,0x5100,0x282A,0xAC40,0x0000,0x0000,
+    0x0001,0xD2A8,0x4EAE,0x21DD,0xD749,0xC000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0060,0x0000,0x0C33,0x873F,0x1F87,0xF606,0x0180,0x6063,0xF000,0x0018,0x670E,0x7F3F,0x8FCC,0x0C07,
+    0x8061,0x8470,0x0000,0x30CF,0x3CC6,0x6310,0x1818,0x0F00,0xC300,0x6000,0x0061,0x9A59,0x8CC6,0x3030,0x3016,0x0186,0x00C0,0x0000,0xC337,0xB3F1,0x9C7F,0x6060,0x6601,0x9803,0x0000,0x0186,0x6F66,0x73F0,0x80C0,0xC0CC,0x0330,0x0E00,
+    0x0003,0x0CCC,0xCC66,0x6101,0x8183,0xF802,0x4038,0x0000,0x0619,0x8198,0xCCE3,0x0303,0x07F8,0x0780,0xE000,0x0006,0x7303,0x3198,0xE606,0x060C,0x300F,0x0300,0x0000,0x0FC6,0x067F,0x30CF,0xEFEF,0xF020,0x0C07,0xF000,0x0000,0x0000,
+    0x0000,0x0000,0x0000,0x0000,0x0FE0,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,
+    0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0000,0x0001,0xF7DE,0xFBF7,0x78FD,0xB3F4,0x5F63,0xEDFB,0x6FC0,0x03EF,0xBDF7,0xEEF9,0xFB67,0xEDBE,0xC7DB,0xF6DF,0x8007,0xDB6B,0xEFDD,0xF336,0xCFDF,0x7D8F,0xB7ED,
+    0xBF00,0x0FB6,0xC6C6,0x2366,0x6D9C,0x3EDB,0x1B63,0x1B18,0x0018,0x6DCF,0x8C66,0xCF1F,0x3E39,0xF636,0xC63E,0x3000,0x30DB,0x9F18,0xCD9E,0x3E7C,0x73EC,0x6D8C,0x7C60,0x0061,0xE636,0x311B,0x331C,0xE0E6,0x18DB,0x1818,0xC000,0xFBCC,
+    0x6C63,0xB666,0xB9C3,0xEC3D,0xB631,0xB180,0x01F7,0xDED8,0xC77C,0xFDF3,0xF6D8,0x7BEC,0x63E3,0x0003,0xEDBD,0xB18E,0xF9FB,0xE7E8,0xB0F7,0xD8C7,0xC600
+} 
+                                              
+int logoX,logoX2,logoY, logoY2;                       
+int logoBit,logoOffset,logoData;                      
+ function DrawLogo(x, y, invert) {                     
+    logoOffset = 2;                                    
+    logoBit = 16;                                           
+    for (logoY = 0; logoY < BOOT_LOGO[1]; logoY++) {         
+        for (logoX = 0; logoX < BOOT_LOGO[0]; logoX++) {     
+            logoData = BOOT_LOGO[logoOffset]          
+            logoX2 = x + logoX;                       
+            logoY2 = y + logoY;                       
+            if (logoX2 < 0 || logoX2 >= 128) {        
+                logoX2 -= 128;                        
+            }                                         
+            if (logoY2 < 0 || logoY2 >= 64) {         
+                logoY2 -= 64;                         
+            }                                         
+            if (test_bit(logoData, logoBit - 1)) {     
+                pixel_oled(logoX2, logoY2, !invert);   
+            }else{                                     
+                pixel_oled(logoX2, logoY2, invert);    
+            }                                            
+            logoBit--;   
+            if (!logoBit) {      
+                logoBit = 16;     
+                logoOffset++;     
+            }  
+        }   
+    }    
+}
+

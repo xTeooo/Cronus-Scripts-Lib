@@ -1,0 +1,3353 @@
+//#################################################################################################
+//######################################### Sweet_EviL_14 #########################################
+//################################################################################################# 
+//#     _________                      __    ___________     .__.____       ____   _____          #
+//#    /   _____/_  _  __ ____   _____/  |_  \_   _____/__  _|__|    |     /_   | /  |  |         #
+//#    \_____  \\ \/ \/ // __ \_/ __ \   __\  |    __)_\  \/ /  |    |      |   |/   |  |_        #
+//#    /        \\     /\  ___/\  ___/|  |    |        \\   /|  |    |___   |   /    ^   /        #
+//#   /_______  / \/\_/  \___  >\___  >__|   /_______  / \_/ |__|_______ \  |___\____   |         #
+//#           \/             \/     \/               \/                 \/           |__|         #
+//#                                                                                               #
+//#################################################################################################
+//################################ Sweet_EviL_14 SE_ALPHA_V1.3.0 ##################################
+//################################################################################################# 
+// 
+//			Join our discord to get early access:		https://discord.gg/gv2RjQR
+
+//			Feel free to donate if you appriciate the works thanks :) https://www.paypal.me/SweetEviL14
+
+/*
+											YouTube Guide
+							
+			Guide Part 1 of 6: CONTROLLER SETUP
+			https://www.youtube.com/watch?v=ntCbtZdHvBk&t
+			
+			Guide Part 2 of 6: SE CONFIG SETUP
+			https://www.youtube.com/watch?v=NUVY_qQiEts&t
+			
+			Guide Part 3 of 6: SE PRO SETUP
+			https://www.youtube.com/watch?v=QA9Z0TGrN58&t
+			
+			Guide Part 4 of 6: SE LEGIT SETUP
+			https://www.youtube.com/watch?v=DGiq_f6cvws&t
+			
+			Guide Part 5 of 6: SE STEADY AIM SETUP
+			https://www.youtube.com/watch?v=GMcPjZMRI4w&t
+			
+			Guide Part 6/6: ANTI-RECOIL SETUP
+			https://www.youtube.com/watch?v=LFZ5bq01kG8&t
+*/
+
+/*
+ * Access to menu	: Hold OPTION BUTTON and release		--> Pink led menu mod
+ * Exit menu & save	: Hold OPTION BUTTON and release		--> Blue led script is enabled
+ * Kill switch      : ADS BUTTON + OPTION BUTTON 			--> Led blink red, script is disabled / blue led script is enabled
+ * Rapid fire toggle: ADS BUTTON + RAPID FIRE TOGGLE BUTTON --> Led blink green rapid fire is active 
+ */
+
+define CROUCH_BUTTON 			= PS4_CIRCLE;  
+define JUMP_BUTTON  			= PS4_CROSS;
+define SWAP_BUTTON				= PS4_TRIANGLE;
+define RELOAD_BUTTON			= PS4_SQUARE;
+define MELEE_BUTTON				= PS4_R3;
+define SPRINT_BUTTON			= PS4_L3;
+
+define RAPID_FIRE_TOGGLE_BUTTON = PS4_UP;
+
+//################################################################################################# 
+
+const int16 picture[] = { 123, 49, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFF87, 0xFFC3, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xE07F, 0xF83F, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFC, 0x7FFE, 0x37FF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xBF1F, 0xFFCF, 0xFFFF, 0xFFFF, 0xCFFF, 0xFFFF, 0xFFFF, 0xFF47, 0xE3FF,
+		0xF1FF, 0xFFFF, 0xFE01, 0xFFFF, 0xFFFF, 0xFFFF, 0xC0F8, 0xFFFE, 0x7FFF,
+		0xFFF8, 0x003F, 0xFFFF, 0xFFFF, 0xFF80, 0x3F1F, 0xFF8F, 0xFFFF, 0xF800,
+		0x0FFF, 0xFFFF, 0xFFFF, 0x0007, 0xC7FF, 0xF3FF, 0xFFFC, 0x023F, 0xFFFF,
+		0xFFFF, 0xFFC0, 0x40F8, 0xF1FC, 0x7FFF, 0xFF87, 0xCFFF, 0xFFFF, 0xFFFF,
+		0xF879, 0x1F3C, 0x1F8F, 0xFFFF, 0xF1F9, 0xFFFF, 0xFFFF, 0xFFFF, 0x1E63,
+		0xC78F, 0xF3FF, 0xFFFE, 0x7E3F, 0xF7FF, 0xFFFF, 0xFFF3, 0x8C78, 0xE23C,
+		0x63F8, 0xFFE7, 0xCFF0, 0x787C, 0xE3C7, 0xFEF3, 0x1F3C, 0x8388, 0x3E07,
+		0xFCF9, 0xFC0F, 0x0308, 0x307F, 0xFCE3, 0xE702, 0x3327, 0x88FF, 0xDE3F,
+		0x91C6, 0x0004, 0x8FFF, 0x0078, 0xE0C6, 0x48E3, 0x1FFF, 0xCFE2, 0x318E,
+		0x0813, 0xFF80, 0x0F1C, 0x3983, 0x18C3, 0xFFF9, 0xF88C, 0x61C3, 0x067F,
+		0xE001, 0xE70E, 0x3067, 0x38FF, 0xFE3F, 0x018C, 0x7861, 0x8FFC, 0x7E3C,
+		0xE1C6, 0x1C46, 0x1FFF, 0x8FE7, 0xE30F, 0x1C70, 0xFF1F, 0xC70C, 0x78C7,
+		0x0981, 0xFFF1, 0xFCF0, 0xC8C7, 0x0E1F, 0xC3F8, 0xE10E, 0x30E2, 0x243F,
+		0xFC3F, 0x9C92, 0x18E3, 0x87F0, 0x3F04, 0x63C6, 0x3C48, 0x8FFF, 0x87E2,
+		0x2047, 0x3C71, 0xFC07, 0xE08C, 0x41C7, 0x1831, 0xFFF1, 0xFE0C, 0x18C7,
+		0x1E3F, 0x87FC, 0x711C, 0x7DE3, 0x8E7F, 0xFE3F, 0xE3C7, 0x38F3, 0x8FFB,
+		0xFFFF, 0xE3FF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFC,
+		0x7FFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFF9F, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xE3FF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFC, 0x7FFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFF8F, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xF1FF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFE, 0x3FFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFC7,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xF1FF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x3FFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFE7, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF,
+		0xFFFF, 0xFFE0 };
+
+
+const image intro =
+	{ 97, 63, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC0, 0x00, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0, 0x01, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x03, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE7, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFF, 0xFF, 0xF9,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x0F, 0xFF, 0xE0,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x03, 0xBE, 0xE0,
+		0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x8C, 0xDF, 0x36,
+		0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC6, 0x0F, 0x83,
+		0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0, 0x0F, 0xE0,
+		0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x0F, 0xF8,
+		0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xCF, 0xFE,
+		0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE7, 0xFF,
+		0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF3, 0xFF,
+		0x8F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFB, 0xF9, 0xFF,
+		0xCF, 0xF7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF8, 0xFE, 0xFF,
+		0xFF, 0xE3, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC, 0x3F, 0xFF,
+		0xFF, 0xF0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC, 0x1F, 0xFF,
+		0xFF, 0xF8, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x1E, 0x0F,
+		0xF8, 0x3C, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x0F, 0x80,
+		0xF0, 0x3E, 0x0F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0xF0,
+		0x00, 0x7F, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x03, 0xFE,
+		0x00, 0xFF, 0x81, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x80, 0xFF,
+		0x80, 0xFF, 0xC0, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC0, 0x0F,
+		0xE0, 0xFE, 0x00, 0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC0, 0x3F,
+		0xF8, 0x7F, 0xE0, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0, 0x3F,
+		0xF8, 0x1F, 0xFC, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0, 0x00,
+		0xF0, 0x03, 0xC0, 0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0, 0x00,
+		0xE0, 0x40, 0x70, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF8, 0x00,
+		0x00, 0xF8, 0x00, 0x00, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xF8, 0x00,
+		0x01, 0xFF, 0x00, 0x00, 0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC, 0x00,
+		0x03, 0xFF, 0xE0, 0x00, 0x0F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC, 0x00,
+		0x01, 0xFF, 0xF0, 0x00, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x00,
+		0x00, 0x5F, 0xD0, 0x00, 0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x00,
+		0x00, 0x0F, 0xC0, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00,
+		0x00, 0x03, 0xC0, 0x00, 0x00, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x80,
+		0x00, 0x00, 0xE0, 0x00, 0x00, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x80,
+		0x00, 0xFF, 0xFF, 0xF8, 0x00, 0x0F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC0,
+		0x00, 0x7F, 0xFF, 0xFC, 0x00, 0x03, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xC0,
+		0x00, 0x3F, 0xFF, 0xFF, 0x00, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0,
+		0x00, 0x3F, 0xFF, 0xFF, 0x80, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0,
+		0x00, 0x1F, 0xFF, 0xFF, 0xC0, 0x00, 0x3F, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0,
+		0x00, 0x0F, 0xFF, 0xFF, 0xF0, 0x00, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF, 0xF8,
+		0x00, 0x0F, 0xFF, 0xFF, 0xF8, 0x00, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFC,
+		0x00, 0x07, 0xFF, 0xFF, 0xFE, 0x00, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
+		0x3F, 0xE3, 0xFE, 0x03, 0xF8, 0xF3, 0xFE, 0x3F, 0xFF, 0xFF, 0xFF, 0xFF,
+		0x0F, 0xF1, 0xFF, 0x00, 0x7C, 0x70, 0xFE, 0x1F, 0xFF, 0xFF, 0xFF, 0xFF,
+		0x83, 0xF8, 0xFF, 0x80, 0x3E, 0x38, 0x7F, 0x07, 0xFF, 0xFF, 0xFF, 0xFF,
+		0x81, 0xFC, 0x7F, 0xC7, 0x1F, 0x1C, 0x3F, 0x03, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xC0, 0xFE, 0x3F, 0xE3, 0x8F, 0x80, 0x1F, 0x80, 0xFF, 0xFF, 0xFF, 0xFF,
+		0xC2, 0x3F, 0x1F, 0xF0, 0x07, 0xC0, 0x0F, 0xC4, 0x7F, 0xFF, 0xFF, 0xFF,
+		0xE0, 0x1F, 0x8F, 0xF8, 0x07, 0xE3, 0x87, 0xC0, 0x3F, 0xFF, 0xFF, 0xFF,
+		0xF0, 0x07, 0xC7, 0xFC, 0x7F, 0xF1, 0xC3, 0xE0, 0x0F, 0xFF, 0xFF, 0xFF,
+		0xF0, 0x03, 0xE0, 0x3E, 0x3F, 0xF8, 0xE1, 0xE0, 0x07, 0xFF, 0xFF, 0xFF,
+		0xF8, 0xF1, 0xF0, 0x1F, 0x1F, 0xFC, 0x70, 0xF1, 0xE0 };
+
+
+
+//################################################################################################# 
+
+// don't change
+
+const int16 Lookup_Table[] =
+{
+	0, 	 17,  34,  52,  69,  87,  104, 121, 139, 156, 
+	173, 190, 207, 224, 241, 258, 275, 292, 309, 325,
+	342, 358, 374, 390, 406, 422, 438, 453, 469, 484,
+	500, 515, 529, 544, 559, 573, 587, 601, 615, 629,
+	642, 656, 669, 682, 694, 707, 719, 731, 743, 754,
+	766, 777, 788, 798, 809, 819, 829, 838, 848, 857,
+	866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 
+	939, 945, 951, 956, 961, 965, 970, 974, 978, 981,
+	984, 987, 990, 992, 994, 996, 997, 998, 999, 999,
+	1000
+}
+
+//################################################################################################# 
+
+const string Menu[] = { "CONTROLLER", "SE CONFIG", "SE PRO AIM", "SE LEGIT",
+		"SE S-A", "SE A-R", "COD MODS", "* ALPHA TEAM *", "by Sweet EviL", "" }
+
+const string CONTROLLER[] = { "Flipped TR", "Hair Trig", "Deadzone", "Rumble", "" }
+
+const string CONFIG[] = { "VM Update", "Angle Inc", "AA Stength", "Tracking",
+		"Spin", "Magnitude", "Smoothing", "Min: ", "Max: ", "" }
+
+const string SE_PRO_AIM[] = { "State", "Aim Assit", "Type : ", "Shape: ", "" }
+
+const string SE_LEGIT_AIM[] = { "State","Threshold", "AA Types", "AA Shapes", "ADS + Fire",
+		"Hip fire", "Only ADS", "< TH:", "> TH:", "" }
+
+const string SE_STEADY_AIM[] = { "State", "Resolution", "" }
+
+const string SE_AR[] = { "State", "Angular AR", "Rumble AR", "Progressive",
+		"Vertical", "P Factor:", "Vertical:", "Strength:", "" }
+
+const string MODS[] = { "Slide C.", "Rapid fire", "Quick scope", "Turbo melee",
+		"Hold breath", "Bunny hop", "Easy plate", "State", "Press time", "Scope time","" }
+
+const string Aim_ASSIT_TYPE[] = { "Regular", "Dynamic", "Spiroide",
+		"DySpiroide", "" }
+
+const string PATTERN_SHAPES[] = { "Comet", "Ellipsoid", "Circular","Frenzy", 
+		"Triangular","Diamond", "Linear", "Zorro", "" }
+
+const string CONFIG_STATE[] = { "OFF", "ON", "" }
+
+const string MVT_PRED[] =
+		{ "Vectorial", "Horizontal", "Boost :", "Update:", "" }
+
+const string SPIN_TYPE[] = { "Inside", "Outside", "Direction:", "Factor:", "" }
+
+const string RAPID_FIRE_MODS[] = { "Basic", "Dynamic", "Step Trig", "Fast Trig", "Slow Trig", "" }
+
+const string RAPID_FIRE_MENU[] = { "Mode", "Trigger", "Press time", "Pause time", "Step time", "Dynamic time", "" }
+
+//################################################################################################# 
+
+//Don't change these value!!!!!!!
+
+define PROCESS_SE_AIM_PRO		= 0xFF;
+define PROCESS_SMOOTHING		= 0xFE;
+define PROCESS_INIT				= 0xFD;
+define AR_OFF					= 0;
+define ANGULAR_ANTI_RECOIL		= 1; //used in v3.7.x
+define SMART_ANTI_RECOIL		= 2;
+define REGULAR_AIM_ASSIST		= 0;
+define DYNAMIC_AIM_ASSIST		= 1;
+define SPIROIDE_AIM_ASSIST		= 2;
+define DYSPIROIDE_AIM_ASSIST	= 3;   // DYNAMIC_AIM_ASSIST + SPIROIDE_AIM_ASSIST
+define ZORRO_SHAPES				= 7;
+define LINEAR_SHAPES			= 6;
+define DIAMOND_SHAPES			= 5;
+define TRIANGULAR_SHAPES		= 4;
+define FRENZY_SHAPES			= 3;
+define CIRCULAR_SHAPES			= 2;
+define ELLIPSOID_SHAPES			= 1;
+define COMET_SHAPES				= 0; 
+define DISPLACEMENT_VECTOR_BOOST	= 0; //used in v2.x.x
+define HORIZONTAL_AXIS_BOOST	= 1;
+define FRENZY_SHAPES_UPDATE		= 2;
+define TRIANGLE_SHAPE_SPEED	   	= 6; 
+define INSIDE_SENS				= 0;
+define OUTSIDE_SENS				= 1;
+define MAIN_MENU_LENGHT 		= 7;
+define BLACK 					= 0;
+define WHITE 					= 1;
+define SMALL 					= 0;
+define MEDIUM 					= 1;
+define LARGE 					= 2;
+define FIXED_ANGULAR_RECOIL		= 2;
+define WIDTH = 0, HEIGHT = 1, LENGTH = 2;
+define MAIN_MENU 				= 1;
+define MENU_SHIFT 				= 3;
+define SUB_MENU_1 				= MAIN_MENU << MENU_SHIFT;
+define SUB_MENU_2 				= SUB_MENU_1 << MENU_SHIFT;
+define SUB_MENU_3 				= SUB_MENU_2 << MENU_SHIFT;
+define SUB_MENU_4 				= SUB_MENU_3 << MENU_SHIFT;
+define LED_OFF       			= -2;                           
+define Light_Blue   		 	=  1;                           
+define Light_Red     			=  2;                           
+define Light_Green   			=  3;                           
+define Light_Pink    			=  4;                           
+define Light_SkyBlue 			=  5;                           
+define Light_Yellow  			=  6;                           
+define Light_White   			=  7;                           
+define Blue          			=  8;                           
+define Red           			=  9;                           
+define Green         			= 10;                           
+define Pink          			= 11;                           
+define SkyBlue       			= 12;                           
+define Yellow        			= 13;                           
+define White         			= 14;                           
+define Dim_Blue      			= 15;                           
+define Dim_Red       			= 16;                           
+define Dim_Green     			= 17;                           
+define Dim_Pink      			= 18;                           
+define Dim_SkyBlue   			= 19;                           
+define Dim_Yellow    			= 20;                           
+define Dim_White     			= 21;  
+define BASIC       				= 0; 
+define DYNAMIC					= 1;
+define STEP_MODE 				= 2; 
+define FAST_TRIG     			= 3;  
+define SLOW_TRIG	 			= 4;  
+
+
+//################################################################################################# 
+
+int AIM_ASSIST_TYPE			; 
+int ADS_TYPE				;		// AIM ASSIST METHOD APPLIED WHEN ADS ONLY AND STICK IS AT OR BELOW DEADZONE
+int ADS_FIRE_TYPE			;		// AIM ASSIST METHOD APPLIED WHEN ADSing AND FIRING
+int ADS_FIRE_TYPE_OVER_DZ	;		// AIM ASSIST METHOD APPLIED WHEN ADSing AND FIRING
+int HIP_FIRE_TYPE			;		// AIM ASSIST METHOD APPLIED WHEN HIP FIRING
+int HIP_FIRE_TYPE_OVER_DZ	;	// AIM ASSIST METHOD APPLIED WHEN HIP FIRING
+int DRIFT_TYPE				; 	// AIM ASSIST METHOD APPLIED WHEN ADS ONLY AND STICK IS PAST YOUR DEADZONE
+int	PATTERN_SHAPE 			;    
+int ADS_PATTERN				;		// AIM ASSIST APPLIED WHEN ADS ONLY AND STICK IS AT OR BELOW DEADZONE
+int DRIFT_PATTERN			; 		// AIM ASSIST APPLIED WHEN ADS ONLY AND STICK IS PAST YOUR DEADZONE
+int ADS_FIRE_PATTERN		;		// AIM ASSIST APPLIED WHEN ADSing AND FIRING
+int ADS_FIRE_PATTERN_OVER_DZ	;		// AIM ASSIST APPLIED WHEN ADSing AND FIRING AND STICK IS PAST YOUR DEADZONE
+int HIP_FIRE_PATTERN			;			// AIM ASSIST APPLIED WHEN HIP FIRING
+int HIP_FIRE_PATTERN_OVER_DZ	;		// AIM ASSIST APPLIED WHEN HIP FIRING AND STICK IS PAST YOUR DEADZONE													   
+int MOVEMENT_PREDITION_TYPE 	; 
+int MOVEMENT_PREDITION_UPDATE_RATE; 
+int ANGLE_INCREMENT 		;
+int MAX_RADIUS 				;   
+int MIN_RADIUS 				; 										  
+int USE_STEADY_AIM 	    	; 
+int STEADY_AIM_RESOLUTION	;
+int SPIN_SENS				;	
+int SPIN_SPEED				;	// Increase value decrease spinning speed Only for SPIROIDE_AIM_ASSIST or DYSPIROIDE_AIM_ASSIST
+int MAX_MAGNITUDE 			;
+int SMOOTHING 				; // smoothing time = vm update date x SMOOTHING
+int VM_UPDATE				; 
+int USE_ANTI_RECOIL			;
+int MAX_ANGULAR_RECOIL		;
+int PROGRESSIVE_ANGULAR_RECOIL; 
+int SRENGTH_ANGULAR_RECOIL	; 	
+int VERTICAL_SMART_RECOIL	; 	
+int USE_SLIDE_CANCEL		;
+int DEAD_ZONE_LIMIT			;
+int USE_RUMBLE				;
+int THRESHOLD				;
+int ADS_BUTTON 				;
+int FIRE_BUTTON 			;
+int Refresh_Screen = FALSE	;
+int ModMenu = 0				;
+int Menu_State				;
+int Actual_Screen			;
+int Last_Screen_lvl_1		;
+int Last_Screen_lvl_2		;
+int Last_Screen_lvl_3		;
+int Last_Screen_lvl_4		;
+int Inc_Dec					;
+int up_down					;
+int index_1					;
+int index_2					;
+int index_3					;
+int End_Screen				;
+int Rx						;
+int Ry						;
+int Rx_Polar				;
+int Ry_Polar				;
+int Angle					;
+int Polar_Process_Done		;
+int Angle_Increment_State	; 
+int Angle_Update_Cycle		;
+int Radius					;
+int Spinoide_Increment_State;
+int Ellipse_Radius			;
+int Smoothing				;
+int SE_PRO_AIM_STATE		;
+int Anti_Recoil_Angle		;
+int Anti_Recoil_Correction	;
+int Tiangle_Increment_State	; 
+int Rx_Tiangle_Hight		;
+int Ry_Tiangle_Hight		;
+int Max_Tiangle_Hight		;
+int Movement_Direction		;
+int Actual_Rx				;
+int Last_Rx					;
+int FRENZY_SHAPES_Flag		;
+int FRENZY_SHAPES_Update	;
+int Shape_Step				;
+int FLIPPED_TRIG			;
+int SE_PRO_LEGIT			;
+int SRENGTH_SMART_RECOIL	;
+int invert					;
+int smartrecoil_base		;
+int smartrecoil_add,smartrecoil_y;
+int smartrecoil_rumble		;
+int ret						;
+int val1					; 
+int val2					;
+int screen_saver			;
+int screen_off				;	
+int KillSwitch				;
+int KillSwitchLed			;
+int ptime					;
+int Col_ind					;
+int HAIR_TRIGGER			;
+int RMode					;    	// rapid fire usage mode
+int RPressure				;		// pressure for triggering selected fire mode
+int RPressTime				;		// rapid fire press time for shots
+int RPauseTime				;		// rapid fire pause time between shots
+int RStep					;		// rapid fire pause time low speed 
+int RDyn					;
+int toggle_rapid_fire		;
+int easy_plate				;
+int turbomelee				;
+int bhop					;
+int hbreath					;
+int quickscope				;
+int quickscopedelay			;
+int quickscope_press_time	;
+int _ret					;
+
+//################################################################################################# 
+ 
+data(1,// begin of data segment--------              
+      1,0,0,0, //1. Light_Blue                           
+      0,1,0,0, //2. Light_Red                            
+      0,0,1,0, //3. Light_Green                          
+      0,0,0,1, //4. Light_Pink                           
+      1,0,1,0, //5. Light_SkyBlue                        
+      0,1,1,0, //6. Light_Yellow                         
+      1,1,1,1, //7. Light_White                          
+      2,0,0,0, //1. Blue                                 
+      0,2,0,0, //2. Red                                  
+      0,0,2,0, //3. Green                                
+      0,0,0,2, //4. Pink                                 
+      2,0,2,0, //5. SkyBlue                              
+      0,2,2,0, //6. Yellow                               
+      2,2,2,2, //7. White                                
+      3,0,0,0, //1. Dim_Blue                             
+      0,3,0,0, //2. Dim_Red                              
+      0,0,3,0, //3. Dim_Green                            
+      0,0,0,3, //4. Dim_Pink                             
+      3,0,3,0, //5. Dim_SkyBlue                          
+      0,3,3,0, //6. Dim_Yellow                           
+      3,3,3,3  //7. Dim_White                            
+); // end of data segment--------------
+
+//################################################################################################# 
+
+init
+{
+	set_led(-1,0);
+	set_led(0,0);
+	set_led(1,0);
+	set_led(2,0);
+	set_led(3,0);
+	set_led(4,0);
+	set_led(5,0);
+	set_led(6,0);
+	
+	cls_oled(WHITE);
+	//draw_picture(0);	
+	image_oled(0, 0, TRUE, TRUE, intro[0]);
+	//printf(center_x(get_menu(8),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) ,SMALL,WHITE,Menu[8]);
+	set_led(0, 3);	
+	KillSwitch = 0;
+	
+	if(get_pvar(SPVAR_64, 0, 9999, 0) != 386)
+	{
+		set_pvar(SPVAR_64, 386):
+		reset_script_var();
+		save_pvar();		
+	}
+	
+	load_pvar();
+	
+	SE_PRO_AIM_STATE = PROCESS_INIT;
+	
+	combo_run(start);
+}
+
+//################################################################################################# 
+main 
+{
+ 	vm_tctrl(VM_UPDATE); 
+ 		
+ 	screen_saver += get_rtime();
+ 	
+ 	if((screen_saver == 30000) && (!ModMenu) && (screen_off == FALSE))
+ 	{
+ 		cls_oled(0);
+ 		screen_off = TRUE;
+ 	}
+ 	
+ 	if((get_ival(ADS_BUTTON) > 50 && event_release(PS4_OPTIONS)) && !ModMenu)
+	{			
+			set_val(PS4_OPTIONS, 0);
+			combo_run(EXIT); 
+			combo_run(vibrate);
+			
+			KillSwitch = !KillSwitch;
+			
+			if(!KillSwitch)
+			{		
+				set_ledx(2, 1);
+				set_led(0, 3);
+			}	
+			else
+			{
+				KillSwitchLed = 32000;
+				toggle_rapid_fire = 0;
+				combo_stop(rapid_fire_Led);
+				combo_stop(cRapidFire);
+				combo_stop(Quick_Scope);
+				combo_stop(HOLD_BREATH);
+				combo_stop(BUNNYHOP);
+				combo_stop(TURBO_MELEE);
+				combo_stop(easy_plate);
+				combo_stop(cRapidFire);				
+			}
+	}
+	
+	
+	if(KillSwitch )
+	{
+		KillSwitchLed += get_rtime();
+		if(KillSwitchLed > 500)
+		{
+			set_ledx(1, 1);
+			KillSwitchLed = 0
+		}
+	}
+		
+ 	
+ 	if(USE_RUMBLE == FALSE)
+ 	{
+ 		block_rumble();
+ 	}
+ 	
+	if((get_ival(PS4_L2) < 50) && event_release(PS4_OPTIONS) && get_ptime(PS4_OPTIONS) > 500 && !KillSwitch)
+	{
+		ModMenu = !ModMenu;
+		
+		set_val(PS4_OPTIONS, 0);
+		
+		combo_run(EXIT); 
+		combo_run(vibrate);
+
+		if(ModMenu)
+		{
+			load_pvar();
+			Menu_State = MAIN_MENU;
+			screen_off = FALSE;		
+			screen_saver = 0;
+
+			cls_oled(BLACK);
+			rect_oled( 0 , 0,128 , 64, 0, 1 );
+			//line_oled(28, 17, 100, 17, 1, 1);
+			rect_oled(0 , 0,128 , 20, 1, 1 );
+			rect_oled(2 , 2,124 , 16, 0, 0 );
+			printf(center_x(get_menu(7),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,Menu[7]);
+			printf(center_x(get_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM)+ 8,MEDIUM,WHITE,Menu[Actual_Screen]);
+			set_ledx(2, 1);
+			set_led(3, 2);
+		}
+		else
+		{
+			Refresh_Screen = FALSE;
+			Actual_Screen = 0;
+			Last_Screen_lvl_1 = 0;
+			Last_Screen_lvl_2 = 0;
+			Last_Screen_lvl_3 = 0;
+			Last_Screen_lvl_4 = 0;
+			End_Screen = FALSE;
+			cls_oled(WHITE);
+			draw_picture(0);
+			set_ledx(2, 1);
+			set_ledx(2, 1);
+			set_ledx(2, 1);
+			set_ledx(2, 1);
+			set_ledx(2, 1);
+			set_led(0, 3);
+			SE_PRO_AIM_STATE = PROCESS_INIT;
+			save_pvar();
+		}
+	}
+
+	if(screen_saver > 30000 && ModMenu)
+	{
+		Refresh_Screen = FALSE;
+		Actual_Screen = 0;
+		Last_Screen_lvl_1 = 0;
+		Last_Screen_lvl_2 = 0;
+		Last_Screen_lvl_3 = 0;
+		Last_Screen_lvl_4 = 0;
+		End_Screen = FALSE;
+		cls_oled(WHITE);
+		draw_picture(0);
+		set_ledx(2, 1);
+		set_ledx(2, 1);
+		set_ledx(2, 1);
+		set_ledx(2, 1);
+		set_ledx(2, 1);
+		set_led(0, 3);
+		SE_PRO_AIM_STATE = PROCESS_INIT;
+		save_pvar();
+		ModMenu = !ModMenu;
+		screen_saver = 0;		
+	}
+
+
+	if(ModMenu)
+	{
+		Inc_Dec = 0;
+				
+		if(ptime != 100)
+			ptime += get_rtime();
+				
+		if(event_press(PS4_RIGHT) ||  (get_ival(PS4_RIGHT) && get_ptime(PS4_RIGHT) >= 500 && ptime == 100))
+		{
+			Inc_Dec = 1;
+			Refresh_Screen = TRUE;
+			set_ledx(0, 1);
+			set_led(3, 3);
+			screen_saver = 0;
+			ptime = 0;
+		}
+		else if(event_press(PS4_LEFT) || (get_ival(PS4_LEFT) && get_ptime(PS4_LEFT) > 250 && ptime == 100))
+		{
+			Inc_Dec = -1;
+			Refresh_Screen = TRUE;
+			set_ledx(0, 1);
+			set_led(3, 3);
+			screen_saver = 0;
+			ptime = 0;
+		}
+		else if(event_press(PS4_CIRCLE) && Menu_State != MAIN_MENU)
+		{
+			Menu_State = Menu_State >> MENU_SHIFT;
+			Refresh_Screen = TRUE;
+			Actual_Screen = Last_Screen_lvl_1;
+			Last_Screen_lvl_1 = Last_Screen_lvl_2;
+			Last_Screen_lvl_2 = Last_Screen_lvl_3;
+			Last_Screen_lvl_3 = Last_Screen_lvl_4;
+			Last_Screen_lvl_4 = 0;
+			End_Screen = FALSE;
+			Inc_Dec = 0;
+			up_down = 0;
+			index_1 = 0;
+			index_2 = 0;
+			index_3 = 0;
+			Inc_Dec = 0;
+			set_ledx(1, 1);
+			set_led(3, 3);
+			screen_saver = 0;
+
+		}
+		else if(event_press(PS4_CROSS)&& Menu_State < SUB_MENU_4)
+		{
+			Refresh_Screen = TRUE;
+			Inc_Dec = 0;
+			up_down = 0;
+			if(End_Screen == FALSE)
+			{
+				Menu_State = Menu_State << MENU_SHIFT;
+				Last_Screen_lvl_4 = Last_Screen_lvl_3;
+				Last_Screen_lvl_3 = Last_Screen_lvl_2
+				Last_Screen_lvl_2 = Last_Screen_lvl_1
+				Last_Screen_lvl_1 = Actual_Screen;
+				Actual_Screen = 0;
+				index_1 = 0;
+				index_2 = 0;
+				index_3 = 0;
+				set_ledx(0, 1);
+				set_led(3, 3);
+				screen_saver = 0;
+			}
+		}
+		else if(event_press(PS4_UP))
+		{
+			if((Menu_State == SUB_MENU_2 && Last_Screen_lvl_2 == 2 && Last_Screen_lvl_1 == 1)
+					|| (Menu_State == SUB_MENU_2 && Last_Screen_lvl_2 == 1 && (Last_Screen_lvl_1 == 2 || Last_Screen_lvl_1 == 3 ||Last_Screen_lvl_1 == 4))
+					|| (Menu_State == SUB_MENU_2 && Last_Screen_lvl_1 == 2 && Last_Screen_lvl_2 == 5)
+					|| (Menu_State == SUB_MENU_3 && Last_Screen_lvl_3 == 3 && (Last_Screen_lvl_2 == 2 || Last_Screen_lvl_2 == 3))
+					|| (Menu_State == SUB_MENU_3 && Last_Screen_lvl_3 == 5 && Last_Screen_lvl_2 == 1 && Last_Screen_lvl_1 == 3))
+			{
+				up_down = 1;
+				Inc_Dec = 0;
+				Refresh_Screen = TRUE;
+				set_ledx(0, 1);
+				set_led(3, 3);
+				screen_saver = 0;
+			}
+		}
+		else if(event_press(PS4_DOWN))
+		{
+			if((Menu_State == SUB_MENU_2 && Last_Screen_lvl_2 == 2 && Last_Screen_lvl_1 == 1)
+					|| (Menu_State == SUB_MENU_2 && Last_Screen_lvl_2 == 1 && (Last_Screen_lvl_1 == 2 || Last_Screen_lvl_1 == 3 ||Last_Screen_lvl_1 == 4))
+					|| (Menu_State == SUB_MENU_2 && Last_Screen_lvl_1 == 2 && Last_Screen_lvl_2 == 5)
+					|| (Menu_State == SUB_MENU_3 && Last_Screen_lvl_3 == 3 && (Last_Screen_lvl_2 == 2 || Last_Screen_lvl_2 == 3))
+					|| (Menu_State == SUB_MENU_3 && Last_Screen_lvl_3 == 5 && Last_Screen_lvl_2 == 1 && Last_Screen_lvl_1 == 3))
+			{
+				up_down = -1;
+				Inc_Dec = 0;
+				Refresh_Screen = TRUE;
+				set_ledx(3, 1);
+				set_led(3, 3);
+				screen_saver = 0;
+			}
+		}
+		
+		block_btn();
+
+		if(Refresh_Screen == TRUE)
+		{
+			Refresh_Screen = FALSE;
+
+			if(Menu_State == MAIN_MENU)
+			{
+				Actual_Screen = check_range(update_val(Actual_Screen), MAIN_MENU_LENGHT - 1, 0);
+
+				cls_oled(BLACK);
+				rect_oled( 0 , 0,128 , 64, 0, 1 );
+				rect_oled(0 , 0,128 , 20, 1, 1 );
+				rect_oled(2 , 2,124 , 16, 0, 0 );
+				//line_oled(28, 17, 100, 17, 1, 1);
+				printf(center_x(get_menu(7),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,Menu[7]);
+				printf(center_x(get_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,Menu[Actual_Screen]);
+
+			}
+			else if(Menu_State == SUB_MENU_1)
+			{
+				cls_oled(BLACK);
+				rect_oled( 0 , 0,128 , 64, 0, 1 );
+
+				Actual_Screen = update_val(Actual_Screen);
+				rect_oled(0 , 0,128 , 20, 1, 1 );
+				rect_oled(2 , 2,124 , 16, 0, 0 );
+
+				printf(center_x(get_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,Menu[Last_Screen_lvl_1]);
+				//line_oled(0, 20, 127, 20, 2, 1);
+
+				if(Last_Screen_lvl_1 == 0)
+				{
+					Actual_Screen = check_range(Actual_Screen, 3, 0);
+					printf(center_x(get_controller_m(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,CONTROLLER[Actual_Screen]);
+				}
+				else if(Last_Screen_lvl_1 == 1)
+				{
+					Actual_Screen = check_range(Actual_Screen, 6, 0);
+					printf(center_x(get_config_m(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,CONFIG[Actual_Screen]);
+				}
+				else if(Last_Screen_lvl_1 == 2)
+				{
+					Actual_Screen = check_range(Actual_Screen, 1, 0);
+					printf(center_x(get_se_pro_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,SE_PRO_AIM[Actual_Screen]);
+				}
+				else if(Last_Screen_lvl_1 == 3)
+				{
+					Actual_Screen = check_range(Actual_Screen, 3, 0);
+					printf(center_x(get_se_legit_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,SE_LEGIT_AIM[Actual_Screen]);
+				}
+				else if(Last_Screen_lvl_1 == 4)
+				{
+					Actual_Screen = check_range(Actual_Screen, 1, 0);
+					printf(center_x(get_steady_aim_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,SE_STEADY_AIM[Actual_Screen]);
+				}
+				else if(Last_Screen_lvl_1 == 5)
+				{
+					Actual_Screen = check_range(Actual_Screen, 2, 0);
+					printf(center_x(get_ar_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,SE_AR[Actual_Screen]);
+				}
+				else if(Last_Screen_lvl_1 == 6)
+				{
+					Actual_Screen = check_range(Actual_Screen, 6, 0);
+					printf(center_x(get_mods_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM) + 8,MEDIUM,WHITE,MODS[Actual_Screen]);
+				}
+			}
+			// SE_PRO_AIM_MENU Handler
+			else if(Menu_State == SUB_MENU_2)
+			{
+				cls_oled(BLACK);
+				rect_oled(0 , 0,128 , 64, 0, 1 );
+				rect_oled(0 , 0,128 , 20, 1, 1 );
+				rect_oled(2 , 2,124 , 16, 0, 0 );
+
+				Actual_Screen = update_val(Actual_Screen);
+
+				if(Last_Screen_lvl_2 == 0)
+				{
+
+					End_Screen = TRUE;
+					printf(center_x(get_controller_m(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,CONTROLLER[Last_Screen_lvl_1]);
+
+					if(Last_Screen_lvl_1 == 0)
+					{
+						FLIPPED_TRIG = update_val(FLIPPED_TRIG);
+						FLIPPED_TRIG = check_range(update_val(FLIPPED_TRIG), 1, 0);
+						printf(center_x(get_state(FLIPPED_TRIG),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[FLIPPED_TRIG]);
+						
+						if(FLIPPED_TRIG == 0)
+						{
+						 	ADS_BUTTON 	= PS4_L2;
+							FIRE_BUTTON = PS4_R2;
+						}
+						else
+						{
+							ADS_BUTTON 	= PS4_L1;
+							FIRE_BUTTON = PS4_R1;
+						}
+					}
+					else if(Last_Screen_lvl_1 == 1)
+					{			
+						HAIR_TRIGGER = update_val(HAIR_TRIGGER);
+						HAIR_TRIGGER = check_range(update_val(HAIR_TRIGGER), 1, 0);
+						printf(center_x(get_state(HAIR_TRIGGER),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[HAIR_TRIGGER]);
+					}				
+					else if(Last_Screen_lvl_1 == 2)
+					{
+						DEAD_ZONE_LIMIT = check_range(update_val(DEAD_ZONE_LIMIT), 20, 0);
+						NumberToString(DEAD_ZONE_LIMIT,FindDigits(DEAD_ZONE_LIMIT), 0, 4, OLED_WHITE);
+						print_progress_bar(DEAD_ZONE_LIMIT, 20);
+					}
+					else if(Last_Screen_lvl_1 == 3)
+					{
+						// TODO rumble
+						USE_RUMBLE = check_range(update_val(USE_RUMBLE), 1, 0);
+						printf(center_x(get_state(USE_RUMBLE),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[USE_RUMBLE]);
+					}
+
+				}
+				else if(Last_Screen_lvl_2 == 1)
+				{
+					End_Screen = TRUE;
+					printf(center_x(get_config_m(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,CONFIG[Last_Screen_lvl_1]);
+
+					if(Last_Screen_lvl_1 == 0)
+					{
+						VM_UPDATE = check_range(update_val(VM_UPDATE), 30, 0);
+						NumberToString(VM_UPDATE,FindDigits(VM_UPDATE), 0, 4, OLED_WHITE);
+						print_progress_bar(VM_UPDATE, 30);
+
+					}
+					else if(Last_Screen_lvl_1 == 1)
+					{
+						ANGLE_INCREMENT = check_range(update_val(ANGLE_INCREMENT), 45, 0);
+						NumberToString(ANGLE_INCREMENT,FindDigits(ANGLE_INCREMENT), 0, 4, OLED_WHITE);
+						print_progress_bar(ANGLE_INCREMENT, 45);
+						
+						Anti_Recoil_Angle = (180/ANGLE_INCREMENT) * ANGLE_INCREMENT; 
+					}
+					else if(Last_Screen_lvl_1 == 2)
+					{
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down;
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							MAX_RADIUS = check_range(update_val(MAX_RADIUS), 32, 0);
+
+							printf(5,27,SMALL,BLACK,CONFIG[8]);
+							printf(5,49,SMALL,WHITE,CONFIG[7]);
+
+							//printf(50,27,SMALL,BLACK,Aim_ASSIT_TYPE[Actual_Screen]); 
+							//printf(50,49,SMALL,WHITE,PATTERN_SHAPES[0]);
+
+							rect_oled( 35 , 23,((MAX_RADIUS * 70)/32) , 14, 1, 0 );
+							rect_oled( 35 , 23, 70 , 15,0, 0 );
+
+							if(MIN_RADIUS >MAX_RADIUS)
+							MIN_RADIUS = MAX_RADIUS;
+
+							rect_oled( 35 , 46,((MIN_RADIUS * 70)/(MAX_RADIUS)) , 14, 1, 1 );
+							rect_oled( 35 , 46, 70 , 15,0, 1 );
+
+							NumberToString(MAX_RADIUS,FindDigits(MAX_RADIUS), 53, 0, OLED_BLACK);
+							NumberToString(MIN_RADIUS,FindDigits(MIN_RADIUS), 53, 22, OLED_WHITE);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							MIN_RADIUS = update_val(MIN_RADIUS);
+							MIN_RADIUS = check_range(MIN_RADIUS, MAX_RADIUS, 0);
+
+							printf(5,27,SMALL,WHITE,CONFIG[8]);
+							printf(5,49,SMALL,BLACK,CONFIG[7]);
+
+							rect_oled( 35 , 23,((MAX_RADIUS * 70)/32) , 14, 1, 1 );
+							rect_oled( 35 , 23, 70 , 15,0, 1 );
+
+							rect_oled( 35 , 46,((MIN_RADIUS * 70)/(MAX_RADIUS)) , 14, 1, 0 );
+							rect_oled( 35 , 46, 70 , 15,0, 0 );
+
+							NumberToString(MAX_RADIUS,FindDigits(MAX_RADIUS), 53, 0, OLED_WHITE);
+							NumberToString(MIN_RADIUS,FindDigits(MIN_RADIUS), 53, 22, OLED_BLACK);
+						}
+					}
+					if(Last_Screen_lvl_1 == 3)
+					{
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down;
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							MOVEMENT_PREDITION_TYPE = check_range(update_val(MOVEMENT_PREDITION_TYPE), 1, 0);
+
+							printf(5,27,SMALL,BLACK,MVT_PRED[2]);
+							printf(5,49,SMALL,WHITE,MVT_PRED[3]);
+
+							printf(55,27,SMALL,BLACK,MVT_PRED[MOVEMENT_PREDITION_TYPE]);
+
+							rect_oled( 55 , 46, MOVEMENT_PREDITION_UPDATE_RATE, 14, 1, 1 );
+							rect_oled( 55 , 46, 50 , 15,0, 1 );
+
+							NumberToString(MOVEMENT_PREDITION_UPDATE_RATE,FindDigits(MOVEMENT_PREDITION_UPDATE_RATE), 53, 22, OLED_WHITE);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							MOVEMENT_PREDITION_UPDATE_RATE = check_range(update_val(MOVEMENT_PREDITION_UPDATE_RATE), 50, 0);
+
+							printf(5,27,SMALL,WHITE,MVT_PRED[2]);
+							printf(5,49,SMALL,BLACK,MVT_PRED[3]);
+
+							printf(55,27,SMALL,WHITE,MVT_PRED[MOVEMENT_PREDITION_TYPE]);
+
+							rect_oled( 55 , 46, MOVEMENT_PREDITION_UPDATE_RATE, 14, 1, 0 );
+							rect_oled( 55 , 46, 50 , 15,0, 0 );
+
+							NumberToString(MOVEMENT_PREDITION_UPDATE_RATE,FindDigits(MOVEMENT_PREDITION_UPDATE_RATE), 53, 22, OLED_BLACK);
+						}
+					}
+					if(Last_Screen_lvl_1 == 4)
+					{
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down;
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							SPIN_SENS = update_val(SPIN_SENS);
+							SPIN_SENS = check_range(SPIN_SENS, 1, 0);
+
+							printf(5,27,SMALL,BLACK,SPIN_TYPE[2]);
+							printf(5,49,SMALL,WHITE,SPIN_TYPE[3]);
+
+							printf(76,27,SMALL,BLACK,SPIN_TYPE[SPIN_SENS]);
+
+							rect_oled( 50 , 46,((SPIN_SPEED * 55)/(22)) , 14, 1, 1 );
+							rect_oled( 50 , 46, 55 , 15,0, 1 );
+
+							NumberToString(SPIN_SPEED,FindDigits(SPIN_SPEED), 53, 22, OLED_WHITE);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							SPIN_SPEED = update_val(SPIN_SPEED);
+							SPIN_SPEED = check_range(SPIN_SPEED, 22, 0);
+
+							printf(5,27,SMALL,WHITE,SPIN_TYPE[2]);
+							printf(5,49,SMALL,BLACK,SPIN_TYPE[3]);
+
+							printf(76,27,SMALL,WHITE,SPIN_TYPE[SPIN_SENS]);
+
+							rect_oled( 50 , 46,((SPIN_SPEED * 55)/(22)) , 14, 1, 0 );
+							rect_oled( 50 , 46, 55 , 15,0, 0 );
+
+							NumberToString(SPIN_SPEED,FindDigits(SPIN_SPEED), 53, 22, OLED_BLACK);
+						}
+
+					}
+					if(Last_Screen_lvl_1 == 5)
+					{
+						MAX_MAGNITUDE = check_range(update_val(MAX_MAGNITUDE), 30, 0);
+						NumberToString(MAX_MAGNITUDE,FindDigits(MAX_MAGNITUDE), 0, 4, OLED_WHITE);
+						print_progress_bar(MAX_MAGNITUDE, 30);
+
+					}
+					if(Last_Screen_lvl_1 == 6)
+					{
+						SMOOTHING = check_range(update_val(SMOOTHING), 50, 0);
+						NumberToString(SMOOTHING,FindDigits(SMOOTHING), 0, 4, OLED_WHITE);
+						print_progress_bar(SMOOTHING, 50);
+					}
+				}
+
+				else if(Last_Screen_lvl_2 == 2)
+				{
+					rect_oled(0 , 0,128 , 20, 1, 1 );
+					rect_oled(2 , 2,124 , 16, 0, 0 );
+
+					if(Last_Screen_lvl_1 == 0)
+					{
+						printf(center_x(get_se_pro_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_PRO_AIM[Last_Screen_lvl_1]);
+						
+	
+						SE_PRO_LEGIT = check_range(update_val(SE_PRO_LEGIT), 1, 0);
+						printf(center_x(get_state(SE_PRO_LEGIT),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[SE_PRO_LEGIT]);
+						
+
+						End_Screen = TRUE;
+					}
+					else if(Last_Screen_lvl_1 == 1)
+					{
+						//rect_oled(0 , 0,128 , 20, 0, 1 );
+
+						printf(center_x(get_se_pro_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_PRO_AIM[Last_Screen_lvl_1]);
+
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							AIM_ASSIST_TYPE = check_range(update_val(AIM_ASSIST_TYPE), 3, 0);
+
+							printf(5,27,SMALL,BLACK,SE_PRO_AIM[2]);
+							printf(5,49,SMALL,WHITE,SE_PRO_AIM[3]);
+
+							printf(50,27,SMALL,BLACK,Aim_ASSIT_TYPE[AIM_ASSIST_TYPE]);
+							
+							if(FRENZY_SHAPES_Flag == 1)
+								PATTERN_SHAPE = FRENZY_SHAPES;
+								
+							if(PATTERN_SHAPE != FRENZY_SHAPES)
+								FRENZY_SHAPES_Flag = 0
+							
+							printf(50,49,SMALL,WHITE,PATTERN_SHAPES[PATTERN_SHAPE]);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							PATTERN_SHAPE = check_range(update_val(PATTERN_SHAPE), 7, 0);
+
+							printf(5,27,SMALL,WHITE,SE_PRO_AIM[2]);
+							printf(5,49,SMALL,BLACK,SE_PRO_AIM[3]);
+
+							printf(50,27,SMALL,WHITE,Aim_ASSIT_TYPE[AIM_ASSIST_TYPE]);
+							
+							if(FRENZY_SHAPES_Flag == 1)
+								PATTERN_SHAPE = FRENZY_SHAPES;
+							
+							printf(50,49,SMALL,BLACK,PATTERN_SHAPES[PATTERN_SHAPE]);
+												
+							if(PATTERN_SHAPE != FRENZY_SHAPES)
+								FRENZY_SHAPES_Flag = 0																						
+						}
+
+						End_Screen = TRUE;
+					}
+
+				}
+				else if(Last_Screen_lvl_2 == 3)
+				{
+					if(Last_Screen_lvl_1 == 0)
+					{
+						printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+					
+						SE_PRO_LEGIT = check_range(update_val(SE_PRO_LEGIT), 1, 0);
+						printf(center_x(get_state(!SE_PRO_LEGIT),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[!SE_PRO_LEGIT]);
+						End_Screen = TRUE;
+					}
+					else if(Last_Screen_lvl_1 == 1)
+					{			
+						THRESHOLD = check_range(update_val(THRESHOLD), 40, 10);
+						NumberToString(THRESHOLD,FindDigits(THRESHOLD), 0, 4, OLED_WHITE);
+						print_progress_bar(THRESHOLD, 40);
+						End_Screen = TRUE;
+					}
+					else if(Last_Screen_lvl_1 == 2)
+					{
+						printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+
+						Actual_Screen = check_range(Actual_Screen, 6, 4);
+
+						printf(center_x(get_se_legit_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,SE_LEGIT_AIM[Actual_Screen])
+
+					}
+					else if(Last_Screen_lvl_1 == 3)
+					{
+						//rect_oled(0 , 0,128 , 20, 0, 1 );
+
+						printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+
+						Actual_Screen = check_range(Actual_Screen, 6, 4);
+
+						printf(center_x(get_se_legit_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,SE_LEGIT_AIM[Actual_Screen])
+					}
+				}
+				else if(Last_Screen_lvl_2 == 4)
+				{
+					End_Screen = TRUE;
+
+					if(Last_Screen_lvl_1 == 0)
+					{
+						printf(center_x(get_steady_aim_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_STEADY_AIM[Last_Screen_lvl_1]);
+						USE_STEADY_AIM = check_range(update_val(USE_STEADY_AIM), 1, 0);
+						printf(center_x(get_state(USE_STEADY_AIM),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[USE_STEADY_AIM]);
+
+					}
+					else if(Last_Screen_lvl_1 == 1)
+					{
+						printf(center_x(get_steady_aim_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_STEADY_AIM[Last_Screen_lvl_1]);
+
+						STEADY_AIM_RESOLUTION = check_range(update_val(STEADY_AIM_RESOLUTION), 12, 0);
+						NumberToString(STEADY_AIM_RESOLUTION,FindDigits(STEADY_AIM_RESOLUTION), 0, 4, OLED_WHITE);
+						print_progress_bar(STEADY_AIM_RESOLUTION, 12);
+
+					}
+				}
+				else if(Last_Screen_lvl_2 == 5)
+				{
+					if(Last_Screen_lvl_1 == 0)
+					{
+						printf(center_x(get_ar_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_AR[Last_Screen_lvl_1]);
+						USE_ANTI_RECOIL = check_range(update_val(USE_ANTI_RECOIL), 2, 0);
+						if( USE_ANTI_RECOIL == 0)
+							printf(center_x(get_state(0),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[0]);
+						else
+							printf(center_x(get_ar_menu(USE_ANTI_RECOIL),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,SE_AR[USE_ANTI_RECOIL]);
+								
+						End_Screen = TRUE;
+					}
+					else if(Last_Screen_lvl_1 == 1) // angular ar
+					{
+						printf(center_x(get_ar_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_AR[Last_Screen_lvl_1]);
+						Actual_Screen = check_range(Actual_Screen, 4, 3);
+						printf(center_x(get_ar_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,SE_AR[Actual_Screen]);
+
+					}
+					else if(Last_Screen_lvl_1 == 2) // rumble ar
+					{
+						printf(center_x(get_ar_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_AR[Last_Screen_lvl_1]);
+						End_Screen = TRUE;
+
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down;
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							printf(5,27,SMALL,BLACK,SE_AR[6]);
+							printf(5,49,SMALL,WHITE,SE_AR[7]);
+
+							VERTICAL_SMART_RECOIL = check_range(update_val(VERTICAL_SMART_RECOIL), 100, 0);
+							SRENGTH_SMART_RECOIL = check_range(SRENGTH_SMART_RECOIL, 200, 50);
+
+							NumberToString(VERTICAL_SMART_RECOIL,FindDigits(VERTICAL_SMART_RECOIL), 30, 0, OLED_BLACK);
+							NumberToString(SRENGTH_SMART_RECOIL,FindDigits(SRENGTH_SMART_RECOIL), 30, 22, OLED_WHITE);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							SRENGTH_SMART_RECOIL = check_range(update_val(SRENGTH_SMART_RECOIL), 200, 50);
+
+							printf(5,27,SMALL,WHITE,SE_AR[6]);
+							printf(5,49,SMALL,BLACK,SE_AR[7]);
+
+							NumberToString(VERTICAL_SMART_RECOIL,FindDigits(VERTICAL_SMART_RECOIL), 30, 0, OLED_WHITE);
+							NumberToString(SRENGTH_SMART_RECOIL,FindDigits(SRENGTH_SMART_RECOIL), 30, 22, OLED_BLACK);
+						}
+						
+							smartrecoil_base = 100;
+							invert = 1;
+							smartrecoil_y = VERTICAL_SMART_RECOIL * invert * (-1);
+							smartrecoil_add = SRENGTH_SMART_RECOIL - smartrecoil_base;
+					}
+				}
+				else if(Last_Screen_lvl_2 == 6)
+				{
+					printf(center_x(get_mods_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,MODS[Last_Screen_lvl_1]);
+					End_Screen = TRUE;
+					
+					if(Last_Screen_lvl_1 == 0)
+					{
+						USE_SLIDE_CANCEL = check_range(update_val(USE_SLIDE_CANCEL), 1, 0);
+						printf(center_x(get_state(USE_SLIDE_CANCEL),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[USE_SLIDE_CANCEL]);
+						
+					}
+					else if(Last_Screen_lvl_1 == 1)
+					{
+						End_Screen = FALSE;
+						
+						Actual_Screen = check_range(Actual_Screen, 5, 0);
+						printf(center_x(get_rf_menu(Actual_Screen),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,RAPID_FIRE_MENU[Actual_Screen]);			
+					} 
+					else if(Last_Screen_lvl_1 == 2)
+					{
+						Actual_Screen = check_range(Actual_Screen, 2, 0);
+						printf(center_x(get_mods_menu(Actual_Screen + 7),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,MODS[Actual_Screen + 7]);			
+						End_Screen = FALSE;
+					}
+					else if(Last_Screen_lvl_1 == 3)
+					{
+						turbomelee = check_range(update_val(turbomelee), 1, 0);
+						printf(center_x(get_state(turbomelee),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[turbomelee]);
+					}
+					else if(Last_Screen_lvl_1 == 4)
+					{
+						hbreath = check_range(update_val(hbreath), 1, 0);
+						printf(center_x(get_state(hbreath),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[hbreath]);
+					}
+					else if(Last_Screen_lvl_1 == 5)
+					{
+						bhop = check_range(update_val(bhop), 1, 0);
+						printf(center_x(get_state(bhop),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[bhop]);
+					}
+					else if(Last_Screen_lvl_1 == 6)
+					{
+						easy_plate = check_range(update_val(easy_plate), 1, 0);
+						printf(center_x(get_state(easy_plate),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[easy_plate]);
+					}
+				}
+			}
+			else if(Menu_State == SUB_MENU_3)
+			{
+				cls_oled(BLACK);
+				rect_oled(0 , 0,128 , 64, 0, 1 );
+				rect_oled(0 , 0,128 , 20, 1, 1 );
+				rect_oled(2 , 2,124 , 16, 0, 0 );
+
+				Actual_Screen = update_val(Actual_Screen);
+
+				if(Last_Screen_lvl_3 == 3)
+				{
+					if(Last_Screen_lvl_2 == 2)
+					{
+						if(Last_Screen_lvl_1 == 4)
+						{
+							printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+							index_2 = ADS_FIRE_TYPE;
+							index_3 = ADS_FIRE_TYPE_OVER_DZ;
+							
+						}
+						else if(Last_Screen_lvl_1 == 5)
+						{
+							printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+							index_2 = HIP_FIRE_TYPE;
+							index_3 = HIP_FIRE_TYPE_OVER_DZ;
+						}
+						else if(Last_Screen_lvl_1 == 6)
+						{
+							printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+							index_2 = ADS_TYPE;
+							index_3 = DRIFT_TYPE;
+						}
+
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							index_2 = check_range(update_val(index_2), 3, 0);
+
+							printf(5,27,SMALL,BLACK,SE_LEGIT_AIM[7]);
+							printf(5,49,SMALL,WHITE,SE_LEGIT_AIM[8]);
+
+							printf(50,27,SMALL,BLACK,Aim_ASSIT_TYPE[index_2]);
+							printf(50,49,SMALL,WHITE,Aim_ASSIT_TYPE[index_3]);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							index_3 = check_range(update_val(index_3), 3, 0);
+
+							printf(5,27,SMALL,WHITE,SE_LEGIT_AIM[7]);
+							printf(5,49,SMALL,BLACK,SE_LEGIT_AIM[8]);
+
+							printf(50,27,SMALL,WHITE,Aim_ASSIT_TYPE[index_2]);
+							printf(50,49,SMALL,BLACK,Aim_ASSIT_TYPE[index_3]);
+						}
+						
+						if(Last_Screen_lvl_1 == 4)
+						{
+							ADS_FIRE_TYPE = index_2;
+							ADS_FIRE_TYPE_OVER_DZ = index_3;
+						}
+						else if(Last_Screen_lvl_1 == 5)
+						{
+							HIP_FIRE_TYPE = index_2;
+							HIP_FIRE_TYPE_OVER_DZ = index_3;
+						}
+						else if(Last_Screen_lvl_1 == 6)
+						{
+							 ADS_TYPE = index_2;
+							 DRIFT_TYPE = index_3;
+						}
+
+						End_Screen = TRUE;
+					}
+					else if(Last_Screen_lvl_2 == 3)
+					{
+						if(Last_Screen_lvl_1 == 4)
+						{
+							printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+							index_2 = ADS_FIRE_PATTERN;
+							index_3 = ADS_FIRE_PATTERN_OVER_DZ;
+						}
+						else if(Last_Screen_lvl_1 == 5)
+						{
+							printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+							index_2 = HIP_FIRE_PATTERN;
+							index_3 = HIP_FIRE_PATTERN_OVER_DZ;
+						}
+						else if(Last_Screen_lvl_1 == 6)
+						{
+							printf(center_x(get_se_legit_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_LEGIT_AIM[Last_Screen_lvl_1]);
+							index_2 = ADS_PATTERN;
+							index_3 = DRIFT_PATTERN;
+						}
+
+						if(Inc_Dec == 0)
+						{
+							index_1 = index_1 + 1 * up_down
+
+							if(index_1 < 0)
+							index_1 = 1;
+							else if(index_1 > 1)
+							index_1 = 0;
+						}
+
+						if(index_1 == 0)
+						{
+							rect_oled( 0 , 20,128 , 22,1, 1 );
+
+							index_2 = check_range(update_val(index_2), 7, 0);
+
+							printf(5,27,SMALL,BLACK,SE_LEGIT_AIM[7]);
+							printf(5,49,SMALL,WHITE,SE_LEGIT_AIM[8]);
+
+							printf(50,27,SMALL,BLACK,PATTERN_SHAPES[index_2]);
+							printf(50,49,SMALL,WHITE,PATTERN_SHAPES[index_3]);
+						}
+						else
+						{
+							rect_oled( 0 , 44,128 , 22,1, 1 );
+
+							index_3 = check_range(update_val(index_3), 7, 0);
+
+							printf(5,27,SMALL,WHITE,SE_LEGIT_AIM[7]);
+							printf(5,49,SMALL,BLACK,SE_LEGIT_AIM[8]);
+
+							printf(50,27,SMALL,WHITE,PATTERN_SHAPES[index_2]);
+							printf(50,49,SMALL,BLACK,PATTERN_SHAPES[index_3]);
+						}
+
+						if(Last_Screen_lvl_1 == 4)
+						{
+							ADS_FIRE_PATTERN = index_2;
+							ADS_FIRE_PATTERN_OVER_DZ = index_3;
+						}
+						else if(Last_Screen_lvl_1 == 5)
+						{
+							HIP_FIRE_PATTERN  = index_2;
+							HIP_FIRE_PATTERN_OVER_DZ = index_3;
+						}
+						else if(Last_Screen_lvl_1 == 6)
+						{
+							ADS_PATTERN  = index_2;
+							DRIFT_PATTERN= index_3;
+						}
+						
+						End_Screen = TRUE;
+					}
+				}
+				else if(Last_Screen_lvl_3 == 5)
+				{
+
+					End_Screen = TRUE;
+					printf(center_x(get_ar_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,SE_AR[Last_Screen_lvl_1]);
+
+					if(Last_Screen_lvl_2 == 1)
+					{
+						if(Last_Screen_lvl_1 == 3)
+						{
+							if(Inc_Dec == 0)
+							{
+								index_1 = index_1 + 1 * up_down;
+
+								if(index_1 < 0)
+								index_1 = 1;
+								else if(index_1 > 1)
+								index_1 = 0;
+							}
+
+							if(index_1 == 0)
+							{
+								rect_oled( 0 , 20,128 , 22,1, 1 );
+
+								printf(5,27,SMALL,BLACK,SE_AR[7]);
+								printf(5,49,SMALL,WHITE,SE_AR[5]);
+
+								SRENGTH_ANGULAR_RECOIL = check_range(update_val(SRENGTH_ANGULAR_RECOIL), 10, 0);
+
+								NumberToString(SRENGTH_ANGULAR_RECOIL,FindDigits(SRENGTH_ANGULAR_RECOIL), 30, 0, OLED_BLACK);
+								NumberToString(PROGRESSIVE_ANGULAR_RECOIL,FindDigits(PROGRESSIVE_ANGULAR_RECOIL), 30, 22, OLED_WHITE);
+							}
+							else
+							{
+								rect_oled( 0 , 44,128 , 22,1, 1 );
+
+								PROGRESSIVE_ANGULAR_RECOIL = check_range(update_val(PROGRESSIVE_ANGULAR_RECOIL), 1000, 0);
+
+								printf(5,27,SMALL,WHITE,SE_AR[7]);
+								printf(5,49,SMALL,BLACK,SE_AR[5]);
+
+								NumberToString(SRENGTH_ANGULAR_RECOIL,FindDigits(SRENGTH_ANGULAR_RECOIL), 30, 0, OLED_WHITE);
+								NumberToString(PROGRESSIVE_ANGULAR_RECOIL,FindDigits(PROGRESSIVE_ANGULAR_RECOIL), 30, 22, OLED_BLACK);
+							}
+						}
+						else if(Last_Screen_lvl_1 == 4)
+						{
+							MAX_ANGULAR_RECOIL = check_range(update_val(MAX_ANGULAR_RECOIL), 60, 0);
+							NumberToString(MAX_ANGULAR_RECOIL,FindDigits(MAX_ANGULAR_RECOIL), 0, 4, OLED_WHITE);
+							print_progress_bar(MAX_ANGULAR_RECOIL, 60);
+						}
+					}
+				}
+				else if(Last_Screen_lvl_3 == 6)
+				{
+
+					End_Screen = TRUE;
+					printf(center_x(get_rf_menu(Last_Screen_lvl_1),OLED_FONT_SMALL_WIDTH),center_y(OLED_FONT_SMALL) - 20,SMALL,BLACK,RAPID_FIRE_MENU[Last_Screen_lvl_1]);
+
+					if(Last_Screen_lvl_2 == 1)
+					{
+						End_Screen = TRUE;
+						if(Last_Screen_lvl_1 == 0)
+						{
+							RMode = check_range(update_val(RMode), 4, 0);
+							printf(center_x(get_rf_mode(RMode),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,RAPID_FIRE_MODS[RMode]);
+						}
+						else if(Last_Screen_lvl_1 == 1)
+						{
+							RPressure = check_range(update_val(RPressure), 100, 0);
+							NumberToString(RPressure,FindDigits(RPressure), 0, 4, OLED_WHITE);
+							print_progress_bar(RPressure, 100);
+						}
+						else if(Last_Screen_lvl_1 == 2)
+						{
+							RPressTime = check_range(update_val(RPressTime), 100, 0);
+							NumberToString(RPressTime,FindDigits(RPressTime), 0, 4, OLED_WHITE);
+							print_progress_bar(RPressTime, 100);
+						}
+						else if(Last_Screen_lvl_1 == 3)
+						{
+							RPauseTime = check_range(update_val(RPauseTime), 100, 0);
+							NumberToString(RPauseTime,FindDigits(RPauseTime), 0, 4, OLED_WHITE);
+							print_progress_bar(RPauseTime, 100);
+						}
+						else if(Last_Screen_lvl_1 == 4)
+						{
+							RStep = check_range(update_val(RStep), 100, 0);
+							NumberToString(RStep,FindDigits(RStep), 0, 4, OLED_WHITE);
+							print_progress_bar(RStep, 100);
+						}
+						else if(Last_Screen_lvl_1 == 5)
+						{
+							RDyn = check_range(update_val(RDyn), 100, 0);
+							NumberToString(RDyn,FindDigits(RDyn), 0, 4, OLED_WHITE);
+							print_progress_bar(RDyn, 100);
+						}
+					}
+					else if(Last_Screen_lvl_2 == 2)
+					{
+						End_Screen = TRUE;
+						if(Last_Screen_lvl_1 == 0)
+						{
+							quickscope = check_range(update_val(quickscope), 1, 0);
+							printf(center_x(get_state(quickscope),OLED_FONT_MEDIUM_WIDTH) + 3,center_y(OLED_FONT_MEDIUM) + 8 ,MEDIUM,WHITE,CONFIG_STATE[quickscope]);
+						}
+						else if(Last_Screen_lvl_1 == 1)
+						{
+							quickscope_press_time = check_range(update_val(quickscope_press_time), 1000, 0);
+							NumberToString(quickscope_press_time,FindDigits(quickscope_press_time), 0, 4, OLED_WHITE);
+							print_progress_bar(quickscope_press_time, 1000);
+						}
+						else if(Last_Screen_lvl_1 == 2)
+						{
+							quickscopedelay = check_range(update_val(quickscopedelay), 1000, 0);
+							NumberToString(quickscopedelay,FindDigits(quickscopedelay), 0, 4, OLED_WHITE);
+							print_progress_bar(quickscopedelay, 1000);
+						}
+					}
+				}
+
+			}
+
+			else if(Menu_State == SUB_MENU_4)
+			{
+				cls_oled(BLACK);
+				rect_oled( 0 , 0,128 , 64, 0, 1 );
+				Actual_Screen = update_val(Actual_Screen);
+
+			}
+
+		}
+	}
+	
+	
+	set_val(TRACE_1, Actual_Screen);
+	set_val(TRACE_2, Last_Screen_lvl_1);
+	set_val(TRACE_3, Last_Screen_lvl_2);
+	set_val(TRACE_4, Last_Screen_lvl_3);
+	set_val(TRACE_5, Last_Screen_lvl_4);
+	set_val(TRACE_5, Menu_State);
+
+	
+	if(HAIR_TRIGGER)
+	{
+		if(get_val(PS4_R2) > 10) 
+			set_val(PS4_R2, 100);
+	
+		if(get_val(PS4_L2)> 10)
+			set_val(PS4_L2, 100);
+		
+	}
+	
+	if(!KillSwitch)
+	{
+		if(get_ival(ADS_BUTTON) && event_release(RAPID_FIRE_TOGGLE_BUTTON))
+		{
+			set_val(RAPID_FIRE_TOGGLE_BUTTON, 0);
+			toggle_rapid_fire = !toggle_rapid_fire;
+			combo_run(vibrate);
+			
+			if(!toggle_rapid_fire)
+			{		
+				combo_stop(rapid_fire_Led);
+				set_ledx(2, 1);
+				set_led(0, 3);
+			}
+			else
+			{
+				set_led(0,0);
+			}
+		}
+		
+	  	if (toggle_rapid_fire && get_ival(FIRE_BUTTON)) 
+	  	{
+	    	if      (RMode == BASIC   ) 
+	    		combo_run(cRapidFire);
+	    	else if (RMode == SLOW_TRIG && get_ival(FIRE_BUTTON)>=RPressure) 
+	    		combo_run(cRapidFire);
+	    	else if (RMode == FAST_TRIG && get_ival(FIRE_BUTTON)< RPressure) 
+	    		combo_run(cRapidFire);
+			else if (RMode == STEP_MODE) 
+				combo_run(cRapidFire);
+	  	}
+	  	else if (event_release(FIRE_BUTTON) && combo_running(cRapidFire))
+	  	{
+	  		combo_stop(cRapidFire); 
+	  	}
+	}
+
+	if( SE_PRO_AIM_STATE == PROCESS_INIT)
+	{
+		Angle  = 0;
+		Smoothing = SMOOTHING;
+		Polar_Process_Done = TRUE;
+		SE_PRO_AIM_STATE = PROCESS_SE_AIM_PRO;
+		Anti_Recoil_Angle = (180/ANGLE_INCREMENT) * ANGLE_INCREMENT; 
+		Anti_Recoil_Correction = FIXED_ANGULAR_RECOIL;
+		
+		if((AIM_ASSIST_TYPE == SPIROIDE_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSPIROIDE_AIM_ASSIST))
+		{
+			if(SPIN_SENS == OUTSIDE_SENS)
+			{
+				Ellipse_Radius = MIN_RADIUS;
+				Radius = MIN_RADIUS;
+				Spinoide_Increment_State = TRUE;
+				Max_Tiangle_Hight = MIN_RADIUS;
+			}
+			else if(SPIN_SENS == INSIDE_SENS)
+			{
+				Ellipse_Radius = MAX_RADIUS;
+				Radius = MAX_RADIUS;
+				Spinoide_Increment_State = FALSE;
+				Max_Tiangle_Hight = MAX_RADIUS;
+			}
+		}
+		else
+		{
+			Ellipse_Radius = MAX_RADIUS;
+			Radius = MAX_RADIUS;
+			Spinoide_Increment_State = FALSE;
+			Max_Tiangle_Hight = MAX_RADIUS;
+		}
+			
+		Movement_Direction = 1;
+		Tiangle_Increment_State = TRUE;	
+		Rx_Tiangle_Hight = 0;
+		Actual_Rx = 0;
+		
+		if(FRENZY_SHAPES_Flag == 1)
+		{
+			PATTERN_SHAPE = (LINEAR_SHAPES + 1);
+		}
+
+		
+		Shape_Step = 0;
+		FRENZY_SHAPES_Update = FRENZY_SHAPES_UPDATE;		
+
+		smartrecoil_base = 100;
+		invert = 1;
+		smartrecoil_y = VERTICAL_SMART_RECOIL * invert * (-1);
+		smartrecoil_add = SRENGTH_SMART_RECOIL - smartrecoil_base;		
+	}
+    
+    
+    if(!KillSwitch)
+    {
+      
+		if(combo_running(cRapidFire) || (get_val(ADS_BUTTON) > 10) || (get_val(FIRE_BUTTON)> 10))
+		{	
+			
+			if(SE_PRO_LEGIT == FALSE)
+			{ 
+				
+				_ret = isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2));
+				if(get_ival(ADS_BUTTON) && !get_ival(FIRE_BUTTON) && _ret <= THRESHOLD)
+				{
+					AIM_ASSIST_TYPE = ADS_TYPE;
+					PATTERN_SHAPE = ADS_PATTERN;						
+				}				
+				else if(get_ival(ADS_BUTTON) && !get_ival(FIRE_BUTTON) && _ret > THRESHOLD)
+				{
+					AIM_ASSIST_TYPE = DRIFT_TYPE;
+					PATTERN_SHAPE = DRIFT_PATTERN;					
+				}			
+				else if(get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret <= THRESHOLD)
+				{
+					AIM_ASSIST_TYPE = ADS_FIRE_TYPE;
+					PATTERN_SHAPE = ADS_FIRE_PATTERN;
+				}			
+				else if(get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret > THRESHOLD)
+				{
+					AIM_ASSIST_TYPE = ADS_FIRE_TYPE_OVER_DZ;
+					PATTERN_SHAPE = ADS_FIRE_PATTERN_OVER_DZ;
+				}				
+				else if(!get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret <= THRESHOLD)
+				{
+					AIM_ASSIST_TYPE = HIP_FIRE_TYPE;
+					PATTERN_SHAPE = HIP_FIRE_PATTERN;
+				}				
+				else if(!get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret > THRESHOLD)
+				{
+					AIM_ASSIST_TYPE = HIP_FIRE_TYPE_OVER_DZ;
+					PATTERN_SHAPE = HIP_FIRE_PATTERN_OVER_DZ;
+				}  
+
+				if(	PATTERN_SHAPE == FRENZY_SHAPES)
+				{	
+					FRENZY_SHAPES_Flag = 1;
+					PATTERN_SHAPE = (LINEAR_SHAPES + 1);
+				}
+				else
+					FRENZY_SHAPES_Flag = 0;				
+			}
+				
+			
+			if( SE_PRO_AIM_STATE == PROCESS_SE_AIM_PRO)
+			{		
+				Rx = get_ival(PS4_RX);
+				Ry = get_ival(PS4_RY);
+				Actual_Rx = Rx;
+	
+				if((check_magnitude_overflow(PATTERN_SHAPE, MAX_MAGNITUDE) == TRUE))
+				{		
+					Polar_Process_Done = TRUE;
+					Smoothing = SMOOTHING;							
+					FRENZY_SHAPES_Update = FRENZY_SHAPES_UPDATE;
+					Shape_Step = 0;								
+					SE_PRO_AIM_STATE = PROCESS_SMOOTHING;
+				}
+				else	
+				{								
+					if(FRENZY_SHAPES_Flag == 1)
+					{
+						if( FRENZY_SHAPES_Update == 0)
+						{
+							FRENZY_SHAPES_Update = FRENZY_SHAPES_UPDATE;
+							
+							PATTERN_SHAPE--;
+							
+							if(PATTERN_SHAPE == FRENZY_SHAPES)
+							{
+								PATTERN_SHAPE = LINEAR_SHAPES;
+							}
+						}
+						
+						FRENZY_SHAPES_Update--:
+					}				
+					
+					if(USE_STEADY_AIM == TRUE)
+					{
+						Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+						Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);
+					}
+				
+					if( Polar_Process_Done == TRUE)
+					{	
+						Polar_Process_Done = FALSE;	
+	
+						if( (abs(Ry) > DEAD_ZONE_LIMIT) && (abs(Rx) > DEAD_ZONE_LIMIT))
+						{	
+							
+							Angle = get_full_quadrant_angle(atan2_16bits(inv(Ry),Rx));
+							
+							if(PATTERN_SHAPE == COMET_SHAPES)
+							{
+								Angle_Update_Cycle = (180/ANGLE_INCREMENT) + 1;
+							}
+							else
+							{
+								Angle_Update_Cycle = MOVEMENT_PREDITION_UPDATE_RATE * (360/ANGLE_INCREMENT);
+							}
+							
+							if((PATTERN_SHAPE == COMET_SHAPES) || (MOVEMENT_PREDITION_TYPE 	== DISPLACEMENT_VECTOR_BOOST))
+							{
+								if(	(Angle >= 0 && Angle <= 90) || (Angle >= 270))
+								{
+									Angle_Increment_State = TRUE;
+									Movement_Direction = 1;
+								}
+								else
+								{
+									Angle_Increment_State = FALSE;
+									Movement_Direction = -1;
+								}		
+							}
+							
+							else if(MOVEMENT_PREDITION_TYPE 	== HORIZONTAL_AXIS_BOOST)
+							{
+								if(Actual_Rx < Last_Rx) //move left
+								{
+									Angle = 180;
+									Angle_Increment_State = TRUE;
+									Movement_Direction = -1;
+								}
+								else if(Actual_Rx > Last_Rx)
+								{
+									Angle = 360;
+									Angle_Increment_State = FALSE;
+									Movement_Direction = 1;
+								}
+							}		
+						}
+						else
+						{
+							Angle = 0;
+							//Rx_Tiangle_Hight = 0;
+							//Tiangle_Increment_State = TRUE;
+							Angle_Increment_State = TRUE;
+						}
+						Last_Rx = Actual_Rx;
+					}
+						
+					if(AIM_ASSIST_TYPE == DYNAMIC_AIM_ASSIST || AIM_ASSIST_TYPE == DYSPIROIDE_AIM_ASSIST)
+					{
+	
+						ret = MAX_RADIUS - ((abs(get_ival(PS4_RX)) * abs(get_ival(PS4_RX)) + abs(get_ival(PS4_RY)) * abs(get_ival(PS4_RY)))/1000);
+						//set_val(TRACE_4,ret);	
+										
+						if(AIM_ASSIST_TYPE == DYSPIROIDE_AIM_ASSIST)
+						{				
+							if(PATTERN_SHAPE == ELLIPSOID_SHAPES)
+							{					
+								if(ret < Ellipse_Radius)
+								{
+									Ellipse_Radius = ret;
+									Spinoide_Increment_State = FALSE;
+								}
+							}
+							else if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+							{					
+								
+								//set_val(TRACE_2,ret);	
+								//set_val(TRACE_3,Rx_Tiangle_Hight);
+								
+								if( abs(Rx_Tiangle_Hight) > ret)
+								{
+									//Max_Tiangle_Hight = ret;
+									Spinoide_Increment_State = FALSE;
+									
+									if(Rx_Tiangle_Hight>= 0)
+										Tiangle_Increment_State = FALSE;
+									else
+										Tiangle_Increment_State = TRUE;	
+								}
+								
+								/*
+								if(Max_Tiangle_Hight < abs(Rx_Tiangle_Hight))
+								{						
+									if(Rx_Tiangle_Hight>= 0)
+										Tiangle_Increment_State = FALSE;
+									else
+										Tiangle_Increment_State = TRUE;									
+								}*/
+							}
+							else  // (PATTERN_SHAPE == ELLIPSOID_SHAPES))
+							{
+								if(ret < Radius) 
+								{						
+									Radius = ret;
+									Spinoide_Increment_State = FALSE;
+								}
+							}				
+						}
+						else
+						{
+							Radius = ret;			
+							Ellipse_Radius = ret;
+							
+							if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+							{					
+								Max_Tiangle_Hight = ret;
+								
+								if(ret < abs(Rx_Tiangle_Hight))
+								{						
+									if(Rx_Tiangle_Hight>= 0)
+										Tiangle_Increment_State = FALSE;
+									else
+										Tiangle_Increment_State = TRUE;									
+								}
+							}
+							
+							//set_val(TRACE_2,Rx_Tiangle_Hight);	
+							//set_val(TRACE_3,Max_Tiangle_Hight);	
+						}
+					}
+					
+					if(PATTERN_SHAPE == ELLIPSOID_SHAPES)
+					{
+						//set_val(TRACE_6,Ellipse_Radius);
+						Radius = calculate_ellipsoid_RADIUS(Ellipse_Radius,cos(Angle));	
+					}
+					
+					if(PATTERN_SHAPE != TRIANGULAR_SHAPES)
+					{
+						if(PATTERN_SHAPE != DIAMOND_SHAPES)
+						{
+							Rx_Polar = get_polar_coordinate(Radius, cos(Angle), PATTERN_SHAPE);
+							Ry_Polar = get_polar_coordinate(Radius, sin(Angle), PATTERN_SHAPE);
+						}
+						else
+						{
+							if(PATTERN_SHAPE == ZORRO_SHAPES)
+							{
+								if(Shape_Step == 0)
+								{
+									Ry_Polar = Radius;
+								}
+								else if(Shape_Step == 1)
+								{
+									Rx_Polar = Movement_Direction * Radius;
+									Ry_Polar = Radius;
+								} 
+								else if(Shape_Step == 2)
+								{
+									Rx_Polar = inv(Movement_Direction * Radius);
+									Ry_Polar = inv(Radius);
+								}
+								else if(Shape_Step == 3)
+								{
+									Ry_Polar = inv(Radius);
+								}
+							}
+							else
+							{					
+								if(Shape_Step == 0)
+								{
+									Ry_Polar = Radius;
+								}
+								else if(Shape_Step == 1)
+								{
+									Rx_Polar = Movement_Direction * Radius;
+									Ry_Polar = Radius;
+								} 
+								else if(Shape_Step == 2)
+								{
+									Ry_Polar = inv(Radius);
+								}
+								else if(Shape_Step == 3)
+								{
+									Rx_Polar = inv(Movement_Direction * Radius);
+									Ry_Polar = inv(Radius);
+								}
+							}
+						}
+						
+						Rx = process_overflow_check(Rx, Rx_Polar);
+						Ry = process_overflow_check(Ry, Ry_Polar);
+					}
+					else
+					{
+					   if(Tiangle_Increment_State == TRUE)
+					   {
+						   	Ry_Tiangle_Hight = Rx_Tiangle_Hight + Movement_Direction;				   	
+						   	Rx_Tiangle_Hight += TRIANGLE_SHAPE_SPEED;
+					   }
+					   else
+					   { 
+					  		Ry_Tiangle_Hight =  Rx_Tiangle_Hight - Movement_Direction ;				   	
+							Rx_Tiangle_Hight -= TRIANGLE_SHAPE_SPEED;
+					   }
+					  
+					 	//set_val(TRACE_1,Movement_Direction);				 
+					 	
+						//set_val(TRACE_2,Ry_Tiangle_Hight);
+					   
+					  // set_val(PS4_RX, get_val(PS4_RX)+Rx);
+					  // set_val(PS4_RY, get_val(PS4_RY)+inv(Ry));
+					   
+					   if((abs(Rx_Tiangle_Hight)) > Max_Tiangle_Hight )
+					   {
+					   		if(Rx_Tiangle_Hight > 0)
+					   		{
+					   			Tiangle_Increment_State = FALSE;
+					   		}
+					   		else
+					   		{
+					   			Tiangle_Increment_State = TRUE;
+					   		}			   		
+					   }	   	
+					   	
+					   Rx += Rx_Tiangle_Hight;		   				   
+					   Ry_Tiangle_Hight = inv(Ry_Tiangle_Hight);
+					   Ry += Ry_Tiangle_Hight;
+					   
+					   Rx = process_overflow_check(Rx, 0);
+					   Ry = process_overflow_check(Ry, 0);
+					}
+								
+					if(combo_running(cRapidFire) || (get_val(ADS_BUTTON) > 10) && (get_val(FIRE_BUTTON) > 10))
+					{			
+						if(USE_ANTI_RECOIL == ANGULAR_ANTI_RECOIL)
+						{
+							if( ((SRENGTH_ANGULAR_RECOIL!= 0) && (Angle <=  (180 + (SRENGTH_ANGULAR_RECOIL * Anti_Recoil_Angle))) &&  (Angle >=  (180 - (SRENGTH_ANGULAR_RECOIL * Anti_Recoil_Angle))))
+							
+							|| ((SRENGTH_ANGULAR_RECOIL == 0) && (Angle  == Anti_Recoil_Angle)))
+							{
+								ret = get_ptime(PS4_R2);
+								
+								if( ret >= 100)
+								{
+									Anti_Recoil_Correction = (ret/PROGRESSIVE_ANGULAR_RECOIL) + FIXED_ANGULAR_RECOIL;
+									
+									if(Anti_Recoil_Correction > MAX_ANGULAR_RECOIL)
+									{
+										Anti_Recoil_Correction = MAX_ANGULAR_RECOIL;
+									}
+									//set_val(TRACE_1,Anti_Recoil_Correction);
+									Ry += Anti_Recoil_Correction;
+									Ry = process_overflow_check(Ry, 0);
+									//set_val(TRACE_2,Ry);
+								}
+							}
+						}
+						else if(USE_ANTI_RECOIL == SMART_ANTI_RECOIL)
+						{
+							Ry += get_smart_recoil();
+							Ry = process_overflow_check(Ry, 0);
+						}
+					}
+					
+					if(USE_STEADY_AIM == TRUE)
+					{
+						Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+						Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);	
+						
+						Rx = process_overflow_check(Rx, 0);
+						Ry = process_overflow_check(Ry, 0);
+					}
+									
+					if(PATTERN_SHAPE != DIAMOND_SHAPES && PATTERN_SHAPE != ZORRO_SHAPES)
+					{
+						set_right_joystick(Rx, Ry, PATTERN_SHAPE);
+					}
+					else
+					{
+						if(PATTERN_SHAPE == DIAMOND_SHAPES)
+						{					
+							if(Shape_Step == 0 || Shape_Step == 2)
+							{
+								set_val(PS4_RY, Ry);	
+							}
+							else
+							{
+								set_val(PS4_RX, Rx);
+								set_val(PS4_RY, Ry);	
+							}
+						}
+						else
+						{
+							if(Shape_Step == 0 || Shape_Step == 3)
+							{
+								set_val(PS4_RY, Ry);	
+							}
+							else
+							{
+								set_val(PS4_RX, Rx);
+								set_val(PS4_RY, Ry);	
+							}
+						}
+						
+						Shape_Step++;
+						
+						if(Shape_Step == 4)
+						{
+							Shape_Step = 0;
+						}
+					}
+									
+					if(((AIM_ASSIST_TYPE == SPIROIDE_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSPIROIDE_AIM_ASSIST)) && ((Angle_Update_Cycle % SPIN_SPEED) == 0))
+					{			
+						if(Spinoide_Increment_State == FALSE)
+						{
+							if(PATTERN_SHAPE == ELLIPSOID_SHAPES)
+							{
+								Ellipse_Radius -= 1;
+					
+								if(Ellipse_Radius < MIN_RADIUS)
+								{
+									Spinoide_Increment_State = TRUE;
+									Ellipse_Radius = MIN_RADIUS;
+								}
+							}					
+							else if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+							{
+								Max_Tiangle_Hight -= 1;
+					
+								if(Max_Tiangle_Hight < MIN_RADIUS)
+								{
+									Spinoide_Increment_State = TRUE;
+									//Max_Tiangle_Hight = MIN_RADIUS ;
+									//Tiangle_Increment_State = TRUE;	
+								}
+							}
+							else
+							{
+								Radius -= 1;		
+					
+								if(Radius < MIN_RADIUS)
+								{
+									Spinoide_Increment_State = TRUE;
+									Radius = MIN_RADIUS;
+								}
+							}
+						}
+						else if(Spinoide_Increment_State == TRUE)
+						{
+							if(PATTERN_SHAPE == ELLIPSOID_SHAPES)
+							{
+								Ellipse_Radius += 1;
+					
+								if(Ellipse_Radius > MAX_RADIUS)
+								{
+									Spinoide_Increment_State = FALSE;
+									Ellipse_Radius = MAX_RADIUS;
+								}
+							}
+							else if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+							{
+								Max_Tiangle_Hight += 1;
+					
+								if(Max_Tiangle_Hight > MAX_RADIUS)
+								{
+									Spinoide_Increment_State = FALSE;
+									//Max_Tiangle_Hight = MAX_RADIUS;
+									//Tiangle_Increment_State = FALSE;	
+								}
+							}
+							else
+							{
+								Radius += 1;
+					
+								if(Radius > MAX_RADIUS)
+								{
+									Spinoide_Increment_State = FALSE;
+									Radius = MAX_RADIUS;
+								}
+							}
+						}
+						
+						//set_val(TRACE_6,Ellipse_Radius);
+					}
+					
+					Angle_Update_Cycle--;
+					
+					//set_val(TRACE_2,Angle_Update_Cycle);
+			
+					if(Angle_Update_Cycle == 0)
+					{
+						Polar_Process_Done = TRUE;
+						
+						if(PATTERN_SHAPE == COMET_SHAPES)
+						{
+							Angle_Update_Cycle = (180/ANGLE_INCREMENT) + 1;
+						}
+						else
+						{
+							Angle_Update_Cycle = MOVEMENT_PREDITION_UPDATE_RATE * (360/ANGLE_INCREMENT);
+						}
+					}
+					else
+					{
+						if((PATTERN_SHAPE == COMET_SHAPES) && (Angle_Update_Cycle == (180/ANGLE_INCREMENT) ))
+						{
+							Angle = Angle + (ANGLE_INCREMENT * (Angle_Update_Cycle/2));
+						}
+						else
+						{
+							Angle = update_angle(Angle, Angle_Increment_State, ANGLE_INCREMENT);
+						}											
+					}
+				}
+			}
+			else if( SE_PRO_AIM_STATE == PROCESS_SMOOTHING)
+			{			
+				if(USE_STEADY_AIM == TRUE) 
+				{			
+					Rx = get_ival(PS4_RX);
+					Ry = get_ival(PS4_RY);
+					
+					if((get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON) > 50) && (Smoothing == (SMOOTHING/2)) && (USE_ANTI_RECOIL == ANGULAR_ANTI_RECOIL))
+					{														
+						Ry += Anti_Recoil_Correction;
+						
+						Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+						Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);
+						
+						Rx = process_overflow_check(Rx, 0);
+						Ry = process_overflow_check(Ry, 0);
+							
+						set_val(PS4_RX, Rx);
+						set_val(PS4_RY, Ry);
+					}
+					else 
+					{				
+						if((get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON) > 50) && (USE_ANTI_RECOIL == ANGULAR_ANTI_RECOIL))
+						{
+							Ry += get_smart_recoil();
+							Ry = process_overflow_check(Ry, 0);	
+						}
+												
+						Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+						Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);
+						
+						Rx = process_overflow_check(Rx, 0);
+						Ry = process_overflow_check(Ry, 0);
+							
+						set_val(PS4_RX, Rx);
+						set_val(PS4_RY, Ry);
+					}
+				}
+				else if(combo_running(cRapidFire) || (get_val(ADS_BUTTON) > 10) && (get_val(FIRE_BUTTON) > 10))
+				{			
+					Ry = get_ival(PS4_RY);
+	
+					if(USE_ANTI_RECOIL == ANGULAR_ANTI_RECOIL)
+					{
+						if((Smoothing == (SMOOTHING/2)))
+						{	
+							Ry += Anti_Recoil_Correction;
+							Ry = process_overflow_check(Ry, 0);
+							set_val(PS4_RY, Ry);
+						}
+					}
+					else if(USE_ANTI_RECOIL == SMART_ANTI_RECOIL)
+					{
+						Ry += get_smart_recoil();
+						Ry = process_overflow_check(Ry, 0);
+						set_val(PS4_RY, Ry);
+					}			
+				}
+				
+				if(Smoothing == 0)
+				{		
+					SE_PRO_AIM_STATE = PROCESS_SE_AIM_PRO;
+				}
+				
+				Smoothing--;				
+			}
+		}
+		else
+		{
+			Angle = 0;
+			Actual_Rx = 0;
+			Polar_Process_Done = TRUE;
+			
+			if(PATTERN_SHAPE == COMET_SHAPES)
+			{
+				Angle_Update_Cycle = (180/ANGLE_INCREMENT) + 1;
+			}
+			else
+			{
+				Angle_Update_Cycle = MOVEMENT_PREDITION_UPDATE_RATE * (360/ANGLE_INCREMENT);
+			}
+			
+			Shape_Step = 0;
+			FRENZY_SHAPES_Update = FRENZY_SHAPES_UPDATE;
+			Anti_Recoil_Correction = FIXED_ANGULAR_RECOIL;
+			
+			Smoothing = SMOOTHING;
+			SE_PRO_AIM_STATE = PROCESS_SE_AIM_PRO;
+			
+			Rx_Tiangle_Hight = 0;
+			Tiangle_Increment_State = TRUE;
+			
+			if((AIM_ASSIST_TYPE == SPIROIDE_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSPIROIDE_AIM_ASSIST))
+			{
+				if(SPIN_SENS == OUTSIDE_SENS)
+				{
+					Ellipse_Radius = MIN_RADIUS;
+				    Radius = MIN_RADIUS;
+				    Spinoide_Increment_State = TRUE;
+				    Max_Tiangle_Hight = MIN_RADIUS;
+				}
+				else if(SPIN_SENS == INSIDE_SENS)
+				{
+					Ellipse_Radius = MAX_RADIUS;
+				    Radius = MAX_RADIUS;
+					Spinoide_Increment_State = FALSE;
+					Max_Tiangle_Hight = MAX_RADIUS;
+				}
+			}
+			else
+			{
+				Ellipse_Radius = MAX_RADIUS;
+			    Radius = MAX_RADIUS;
+				Spinoide_Increment_State = FALSE;
+				Max_Tiangle_Hight = MAX_RADIUS;
+			}
+			
+			
+			if(FRENZY_SHAPES_Flag == 1)
+			{
+				PATTERN_SHAPE = (LINEAR_SHAPES + 1);
+			}
+		}
+		
+		if(USE_SLIDE_CANCEL == TRUE)  
+	  	{                                                                                                  
+	    	if((get_val(PS4_LY) < -60) || (get_val(PS4_LY) > 60) || (get_val(PS4_LX) < -60) || (get_val(PS4_LX) > 60))
+	    	{
+			      if(event_release(CROUCH_BUTTON))
+			      {
+			         combo_run(COMBO_SLIDE_CANCEL);
+			      }
+		    }                                                                                             
+		}
+		
+		if(easy_plate)
+    	{
+			if(get_val(SWAP_BUTTON)&& get_ptime(SWAP_BUTTON)>350)
+		 	 	combo_run(easy_plate);
+		    
+			if(combo_running(easy_plate) && (get_ival(ADS_BUTTON)>10 || get_ival(FIRE_BUTTON)>10 || get_val(RELOAD_BUTTON)))
+		  	{
+		  		combo_stop(easy_plate);
+		  		set_val(MELEE_BUTTON, 100);
+		  	}
+    	}
+    	
+    	
+    	if(turbomelee)
+		{
+			if(get_val(MELEE_BUTTON)) 
+			{
+				combo_run(TURBO_MELEE);
+			}
+			else 
+			{
+				if(combo_running(TURBO_MELEE))
+				combo_stop(TURBO_MELEE);
+			}
+		}
+		
+		if(bhop)
+		{
+		     if (get_ival(JUMP_BUTTON) && get_ptime(JUMP_BUTTON) > 200) 
+		     {
+		         combo_run(BUNNYHOP);
+		     } 
+		     else 
+		     {
+		      	if(combo_running(BUNNYHOP))
+		      		combo_stop(BUNNYHOP);
+		     }
+		}
+		
+		if(hbreath)
+		{
+			if(get_val(ADS_BUTTON))
+				set_val(SPRINT_BUTTON,100);
+			          
+			if(get_val(PS4_LY) <-90 && get_val(ADS_BUTTON) && get_ptime(ADS_BUTTON) > 200 && combo_running(HOLD_BREATH))
+				combo_stop(HOLD_BREATH);       
+			        
+			if(event_press(ADS_BUTTON)) 
+				combo_run(HOLD_BREATH);
+			
+			if(get_val(ADS_BUTTON) && get_lval(SPRINT_BUTTON)) 
+				set_val(SPRINT_BUTTON,0);
+		}
+		
+		if(quickscope)
+	    {
+	      if(event_release(ADS_BUTTON) && get_ptime(ADS_BUTTON) < quickscope_press_time)
+	          combo_run(Quick_Scope);
+	    }	
+	    
+	    if(toggle_rapid_fire)
+		{
+			combo_run(rapid_fire_Led);
+		}
+		
+	}
+}
+
+//################################################################################################# 
+
+function block_btn() 
+{
+	set_val(PS4_UP     , 0 ); 	set_val(PS4_DOWN  , 0 ); 	set_val(PS4_LEFT  , 0 );	set_val(PS4_RIGHT   , 0);
+	set_val(PS4_CROSS  , 0 ); 	set_val(PS4_CIRCLE, 0 ); 	/*set_val(PS4_SQUARE, 0 ); 	set_val(PS4_TRIANGLE, 0);
+	set_val(PS4_L1     , 0 ); 	set_val(PS4_R1    , 0 ); 	set_val(PS4_L3    , 0 ); 	set_val(PS4_R3      , 0);
+	set_val(PS4_OPTIONS, 0 ); 	set_val(PS4_SHARE , 0 );	set_val(PS4_TOUCH , 0 );	set_val(PS4_PS      , 0);
+	set_val(XB1_PL1    , 0 ); 	set_val(XB1_PL2   , 0 );	set_val(XB1_PR1   , 0 );	set_val(XB1_PR2     , 0);
+	set_val(PS4_LX, 0); 		set_val(PS4_LY, 0); 		set_val(PS4_RX, 0); 		set_val(PS4_RY, 0);
+	set_val(PS4_L2, 0); 		set_val(PS4_R2, 0);*/
+}  
+
+//################################################################################################# 
+
+function reset_script_var()
+{
+	AIM_ASSIST_TYPE					= 3 ; 
+
+	ADS_TYPE						=  0 ;
+	ADS_FIRE_TYPE					=  3 ; 
+	ADS_FIRE_TYPE_OVER_DZ			=  1 ; 
+	HIP_FIRE_TYPE					=  2 ; 
+	HIP_FIRE_TYPE_OVER_DZ			=  3 ; 
+	DRIFT_TYPE						=  3 ; 
+
+	PATTERN_SHAPE 					=  2 ; 
+
+	ADS_PATTERN						=  0 ; 
+	DRIFT_PATTERN					=  0 ; 
+	ADS_FIRE_PATTERN				=  3 ; 
+	ADS_FIRE_PATTERN_OVER_DZ		=  2 ; 
+	HIP_FIRE_PATTERN				=  4 ; 
+	HIP_FIRE_PATTERN_OVER_DZ		=  3 ; 
+
+	MOVEMENT_PREDITION_TYPE 	    =  0 ; 
+	MOVEMENT_PREDITION_UPDATE_RATE	= 10 ; 
+
+	ANGLE_INCREMENT 				= 24 ; 
+
+	MAX_RADIUS 						= 24 ; 
+	MIN_RADIUS 						= 12 ; 
+
+	USE_STEADY_AIM 	    			= 0 ; 
+	STEADY_AIM_RESOLUTION			= 6 ; 
+
+	SPIN_SENS						= 0 ; 
+	SPIN_SPEED						= 8 ;
+	 
+	MAX_MAGNITUDE 					= 18 ; 
+	SMOOTHING 						= 25 ;
+	 
+	VM_UPDATE						= 0 ; 
+
+	USE_ANTI_RECOIL 				= 2 ; 
+	USE_RUMBLE						= 1 ; 
+
+	MAX_ANGULAR_RECOIL 				= 20 ; 
+
+	PROGRESSIVE_ANGULAR_RECOIL 		= 80 ; 
+	SRENGTH_ANGULAR_RECOIL			= 3;
+	 
+	SRENGTH_SMART_RECOIL        	= 100 ; 
+	VERTICAL_SMART_RECOIL   		= 35 ; 
+
+	USE_SLIDE_CANCEL				= 0 ; 
+
+	FLIPPED_TRIG					= 0 ; 
+
+	DEAD_ZONE_LIMIT					= 2; 
+	
+	SE_PRO_LEGIT					= 0;
+	
+	HAIR_TRIGGER					= 0;
+	
+	if(FRENZY_SHAPES_Flag == 1)			
+		PATTERN_SHAPE = FRENZY_SHAPES;
+		
+	RPressure						= 50;
+	RPressTime						= 10;
+	RPauseTime						= 10;			
+	RStep						    = 10;
+	RDyn							= 10;
+	
+	easy_plate						= 0;
+	turbomelee						= 0;
+	bhop							= 0;
+	hbreath							= 0;
+	quickscope						= 0;
+	quickscopedelay					= 300;
+	quickscope_press_time			= 150;
+
+	RMode 							= 0;
+	THRESHOLD 						= 20;	
+
+	ADS_BUTTON 	= PS4_L2;
+	FIRE_BUTTON = PS4_R2;
+}
+
+//################################################################################################# 
+function load_pvar()
+{
+	AIM_ASSIST_TYPE					= get_pvar(SPVAR_1, 0, 3, 3 ); 
+
+	ADS_TYPE						= get_pvar(SPVAR_2, 0, 3, 0 );
+	ADS_FIRE_TYPE					= get_pvar(SPVAR_3, 0, 3, 0 ); 
+	ADS_FIRE_TYPE_OVER_DZ			= get_pvar(SPVAR_4, 0, 3, 1 ); 
+	HIP_FIRE_TYPE					= get_pvar(SPVAR_5, 0, 3, 2 ); 
+	HIP_FIRE_TYPE_OVER_DZ			= get_pvar(SPVAR_6, 0, 3, 3 ); 
+	DRIFT_TYPE						= get_pvar(SPVAR_7, 0, 3, 3 ); 
+
+	PATTERN_SHAPE 					= get_pvar(SPVAR_8, 0, 7, 2 );
+
+	ADS_PATTERN						= get_pvar(SPVAR_9,  0, 7, 0 ); 
+	DRIFT_PATTERN					= get_pvar(SPVAR_10, 0, 7, 0 ); 
+	ADS_FIRE_PATTERN				= get_pvar(SPVAR_11, 0, 7, 0 ); 
+	ADS_FIRE_PATTERN_OVER_DZ		= get_pvar(SPVAR_12, 0, 7, 0 ); 
+	HIP_FIRE_PATTERN				= get_pvar(SPVAR_13, 0, 7, 0 ); 
+	HIP_FIRE_PATTERN_OVER_DZ		= get_pvar(SPVAR_14, 0, 7, 0 ); 
+
+	MOVEMENT_PREDITION_TYPE 	    = get_pvar(SPVAR_15, 0, 1, 0 ); 
+	MOVEMENT_PREDITION_UPDATE_RATE	= get_pvar(SPVAR_16, 0, 50, 10 ); 
+
+	ANGLE_INCREMENT 				= get_pvar(SPVAR_17, 0, 45, 24 ); 
+
+	MAX_RADIUS 						= get_pvar(SPVAR_18, 0, 32, 24 ); 
+	MIN_RADIUS 						= get_pvar(SPVAR_19, 0, 32, 12 ); 
+
+	USE_STEADY_AIM 	    			= get_pvar(SPVAR_20, 0, 1, 0 ); 
+	STEADY_AIM_RESOLUTION			= get_pvar(SPVAR_21, 0, 12, 6 ); 
+
+	SPIN_SENS						= get_pvar(SPVAR_22, 0, 1, 0 ); 
+	SPIN_SPEED						= get_pvar(SPVAR_23, 0, 22, 8 );
+	 
+	MAX_MAGNITUDE 					= get_pvar(SPVAR_24, 0, 30, 18 ); 
+	SMOOTHING 						= get_pvar(SPVAR_25, 0, 100, 50 );
+	 
+	VM_UPDATE						= get_pvar(SPVAR_26, 0, 30, 0 ); 
+
+	USE_ANTI_RECOIL 				= get_pvar(SPVAR_27, 0, 2, 0 ); 
+	USE_RUMBLE						= get_pvar(SPVAR_28, 0, 1, 0 ); 
+
+	MAX_ANGULAR_RECOIL 				= get_pvar(SPVAR_29, 0, 60, 20 ); 
+
+	PROGRESSIVE_ANGULAR_RECOIL 		= get_pvar(SPVAR_31, 0, 1000, 80 ); 
+	SRENGTH_ANGULAR_RECOIL			= get_pvar(SPVAR_32, 0, 10, 3 );
+	 
+	SRENGTH_SMART_RECOIL        	= get_pvar(SPVAR_33, 50, 200, 100 ); 
+	VERTICAL_SMART_RECOIL   		= get_pvar(SPVAR_34, 0, 100, 60 ); 
+
+	USE_SLIDE_CANCEL				= get_pvar(SPVAR_35, 0, 1, 0 ); 
+
+	FLIPPED_TRIG					= get_pvar(SPVAR_36, 0, 1, 0 ); 
+
+	DEAD_ZONE_LIMIT					= get_pvar(SPVAR_37, 0, 20, 10 ); 
+	
+	SE_PRO_LEGIT					= get_pvar(SPVAR_38, 0, 1, 0);
+		
+	FRENZY_SHAPES_Flag				= get_pvar(SPVAR_39, 0, 1, 0);
+	
+	HAIR_TRIGGER 					= get_pvar(SPVAR_40, 0, 1, 0);
+	
+	RPressure						= get_pvar(SPVAR_41, 0, 100, 10);
+	RPressTime						= get_pvar(SPVAR_42, 0, 1000, 0);
+	RPauseTime						= get_pvar(SPVAR_43, 0, 1000, 0);	
+	RStep						    = get_pvar(SPVAR_44, 0, 1000, 0);
+	RMode							= get_pvar(SPVAR_45, 0, 10, 0);
+	
+	easy_plate						= get_pvar(SPVAR_46, 0, 1, 0);
+	turbomelee						= get_pvar(SPVAR_47, 0, 1, 0);
+	bhop							= get_pvar(SPVAR_48, 0, 1, 0);
+	hbreath							= get_pvar(SPVAR_49, 0, 1, 0);
+	quickscope						= get_pvar(SPVAR_50, 0, 1, 0);
+	quickscopedelay					= get_pvar(SPVAR_51, 0, 1000, 300);
+	quickscope_press_time			= get_pvar(SPVAR_52, 0, 1000, 150);
+	
+	RDyn							= get_pvar(SPVAR_53, 0, 1000, 10);
+	THRESHOLD						= get_pvar(SPVAR_54, 0, 40, 20);
+	
+	if(FRENZY_SHAPES_Flag == 1)
+		PATTERN_SHAPE = FRENZY_SHAPES;
+		
+	if(FLIPPED_TRIG == 0)
+	{
+		ADS_BUTTON 	= PS4_L2;
+		FIRE_BUTTON = PS4_R2;
+	}
+	else
+	{
+		ADS_BUTTON 	= PS4_L1;
+		FIRE_BUTTON = PS4_R1;
+	}			
+}
+
+//################################################################################################# 
+
+function save_pvar()
+{
+	set_pvar(SPVAR_1, AIM_ASSIST_TYPE);
+
+	set_pvar(SPVAR_2, ADS_TYPE);
+	set_pvar(SPVAR_3, ADS_FIRE_TYPE);
+	set_pvar(SPVAR_4, ADS_FIRE_TYPE_OVER_DZ);
+	set_pvar(SPVAR_5, HIP_FIRE_TYPE);
+	set_pvar(SPVAR_6, HIP_FIRE_TYPE_OVER_DZ);
+	set_pvar(SPVAR_7, DRIFT_TYPE);
+
+	set_pvar(SPVAR_39,  FRENZY_SHAPES_Flag);
+	
+	if(FRENZY_SHAPES_Flag == 1)
+		PATTERN_SHAPE = FRENZY_SHAPES;
+	
+	set_pvar(SPVAR_8, PATTERN_SHAPE);
+
+	set_pvar(SPVAR_9,  ADS_PATTERN);
+	set_pvar(SPVAR_10, DRIFT_PATTERN);
+	set_pvar(SPVAR_11, ADS_FIRE_PATTERN);
+	set_pvar(SPVAR_12, ADS_FIRE_PATTERN_OVER_DZ);
+	set_pvar(SPVAR_13, HIP_FIRE_PATTERN);
+	set_pvar(SPVAR_14, HIP_FIRE_PATTERN_OVER_DZ);
+
+	set_pvar(SPVAR_15, MOVEMENT_PREDITION_TYPE);
+	set_pvar(SPVAR_16, MOVEMENT_PREDITION_UPDATE_RATE);
+
+	set_pvar(SPVAR_17, ANGLE_INCREMENT);
+
+	set_pvar(SPVAR_18, MAX_RADIUS);
+	set_pvar(SPVAR_19, MIN_RADIUS);
+
+	set_pvar(SPVAR_20, USE_STEADY_AIM);
+	set_pvar(SPVAR_21, STEADY_AIM_RESOLUTION);
+
+	set_pvar(SPVAR_22, SPIN_SENS);
+	set_pvar(SPVAR_23, SPIN_SPEED);
+
+	set_pvar(SPVAR_24, MAX_MAGNITUDE);
+	set_pvar(SPVAR_25, SMOOTHING);
+
+	set_pvar(SPVAR_26, VM_UPDATE);
+
+	set_pvar(SPVAR_27, USE_ANTI_RECOIL);
+	set_pvar(SPVAR_28, USE_RUMBLE);
+
+	set_pvar(SPVAR_29, MAX_ANGULAR_RECOIL);
+
+	set_pvar(SPVAR_31, PROGRESSIVE_ANGULAR_RECOIL);
+	set_pvar(SPVAR_32, SRENGTH_ANGULAR_RECOIL);
+
+	set_pvar(SPVAR_33, SRENGTH_SMART_RECOIL);
+	set_pvar(SPVAR_34, VERTICAL_SMART_RECOIL);
+
+	set_pvar(SPVAR_35, USE_SLIDE_CANCEL);
+
+	set_pvar(SPVAR_36, FLIPPED_TRIG);
+
+	set_pvar(SPVAR_37, DEAD_ZONE_LIMIT);
+	
+	set_pvar(SPVAR_38, SE_PRO_LEGIT);
+	
+	set_pvar(SPVAR_40,HAIR_TRIGGER);
+	
+	set_pvar(SPVAR_41,RPressure);
+	set_pvar(SPVAR_42,RPressTime);
+	set_pvar(SPVAR_43,RPauseTime);
+	set_pvar(SPVAR_44,RStep);
+	set_pvar(SPVAR_45,RMode);
+	
+	set_pvar(SPVAR_46,easy_plate);
+	set_pvar(SPVAR_47,turbomelee);
+	set_pvar(SPVAR_48,bhop);
+	set_pvar(SPVAR_49,hbreath);
+	set_pvar(SPVAR_50,quickscope);
+	set_pvar(SPVAR_51,quickscopedelay);
+	set_pvar(SPVAR_52,quickscope_press_time);
+	set_pvar(SPVAR_53,RDyn);
+	set_pvar(SPVAR_54,THRESHOLD);
+}
+
+//#################################################################################################
+
+function calculate_ellipsoid_RADIUS(Radius, cosinus)
+{		
+	// factor 50%
+	ret = (cosinus * (Radius/2));	
+	ret = (1000 * Radius )- ret;
+	ret /= 100;
+	
+	return (ret);
+}
+
+//#################################################################################################
+
+function update_angle(angle, increment_state, val)
+{
+	if(increment_state == TRUE)
+	{
+		angle += val;
+	
+		if(angle >= 360)
+		{
+			angle -= 360;
+		}
+	}
+	else
+	{
+		angle -= val;
+	
+		if(angle <= 0)
+		{
+			angle = 360 + angle;
+		}
+	}
+	
+	return angle;
+}
+ 
+//#################################################################################################
+
+function set_right_joystick(x , y, pattern)
+{	
+	set_val(PS4_RX, x);
+	
+	if(pattern != LINEAR_SHAPES)
+	{
+		set_val(PS4_RY, y);	
+	}
+}
+
+//#################################################################################################
+
+function check_magnitude_overflow(pattern, max_val)
+{
+	ret = TRUE;
+	val2 = 0;
+	
+	val1 = isqrt(pow((get_lval(PS4_RX) - get_val(PS4_RX)), 2));
+		
+	if( pattern != LINEAR_SHAPES)
+	{
+		val2 = isqrt(pow((get_lval(PS4_RY) - get_val(PS4_RY)), 2));		
+	}
+	
+	if( (val1 <=  max_val) && (val2 <=  max_val))
+	{
+		ret = FALSE;
+	}
+	
+	//set_val(TRACE_1,val1);
+	//set_val(TRACE_2,val2);
+	
+	return ret;
+}
+
+//#################################################################################################
+
+function get_steady_aim(axis, resolution)
+{
+	if(axis >= 0)
+	{
+		ret = (axis % resolution);
+	
+		if(ret >= (resolution / 2))
+		{
+			axis = axis + (resolution - ret);
+		}
+		else
+		{
+			axis -= ret;
+		}
+	}
+	else
+	{
+		ret = (axis % resolution);
+	
+		if( abs(ret) >= (resolution / 2))
+		{
+			axis = axis - (resolution + ret);
+		}
+		else
+		{
+			axis += abs(ret);
+		}
+	}
+	
+	if(axis > 100)
+	{
+		axis = 100;
+	}
+	else if(axis < -100)
+	{
+		axis = -100;
+	}
+	
+	return axis;
+}
+
+//#################################################################################################
+
+function get_polar_coordinate(Radius, coef, shapes)
+{
+	
+	if((Radius>20) && (shapes == ELLIPSOID_SHAPES))
+	{
+		Radius = 20;
+	}
+	else if((Radius > 32) && (shapes == CIRCULAR_SHAPES))
+	{
+		Radius = 32;
+	}
+	
+		
+	return((Radius * coef) / 1000);		
+}
+
+//#################################################################################################
+
+function process_overflow_check(x, y)
+{
+	ret = x + y;
+	
+	if( ret > 100)
+	{
+		ret = 100;
+	}
+	else if (ret < -100)
+	{
+		ret = -100;
+	}
+	
+	return ret;
+}
+
+//################################################################################################# 
+
+function sin(angle)
+{   
+    if(angle <= 90)
+    {             
+        ret = (Lookup_Table[angle]);
+    }
+    else if (angle <= 180)
+    {      
+        ret = (Lookup_Table[180 - angle]);
+    }
+    else if (angle <= 270)
+    {
+        ret = inv(Lookup_Table[angle - 180]);     
+    }
+    else 
+    {
+       	ret = inv(Lookup_Table[360 - angle]);      
+    }
+    
+    return ret;
+}
+
+//################################################################################################# 
+
+function cos(angle)
+{   
+    if(angle <= 90)
+    {             
+        ret = (Lookup_Table[90 - angle]);
+    }
+    else if (angle <= 180)
+    {      
+        ret = inv(Lookup_Table[angle - 90]);
+    }
+    else if (angle <= 270)
+    {
+        ret = inv(Lookup_Table[270 - angle]);       
+    }
+    else 
+    {
+        ret = (Lookup_Table[angle - 270]);       
+    }
+    
+    return ret;
+}
+
+//################################################################################################# 
+
+function atan2_16bits(y, x) 
+{	
+	// determine Angle
+	if (y >= 0)
+	{ // oct 0,1,2,3
+		if (x >= 0) { // oct 0,1
+			if (x > y)
+			{
+				ret = ( (y * 300) / x );
+			}
+			else
+			{
+				if (y == 0)
+				ret = 0; // (x=0,y=0)
+				else
+				ret = 540 - ( (x * 300) / y );
+
+			}
+		}
+		else
+		{ // oct 2,3
+		  // if (inv(x) <= y) {
+			if (x >= inv(y))
+			{
+				ret = 540 - ( (x * 300) / y );
+			}
+			else
+			{
+				ret = 1080 + ( (y * 300) / x );
+			}
+		}
+	}
+	else
+	{ // oct 4,5,6,7
+		if (x < 0)
+		{ // oct 4,5
+		  // if (inv(x) > inv(y)) {
+			if (x < y)
+			{
+				ret = ( (y * 300) / x ) - 1080;
+			}
+			else
+			{
+				ret = ( (inv(x) * 300) / y ) - 540;
+			}
+		} else
+		{ // oct 6,7
+		  // if (x <= inv(y)) {
+			if (inv(x) >= y)
+			{
+				ret = ( (inv(x) * 300) / y ) - 540;
+			}
+			else
+			{
+				ret = ( (y * 300) / x );
+			}
+		}
+	}
+	
+	return (ret/6);
+}
+
+//#################################################################################################
+
+function get_full_quadrant_angle(angle)
+{
+
+	if(angle < 0)
+	{
+		angle += 360;
+	}
+	
+	return angle
+}
+
+//#################################################################################################
+
+// Smart Recoil
+function get_smart_recoil()
+{	
+	if(get_rumble(RumbleToUse())) 
+	{
+	    smartrecoil_rumble = get_rumble(RumbleToUse());
+		
+	    if (smartrecoil_rumble > 10 && smartrecoil_rumble < 90)
+	    {
+		    if(abs(get_val(PS4_RY)) < (smartrecoil_rumble + smartrecoil_add + smartrecoil_y) && 
+		       abs(get_val(PS4_RX)) < (smartrecoil_rumble + smartrecoil_add)) 
+			{
+		           //set_val(PS4_RY,    (smartrecoil_rumble + smartrecoil_add + smartrecoil_y));
+				return (smartrecoil_rumble + smartrecoil_add + smartrecoil_y);
+	        }			
+    	}
+    }
+	
+	return 0;
+}
+
+//#################################################################################################
+
+function RumbleToUse()
+{
+    if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_A;
+    }
+	
+    if(get_rumble(RUMBLE_A) == 100)
+	{
+    	return RUMBLE_B;
+	}
+	
+	if(get_rumble(RUMBLE_B) == 100)
+	{
+    	return RUMBLE_A;
+	}
+	
+    if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_A;
+    }
+	
+    if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_B;
+    }
+	
+    return 0;
+}
+
+//#################################################################################################
+
+combo COMBO_SLIDE_CANCEL 
+{              
+    set_val(CROUCH_BUTTON, 100); 
+    
+    wait(120);     
+    
+    set_val(CROUCH_BUTTON, 0);
+    
+    wait(60);               
+    
+    set_val(CROUCH_BUTTON, 100); 
+    
+    wait(50);                
+    
+    set_val(CROUCH_BUTTON, 100);          
+    set_val(JUMP_BUTTON, 100);           
+    wait(60);  
+    
+    set_val(CROUCH_BUTTON, 0);            
+    set_val(JUMP_BUTTON, 100); 
+    
+    wait(10);  
+    
+    set_val(JUMP_BUTTON, 0);         
+} 
+
+//################################################################################################# 
+
+function center_x( f_chars, f_font) {
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+function center_y( f_size) {
+	return (OLED_HEIGHT / 2) - (f_size + 12 / 2);
+}
+
+function get_menu( x) {
+	if (Menu[x + 1] != -1)
+		return Menu[x + 1] - Menu[x] - 1;
+	return sizeof(Menu) - Menu[x];
+}
+
+function get_se_pro_menu( x) {
+	if (SE_PRO_AIM[x + 1] != -1)
+		return SE_PRO_AIM[x + 1] - SE_PRO_AIM[x] - 1;
+	return sizeof(SE_PRO_AIM) - SE_PRO_AIM[x];
+}
+
+function get_rf_mode( x) {
+	if (RAPID_FIRE_MODS[x + 1] != -1)
+		return RAPID_FIRE_MODS[x + 1] - RAPID_FIRE_MODS[x] - 1;
+	return sizeof(RAPID_FIRE_MODS) - RAPID_FIRE_MODS[x];
+}
+
+function get_rf_menu( x) {
+	if (RAPID_FIRE_MENU[x + 1] != -1)
+		return RAPID_FIRE_MENU[x + 1] - RAPID_FIRE_MENU[x] - 1;
+	return sizeof(RAPID_FIRE_MENU) - RAPID_FIRE_MENU[x];
+}
+
+function get_se_legit_menu( x) {
+	if (SE_LEGIT_AIM[x + 1] != -1)
+		return SE_LEGIT_AIM[x + 1] - SE_LEGIT_AIM[x] - 1;
+	return sizeof(SE_LEGIT_AIM) - SE_LEGIT_AIM[x];
+}
+
+function get_steady_aim_menu( x) {
+	if (SE_STEADY_AIM[x + 1] != -1)
+		return SE_STEADY_AIM[x + 1] - SE_STEADY_AIM[x] - 1;
+	return sizeof(SE_STEADY_AIM) - SE_STEADY_AIM[x];
+}
+
+function get_ar_menu( x) {
+	if (SE_AR[x + 1] != -1)
+		return SE_AR[x + 1] - SE_AR[x] - 1;
+	return sizeof(SE_AR) - SE_AR[x];
+}
+
+function get_mods_menu( x) {
+	if (MODS[x + 1] != -1)
+		return MODS[x + 1] - MODS[x] - 1;
+	return sizeof(MODS) - MODS[x];
+}
+
+function get_state( x) {
+	if (CONFIG_STATE[x + 1] != -1)
+		return CONFIG_STATE[x + 1] - CONFIG_STATE[x] - 1;
+	return sizeof(CONFIG_STATE) - CONFIG_STATE[x];
+}
+
+function get_controller_m( x) {
+	if (CONTROLLER[x + 1] != -1)
+		return CONTROLLER[x + 1] - CONTROLLER[x] - 1;
+	return sizeof(CONTROLLER) - CONTROLLER[x];
+}
+
+function get_config_m( x) {
+	if (CONFIG[x + 1] != -1)
+		return CONFIG[x + 1] - CONFIG[x] - 1;
+	return sizeof(CONFIG) - CONFIG[x];
+}
+
+function print_progress_bar( val, max_val) {
+	rect_oled(14, 45, ((val * 100) / max_val), 15, 1, 1);
+	rect_oled(14, 45, 100, 15, 0, 1);
+}
+
+function update_val( val) {
+	val = val + (1 * Inc_Dec);
+
+	return val;
+}
+
+function check_range( val, max_val, min_val) {
+	if (val > max_val) {
+		val = min_val;
+	} else if (val < min_val) {
+		val = max_val;
+	}
+
+	return val;
+}
+
+define FONT_WIDTH = 0;
+define FONT_HEIGHT = 1;
+
+const uint8 FONT_STATS[][] = {
+		{ OLED_FONT_SMALL_WIDTH, OLED_FONT_SMALL_HEIGHT }, {
+				OLED_FONT_MEDIUM_WIDTH, OLED_FONT_MEDIUM_HEIGHT }, {
+				OLED_FONT_LARGE_WIDTH, OLED_FONT_LARGE_HEIGHT } };
+
+function CenterX( f_chars, f_font) {
+	return (OLED_WIDTH / 2) - ((f_chars * FONT_STATS[f_font][FONT_WIDTH]) / 2);
+}
+
+function CenterY( f_size) {
+	return (OLED_HEIGHT / 2) - (FONT_STATS[f_size][FONT_HEIGHT] / 2);
+
+}
+int bufferindex_1;
+int charindex_1, digitindex_1;
+int font = 1;
+function NumberToString( f_val, f_digits, x, y, color) {
+
+	bufferindex_1 = 1;
+	digitindex_1 = 10000;
+	if (f_val < 0) {                     //--neg numbers
+		putc_oled(bufferindex_1, 45);    //--add leading "-"
+		bufferindex_1 += 1;
+		f_val = abs(f_val);
+	}
+	for (charindex_1 = 5; charindex_1 >= 1; charindex_1--) {
+		if (f_digits >= charindex_1) {
+			putc_oled(bufferindex_1, (f_val / digitindex_1) + 48);
+			f_val %= digitindex_1;
+			bufferindex_1++;
+			if (charindex_1 == 4) {
+				putc_oled(bufferindex_1, 44);   //--add ","
+				bufferindex_1++;
+			}
+		}
+		digitindex_1 /= 10;
+	}
+
+	puts_oled(CenterX(bufferindex_1 - 1, font) + x, CenterY(font) + y, font,
+			bufferindex_1 - 1, color);
+
+}
+
+function FindDigits( f_number) {
+	f_number = abs(f_number);
+	if (f_number / 10000 > 0)
+		return 5;
+	if (f_number / 1000 > 0)
+		return 4;
+	if (f_number / 100 > 0)
+		return 3;
+	if (f_number / 10 > 0)
+		return 2;
+	return 1;
+}
+
+int __pictureWidth, __pictureX, __pictureHeight, __pictureY, __pictureBit,
+		__pictureOffset, __pictureData;
+function draw_picture( invert) {
+	__pictureOffset = 1; // Reset the starting point
+	__pictureBit = 0; // Reset bit flag
+	__pictureWidth = picture[0]; // Fetch the width of what to draw
+	__pictureHeight = picture[1]; // Fetch the height of what to draw
+	for (__pictureY = 0; __pictureY < __pictureHeight; __pictureY++) { // Loop the Y axis
+		for (__pictureX = 0; __pictureX < __pictureWidth; __pictureX++) { // Loop the X axis
+			if (!__pictureBit) { // Check if we've already handled the last bit
+				__pictureBit = 16; // Reset the bit flag
+				__pictureOffset++; // Move to the next value
+				__pictureData = picture[__pictureOffset]; // Fetch the value
+			}
+			__pictureBit--; // Decrement the bit flag, we're moving to the next bit
+			if (test_bit(__pictureData, __pictureBit)) {
+				pixel_oled(__pictureX, __pictureY, !invert);
+			} else {
+				pixel_oled(__pictureX, __pictureY, invert);
+			}
+		}
+	}
+}
+
+//#################################################################################################
+
+combo vibrate  
+    {
+         set_rumble(RUMBLE_A, 100);
+         wait(300);
+         reset_rumble();
+     }
+     
+//################################################################################################# 
+ 
+combo EXIT 
+    {
+    wait(150);
+    set_val(PS4_OPTIONS, 100);
+    wait(150);
+    set_val(PS4_OPTIONS, 0);
+    }
+    
+//#################################################################################################
+
+combo start 
+    {
+        colourled(Blue);
+        wait(175);    
+        colourled(Green);
+        wait(175);
+        colourled(Red);
+        wait(175);
+        colourled(Yellow);
+        wait(175);
+        colourled(White);
+        wait(175);
+        colourled(Pink);
+        wait(175);
+        colourled(Red);
+        wait(175);
+        colourled(Green);
+        wait(175);
+        colourled(SkyBlue);
+        wait(175);
+        colourled(Blue);
+        wait(175);    
+        colourled(SkyBlue);
+        wait(175);
+        colourled(Red);
+        wait(175);
+        colourled(Pink);
+        wait(175);
+        colourled(Yellow);
+        wait(175);
+        colourled(White);
+        wait(175);
+        colourled(Pink);
+        wait(175);
+        colourled(Red);
+        wait(175);
+        colourled(Green);
+        wait(175);
+        colourled(Blue);
+    }
+    
+    //#################################################################################################
+    
+    function colourled(Colour) 
+    {                         
+        Col_ind=(Colour*4)- 3;                              
+        set_led(LED_1,duint8(Col_ind  ));                    
+        set_led(LED_2,duint8(Col_ind+ 1));                   
+        set_led(LED_3,duint8(Col_ind+ 2));                   
+        set_led(LED_4,duint8(Col_ind+ 3));                   
+    }   
+    
+ //#################################################################################################
+
+int wtime;
+combo cRapidFire 
+{
+  set_val(FIRE_BUTTON,100);
+  wait(RPressTime);
+  set_val(FIRE_BUTTON,0);
+  wait(RPauseTime); // fast pause time as default
+  set_val(FIRE_BUTTON,0);
+  wtime = 0;
+  
+ if (RMode == STEP_MODE) 
+ { // add slow pause time on low pressure on two speed mode
+	if (get_ival(FIRE_BUTTON) < RPressure) 
+	{	
+		wtime = RStep ;
+	}
+ }
+ else if (RMode == DYNAMIC) 
+ { 	
+	wtime = (get_ival(FIRE_BUTTON) * RDyn)/100 ;
+ }
+ 
+ wait(wtime);
+}
+
+ //#################################################################################################
+
+combo easy_plate 
+{
+	set_val(SWAP_BUTTON,100);
+	wait(6000);//time triangle is held for adjust higher or lower 500 if you only get 2 plates or cant switch weapons after replating
+}
+
+ //#################################################################################################
+
+combo TURBO_MELEE 
+{
+    set_val(MELEE_BUTTON, 100);
+    wait(40);
+    set_val(MELEE_BUTTON, 0);
+    wait(30);   
+}
+
+ //#################################################################################################
+ 
+combo BUNNYHOP
+{
+    set_val(JUMP_BUTTON, 100);
+    wait(30);
+    set_val(JUMP_BUTTON, 0);
+    wait(30);
+    set_val(JUMP_BUTTON, 100);
+    wait(30);
+    set_val(JUMP_BUTTON, 0);
+    wait(30);
+}
+
+//#################################################################################################
+
+ combo HOLD_BREATH 
+ {
+	set_val(SPRINT_BUTTON,0);
+	wait(60);
+	set_val(SPRINT_BUTTON,100);
+	wait(110);
+	set_val(SPRINT_BUTTON,0);
+	wait(110);
+}
+
+//#################################################################################################
+
+ combo Quick_Scope 
+ {
+ set_val(ADS_BUTTON,100);
+ wait(quickscopedelay); 
+ set_val(ADS_BUTTON,100);
+ set_val(FIRE_BUTTON,100);
+ wait(40);
+ set_val(ADS_BUTTON,100);
+ wait(40); 
+ }
+ 
+ //#################################################################################################
+ 
+ combo rapid_fire_Led
+ {
+	set_led(2, 2);
+ 	wait(500);
+ 	set_led(2,0);
+ 	wait(500);
+ }

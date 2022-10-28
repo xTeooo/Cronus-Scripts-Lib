@@ -1,0 +1,392 @@
+// GPC Online Library
+// modern_warzone_ultimate_edited_klapnext.gpc
+
+// GPC Online Library// modern_warfare_ultimate.gpc
+
+/*
+ = = = = = = = = = = = = = = = = = = =
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = /\/\/\  Made By ItzSnack  /\/\/\  =
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = = = = = = = = = = = = = = = = = = =
+ === EDIT BY KLAPNEXT...easy setup === 
+ ===============================
+ === Modern Warfare Ultimate ===
+ ===============================
+
+ ===================
+ === Version 2.8.5 ===
+ ===================
+ 
+ ================
+ === FEATURES ===
+ ================
+ Aim Assist
+ Anti Recoil
+ Auto Run
+ Rapid Fire
+ Burst Fire
+ Hold Breath
+
+ =================
+ === Important ===
+ ========================================================================
+ === Recommended you read all the text below to understand everything ===
+ ========================================================================
+ 
+ ======================
+ === In-Game Layout ===
+ ===========================================
+ === Defualt - Can be adjusted in Layout ===
+ ===========================================
+ 
+ =====================
+ === Reset Toggles ===
+ ==================================================
+ === OPTIONS/MENU + SHARE/VIEW To Reset Toggles ===
+ ==================================================
+ 
+ ===================
+ === Toggle Menu ===
+ =============================================================================================================
+ === Before being able to turn ON/OFF Toggles you will have to open the Toggle Menu by doing the following ===
+ === OPTIONS/MENU + D-PAD UP                                                                               ===
+ === When ON your LED will flash Rainbow now you able to turn on any features you want                     ===
+ === After you done make sure to disable the Toggle Menu                                                   ===
+ === Your LED will be Black when your out of the Toggle Menu                                               ===
+ =============================================================================================================
+ 
+ ===============================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                       ===
+ ===============================================================================
+ === Hold L2/LT And Press R3/RS For Rapid Fire                               ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press L1/LB For Burst Fire                               ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press R1/RB For Anti Recoil                              ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ === Hold CROSS/A And Press UP For +1 to Anti Recoil and DOWN For -1         ===
+ === Hold CROSS/A And Press RIGHT For +1 to Horizontal and LEFT For -1       ===
+ === Heavy Rumble = Increase Light Rumble = Decrease                         ===
+ ===============================================================================
+ */
+
+    //Layout
+    define PS = PS4_PS; //XBOX
+    define SHARE = PS4_SHARE; //VIEW
+    define OPTIONS = PS4_OPTIONS; //MENU
+    define R1 = PS4_R1; //RB
+    define R2 = PS4_R2; //RT
+    define R3 = PS4_R3; //RS
+    define L1 = PS4_L1; //LB
+    define L2 = PS4_L2; //LT
+    define L3 = PS4_L3; //LS
+    define RX = PS4_RX;
+    define RY = PS4_RY;
+    define LX = PS4_LX;
+    define LY = PS4_LY;
+    define UP = PS4_UP;
+    define DOWN = PS4_DOWN;
+    define LEFT = PS4_LEFT;
+    define RIGHT = PS4_RIGHT;
+    define TRIANGLE = PS4_TRIANGLE; //Y
+    define CIRCLE = PS4_CIRCLE; //B
+    define CROSS = PS4_CROSS; //A
+    define SQUARE = PS4_SQUARE //X
+    define TOUCHPAD = PS4_TOUCH;
+    
+    //Customize
+    int Flipped = ON; //Change OFF TO ON If you play with Flipped Triggers
+    int AS = ON; //Change ON TO OFF If you don't want Aim Assist
+    int RUN = ON; //Change ON TO OFF If you don't want Auto Run
+    int CS = ON; //Change ON TO OFF If you don't want Custom Sensitivity
+    int HB = ON; //Change ON TO OFF If you don't want Hold Breath
+   
+    //Customize Toggles
+    int AR_Toggle = ON; //Change OFF TO ON If you want Anti Recoil ON By Default
+    int RF_Toggle = ON; //Change OFF TO ON If you want Rapid Fire ON By Default
+    int BF_Toggle = OFF; //Change OFF TO ON If you want Burst Fire ON By Default
+    
+    //Speed Of Features
+    int RF_Speed = 40; //Rapid Fire
+    int BF_Speed = 340; //Burst Fire
+
+    /*NOTE:
+    Higher values = Slower
+    Lower values = Faster*/
+    
+    //Custom Sensitivity
+    int GEN_SENS = 100;
+    int ADS_SENS = 100;
+    int FIRE_SENS = 100;
+    int ADS_FIRE_SENS = 100;
+    int GRENADE_SENS = 100;
+    /*NOTE:
+    Default = 100
+    Ranges from 0 to 327*/
+    
+    //Anti Recoil
+    int AR = 18; //Vertical Recoil
+    int AR_H = 0: //Horizontal Recoil
+    int AR_I = 1; //Change 1 to -1 If you play with Inverted
+    
+    //Aim Assist
+    int AP = 16; //Decrease if shake
+    int AM = -16; //Decrease if shake
+    int Delay = 20 //Aim Assist speed
+    int Release = 17; //Recommended to be 1 higher than AP & AM
+    
+    //Toggles
+    int ARS;
+    int SP = ON;
+    int USE_SENS;
+    int Remove_Block;
+    int Toggle_Menu;
+    int Toggle_Rumble;
+
+    main {
+    
+    if(get_val(OPTIONS) && event_press(SHARE)) {
+   
+    RF_Toggle = OFF;
+    BF_Toggle = OFF;
+    AR_Toggle = OFF;
+    Toggle_Menu = OFF;
+    combo_run(Menu_Rumble);}
+    
+    if(CS)
+    if(!get_val(L2) && !get_val(R2)) { 
+    USE_SENS=GEN_SENS;}
+    else if(get_val(L2) && !get_val(R2)) { 
+    USE_SENS=ADS_SENS;}    
+    else if(!get_val(L2) && get_val(R2)) { 
+    USE_SENS=FIRE_SENS;}
+    else if(get_val(L2) && get_val(R2)) { 
+    USE_SENS=ADS_FIRE_SENS;}
+    else if(get_val(R1)) { 
+    USE_SENS=GRENADE_SENS;}
+    sensitivity(RY,NOT_USE,USE_SENS);
+    sensitivity(RX,NOT_USE,USE_SENS);
+    
+    LED(0,0,0,0);
+    
+    if(Flipped) {
+    swap(R1,R2);
+    swap(L1,L2);}
+    
+    deadzone(L2,R2,100,100);
+    if(HB)
+    if(get_val(L2)) set_val(L3,100);
+    if(HB)
+    if(get_val(LY) <-90 && get_val(L2) && get_ptime(L2) > 200) combo_stop(CH);
+    if(HB)
+    if(event_press(L2)) combo_run(CH);
+    if(HB)
+    if(get_val(L2) && get_lval(L3)) set_val(L3,0);    
+    if(RUN)
+    if(get_val(LY)<-90 && !get_val(L2)) set_val(L3,100);
+    
+    if(AS)
+    if(get_val(L2)) combo_run(AS);
+    
+    if(AR_Toggle)
+    if(get_val(L2) && get_val(R2))
+    combo_run(AR);
+    
+    if(RF_Toggle && get_val(R2))
+    combo_run(RF);
+    
+    if(BF_Toggle && get_val(R2))
+    combo_run(BF);
+    
+    if(get_val(OPTIONS) && event_press(UP)) {
+    Toggle_Menu=!Toggle_Menu;
+    Toggle_Rumble=!Toggle_Rumble;}
+    if(Toggle_Rumble) 
+    combo_run(Menu_Rumble);
+    
+    if(Toggle_Menu) {
+    combo_run(Rainbow_Flash);
+    
+    if(get_val(L2) && event_press(SQUARE)) {
+    
+    if(RF_Toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(R3)) {
+    RF_Toggle=!RF_Toggle;
+    if(RF_Toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(L1)) {
+    BF_Toggle=!BF_Toggle;
+    if(BF_Toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(R1)) {
+    AR_Toggle=!AR_Toggle;
+    if(AR_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(CROSS)) {
+    if(event_press(UP)) {
+    AR = AR + 1;
+    combo_run(Increase);}
+    if(event_press(DOWN)) {
+    AR = AR - 1;
+    combo_run(Decrease);}
+    if(event_press(RIGHT)) {
+    AR_H = AR_H + 1;
+    combo_run(Increase);}
+    if(event_press(LEFT)) {
+    AR_H = AR_H - 1;
+    combo_run(Decrease);}
+    set_val(UP,0);set_val(DOWN,0);set_val(RIGHT,0);set_val(LEFT,0);}
+    
+    if(get_val(L2)) {
+    if(event_press(UP)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(RIGHT)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(DOWN)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(LEFT)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(R3)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(SQUARE)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(R1)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(L1)) {
+    Remove_Block=!Remove_Block;}
+    set_val(UP,0);set_val(RIGHT,0);set_val(DOWN,0);set_val(LEFT,0);set_val(R3,0);set_val(SQUARE,0);set_val(R1,0);set_val(L1,0);}}
+    if(get_val(OPTIONS)) {
+    if(event_press(SHARE)) {
+    Remove_Block=!Remove_Block;}
+    set_val(SHARE,0);}
+
+
+    if(abs(get_val(RY)) > AR + 2 || abs(get_val(RX)) > AR + 2) {
+    combo_stop(AR);}}
+    
+    combo AR {
+    ARS = get_val(RY) + AR;
+    if(ARS > 100) ARS = 100;
+    set_val(RY,ARS * AR_I);
+    ARS = get_val(RX) + AR_H;
+    if(ARS > 100) ARS = 100;
+    set_val(RX,ARS);}
+     
+    combo AS { 
+    set_val(RY,a_f(RY,AP));
+    wait(Delay)
+    set_val(RX,a_f(RX,AP));
+    wait(Delay)
+    set_val(RY,a_f(RY,AM));
+    wait(Delay)
+    set_val(RX,a_f(RX,AM));
+    wait(Delay)}
+
+
+    function a_f(p,m) {
+    if(abs(get_val(p)) < Release)
+    return m;
+    return get_val(p);}
+    
+    combo CH {
+	set_val(L3,0);
+	wait(60);
+	set_val(L3,100);
+	wait(110);
+	set_val(L3,0);
+	wait(110);}
+    
+    combo RF {
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(RF_Speed);}
+    
+    combo ARF {
+    set_val(R2,100);
+    set_val(L2,100);
+    wait(40);
+    set_val(R2,0);
+    set_val(L2,0);
+    wait(ARF_Speed);}
+    
+    combo BF {
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(100);
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(100);
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(BF_Speed);}
+     
+    combo Increase {
+    set_rumble(RUMBLE_A,100);
+    wait(100);
+    reset_rumble();}
+ 
+    combo Decrease {
+    set_rumble(RUMBLE_B,100);
+    wait(50);
+    reset_rumble();}
+    
+    combo Menu_Rumble {
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    Toggle_Rumble = OFF;}
+    
+    combo Rainbow_Flash {
+    LED(2,0,2,0);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);
+    LED(0,0,0,2);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);
+    LED(0,2,2,0);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);}
+    
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();
+    reset_leds();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();
+    reset_leds();}
+ 
+    function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+    
+    define ON = TRUE;
+    define OFF = FALSE;

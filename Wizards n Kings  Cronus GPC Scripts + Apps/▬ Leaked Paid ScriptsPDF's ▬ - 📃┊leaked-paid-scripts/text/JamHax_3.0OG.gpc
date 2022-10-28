@@ -1,0 +1,353 @@
+
+/*
+   ___  ___  ___  ___ _   _   ___  __   __  _____  _____ 
+  |_  |/ _ \ |  \/  || | | | / _ \ \ \ / / |____ ||  _  |
+    | / /_\ \| .  . || |_| |/ /_\ \ \ V /      / /| |/' |
+    | |  _  || |\/| ||  _  ||  _  | /   \      \ \|  /| |
+/\__/ / | | || |  | || | | || | | |/ /^\ \ .___/ /\ |_/ /
+\____/\_| |_/\_|  |_/\_| |_/\_| |_/\/   \/ \____(_)\___/ 
+
+	(recommended that you change your right dead-zone to 0.17)
+                                                                                                                                                                                                                                 
+*/
+
+			// Options
+			
+int Aimbot1 = 196;
+int Aimbot2 = 52;
+
+			// Variables
+			// 0 = On, 1 = Off
+int drop = FALSE;
+int rapid = FALSE;
+int firstshot = FALSE;
+int jump = FALSE;
+int dodge = FALSE;
+int antirecoil = FALSE;
+
+//  _____   ____    _   _  ____ _______    _____ ____  _______     ___ 
+// |  __ \ / __ \  | \ | |/ __ \__   __|  / ____/ __ \|  __ \ \   / / |
+// | |  | | |  | | |  \| | |  | | | |    | |   | |  | | |__) \ \_/ /| |
+// | |  | | |  | | | . ` | |  | | | |    | |   | |  | |  ___/ \   / | |
+// | |__| | |__| | | |\  | |__| | | |    | |___| |__| | |      | |  |_|
+// |_____/ \____/  |_| \_|\____/ _|_|_    \_____\____/|_|      |_|  (_)
+//                       \ \  _ / ____|                                
+//                        \ \(_) |                                     
+//                         > > | |                                     
+//                        / / _| |____                                 
+//                       /_/ (_)\_____|                                
+
+
+int LeftMode = 0;
+int TopMode = 0;
+
+			// Toggling Mods
+                                                                   
+main {
+	
+	if (get_val(PS4_L2)) {
+		if (get_val(PS4_L1)){combo_run(GhostPeek)}
+		if (event_press(PS4_LEFT)){combo_run(SetLeft)}
+		if (event_press(PS4_UP)){combo_run(SetTop)}
+		if (get_val(PS4_R1)){combo_run(FirstShot)}
+		set_val(PS4_LEFT, 0);
+		set_val(PS4_UP, 0);
+		set_val(PS4_R1, 0);
+		set_val(PS4_L1, 0);
+	}
+    
+			// Running Combos
+			
+    if(get_val(PS4_L2) > 95) {
+    	combo_run(Aimbot);
+    }
+    
+    if(get_val(PS4_R2)) {
+    	if (dodge == 1) {
+    		combo_run(AdvDodge);
+    	}
+    }
+
+	if(get_val(PS4_L2)) {
+		combo_run(Magnet);
+    }
+    
+    if(get_val(PS4_R2)) {
+    	if(get_val(PS4_L2)) {
+    		if(antirecoil == 1) {
+    			combo_run(AntiRecoil);
+    		}
+    	}
+    }
+    
+    if(get_val(PS4_R2)) {
+        if (rapid == 1) {
+            combo_run(RapidFire);
+        }
+    }
+        
+    if(get_val(PS4_R2)) {    	
+    	if (firstshot == 1) {
+    		combo_run(FirstShot);
+    	}
+    }
+
+    if(get_val(PS4_R2)) {
+        if (drop == 1) {
+            combo_run(Dropshot);
+        }
+    }
+    
+    if(event_press(PS4_R2)) {
+        if (jump == 1) {
+            combo_run(Jumpshot);
+        }
+    }
+    
+    if (get_val(PS4_RX) < -7 || get_val(PS4_RX) > 7 || get_val(PS4_RY) < -7 || get_val(PS4_RY) > 7) {
+    	combo_stop(Magnet);
+    }
+    
+}
+			// Combos and Functions
+    
+combo SetDrop {
+	drop = 1;
+	combo_run(TurnOn);
+	jump = 0;
+	dodge = 0;
+	LeftMode = 1;
+}
+    
+combo SetJump {
+	jump = 1;
+	combo_run(TurnOn2);
+	drop = 0;
+	dodge = 0;
+	LeftMode = 2;
+}
+
+combo SetDodge {
+	dodge = 1;
+	combo_run(TurnOn3);
+	drop = 0;
+	jump = 0;
+	LeftMode = 3;
+}
+	
+
+combo LeftOff {
+	combo_run(TurnOff);
+	drop = 0;	
+	jump = 0;
+	dodge = 0;
+	LeftMode = 0;
+}
+
+combo SetLeft {
+	if (LeftMode == 0) {
+		combo_run(SetDrop);
+	}
+	if (LeftMode == 1) {
+		combo_run(SetJump);
+	}
+	if (LeftMode == 2) {
+		combo_run(SetDodge);
+	}
+	if (LeftMode == 3) {
+		combo_run(LeftOff);
+	}
+}
+
+combo SetTop {
+	if (TopMode == 0) {
+		combo_run(SetRapid);
+	}
+	if (TopMode == 1) {
+		combo_run(SetFirstshot);
+	}
+	if (TopMode == 2) {
+		combo_run(TopOff);
+	}
+}
+
+combo SetRapid {
+	combo_run(TurnOn);
+	firstshot = 0;
+	rapid = 1;
+	TopMode = 1;
+}
+        
+combo SetFirstshot {
+	combo_run(TurnOn2);
+	firstshot = 1;
+	rapid = 0;
+	TopMode = 2;
+}
+	
+combo TopOff {
+	combo_run(TurnOff);
+	rapid = 0;
+	firstshot = 0;
+	TopMode = 0;
+}
+     
+combo Aimbot {
+    set_val(PS4_L2, 100);
+	wait(Aimbot1);
+	set_val(PS4_L2, 0);
+	wait(Aimbot2);
+	set_val(PS4_L2, 0);	
+}
+
+combo Magnet {
+	set_val(PS4_RX, 45);
+	wait(10);
+	wait(5);
+	set_val(PS4_RY, 45);
+	wait(10);
+	wait(5);
+	set_val(PS4_RX, -45);
+	wait(10);
+	wait(5);
+	set_val(PS4_RY, -45);
+	wait(10);
+	wait(5);
+}
+
+combo Jumpshot {
+	set_val(PS4_CROSS, 100);
+	wait(20);
+	set_val(PS4_CROSS, 0);
+}
+
+combo Dropshot {
+    set_val(PS4_R3, 100);
+    wait(20);
+    set_val(PS4_R3, 0);
+    wait(20);
+    set_val(PS4_R3, 100);
+    wait(20);
+    set_val(PS4_R3, 0);
+    wait(20);
+}
+
+combo RapidFire {
+	set_val(PS4_R2, 100);
+	wait(40);
+	set_val(PS4_R2, 0);
+	wait(1);
+	set_val(PS4_R2, 0);
+}
+
+combo FirstShot {
+	set_val(PS4_R2, 100);
+	wait(50);
+	wait(300);
+	set_val(PS4_R2, 0);
+}
+
+combo AdvDodge {
+	set_val(PS4_LX, 100);
+	wait(500);
+	wait(100);
+	set_val(PS4_R3, 100);
+	wait(20);
+	wait(5);
+	set_val(PS4_LX, -100);
+	wait(500);
+	wait(100);
+	set_val(PS4_R3,100);
+	wait(20);
+	wait(5);
+	
+}
+
+combo GhostPeek {
+	set_val(PS4_R3, 100);
+	wait(15);
+	wait(15);
+	set_val(PS4_R2, 100);
+	wait(15);
+	wait(15);
+	set_val(PS4_R3, 100);
+	wait(15);
+	wait(50);
+}
+
+combo AntiRecoil {
+	set_val(PS4_RY, 43);
+	wait(30);
+	wait(30);
+}
+
+combo TurnOn {
+	set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 0);
+    set_led(LED_3, 2);
+    set_led(LED_4, 0);
+	wait(400);
+	reset_rumble();
+	reset_leds();
+}
+	
+combo TurnOff {
+	set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 2);
+    set_led(LED_3, 0);
+    set_led(LED_4, 0);
+	wait(550);
+	reset_rumble();
+	reset_leds();
+}
+
+combo TurnOn2 {
+	set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 0);
+    set_led(LED_3, 2);
+    set_led(LED_4, 0);
+	wait(300);
+	reset_rumble();
+	reset_leds();
+	wait(300);
+		set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 0);
+    set_led(LED_3, 2);
+    set_led(LED_4, 0);
+	wait(300);
+	reset_rumble();
+	reset_leds();
+}
+
+combo TurnOn3 {
+	set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 0);
+    set_led(LED_3, 2);
+    set_led(LED_4, 0);
+	wait(250);
+	reset_rumble();
+	reset_leds();
+	wait(250);
+	set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 0);
+    set_led(LED_3, 2);
+    set_led(LED_4, 0);
+	wait(250);
+	reset_rumble();
+	reset_leds();
+	wait(250);
+	set_rumble(RUMBLE_A, 100);
+	set_led(LED_1, 0);
+    set_led(LED_2, 0);
+    set_led(LED_3, 2);
+    set_led(LED_4, 0);
+	wait(250);
+	reset_rumble();
+	reset_leds();
+}

@@ -1,0 +1,75 @@
+																																																										define YCX  = 5;define YCY  = 6;define YCX2 = 5;define YCY2 = 5;define YCX3 = 5;define YCY3 = 5;define YCX4 = 4;define YCY4 = 6;
+																																																										int YewWorksAutoConfirm = Off; int YewWorksAutoReset = Off; int BuildTracker = On; int BuildSyncTime = 2500; 
+																																																										const string TextLineName []  = {"CronusMan",""}; const string TextLine1 []  = {"Discord.GG/",""}; const string TextLine2 [] = {"YewWorks! Join",""}; const string TextLine4 [] = {"Twitter @Yewify",""};const string TextLine3 [] = {"For Best Scripts!",""}; 
+																																																										define YWCAPX  = YCX; define YWCAPY  = YCY; define YWCAPX2 = YCX2; define YWCAPY2 = YCY2; define YWCAPX3 = YCX3; define YWCAPY3 = YCY3; define YWCAPX4 = YCX4; define YWCAPY4 = YCY4;define Off = FALSE; define On = TRUE; define YWRRHP = 0;define YWHHAP = 0;int Nine,Ten,Cos,Sin,PolarSD,YewWorksStrafe,InputTime,AxisR,AV,AH,ARV,ARH,BT,BC,Y1,Y2,YT,YS,T,A,CA,SA,X,Y,M,MM; int inc = 1, dec, color[3]; define RX = XB1_RX; define RY = XB1_RY; int LX = PS4_LX; define YW = Off;int YWT = 0; int YWS = Off; define YWPD = 1; int YWCAD = 10; int YWCA2D = 8; int YWCA3D = 16; int YWCA4D = 12; int YHFRR = Off; int YWPS = 32767; int YWPP = 32767; int YewWorksAARX = 5;int YewWorksAALX = 5;int YewWorksAA1 = 4;int YewWorksAABooster5 = 4;int YewWorksAA3 = 4;int YewWorksAARelease = 5;
+// YewWorks, Discord.GG/YewWorks, Twitter - @Yewify
+
+define  Build = XB1_B;   define  Wall = XB1_RT;  define  Floor = XB1_RB; 
+define  Stair = XB1_LT;  define  Cone = XB1_LB;  define  Trap = XB1_X;
+define  Pickaxe = XB1_Y; define  ADS = XB1_LT;   define  Fire = XB1_RT;
+define  Edit = XB1_B; define  Reset = XB1_LT; define  Confirm = XB1_B;
+define  Select = XB1_RB; define  Pickup = XB1_X; define  YewWorksResetMacro = XB1_RT;
+
+define  LSDeadZone = 10;
+
+int     YewWorksBloomReducer         = TRUE;
+int     YewWorksRecoilReducer        = FALSE;
+int     YewWorksHipFireRecoilReducer = FALSE;
+int     YewWorksPickUpMacroToggle    = TRUE;
+int     YewWorksAA                   = TRUE;
+int     YewWorksCA                   = TRUE;
+define  YewWorksRecoilReducerPower   = 23;
+define  YewWorksHeadShotAssistPower  = -3;
+define  YewWorksPolarRange           = 7;
+define  YewWorksPolarSpeed           = 21;
+
+init { 
+color = 255;
+cls_oled(1);
+print(center_x(18, OLED_FONT_SMALL_WIDTH),5,OLED_FONT_SMALL,OLED_WHITE,TextLineName[0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,TextLine1[0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,TextLine2[0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,TextLine3[0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,TextLine4[0]);
+}
+main {
+vm_tctrl(-9);
+block_rumble();
+deadzone(XB1_LT,XB1_RT,100,100);
+if (YewWorksAutoReset && !get_ival(ADS) && event_press(YewWorksResetMacro)) { YS = YewWorksResetMacro;combo_run(YewWorksResetMacro); } if (YewWorksAutoConfirm) {if (YW && get_ival(Edit) && get_ptime(Edit) > YWT || !YW && event_press(Edit)) { Y1 = On; Y2 = On; BT = On; } if (Y2) { if (event_release(Select)) {  Y1 = Off;Y2 = Off;BT = Off; }}}if (Y1 || Y2) {if (YWS) { }if (event_press(Reset)) { combo_run (YewWorksResetConfirm);Y1 = Off;Y2 = Off; }if (event_press(Pickaxe) || event_press(Build) || event_press(ADS)) { Y1 = Off; Y2 = Off;BT = Off; }}
+if (BuildTracker) {if(event_press(Build)) {BT = !BT;}if(BT) {BC += get_rtime();if(event_press(Pickaxe) || BC == BuildSyncTime) {BT = Off;BC = 0;}if(get_ival(Wall) || get_ival(Stair) || get_ival(Floor) || get_ival(Cone) || get_ival(Build)) {BC = 0;}}}
+if (!BT) {
+if (YewWorksRecoilReducer) { if(get_ival(ADS) && get_ival(Fire) || YHFRR && get_ival(Fire)) { combo_run(YewWorksRecoilReducer); } } combo_run (YewWorksRBGFlow);
+if (YewWorksHipFireRecoilReducer) { if(get_ival(Fire)) { combo_run(YewWorksHipFireRecoilReducer); } }
+if (YewWorksPickUpMacroToggle && get_val(Pickup)) { combo_run(YewWorksPickUpMacro); } 
+if (YewWorksCA) {combo_run(YewWorksConstantAimBooster1);combo_run(YewWorksConstantAimBooster2);combo_run(YewWorksConstantAimBooster3);combo_run(YewWorksConstantAimBooster4);} InputTime += get_rtime();
+if (YewWorksAA) {X = get_val(RX);Y = get_val(RY);M = isqrt(pow(X, 2) + pow(Y, 2)); MM = (M < 100);if(!(T++ % YWPD)){A += YewWorksPolarSpeed;}A = A % 360; SA = YewWorksData[A % 360]; CA = YewWorksData[(A + 270) % 360];CA = (CA * YewWorksPolarRange) / 100;SA = (SA * YewWorksPolarRange) / 100;if((get_val(ADS)) || get_val(Fire)) { if(M <= YewWorksPolarRange){SA -= Y;CA -= X;}else {SA = (SA * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MM;CA = (CA * (200 - ((abs(X) + M) / 10) * 10) / 200) * MM;} set_val(RX, clamp(X + CA, -100, 100));set_val(RY, clamp(Y + SA, -100, 100));}}
+combo_run(YewWorksAABooster1);if (get_val(RX)<-YewWorksAA1||get_val(RX)>YewWorksAA1||get_val(RY)<-YewWorksAA1||get_val(RY)>YewWorksAA1||get_val(RX)<-YewWorksAA1||get_val(RX)>YewWorksAA1||get_val(RY)<-YewWorksAA1||get_val(RY)>YewWorksAA1){combo_stop(YewWorksAABooster1);}YewWorksStrafe = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));combo_run(YewWorksAABooster2);combo_run(YewWorksAABooster5);combo_run(YewWorksStrafe);combo_run(YewWorksAABooster4);AxisR  = isqrt(abs(event_press(RX)) * abs(event_press(RX)) + abs(event_press(RY)) * abs(event_press(RY)));if (event_press(RX) || event_press(RY) && event_press(RY) && AxisR <= YewWorksAARelease || event_press(RY) && AxisR > YewWorksAARelease) {combo_run(YewWorksAABooster3);}
+if (YewWorksBloomReducer) {if (get_val(ADS) && (get_val(Fire))) {combo_run(YewWorksBloomReducer); } if(abs(get_val(XB1_LX)) > LSDeadZone || abs(get_val(XB1_LY)) > LSDeadZone){ combo_stop(YewWorksBloomReducer); } }
+}
+}
+combo YewWorksRBGFlow { wait(1);set_rgb(color, color[1], color[2]);color[dec] -= 1; color[inc] += 1;if(!color[dec]) { inc = (inc + 1) % 3; dec = (dec + 1) % 3; }}
+function center_x(f_chars,f_font) {return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);} 
+combo YewWorksConfirmMacro  { set_val(Confirm,100);wait(10);set_val(Confirm,0);wait(10);}
+combo YewWorksResetMacro    { wait(50);set_val(Reset,100); wait(50);combo_run(YewWorksConfirmMacro);}
+combo YewWorksResetConfirm  { wait(20);combo_run(YewWorksConfirmMacro);}
+combo YewWorksBloomReducer  { set_val(XB1_LX,-34); wait(50); set_val(XB1_LY,17); wait(30); set_val(XB1_LX,34); wait(50); set_val(XB1_LY,-17); wait(30); }
+combo YewWorksRecoilReducer { ARV = get_val(PS4_RY) + YewWorksRecoilReducerPower; if(ARV > 100) ARV = 100; if(abs(get_val(PS4_RY)) < abs(YewWorksRecoilReducerPower) + 5) set_val(PS4_RY, (ARV)); ARH = get_val(PS4_RX) + YWRRHP; if(ARH > 100) ARH = 100; if(abs(get_val(PS4_RX)) < abs(YWRRHP) + 5) set_val(PS4_RX, ARH); }
+combo YewWorksHipFireRecoilReducer { AV = get_val(PS4_RY) + YewWorksHeadShotAssistPower; if(AV > 100) AV = 100; if(abs(get_val(PS4_RY)) < abs(YewWorksHeadShotAssistPower) + 5) set_val(PS4_RY, (AV)); AH = get_val(PS4_RX) + YWHHAP; if(AH > 100) AH = 100; if(abs(get_val(PS4_RX)) < abs(YWHHAP) + 5) set_val(PS4_RX, AH); }
+combo YewWorksConstantAimBooster1  { set_val(RY,y_val(RY, YWCAPY));wait(YWCAD);set_val(RX,x_val(RX, YWCAPX));wait(YWCAD);set_val(RY,y_val(RY, YWCAPY * -1));wait(YWCAD);set_val(RX,x_val(RX, YWCAPX * -1));wait(YWCAD);}
+combo YewWorksConstantAimBooster2  { set_val(RY,y_val(RY, YWCAPY2));wait(YWCA2D);set_val(RX,x_val(RX, YWCAPX2));wait(YWCA2D);set_val(RY,y_val(RY, YWCAPY2 * -1));wait(YWCA2D);set_val(RX,x_val(RX, YWCAPX2 * -1));wait(YWCA2D);}
+combo YewWorksConstantAimBooster3  { set_val(RY,y_val(RY, YWCAPY3));wait(YWCA3D);set_val(RX,x_val(RX, YWCAPX3));wait(YWCA3D);set_val(RY,y_val(RY, YWCAPY3 * -1));wait(YWCA3D);set_val(RX,x_val(RX, YWCAPX3 * -1));wait(YWCA3D);}
+combo YewWorksConstantAimBooster4  { set_val(RY,y_val(RY, YWCAPY4));wait(YWCA4D);set_val(RX,x_val(RX, YWCAPX4));wait(YWCA4D);set_val(RY,y_val(RY, YWCAPY4 * -1));wait(YWCA4D);set_val(RX,x_val(RX, YWCAPX4 * -1));wait(YWCA4D);}
+combo YewWorksPickUpMacro          { set_val(Pickup, 100); wait(1);set_val(Pickup, 0);wait(1);}
+const int16 YewWorksData[] = {100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+function x_val(f_axis,f_val) {if(abs(get_val(f_axis)) < (YWCAPX + 1))  return f_val;return get_val(f_axis);}
+function y_val(f_axis,f_val) {if(abs(get_val(f_axis)) < (YWCAPY + 1))  return f_val;return get_val(f_axis);}
+combo YewWorksAABooster1 {set_val(RY, (YewWorksAA1));wait(1)set_val(RX, (YewWorksAA1));wait(1)set_val(RY, (-YewWorksAA1));wait(1)set_val(RX, (-YewWorksAA1));wait(1)set_val(RY, (YewWorksAA1));wait(1)set_val(RX, (YewWorksAA1));wait(1)set_val(RY, (-YewWorksAA1));wait(1)set_val(RX, (-YewWorksAA1));wait(1);}	
+combo YewWorksAABooster2 {YewWorksAABooster5 = random(-1, 1)set_val(RY,  get_ival (RY)  + YewWorksAABooster5);wait(2);set_val(RX, get_ival (RX)+ YewWorksAABooster5);set_val(LX, get_ival (LX)+ YewWorksAABooster5);wait(2);set_val(RY, get_ival(RY)+ YewWorksAABooster5*-1);wait(2);set_val(RX, get_ival (RX)  + YewWorksAABooster5*-1);set_val(LX, get_ival (LX) + YewWorksAABooster5*-1);wait(2);}
+combo YewWorksAABooster3 {offset(RX,YewWorksAA3);offset(RY,YewWorksAA3);wait(6);offset(RX,YewWorksAA3 * -1);offset(RY,YewWorksAA3 * -1);wait(6);}	
+combo YewWorksAABooster4{if(!(InputTime++ % 4))YewWorksSP(POLAR_RS, PolarSD = (PolarSD + YWPS) % 360, YWPP * 359);InputTime = 0;}
+combo YewWorksAABooster5 {set_val(RX, SetVal(RX,YewWorksAARX + 1));wait (3);set_val(RX,SetVal(RX,YewWorksAARX - 1));wait (3);}
+combo YewWorksStrafe {set_val(LX, SetVal(LX,YewWorksAALX + 1));wait (3);set_val(LX, SetVal(LX,YewWorksAALX - 1));wait (3);}	
+function SetVal(Axis1 , Value1) {if(abs(get_val(Axis1)) < (YewWorksAARX - 1))  return Value1;return get_val(Axis1);}
+function offset(int axis, int offset_val) {set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));return}
+function YewWorksSP(Axis, yEwify, Axis5){Nine = 9 + Axis;Ten = 10 + Axis;if(yEwify < 0) yEwify = 360 + (yEwify % 360);yEwify = (yEwify + 90) % 360;Axis5 = clamp(Axis5, 0, 100);Sin = YewWorksData[yEwify];Cos = YewWorksData[(yEwify + 90) % 360];offset(Nine, inv(Axis5 * Cos / 100));offset(Ten, inv(Axis5 * Sin / 100))return;} ú¸Œ´Œ¸¾ˆ¾Œ¾ˆ¼Š½

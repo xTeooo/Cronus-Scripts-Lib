@@ -1,0 +1,60 @@
+define LTrigger = XB1_LT;
+define RTrigger = XB1_RT; 
+define Fire = XB1_RT;
+define Pickaxe = XB1_Y;
+define ADS = XB1_LT;
+define Jump = XB1_A;
+define Edit = XB1_LS; 
+define Switch = XB1_A;
+define Build = XB1_B;           
+define Wall = XB1_RT;
+define Floor = XB1_RB;
+define Ramp = XB1_LT
+define Cone = XB1_LB;
+define Trap = XB1_X;
+define Confirm = XB1_LT;
+define Reset = XB1_RIGHT;
+
+define Up = XB1_UP; 
+define Down = XB1_DOWN; 
+define Left = XB1_LEFT; 
+define Right = XB1_RIGHT;
+define RX = PS4_RX;   
+define RY = PS4_RY;   
+define LX = PS4_LX;   
+define LY = PS4_LY;  
+
+define On = TRUE;
+define Off = FALSE; 
+
+int PolarAA = On;
+int PolarHipFire = Off;
+define PolarRadius = 6;    
+define PolarSteps = 30;  
+define PolarStepDelay = 1;
+
+int AntiRecoil = On;
+define AntiRecoilStrength = 25;  
+define AntiRecoilDisplacement =  0;  
+
+int LessInputDelay = On;
+define InputDelay = 5;
+
+int InstantTriggers = On;
+
+int BuilderPro = Off;
+int BuildTracker = On;
+define BuildSyncTime = 0;
+
+int TouchPad = On;
+
+main{ block_rumble(); if(LessInputDelay) { VM(InputDelay); } if (BuilderPro) { if (get_ival(Switch)) { BuildPro = On; if (BuildTracker) BuildTrack = On; } if (BuildPro && event_release(Switch)) { combo_run(BuildPro); BuildPro = Off; if (BuildTracker) BuildTrack = Off; } } if(TouchPad) 
+{ swap(PS4_TOUCH, PS4_SHARE); } if (InstantTriggers) { deadzone(LTrigger,RTrigger,100,100); } if (BuildTracker) { if (event_press(Build)) { BuildTrack = !BuildTrack; } if (BuildTrack && !BuildPro) { BuildCount += get_rtime(); if (event_press(Pickaxe) || BuildCount == BuildSyncTime) { 
+BuildTrack = Off; BuildCount = Off; } if (get_ival(Floor) || get_ival(Cone) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) BuildCount = Off; } } if (!BuildTrack) { if(PolarAA) { actual_X = get_val(RX); actual_Y = get_val(RY); actual_Magnitude = isqrt(pow(actual_X, 2) + pow(actual_Y, 2));
+max_Magnitude = (actual_Magnitude < 100); if(!(time++ % PolarStepDelay)){ angle += PolarSteps; } angle = angle % 360; sin_angle = Polar_Array[angle % 360]; cos_angle = Polar_Array[(angle + 270) % 360]; cos_angle = (cos_angle * PolarRadius) / 100; sin_angle = (sin_angle * PolarRadius) / 100; if(get_val(ADS) 
+|| PolarHipFire && get_val(Fire)){ if(actual_Magnitude <= PolarRadius){ sin_angle -= actual_Y; cos_angle -= actual_X; }else { sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) 
+* max_Magnitude; } set_val(RX, clamp(actual_X + cos_angle, -100, 100)); set_val(RY, clamp(actual_Y + sin_angle, -100, 100)); } } } if(AntiRecoil) { if(get_ival(ADS) && get_ival(Fire)) { combo_run(AntiRecoilS); } } } function Set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100)); 
+return; } combo BuildPro { set_val(Build,0); wait(50); set_val(Build,100); wait(50); } function VM (f_speed) { if (f_speed == 0) vm_tctrl(-0); else if(f_speed == 1) vm_tctrl(-2); else if(f_speed == 2) vm_tctrl(-4); else if(f_speed == 3) vm_tctrl(-6); else if(f_speed == 4) vm_tctrl(-8); else if(f_speed == 5) vm_tctrl(-9); } combo AntiRecoilS { AntiRecoilVert = get_val(RY) + AntiRecoilStrength; 
+if(AntiRecoilVert > 100) AntiRecoilVert = 100; if(abs(get_val(RY)) < abs(AntiRecoilStrength) + 5) set_val(RY, (AntiRecoilVert)); AntiRecoilHoriz = get_val(RX) + AntiRecoilDisplacement; if(AntiRecoilHoriz > 100) AntiRecoilHoriz = 100; if(abs(get_val(RX)) < abs(AntiRecoilDisplacement) + 5) set_val(RX, AntiRecoilHoriz); } 
+const char Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100}; int actual_X, actual_Y, actual_Magnitude, max_Magnitude, time, angle, cos_angle, sin_angle, BuildPro, BuildTrack, BuildCount, AntiRecoilVert, AntiRecoilHoriz;
+  

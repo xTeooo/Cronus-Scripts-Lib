@@ -1,0 +1,505 @@
+/*		    36936936936936936
+            36936936936936936				8888888b.            .d8888b.       88888888888 888               8888888888 d8b  .d8888b.  888  88888888888       8888888b. 
+            369369369369369369				888  "Y88b          d88P  Y88b          888     888               888        Y8P d88P  Y88b 888      888           888   Y88b
+           36936936936936933693				888    888          888    888          888     888               888            888    888 888      888           888    888
+		  3693693693693693693693			888    888  .d88b.  888        88888888 888     88888b.   .d88b.  8888888    888 888        88888b.  888   .d88b.  888   d88P
+         369369369369369369369369			888    888 d88""88b 888  88888    d88P  888     888 "88b d8P  Y8b 888        888 888  88888 888 "88b 888  d8P  Y8b 8888888P"
+         3693693693693693693693699			888    888 888  888 888    888   d88P   888     888  888 88888888 888        888 888    888 888  888 888  88888888 888 T88b
+        3693693693693693693693699369		888    888 888  888 888    888  d88     888     888  888 888""""  888        888 888    888 888  888 888  888""""  888  T88b
+       36936939693693693693693693693693		8888888P"   "Y88P"   "Y8888P88 88888888 888     888  888  "Y8888  888        888  "Y8888P88 888  888 888   "Y8888  888   T88b
+     3693693693693693693693693693693636936	 \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+   36936936936936936936936936936   369369369  \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+  36936   369336936369369369369        36936   \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+ 36936   36936 369369336936936					\|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+36933   36936  36936   3693636					 \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+693    36936  36936     369363					  \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/	
+      36936  36936      369369					   \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+     36936   36936       36936
+     36936   36936        36936
+     36936   36936        36936
+      369    36936          369
+		   	  369	
+	DoGz Real DyNaPoLaR STEADY AIM V1.01 (Radius Dynamic)(Reduced when Applying Input To The Right Stick And Providing Actual Input)
+	*** CREDIT TO (( DON'T AT ME ))FOR STEADY AIM AND THE IDEA OF IMPLEMENTING GET_VAL *** LEGEND 8 )
+	
+	MENU ON = HOLD L2/LT & PRESS OPTIONS/MENU BUTTON 
+	WHILE IN MENUS PRESS UP OR DOWN TO CHANGE VALUE/TIME OR HOLD FOR FAST SCROLL
+	PRESS LEFT TO SWITCH TO THE PREVIOUS VALUE (-) 
+	PRESS RIGHT TO SWITCH TO THE NEXT VALUE (+)
+
+	PRESS TRIANGLE OR CIRCLE TO EXIT MENUS AT ANY TIME OR IT WILL SWITCH ITSELF OFF AFTER 25 SECONDS	
+	
+	/* DO NOT TOUCH */ 
+	data(-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100);
+
+	const uint8 FONT_STATS [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }}; 
+	const uint8 REFERENCE [] = {48,49,50,51,52,53,54,55,56,57};	
+
+	const string A      = "POLAR RADIUS RX";
+	const string B      = "POLAR RADIUS RY";
+	const string C      = "POLAR ANGLE SPEED";
+	const string D      = "  POLAR RELEASE";
+	const string E      = "LEGACY STRENGTH";
+	const string F      = "   LEGACY WAIT";
+	const string G      = " LEGACY RELEASE";
+	const string MENU1  = "MENU1";
+	const string MOD1   = "MOD1";
+	const string MOD2   = "MOD2";
+	const string MOD3   = "MOD3";
+	const string MOD4   = "MOD4";
+	const string MOD5   = "MOD5";
+	const string MOD6   = "MOD6";
+	const string MOD7   = "MOD7";
+	const string MODS   = " < >";
+	const string VALUE  = "v";
+	const string VALUE1 = "^";
+	const string MODE0  = " CIRCLE TO EXIT";
+	const string MODE1  = "TRIANGLE TO EXIT";
+	const string MODES  = " 8)";
+	
+	// DO NOT TOUCH \\
+	define SMALL = 0,MEDIUM = 1,LARGE = 2,TEXT_HORIZONTAL = 5,TEXT_VERTICAL = 8,OLED_W = 127,OLED_H = 63,START = 0,SINGLE = 1;  
+	define FONT_W = 0,FONT_H = 1,FONT_L = 2,FONT_VERTICAL = 25,BLACK = 0,WHITE = 1,UNFILL = 0,FILL = 1,THICKNESS = 2,NEG = 45;
+	int MENU,CHANGE,AA,IDX,SHUNT,MENU_TIMEOUT,COUNT,ADJUST,NO = ON,S_RS = 90,POLAR,WIDTH,HEIGHT,RY,RX,G_RX,G_RY,STEADY_VALUE,angle_Out,cos_angle,sin_angle;
+	
+	// DO NOT TOUCH \\
+	define ON       = TRUE;
+	define OFF      = FALSE;
+	define UP       = PS4_UP;
+	define DOWN     = PS4_DOWN;
+	define LEFT     = PS4_LEFT;
+	define RIGHT    = PS4_RIGHT;
+	define CIRCLE   = PS4_CIRCLE;
+	define TRIANGLE = PS4_TRIANGLE;
+	
+	// DO NOT TOUCH \\
+	define MENU_TIMEOUT_  = 25000;
+	define IDX_MIN = 1,IDX_MAX = 7;
+	
+	define MENU_HOLD  = PS4_L2;
+	define MENU_PRESS = PS4_OPTIONS;
+	
+	// DO NOT TOUCH \\
+	define A_RY = PS4_RY;
+	define A_RX = PS4_RX;
+	define P_RX = POLAR_RX;
+	define P_RY = POLAR_RY;
+	define P_RS = POLAR_RS;
+	
+	// ENTER YOUR RESTING VALUES \\
+	define D_RX = 5;//ANALOGUE DRIFT (RESTING VALUE = PS4_RX) 
+	define D_RY = 5;//ANALOGUE DRIFT (RESTING VALUE = PS4_RY) 
+	int STEADY_AIM = 15; //<---- Steady Aim Value. Range: (2 - 90)
+
+	// PUT YOUR BUTTONS HERE BELOW IF DIFFERENT
+	define FIRE    = PS4_R2;
+	define ADS     = PS4_L2;
+	
+	define POLAR_ASSIST       =  ON;//POLAR AIM ASSIST  (DYNAMIC)
+	define LEGACY_ASSIST      =  ON;//LEGACY AIM ASSIST (DYNAMIC)(WILL OPERATE WHEN POLAR REACHES THE LIMIT)
+
+	// PRE GAME CONFIG SETTINGS \\ (ADJUST IN MENU VIA ZEN ALSO)
+	// |ROW1_DEFAULT|   ROW2_MINIMUM__________|   ROW3_MAXIMUM___|___VALUE REFERENCE____|				|_DEFAULT SETTING I PREFERRED_|
+	int W_RX  =   22;   define W_RX_MIN =    5,   W_RX_MAX =   40;// POLAR RADIUS WIDTH VALUE  (RX) 			W_RX  =   15; 
+	int W_RY  =   22;   define W_RY_MIN =    5,   W_RY_MAX =   40;// POLAR RADIUS HEIGHT VALUE (RY)				W_RY  =   15;
+	int A_RS  =   20;   define A_RS_MIN =    5,   A_RS_MAX  =  60;// POLAR ANGLE VALUE							A_RS  =   40;
+	int P_RE  =   25;   define P_RE_MIN =   10,   P_RE_MAX =   40;// POLAR RELEASE VALUE						P_RE  =   20;
+	
+	int L_PR  =   12;   define L_PR_MIN =    5,   L_PR_MAX =   80;// LEGACY STRENGTH VALUE (RX & RY)			L_PR  =   12;
+	int L_WT  =   10;   define L_WT_MIN =   10,   L_WT_MAX =   50;// LEGACY WAIT VALUE							L_WT  =   10;
+	int L_RE  =   75;   define L_RE_MIN =   10,   L_RE_MAX =   90;// LEGACY RELEASE VALUE						L_RE  =   75;
+
+init { 
+	STEADY_AIM = (360 / STEADY_AIM) / 2; 
+	}
+	
+main {
+  
+  	if (POLAR_ASSIST) {
+  	if ((get_ival(FIRE) && abs(get_ival(A_RX)) < P_RE  && abs(get_ival(A_RY)) < P_RE) || 
+  	    (get_ival (ADS) && abs(get_ival(A_RX)) < P_RE  && abs(get_ival(A_RY)) < P_RE)) {
+		
+		POLAR  = ON;
+		WIDTH  = W_RX;
+  		HEIGHT = W_RY;
+  
+  		S_RS = (S_RS + A_RS) % 360;
+  
+  		RX =  abs(get_ival(A_RX) / 3);
+  		RY =  abs(get_ival(A_RY) / 3);
+    
+    if ((abs(get_ival(A_RX)) > D_RX) || (abs(get_ival(A_RY)) > D_RY)) {
+  		WIDTH  = (WIDTH  + -RX);
+  		HEIGHT = (HEIGHT + -RY);
+  	}
+  	else {
+  		WIDTH  = (WIDTH);
+  		HEIGHT = (HEIGHT);
+	}	
+		
+		set_polar(P_RS,S_RS,WIDTH);
+
+  	if (get_ival(A_RX) > 0) {
+  		set_polar(P_RS,S_RS,WIDTH);
+  		G_RX = get_val(P_RX) + RX;
+  	}
+  
+  	if (get_ival(A_RX) < 0) {
+  		set_polar(P_RS,S_RS,WIDTH);
+  		G_RX = get_val(P_RX) + -RX;
+  	}
+  
+  	if (get_ival(A_RY) > 0) {
+  		set_polar(P_RS,S_RS,HEIGHT);
+  		G_RY = get_val(P_RY) + RY;
+  	}
+  
+  	if (get_ival(A_RY) < 0) {
+  		set_polar(P_RS,S_RS,HEIGHT);
+  		G_RY = get_val(P_RY) + -RY;
+  	}
+  
+  	if (get_ival(A_RX) > 0) {
+  		set_val(P_RX,get_ival(P_RX) + RX);
+  	}
+  	
+  	if (get_ival(A_RX) < 0) {
+  		set_val(P_RX,get_ival(P_RX) + -RX);
+  	}
+  
+  	if (get_ival(A_RY) > 0) {
+  		set_val(P_RY,get_ival(P_RY) + RY);
+	}
+  	
+  	if (get_ival(A_RY) < 0) {
+  		set_val(P_RY,get_ival(P_RY) + -RY);
+  	}
+  
+  	if (get_ival(A_RX) > 0) {
+  		set_val(A_RX,G_RX + RX);
+  	}
+  	
+  	if (get_ival(A_RX) < 0) {
+  		set_val(A_RX,G_RX + -RX);
+  	}
+  
+  	if (get_ival(A_RY) > 0) {
+  		set_val(A_RY,G_RY + RY);
+  	}
+  	
+  	if (get_ival(A_RY) < 0) {
+  		set_val(A_RY,G_RY + -RY);
+  		}
+	}
+	else {
+		POLAR = OFF;
+	}
+}
+    if (!POLAR && LEGACY_ASSIST) {
+    if ((get_ival(ADS)  && abs(get_ival(A_RX)) < L_RE && (abs(get_ival(A_RY)) <  L_RE)) || 
+    	(get_ival(FIRE) && abs(get_ival(A_RX)) < L_RE && (abs(get_ival(A_RY)) <  L_RE))) {
+    	
+    	combo_run(LEGACY);
+	}
+	else {
+		combo_stop(LEGACY);
+	}
+}
+    if (get_ival(MENU_HOLD) && event_press(MENU_PRESS)) {
+		MENU = ON;
+		AA = ON;
+		IDX = ON;
+		NAME();
+		SHUNT = MENU_PRESS;
+	}
+	if (MENU) {
+	if (AA) { 	
+		MENU_TIMEOUT += get_rtime();
+	}
+	if (get_ival(UP) || get_ival(DOWN) || get_ival(LEFT) || get_ival(RIGHT)) {
+		MENU_TIMEOUT = OFF;
+	}
+	if (MENU_TIMEOUT >= MENU_TIMEOUT_ || event_press(TRIANGLE) || event_press(CIRCLE)) {
+		cls_oled(BLACK);
+		MENU = OFF;
+		AA = OFF;
+		IDX = OFF;
+		combo_stop (EXIT);
+		MENU_TIMEOUT = OFF;
+		SHUNT = CIRCLE;
+	}
+	if (AA) {
+		IDX = ADJUSTA(IDX,IDX_MIN,IDX_MAX,SINGLE,IDX);
+	if (IDX == 1) {
+		W_RX = ADJUST(W_RX,W_RX_MIN,W_RX_MAX,SINGLE,IDX);
+    }
+	if (IDX == 2) {
+		W_RY = ADJUST(W_RY,W_RY_MIN,W_RY_MAX,SINGLE,IDX);
+    }
+	if (IDX == 3) {
+		A_RS = ADJUST(A_RS,A_RS_MIN,A_RS_MAX,SINGLE,IDX);
+    }
+	if (IDX == 4) {
+		P_RE = ADJUST(P_RE,P_RE_MIN,P_RE_MAX,SINGLE,IDX);
+    }
+	if (IDX == 5) {
+		L_PR = ADJUST(L_PR,L_PR_MIN,L_PR_MAX,SINGLE,IDX);
+    }
+	if (IDX == 6) {
+		L_WT = ADJUST(L_WT,L_WT_MIN,L_WT_MAX,SINGLE,IDX);
+    }
+	if (IDX == 7) {
+		L_RE = ADJUST(L_RE,L_RE_MIN,L_RE_MAX,SINGLE,IDX);
+    		}
+		}
+		BLOCK(DOWN); BLOCK(UP); BLOCK(LEFT); BLOCK(RIGHT);
+	}
+	if (SHUNT) {
+	if (event_release(SHUNT)) {
+		SHUNT = OFF;
+	}
+	else {
+		set_val(SHUNT,OFF);
+		}
+	}
+	
+	if (isqrt(abs(get_ival(A_RX)) * abs(get_ival(A_RX)) + abs(get_ival(A_RY)) * abs(get_ival(A_RY))) > P_RE) {
+  		STEADY_VALUE = atan2(get_val(P_RY)/256,get_val(P_RX)/256);
+	if (get_val(P_RY) > OFF) { 
+  		STEADY_VALUE =  map(OFF,STEADY_AIM,0,180,(STEADY_VALUE * STEADY_AIM) / 180);
+   	}
+   	else {
+   		STEADY_VALUE = map(OFF,STEADY_AIM,180,360,(((STEADY_VALUE - 180) * STEADY_AIM) / 180));
+	}
+  		Set_polar(P_RS,STEADY_VALUE,isqrt((get_val(A_RX) * get_val(A_RX)) + (get_val(A_RY) * get_val(A_RY))),OFF);
+  	}		
+}
+
+combo LEGACY {
+	Set_val(A_RX,L_PR);
+	Set_val(A_RY,L_PR);
+	wait(L_WT);
+	Set_val(A_RX,L_PR * -1);
+	Set_val(A_RY,L_PR * -1);
+	wait(L_WT);
+}
+
+combo EXIT {
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 40,SMALL,WHITE,MODE0[START]);
+	wait(500);
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 40,SMALL,WHITE,MODE1[START]);
+}    
+
+function Set_val(Input,Value) {
+  	set_val(Input,Return(Value * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100, 100));
+		return; 
+}
+
+function Return(Val,Low,High) {
+	if(Val < Low) 
+		return Low;
+	if(Val > High) 
+		return High;
+    return Val;
+}
+
+function BLOCK (BUTTON) {
+if (!get_ival(BUTTON)) 
+		return; 
+	set_val(BUTTON,OFF);
+}
+
+function atan2 (y,x) {
+if (x >= 0 && y > 0) 
+  	angle_Out = -90;
+else if (x  < 0 && y >= 0) 
+  	angle_Out = 90;
+else if (x <= 0 && y < 0) 
+  	angle_Out = -270;
+else 
+  	angle_Out = 270;
+
+  	x = abs(x);
+  	y = abs(y);
+
+if (x < y) 
+	angle_Out += (x * 45 / y);
+else if (x > y) 
+	angle_Out += 90 - (y * 45 / x);
+else 
+	angle_Out += 45;
+
+  	angle_Out = abs(angle_Out % 360);
+
+  	return (angle_Out);
+}
+
+function map (inMin,inMax,outMin,outMax,x) {
+	return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+function Set_polar (stick,angle,radius,offset) {
+if (angle < 0) angle = 360 + (angle % 360);
+  	angle = (angle + 90) % 360;
+
+	sin_angle = dint8(angle);
+  	cos_angle = dint8((angle + 90) % 360);
+
+if (offset) {
+    OS(7 + stick,(cos_angle * radius) / 100);
+    OS(8 + stick,(sin_angle * radius) / 100);
+  } 
+else {
+    set_val(7 + stick, (cos_angle * radius) / 100);
+    set_val(8 + stick, (sin_angle * radius) / 100);
+  }
+  	return;
+}
+
+function OS (axis,offset_val) {
+  	set_val(axis,clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis),-100, 100));
+  		return
+}
+
+function NAME () {
+	cls_oled(BLACK);
+if (AA == ON) {
+	GRID ();
+	printf(TEXT_HORIZONTAL + 83,TEXT_VERTICAL + 15,SMALL,WHITE,MENU1[START]);
+	CHANGE = OFF;
+	combo_run (EXIT); 
+if (IDX == 1) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,A[START]);
+	EDITNUMBER(W_RX,NUMBER(W_RX));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD1[START]);
+}
+if (IDX == 2) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,B[START]);
+	EDITNUMBER(W_RY,NUMBER(W_RY));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD2[START]);
+}
+if (IDX == 3) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,C[START]);
+	EDITNUMBER(A_RS,NUMBER(A_RS));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD3[START]);
+}
+if (IDX == 4) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,D[START]);
+	EDITNUMBER(P_RE,NUMBER(P_RE));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD4[START]);
+}
+if (IDX == 5) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,E[START]);
+	EDITNUMBER(L_PR,NUMBER(L_PR));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD5[START]);
+}
+if (IDX == 6) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,F[START]);
+	EDITNUMBER(L_WT,NUMBER(L_WT));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD6[START]);
+}
+if (IDX == 7) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,G[START]);
+	EDITNUMBER(L_RE,NUMBER(L_RE));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD7[START]);
+		}
+	}
+}
+
+function GRID () {
+	line_oled(OLED_W - 3,START + 20,START + 4,START + 20,THICKNESS,WHITE);
+	rect_oled(START + 1,START + 1,OLED_W,OLED_H,UNFILL,WHITE);
+	rect_oled(START + 4,START + 3,OLED_W - 6,OLED_H - 4,UNFILL,WHITE);
+	rect_oled(START + 7,OLED_H - 17,OLED_W - 12,START + 13,UNFILL,WHITE);
+	rect_oled(START + 5,START + 20,OLED_H - 31,START + 22,UNFILL,WHITE);
+	rect_oled(OLED_W - 40,START + 23,OLED_H - 25,START + 22,UNFILL,WHITE);
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL + 23,SMALL,WHITE,MODS[START]);
+	printf(TEXT_HORIZONTAL + 74,TEXT_VERTICAL + 18,SMALL,WHITE,VALUE1[START]);
+	printf(TEXT_HORIZONTAL + 74,TEXT_VERTICAL + 24,SMALL,WHITE,VALUE[START]);
+	printf(TEXT_HORIZONTAL + 87,TEXT_VERTICAL + 25,SMALL,WHITE,MODES[START]);
+}
+
+function ADJUST (VALUE,MIN,MAX,AMOUNT,INDEX) {
+if (event_press(UP) || get_ival (UP) && get_ptime (UP) >= 250) {
+	CHANGE = ON;
+	VALUE += AMOUNT;
+		return VALUE;
+    }
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(DOWN) || get_ival (DOWN) && get_ptime (DOWN) >= 250) {
+	CHANGE = ON;
+	VALUE -= AMOUNT;
+		return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (CHANGE == ON && INDEX == IDX) {
+	NAME();
+	}		
+	return VALUE;
+}
+
+function ADJUSTA (VALUE,MIN,MAX,AMOUNT,INDEX) {
+if (event_press(RIGHT)) {
+	CHANGE = ON;
+	VALUE += AMOUNT;
+	return VALUE;
+	}
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(LEFT)) {
+	CHANGE = ON;
+	VALUE -= AMOUNT;
+	return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (CHANGE == ON && INDEX == IDX) {
+	NAME();
+	}		
+	return VALUE;
+}
+
+function EDITNUMBER (DIGIT,FDIGIT) {
+if (DIGIT < START) {
+	putc_oled(NO,NEG);
+	NO += 1;
+	DIGIT = abs(DIGIT);
+	COUNT = ON;
+	}
+else 
+	COUNT = START;
+if (FDIGIT >= 3) {
+	putc_oled(NO,REFERENCE[DIGIT / 100]);
+	DIGIT = DIGIT % 100;
+	NO +=  1;
+	}
+if (FDIGIT >= 2) {
+	putc_oled(NO,REFERENCE[DIGIT / 10]);
+	DIGIT = DIGIT % 10;
+	NO += 1;
+	}
+	putc_oled(NO,REFERENCE[DIGIT]);
+	puts_oled(CENTER(FDIGIT + COUNT,FONT_H),FONT_VERTICAL,MEDIUM,NO,WHITE);    
+	NO = ON;
+} 
+
+function NUMBER (NUM) {
+    NUM = abs(NUM);
+if (NUM /  100 > START) 
+	return 3;
+if (NUM /   10 > START) 
+	return 2;
+		return 1;
+}    
+
+function CENTER (CHAR,SIZE) {
+    ADJUST = CHAR * FONT_STATS[SIZE][FONT_W];
+    ADJUST = (OLED_W - ADJUST) / FONT_L;
+		return ADJUST;
+}

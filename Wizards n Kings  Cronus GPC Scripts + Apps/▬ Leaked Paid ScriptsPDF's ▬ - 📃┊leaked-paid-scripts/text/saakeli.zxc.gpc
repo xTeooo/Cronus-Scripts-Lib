@@ -1,0 +1,95 @@
+define LTrigger = PS4_L2;
+define RTrigger = PS4_R2; 
+define Fire = PS4_R2;
+define ADS = PS4_L2;
+define PickupB = PS4_SQUARE;
+define N_Weapon = PS4_R1;
+define P_Weapon = PS4_L1;
+define Pickaxe = PS4_TOUCH;
+define Jump = PS4_CROSS;
+define Crouch = PS4_R3;
+define Ping = PS4_TRIANGLE;
+define Edit = PS4_L3; 
+define Switch = PS4_CIRCLE;
+define Build = PS4_CIRCLE;           
+define Wall = PS4_R2;
+define Floor = PS4_R1;
+define Ramp = PS4_L2;
+define Cone = PS4_L1;
+define Select = PS4_R2;
+define Confirm = PS4_L3;
+define Reset = PS4_R3;
+
+define Up = PS4_UP; 
+define Down = PS4_DOWN; 
+define Left = PS4_LEFT; 
+define Right = PS4_RIGHT;
+define RX = PS4_RX;   
+define RY = PS4_RY;   
+define LX = PS4_LX;   
+define LY = PS4_LY;  
+
+define PY = POLAR_RY;
+define PX = POLAR_RX;
+define PS = POLAR_RS;
+define On = TRUE;
+define Off = FALSE;
+define ON = TRUE;
+define OFF = FALSE;
+
+int Modswitch;,
+
+int StickyAA = Off; // STICKY AIM AIM ASSIST (BEST FOR EXPO)
+int StickyAAHipFire = Off;
+int PolarAA = On; // POLAR AA (BEST FOR PC)+
+int PolarTimed = Off; // AA DISABLES AFTER A CERTAIN AMOUNT OF TIME OF HOLDING RT
+int PolarHipFire = On; // HIPFIRE FOR AA
+int AntiRecoil = Off;
+int AntiRecoilHipFire = Off;
+int AntiRecoilTimed = On;
+int Headshot = Off;
+int HeadshotHipFire = On;
+
+int BuildTracker = On;
+int BuilderPro = Off;
+int PS5 = Off;
+int bunnyhop = On;
+int WallTake = Off;
+int InstantReset = Off; // PRESS ONE BUTTON AND IT EDITS THEN RESETS THEN CONFIRMS FOR YOU
+int PickupM = On;
+int InstantResetDelay = 20; // THE AMOUNT OF TIME IT WILL TAKE TO CONFIRM THE RESET [1000 = 1 SEC]
+define InstantResetB = PS4_LEFT; // IF Y0U PRESS THIS BIND, ZEN WILL EDIT THEN RESET THEN CONFIRM FOR YOU
+define pickupmacrobutton = PS4_SQUARE;
+define WallTakeM = XB1_DOWN;
+
+int PolarPower = 2;// AIM ASSIST POWER [ 1 = 5 || 2 = 10 || 3 = 15 || 4 = 20 || 5 = 25 ] IF LINEAR PUT [1] 
+int PolarTime = 1000; // HOW LONG UNTIL POLAR AA DISABLES
+
+int ConsoleV = 20; // SHAKE FOR STICKY AA
+int ConsoleH = 20;
+int ConsoleL = 22;
+int StickyAATime = 90;
+int ConsoleDelay = 10;
+
+
+int AntiRecoilPower = 25; // THE STRENGTH OF ANTI-RECOIL (HOW FAR IT WILL GO DOWN)
+int AntiRecoilVertical = 47; // THE MAX AMOUNT YOUR CROSSHAIR WILL GO DOWN
+int AntiRecoilTime = 60; // [!ONLY WORKS IF ANTI RECOIL TIMED IS ON!] THE AMOUNT OF TIME IT WILL TAKE FOR ANTI-RECOIL TO DISABLE
+
+int HeadshotSteps = 1; // THE AMOUNT YOUR CROSSHAIR WILL GO UP
+int WallTakeTime = 190;
+int HeadshotMax = 25; // THE MAX AMOUNT YOUR CROSSHAIR WILL GO UP
+
+int LessInputDelay = On;
+int InstantTriggers = On;
+define InputDelay = 5; // [0] 10ms delay | [1] = 8ms delay | [2] = 6ms delay | [3] = 4ms delay | [4] = 2ms delay | [5] = 1ms delay
+int BuildSyncTime = 100; // HOW LONG IT TAKES TO ACTIVATE BUILD TRACKER
+
+ 
+main{ if(WallTake){ if(event_press(WallTakeM)){combo_run(walltake100);}} if (InstantReset) { if (event_press(InstantResetB)) { combo_run(FastReset); } } if(PS5) { swap(PS4_SHARE, PS4_TOUCH) } block_rumble(); if(LessInputDelay) { VM(InputDelay); } if (BuilderPro) { if (get_ival(Switch)) { BuildPro = On; if (BuildTracker) BuildTrack = On; } if (BuildPro && event_release(Switch)) { combo_run(BuildPro); BuildPro = Off; if (BuildTracker) BuildTrack = Off; } }if (BuildTracker) { if (event_press(Build)) { BuildTrack = !BuildTrack; } if (BuildTrack && !BuildPro) { BuildCount += get_rtime(); if (event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0; } if (get_ival(Cone) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall)) BuildCount = 0; } } 
+if (InstantTriggers) {deadzone(LTrigger, RTrigger,100 ,100) } if (!BuildTrack) if (StickyAA){ if ((get_ival(ADS)) || (get_ival(Fire) && StickyAAHipFire)) { if (abs(get_ival(RX)) <= StickyAATime && abs(get_ival(RY)) <= StickyAATime) { combo_run(Sticky); } } else { combo_stop(Sticky); } } { if (Headshot) { if (get_ival(ADS) && get_ival(Fire) || StickyAAHipFire && get_ival(Fire)) { if (abs(get_ival(RY)) < HeadshotMax) { Head += HeadshotSteps; combo_run(HeadshotS); } } if (!get_ival(Fire)) Head = 0; if (Head >= HeadshotMax) combo_stop(HeadshotS); } if (AntiRecoil) { if (get_ival(ADS) >= 95 && get_ival(Fire) || (AntiRecoilHipFire && get_ival(Fire))) { TimeValue += get_rtime(); if (TimeValue > 30) { AxisLY = get_lval(RY); AxisCY = get_ival(RY); } if (abs(AxisCY) != abs(AxisLY)) BoostAR = ((AxisCY - AxisLY) * 4); if ((BoostAR != 0) && (TimeValue > 40)) { BoostAR = 0; TimeValue = 0; } if (AntiRecoilTimed) { RecoilTimer += get_rtime(); if (RecoilTimer > AntiRecoilTime) { ARValue = AntiRecoilPower; RecoilTimer = 0; } else { ARValue = 0; } } AROutPut = (AntiRecoilVertical + ARValue + BoostAR); Set_Val(RY,AROutPut); } if (!get_ival(Fire)) { RecoilTimer = 0; TimeValue = 0; BoostAR = 0; } } if (PolarAA) { if (PolarTimed) { if (get_ival(ADS) && get_ptime(ADS) <= PolarTime || PolarHipFire && get_ival(Fire) && get_ptime(Fire) <= PolarTime) { AimAssist(); 
+} } else if (get_ival(ADS)|| PolarHipFire && get_ival(Fire)) { AimAssist(); } if (!get_ival(ADS) && !get_ival(Fire)) { AAT = 0; Axis = 0; } } } } combo BuildPro { set_val(Build,0); wait(50); set_val(Build,100); wait(50); }combo HeadshotS { set_val(RY,inv(Head) + get_val(RY)); }combo ConsoleAAs { set_val(RX, (ConsoleV)); wait(10) set_val(RY, (ConsoleV)); wait(10) set_val(RX, ConsoleV * -1); wait(10) set_val(RY, ConsoleV * -1); wait(10) } function AimAssist() { AAT += get_rtime(); 
+if (!Axis) set_Val(RY,AAT * PolarPower / 10); if (Axis == 1) set_Val(RX,AAT * PolarPower / 10); if (Axis == 2) set_Val(RY,inv(AAT * PolarPower / 10)); if (Axis == 3) { set_Val(RX,inv(AAT * PolarPower / 10)); if (AAT > 50) { AAT = 0; Axis = 0; } } else if (AAT > 50) { AAT = 0; Axis += 1; } } combo Sticky { Set_Val(RY,ConsoleV); wait(ConsoleDelay); Set_Val(RX,ConsoleH); if (abs(get_ival(LX)) < 20) Set_Val(LX,ConsoleL); wait(ConsoleDelay); Set_Val(RY,ConsoleV * -1); wait(ConsoleDelay); Set_Val(RX,ConsoleH * -1); if (abs(get_ival(LX)) < 20) Set_Val(LX,ConsoleL * -1); wait(ConsoleDelay); }function VM (f_speed) { if (f_speed == 0) vm_tctrl(-0); else if(f_speed == 1) 
+vm_tctrl(-2); else if(f_speed == 2) vm_tctrl(-4); else if(f_speed == 3) vm_tctrl(-6); else if(f_speed == 4) vm_tctrl(-8); else if(f_speed == 5) vm_tctrl(-9); } function set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100)); return; } function Set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_val(Input))) 
+/ 100 + get_val(Input),-100,100)); return; } int BuildTrack, BuildCount, AAT, Axis, TimeValue, AxisLY, AxisCY, ARValue, AROutPut, BoostAR, RecoilTimer, Head,BuildPro;  combo walltake100{ set_val(Fire, 100); wait(200) set_val(Build, 100); wait( wait(WallTakeTime)); set_val(Cone, 100); wait( wait(WallTakeTime)); set_val(Wall, 100); wait(10); set_val(Build, 100); } combo bhop{ set_val(XB1_A,100); wait(1); set_val(XB1_A,0);} combo Pickup { set_val(PickupB,32767); wait(1); set_val(PickupB,0); wait(1); } main { if(bunnyhop){ if(get_val(XB1_A) && get_ptime(XB1_A) > 200){ combo_run(bhop);}} } main {if (PickupM) if (get_val(XB1_DOWN)) { combo_run(Pickup); } else { combo_stop(Pickup); } } combo FastReset { set_val(InstantResetB,1); wait(InstantResetDelay); set_val(Edit,1); wait(InstantResetDelay); set_val(Reset,1); wait(InstantResetDelay); combo_run(Confirm); } combo Confirm { set_val(Confirm,100); wait(100); set_val(Confirm,0); wait(10); set_val(Reset,0); wait(10); } 
+//[A1]

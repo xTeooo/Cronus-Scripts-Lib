@@ -1,0 +1,900 @@
+//#################################################################################################
+//######################################### Sweet_EviL_14 #########################################
+//################################################################################################# 
+//#     _________                      __    ___________     .__.____       ____   _____          #
+//#    /   _____/_  _  __ ____   _____/  |_  \_   _____/__  _|__|    |     /_   | /  |  |         #
+//#    \_____  \\ \/ \/ // __ \_/ __ \   __\  |    __)_\  \/ /  |    |      |   |/   |  |_        #
+//#    /        \\     /\  ___/\  ___/|  |    |        \\   /|  |    |___   |   /    ^   /        #
+//#   /_______  / \/\_/  \___  >\___  >__|   /_______  / \_/ |__|_______ \  |___\____   |         #
+//#           \/             \/     \/               \/                 \/           |__|         #
+//#                                                                                               #
+//#################################################################################################
+//################### © 2021, Sami ABADA - Sweet EviL, All Rights Reserved ########################
+//################################################################################################# 
+/*
+	
+	This script is protecteted by U.S and International copyright loaws. 
+	Reproduction, sale and distribution of the script without Sami ABADA permission is prohibited.
+		
+					© 2021, Sami ABADA - Sweet EviL, All Rights Reserved
+
+
+//#################################################################################################
+
+Step 1:
+	•	change your sensitivity in the game to 2  (for cod 2 2 and use multiplier 1.0 with standard curve and standard aim assis)
+		don't touch the joystick for 1 when you launch the script, to perferm controller drift auto calibration
+
+step 2:
+	•	be sure that :
+			USE_AIM_ASSIST			   = FALSE;
+			AR_TYPE					   = DISABLED;
+			USE_STEADY_AIM			   = FALSE;
+	
+	How to test:
+
+	- Set boost to  50 
+	
+	- Game sensitivity to 2/2 (low sensitivity for example 10% for fortnite)
+	
+	- test hip and ads sensitivity , just move your right stick normaly (camera)
+	
+	- If you notice you re getting your usual sensitivity or little higher 
+	Just ads move slowly your crosshairs and adjust the BALLISTIC_COEF range 10 to 100 start with 20 or 15 as starting point 
+	
+	- Second case if you feel movement is slow Rise your game sensitivity 
+	
+	-Do the same test as describe before
+	
+	- Repeat this until you find your good settings
+	
+	Higher is your game sensitivity, less is tracking and stickiness
+	
+	
+	- Once you find your sensitivity and coef adjust bosst for fine tune, start from 30 (high boost give more movement acceleration)
+	
+step 2:
+	•	be sure that :	
+			AR_TYPE					   = USE_RUMBLE_EVIL_AR or USE_DYNAMIC_EVIL_AR
+		
+		Anti-Recoil AR
+	•	Go into a custom match or plunder match to find your Anti Recoil settings adjust AR_STRENGTH range -25 to 50 
+	•	choose between Dynamic AR or Rumble AR 
+	•	If you use dynamic AR 
+		o	If your weapon pulls down decrease strength 
+		o	If you want more AR assistance increase strength 
+	•	If you use rumble AR enable vibration in the game
+		o	If your weapon pulls down increase AR strength 
+		o	If your weapon goes up and you need assistance decrease strength
+		
+step 3:
+	•	be sure that
+			USE_AIM_ASSIST					= TRUE
+			
+	•	test all 
+			AIM_MODULATION 					= DISABLED or STEADY or DYNAMIC
+			
+			DISABLED			balanced for all fight ranges
+			STEADY				good for mid and long range fight 
+			DYNAMIC				good for close range fight
+			
+			for steady and dynamic you have 3 types of scanning so you have 6 types to test:
+			
+			full 				scanning balanced between heashot and tracking 
+			vertical scanning  	good for headshot
+			horizontal scannin	good for tracking 
+		
+											
+	•	Once you find the best AIM_MODULATION that sweet your game play, you can tweak:
+		 o	first: AIM_SLOPE range [4 to 20]
+		 o	second : AIM_ASSIST range [12 to 32], important AIM_ASSIST shold be even bumber!!!!!!!! 
+		 
+		 
+	•	To get the best Aim Assist and the best Slope settings, go within Compiler and Warzone Plunder or a private match and do the following:
+	
+	•	Enable Aim Assist (Set to TRUE) use Aim Modulation = Disabled and Slope = 10 
+	
+	•	For AIM ASSIST test the following numbers: 16 20 24 28 32. When you start having screen stuttering when you ADS (aim down sight) 
+	or a loss of precision, stop the test and select the value you feel most comfortable with. If you want more fine-tuning, take your 
+	best value you have found and add or take away 2. Then test again. (For example, 20 is the best value you have found for Aim Assist, 
+	to keep fine-tuning take away 2 to bring it to 18, or add 2 to bring it 22 and test it.)
+	
+	•	SLOPE gives you the drawing speed and this can be crucial to get a more sticky aim. Do the same test as used for Aim Assist as seen above 
+	but for this SLOPE test use the following numbers: 4 8 12 16 20.  Keep your favourite Aim Assist number in place for this test.
+	(For example, 8 is the best value you have found for SLOPE, to keep fine-tuning take away 2 to bring it to 6, or add 2 to bring it 10 and test it.)
+	
+	If you want some fine-tuning and you think that your best slope is between 4 and 8 you can test 6 This should be done with MODULATION disabled!! 
+	
+	•	Aim Modulation Disabled gives good results for all ranges but also depends on your Aim Assist. A higher value is good in Aim Assist for close 
+	and mid-range but not so much for long-range.
+	
+	•	 To test Dynamic and Steady use the best slope value found above. Take -2 away from your Aim Assist before testing Dynamic and Steady. 
+	For example, you find that 20 is the best value when Modulation is disabled, try using 18 and keep the same Slope. STEADY will give you a good result 
+	for long and close fights. Dynamic is overpowered for close/mid range
+		
+step 4:
+	•	be sure that
+			USE_STEADY_AIM					= TRUE			
+	•	adjust your RESOLUTION test 4 6 8
+	
+	Steady Aim should be tested once all other values are optimised.
+*/
+								 	
+const int16 Lookup_Table[] 		= {
+									0, 	 17,  34,  52,  69,  87,  104, 121, 139, 156, 
+									173, 190, 207, 224, 241, 258, 275, 292, 309, 325,
+									342, 358, 374, 390, 406, 422, 438, 453, 469, 484,
+									500, 515, 529, 544, 559, 573, 587, 601, 615, 629,
+									642, 656, 669, 682, 694, 707, 719, 731, 743, 754,
+									766, 777, 788, 798, 809, 819, 829, 838, 848, 857,
+									866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 
+									939, 945, 951, 956, 961, 965, 970, 974, 978, 981,
+									984, 987, 990, 992, 994, 996, 997, 998, 999, 999,
+									1000
+									};								 	
+
+define TIME_BASE			= 4;	// don't change	
+
+define MAX_DRIFT			= 15;	// don't change	
+
+//################################################################################################# 								 	
+								 	
+define ADS_BUTTON			= PS4_L2;
+define FIRE_BUTTON			= PS4_R2;
+define CROUCH_BUTTON 		= PS4_CIRCLE;  
+define JUMP_BUTTON  		= PS4_CROSS;
+define SWAP_BUTTON			= PS4_TRIANGLE;
+define MELEE_BUTTON			= PS4_R3;
+define SPRINT_BUTTON		= PS4_L3;
+
+int INVERTED				= 0;  // if you play inverted put 1 else keep it to 0
+
+int USE_SLIDE_CANCEL		= 1; // 0 disable, 1 MW, 3 CW
+
+define CW_Slide_Delay    	=  80;	
+define MW_Slide_Delay 		=  80;
+
+int USE_HAIR_TRIGGER		= TRUE;
+
+int USE_HOLD_BREATH			= TRUE;
+
+int	USE_RUMBLE 				= FALSE;
+
+//#################################################################################################
+
+int USE_BALLISTIC_CURVE				= FALSE;
+
+// Range 1 to 100 , icrease this value will increase your sensitivity
+
+int HIP_BALLISTIC_COEF				= 20; 
+int ADS_BALLISTIC_COEF				= 20; 
+
+
+// positive boost value give acceleration than deceleration recommanded for low game sensitivity
+// negative boost value give deceleration than acceleration recommanded for high game sensitivity
+
+int ADS_BALLISTIC_BOOST				= 55;				
+int HIP_BALLISTIC_BOOST				= 55;
+
+//################################################################################################# 
+
+define DISABLED						= 0;
+define USE_RUMBLE_EVIL_AR			= 1;
+define USE_DYNAMIC_EVIL_AR			= 2;
+
+int AR_TYPE							= DISABLED;  // 
+int AR_STRENGTH						= 20;  		// can be negative if you want more ar and use : USE_RUMBLE_EVIL_AR
+
+//################################################################################################# 
+
+int USE_AIM_ASSIST					= FALSE;
+
+int	AIM_SLOPE						= 24;
+int	AIM_ASSIST 						= 32;
+
+//################################################################################################# 
+
+define LOW							= 2;	//default value
+define MID							= 3;
+define HIGHT						= 4;
+
+int SPIRE_EFFECT					= LOW;
+
+//################################################################################################# 
+
+//don't change
+//define DISABLED					= 0;		// like in test 17
+define STEADY						= 1;		// like in test 18
+define DYNAMIC						= 2;		// line in test 19
+
+int AIM_MODULATION					= STEADY;  // you can always select disabled, i just changed the line 
+
+//###
+
+define FULL_SCANNING				= 0;
+define HORIZONTAL_SCANNING	    	= 1;
+define VERTICAL_SCANNING			= 3;
+
+int AIM_SCANNING					= FULL_SCANNING;
+
+//################################################################################################# 
+
+int USE_STEADY_AIM					= TRUE;
+define RESOLUTION					= 170;
+
+//################################################################################################# 
+
+define MAGNITUDE					= 50;			   // don't change
+int REFRESH_RATE					= TIME_BASE * 10;  // don't change
+
+//################################################################################################# 			
+
+int update_timer;
+int C_RX;
+int C_RY;
+int C_LX;
+int C_LY;
+int L_RX;
+int L_RY;
+//int T_RX;
+int T_RY;
+int Inc_Dec_State_1;
+int Inc_Dec_State_2;
+int Aim_Assit_1;
+int Aim_Assit_2;
+int slide_enable;
+int angle;
+int _ret;
+//int _temp;
+int mvt_direction;
+//int magnitude_ok;
+int min_aim_assit;
+int cw_angle;
+int ar_strength;
+int inverted;
+int rx_drift;
+int ry_drift;
+int lx_drift;
+int ly_drift;
+int drift_calib;
+int v_mod;
+int h_mod;
+
+int ads_lim;
+int hip_lim;
+int ads_ax;
+int ads_ay;
+int hip_ax;
+int hip_ay;
+int ads_b;
+int hip_b;
+
+int hip_ads_done;
+int hip_done;
+int ads_done;
+
+
+
+init
+{
+	mvt_direction = 1;
+	min_aim_assit = AIM_ASSIST/SPIRE_EFFECT;
+	Aim_Assit_1 = min_aim_assit;	
+	Aim_Assit_2 = AIM_ASSIST;
+	Inc_Dec_State_1 = TRUE;
+	Inc_Dec_State_2 = FALSE;
+	
+    update_timer = REFRESH_RATE;
+	
+	if(INVERTED == 1)
+		inverted = -1;
+	else
+		inverted = 1;
+		
+	ADS_BALLISTIC_BOOST *= inverted;
+	HIP_BALLISTIC_BOOST	*= inverted;
+		
+	angle = 90 * inverted;
+	cw_angle = 90 * inverted;
+		
+	ar_strength = (AR_STRENGTH/2) + AR_STRENGTH;
+	
+	
+	drift_calib = 100;
+	
+	if(USE_BALLISTIC_CURVE == FALSE)
+		hip_ads_done = 1;
+	
+}
+
+
+main {
+
+	vm_tctrl(-6);
+	
+	if(drift_calib)
+	{
+		rx_drift = max(rx_drift, abs(get_ival(PS4_RX))+ 2);
+		ry_drift = max(ry_drift, abs(get_ival(PS4_RY))+ 2);
+		
+		lx_drift = max(lx_drift, abs(get_ival(PS4_LX))+ 2);
+		ly_drift = max(ly_drift, abs(get_ival(PS4_LY))+ 2);
+			
+		rx_drift = min(rx_drift, MAX_DRIFT);
+		ry_drift = min(ry_drift, MAX_DRIFT);
+		
+		lx_drift = min(lx_drift, MAX_DRIFT);
+		ly_drift = min(ly_drift, MAX_DRIFT);
+		
+		drift_calib--;
+		
+		rx_drift = max(rx_drift, ry_drift);
+		lx_drift = max(lx_drift, ly_drift);
+	}
+	else
+	{				
+		if(hip_ads_done == 0)
+		{
+			if(ads_done == 0)
+			{
+				_ret = (ads_lim * abs(ADS_BALLISTIC_COEF))/10;
+				ads_lim++;
+				
+				if(_ret >= abs(ADS_BALLISTIC_BOOST))
+				{
+					ads_ax = 100 - ads_lim;
+					ads_ay = 100 - _ret;
+					
+					ads_b = 100 - ((100 * ads_ay)/ads_ax);
+					
+					ads_done = 1;
+				}
+			}
+			
+			if(hip_done == 0)
+			{
+				_ret = (hip_lim * abs(HIP_BALLISTIC_COEF))/10;
+				hip_lim++;
+				
+				if(_ret >= abs(HIP_BALLISTIC_BOOST))
+				{
+					hip_ax = 100 - hip_lim;
+					hip_ay = 100 - _ret;
+					
+					hip_b = 100 - ((100 * hip_ay)/hip_ax);
+	
+					hip_done = 1;
+				}
+			}	
+			
+			hip_ads_done = ads_done & hip_done; 
+		}
+		else
+		{	
+			//set_val(TRACE_3, 100);	
+			
+			if(USE_RUMBLE == FALSE)
+			{
+				block_rumble();
+			}
+			
+			if(USE_HAIR_TRIGGER)
+			{
+				if(get_ival(PS4_R2) > 10)
+					set_val(PS4_R2, 100);
+		
+				if(get_ival(PS4_L2)> 10)
+					set_val(PS4_L2, 100);
+			}
+			
+			C_RX = get_ival(PS4_RX);
+			C_RY = get_ival(PS4_RY);
+			
+			C_LX = get_ival(PS4_LX);
+			C_LY = get_ival(PS4_LY);
+				
+			if(isqrt(pow(C_RX, 2) + pow(C_RY, 2)) <= rx_drift)
+			{
+				C_RX = 0;
+				C_RY = 0;
+			}
+
+			if(isqrt(pow(C_LX, 2) + pow(C_LY, 2)) <= lx_drift)
+			{
+				C_LX = 0;
+				C_LY = 0;
+			}
+			
+			if(get_val(ADS_BUTTON) > 50 || get_val(FIRE_BUTTON) > 50)
+			{						
+				if(USE_BALLISTIC_CURVE == TRUE)
+				{
+					C_RX = process_ballistic_curve(C_RX, ads_lim, ads_ax, ads_ay, ads_b, ADS_BALLISTIC_COEF);
+					C_RY = process_ballistic_curve(C_RY, ads_lim, ads_ax, ads_ay, ads_b, ADS_BALLISTIC_COEF);
+				}
+				
+				if(update_timer >= REFRESH_RATE)
+				{					
+					block(PS4_RX, REFRESH_RATE);
+					block(PS4_RY, REFRESH_RATE);
+					
+					_ret = get_mvt_direction(C_RX, L_RX);
+										
+					if(_ret != 0)
+						mvt_direction = _ret;
+						
+					//set_val(TRACE_1, mvt_direction);
+						
+					if(USE_AIM_ASSIST == TRUE)
+					{
+						if(Inc_Dec_State_1 == FALSE)
+						{
+							Aim_Assit_1 -= 1;
+					
+							if(Aim_Assit_1 < min_aim_assit)
+								Inc_Dec_State_1 = TRUE;
+						}
+						else
+						{
+							Aim_Assit_1 += 1;
+					
+							if(Aim_Assit_1 > AIM_ASSIST)
+								Inc_Dec_State_1 = FALSE;
+						}
+						
+						if(Inc_Dec_State_2 == FALSE)
+						{
+							Aim_Assit_2 -= 1;
+					
+							if(Aim_Assit_2 < min_aim_assit)
+								Inc_Dec_State_2 = TRUE;
+						}
+						else
+						{
+							Aim_Assit_2 += 1;
+					
+							if(Aim_Assit_2 > AIM_ASSIST)
+								Inc_Dec_State_2 = FALSE;
+						}			
+					}
+					
+					update_timer = 0;	
+					
+					L_RX = C_RX;
+					L_RY = C_RY;
+				}	
+				
+				if((AR_TYPE) && ((get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON)> 50)) && check_magnitude(MAGNITUDE, C_RX, L_RX, C_RY, L_RY))
+				{
+					if(AR_TYPE == USE_RUMBLE_EVIL_AR)
+					{
+						T_RY = get_rumble_evil_ar();
+					}
+					else
+					{
+						T_RY = (get_ptime(FIRE_BUTTON)/ (160));
+						//set_val(TRACE_2, T_RY);
+						
+						if(T_RY > ar_strength)
+							T_RY = ar_strength ;
+						
+						T_RY = T_RY +  AR_STRENGTH - ((abs(C_RX * C_RX) + abs(C_RY * C_RY))/1000) ;
+						//set_val(TRACE_1, T_RY);
+					}
+				
+					if(inverted == -1)
+						C_RY += inv(T_RY);
+					else
+						C_RY += T_RY;
+				}
+				
+				if(USE_AIM_ASSIST)
+				{
+					if(AIM_MODULATION == DISABLED)
+					{
+						if(mvt_direction == 1)
+						{
+							C_RX += get_polar_coordinate(Aim_Assit_1, sin(angle));
+							C_RY += get_polar_coordinate(Aim_Assit_2, cos(angle));
+						}
+						else
+						{
+							C_RX += get_polar_coordinate(Aim_Assit_1, cos(angle));
+							C_RY += get_polar_coordinate(Aim_Assit_2, sin(angle));
+						}
+					}
+					else if (AIM_MODULATION == STEADY)
+					{
+						if(mvt_direction == 1)
+						{									
+							h_mod = get_polar_coordinate(min_aim_assit, sin(cw_angle));
+							v_mod = get_polar_coordinate(min_aim_assit, cos(cw_angle));
+							
+							if(AIM_SCANNING == HORIZONTAL_SCANNING)
+								v_mod = 0;
+	
+							if(AIM_SCANNING == VERTICAL_SCANNING)
+								h_mod = 0;
+								
+							C_RX += (get_polar_coordinate(Aim_Assit_1, sin(angle)) + h_mod);
+							C_RY += (get_polar_coordinate(Aim_Assit_2, cos(angle)) + v_mod);
+						}
+						else
+						{
+							h_mod = get_polar_coordinate(min_aim_assit, cos(cw_angle));
+							v_mod = get_polar_coordinate(min_aim_assit, sin(cw_angle));
+							
+							if(AIM_SCANNING == HORIZONTAL_SCANNING)
+								v_mod = 0;
+	
+							if(AIM_SCANNING == VERTICAL_SCANNING)
+								h_mod = 0;
+							
+							C_RX += (get_polar_coordinate(Aim_Assit_1, cos(angle))+ h_mod);
+							C_RY += (get_polar_coordinate(Aim_Assit_2, sin(angle))+ v_mod);
+						}
+					}
+					if(AIM_MODULATION == DYNAMIC)
+					{
+						if(mvt_direction == 1)
+						{
+							h_mod = get_polar_coordinate(Aim_Assit_2/2, sin(cw_angle));
+							v_mod = get_polar_coordinate(Aim_Assit_1/2, cos(cw_angle));
+							
+							if(AIM_SCANNING == HORIZONTAL_SCANNING)
+								v_mod = 0;
+	
+							if(AIM_SCANNING == VERTICAL_SCANNING)
+								h_mod = 0;
+							
+							C_RX += (get_polar_coordinate(Aim_Assit_1, sin(angle)) + h_mod);
+							C_RY += (get_polar_coordinate(Aim_Assit_2, cos(angle)) + v_mod);
+						}
+						else
+						{
+							h_mod = get_polar_coordinate(Aim_Assit_2/2, cos(cw_angle));
+							v_mod = get_polar_coordinate(Aim_Assit_1/2, sin(cw_angle));
+							
+							if(AIM_SCANNING == HORIZONTAL_SCANNING)
+								v_mod = 0;
+	
+							if(AIM_SCANNING == VERTICAL_SCANNING)
+								h_mod = 0;
+							
+							C_RX += (get_polar_coordinate(Aim_Assit_1, cos(angle))+ h_mod);
+							C_RY += (get_polar_coordinate(Aim_Assit_2, sin(angle))+ v_mod);
+						}
+					}
+				
+					angle += AIM_SLOPE;
+					angle = angle % 360;
+				
+					cw_angle = (cw_angle + 1) % 360;
+				}
+		
+				if(USE_STEADY_AIM == TRUE)
+				{
+					C_RX = get_steady_aim(C_RX, RESOLUTION);
+					C_RY = get_steady_aim(C_RY, RESOLUTION);	
+				}
+			
+				set_val(PS4_RX, clamp(C_RX, -100, 100));
+				set_val(PS4_RY, clamp(C_RY, -100, 100));
+				
+				update_timer += get_rtime();
+			}
+			else
+			{
+				update_timer = 0;
+				update_timer = REFRESH_RATE;
+				
+				angle = 90 * inverted;
+				cw_angle = 90 * inverted;
+				
+				Aim_Assit_1 = min_aim_assit;	
+				Aim_Assit_2 = AIM_ASSIST;
+				
+				if(USE_BALLISTIC_CURVE == TRUE)
+				{
+					set_val(PS4_RX, process_ballistic_curve(C_RX, hip_lim, hip_ax, hip_ay, hip_b, HIP_BALLISTIC_COEF));
+					set_val(PS4_RY, process_ballistic_curve(C_RY, hip_lim, hip_ax, hip_ay, hip_b, HIP_BALLISTIC_COEF));
+				}
+				else
+				{
+					set_val(PS4_RX, C_RX);
+					set_val(PS4_RY, C_RY);
+				}
+			}
+			
+			if(USE_BALLISTIC_CURVE == TRUE)
+			{
+				set_val(PS4_LX, process_ballistic_curve(C_LX, hip_lim, hip_ax, hip_ay, hip_b, HIP_BALLISTIC_COEF));
+				set_val(PS4_LY, process_ballistic_curve(C_LY, hip_lim, hip_ax, hip_ay, hip_b, HIP_BALLISTIC_COEF));
+			}
+			else
+			{
+				set_val(PS4_LX, C_LX);
+				set_val(PS4_LY, C_LY);
+			}
+			
+			if(USE_SLIDE_CANCEL) 
+			{
+			    if(
+			        (get_val(PS4_LY) < -85) || (get_val(PS4_LY) > 85) || 
+			        (get_val(PS4_LX) < -85) || (get_val(PS4_LX) > 85)
+			        ) 
+			    {
+			        slide_enable = 0;
+			        
+			        if(event_release(CROUCH_BUTTON))
+			        {
+			            if (USE_SLIDE_CANCEL == 1) 
+			            {
+			                slide_enable = 1;
+			            }
+			            else if (USE_SLIDE_CANCEL == 2) 
+			            {
+			                if(
+			                ((get_rumble(RUMBLE_A) == 87 || get_rumble(RUMBLE_A) == 26))
+			                )
+			                {
+			                    slide_enable = 1;
+			                }
+			            }
+			            else if (USE_SLIDE_CANCEL == 3) 
+			            {
+			                slide_enable = 2;
+			            }
+			            else if (USE_SLIDE_CANCEL == 4) 
+			            {
+			                if(
+			                ((get_rumble(RUMBLE_A) == 100 || get_rumble(RUMBLE_A) == 36))
+			                )
+			                {
+			                    slide_enable = 2;
+			                }
+			            }
+			        }
+			        
+			        if(slide_enable == 1)
+			           combo_run(CANCEL_SLIDE_MW);
+			        else if(slide_enable == 2)
+			           combo_run(CANCEL_SLIDE_CW); 
+			    } 
+			    
+			    if(USE_HOLD_BREATH)
+				{
+					if(get_val(ADS_BUTTON))
+						set_val(SPRINT_BUTTON,100);
+			
+					if(get_val(PS4_LY) <-90 && get_val(ADS_BUTTON) && get_ptime(ADS_BUTTON) > 200 && combo_running(HOLD_BREATH))
+						combo_stop(HOLD_BREATH);
+			
+					if(event_press(ADS_BUTTON))
+						combo_run(HOLD_BREATH);
+			
+					if(get_val(ADS_BUTTON) && get_lval(SPRINT_BUTTON))
+						set_val(SPRINT_BUTTON,0);
+				}
+			}
+		}
+	}
+}
+
+//#################################################################################################
+
+function get_rumble_evil_ar()
+{	
+	_ret = max(get_rumble(RUMBLE_A),get_rumble(RUMBLE_B));
+	
+	if (_ret > 10 && _ret < 90)
+	{
+		return (_ret - AR_STRENGTH);
+	}
+
+	return 0;
+}
+
+//#################################################################################################
+
+function get_steady_aim( _axis, _resolution)
+{
+	if (_axis >= 0)
+	{
+		_ret = (_axis % _resolution);
+
+		if (_ret >= (_resolution / 2))
+		{
+			_axis = _axis + (_resolution - _ret);
+		}
+		else
+		{
+			_axis -= _ret;
+		}
+	}
+	else
+	{
+		_ret = (_axis % _resolution);
+
+		if (abs(_ret) >= (_resolution / 2))
+		{
+			_axis = _axis - (_resolution + _ret);
+		}
+		else
+		{
+			_axis += abs(_ret);
+		}
+	}
+
+	return _axis;
+}
+
+//#################################################################################################
+
+function process_ballistic_curve(stick_val, lim, ax, ay, b, ballistic_coef)
+{			
+	if(abs(stick_val) <= lim)
+	{
+		_ret = (ballistic_coef * stick_val)/10;
+	}
+	else
+	{
+		_ret = (((abs(stick_val)) * ay)/ax)+b;
+		//_ret /= ax; 
+		//_ret += b;
+		
+		if(ballistic_coef < 0)
+			_ret = inv(_ret);
+		
+		if(stick_val<0)
+			_ret = inv(_ret);
+	}
+	
+	return _ret;
+}
+
+//#################################################################################################
+
+function check_magnitude( _mag, _x_val, _x_lval, _y_val, _y_lval)
+{
+	//set_val(TRACE_3,isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)));
+
+	if (isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)) <= _mag)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+//################################################################################################# 
+
+function get_mvt_direction( _val, _lval)
+{
+	if (abs(_val - _lval) <= 2)
+		return 0;
+
+	if (_val < _lval) //move left
+		return -1;
+
+	if (_val > _lval)
+		return 1;
+
+	return 0;
+}
+
+//################################################################################################# 
+
+function sin(angle)
+{   
+    if(angle <= 90)
+    {             
+        _ret = (Lookup_Table[angle]);
+    }
+    else if (angle <= 180)
+    {      
+        _ret = (Lookup_Table[180 - angle]);
+    }
+    else if (angle <= 270)
+    {
+        _ret = inv(Lookup_Table[angle - 180]);     
+    }
+    else 
+    {
+       	_ret = inv(Lookup_Table[360 - angle]);      
+    }
+    
+    return _ret;
+}
+
+//################################################################################################# 
+
+function cos(angle)
+{   
+    if(angle <= 90)
+    {             
+        _ret = (Lookup_Table[90 - angle]);
+    }
+    else if (angle <= 180)
+    {      
+        _ret = inv(Lookup_Table[angle - 90]);
+    }
+    else if (angle <= 270)
+    {
+        _ret = inv(Lookup_Table[270 - angle]);       
+    }
+    else 
+    {
+        _ret = (Lookup_Table[angle - 270]);       
+    }
+    
+    return _ret;
+}
+
+//################################################################################################# 
+
+function get_polar_coordinate(radius, coef)
+{
+	if(radius > 32)
+	{
+		radius = 32;
+	}
+		
+	return((radius * coef) / 1000);		
+}
+
+//#################################################################################################
+
+combo HOLD_BREATH
+{
+	set_val(SPRINT_BUTTON,0);
+	wait(64);
+	set_val(SPRINT_BUTTON,100);
+	wait(112);
+	set_val(SPRINT_BUTTON,0);
+	wait(112);
+}
+
+//#################################################################################################
+
+combo CANCEL_SLIDE_MW {
+	set_val(CROUCH_BUTTON, 100);
+	wait(MW_Slide_Delay); 
+	set_val(CROUCH_BUTTON, 0);
+	wait(60);
+	set_val(CROUCH_BUTTON, 100);
+	wait(50);
+	set_val(CROUCH_BUTTON, 100);
+	set_val(JUMP_BUTTON, 100);
+	wait(60);
+	set_val(CROUCH_BUTTON, 0);
+	set_val(JUMP_BUTTON, 100);
+	wait(10);
+	set_val(JUMP_BUTTON, 0);
+}
+
+//#################################################################################################
+
+combo CANCEL_SLIDE_CW {
+	set_val(CROUCH_BUTTON, 100);
+    wait(CW_Slide_Delay);
+	set_val(CROUCH_BUTTON, 0);
+	wait(20);
+	set_val(SPRINT_BUTTON, 0);
+	set_val(ADS_BUTTON, 100);
+	wait(10);
+	set_val(ADS_BUTTON, 0);
+	set_val(CROUCH_BUTTON, 100);
+	set_val(SPRINT_BUTTON, 100);
+	wait(20);
+	set_val(CROUCH_BUTTON, 0);
+	set_val(SPRINT_BUTTON, 0);
+	wait(20);
+}
+
+/*
+	This script is protecteted by U.S and International copyright loaws. 
+	Reproduction, sale and distribution of the script without Sami ABADA permission is prohibited.
+		
+						© 2021, Sami ABADA - Sweet EviL, All Rights Reserved
+*/

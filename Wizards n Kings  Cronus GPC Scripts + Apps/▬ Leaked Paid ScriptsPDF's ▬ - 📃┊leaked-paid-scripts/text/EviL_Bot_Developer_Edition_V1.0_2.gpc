@@ -1,0 +1,466 @@
+//#################################################################################################
+//######################################### Sweet_EviL_14 #########################################
+//################################################################################################# 
+//#     _________                      __    ___________     .__.____       ____   _____          #
+//#    /   _____/_  _  __ ____   _____/  |_  \_   _____/__  _|__|    |     /_   | /  |  |         #
+//#    \_____  \\ \/ \/ // __ \_/ __ \   __\  |    __)_\  \/ /  |    |      |   |/   |  |_        #
+//#    /        \\     /\  ___/\  ___/|  |    |        \\   /|  |    |___   |   /    ^   /        #
+//#   /_______  / \/\_/  \___  >\___  >__|   /_______  / \_/ |__|_______ \  |___\____   |         #
+//#           \/             \/     \/               \/                 \/           |__|         #
+//#                                                                                               #
+//#################################################################################################
+//################### © 2021, Sami ABADA - Sweet EviL, All Rights Reserved ########################
+//################################################################################################# 
+/*
+	
+	This script is protecteted by U.S and International copyright loaws. 
+	Reproduction, sale and distribution of the script without Sami ABADA permission is prohibited.
+		
+					© 2021, Sami ABADA - Sweet EviL, All Rights Reserved
+
+
+//#################################################################################################
+*/
+								 	
+const int16 Lookup_Table[] 		= {
+									0, 	 17,  34,  52,  69,  87,  104, 121, 139, 156, 
+									173, 190, 207, 224, 241, 258, 275, 292, 309, 325,
+									342, 358, 374, 390, 406, 422, 438, 453, 469, 484,
+									500, 515, 529, 544, 559, 573, 587, 601, 615, 629,
+									642, 656, 669, 682, 694, 707, 719, 731, 743, 754,
+									766, 777, 788, 798, 809, 819, 829, 838, 848, 857,
+									866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 
+									939, 945, 951, 956, 961, 965, 970, 974, 978, 981,
+									984, 987, 990, 992, 994, 996, 997, 998, 999, 999,
+									1000
+									};								 	
+
+define TIME_BASE			= 4;	// don't change	
+
+define MAX_DRIFT			= 12;	// don't change	if calculated drift is greater than 12, the controller is dead
+
+//################################################################################################# 								 	
+								 	
+define ADS_BUTTON			= PS4_L2;
+define FIRE_BUTTON			= PS4_R2;
+define CROUCH_BUTTON 		= PS4_CIRCLE;  
+define JUMP_BUTTON  		= PS4_CROSS;
+define SWAP_BUTTON			= PS4_TRIANGLE;
+define MELEE_BUTTON			= PS4_R3;
+define SPRINT_BUTTON		= PS4_L3;
+
+int INVERTED				= 0; 	// 1 if you play inveted 
+
+int	USE_RUMBLE 				= FALSE;
+int USE_HAIR_TRIGGER		= TRUE;
+
+//################################################################################################# 
+
+define DISABLED						= 0;
+define USE_RUMBLE_EVIL_AR			= 1;
+define USE_DYNAMIC_EVIL_AR			= 2;
+
+int EVIL_AR							= DISABLED;  // 
+int AR_STRENGTH						= 20;  		// can be negative if you want more ar and use : USE_RUMBLE_EVIL_AR
+
+//################################################################################################# 
+
+int USE_EVIL_BOT					= FALSE;
+
+int	AIM_SLOPE						= 6;
+int	AIM_ASSIST 						= 20;
+
+//################################################################################################# 
+
+int USE_EVIL_STEADY_AIM				= FALSE;
+define RESOLUTION					= 6;
+
+//################################################################################################# 
+
+define MAGNITUDE					= 80;			   // don't change tweak this when you have ar drift issue
+int REFRESH_RATE					= TIME_BASE * 10;  // don't change
+
+//################################################################################################# 			
+
+int update_timer;
+int C_RX;
+int C_RY;
+int C_LX;
+int C_LY;
+int L_RX;
+int L_RY;
+//int T_RX;
+int T_RY;
+int Inc_Dec_State_1;
+int Inc_Dec_State_2;
+int Aim_Assit_1;
+int Aim_Assit_2;
+int angle;
+int _ret;
+//int _temp;
+int mvt_direction;
+//int magnitude_ok;
+int min_aim_assit;
+int cw_angle;
+int inverted;
+int rx_drift;
+int ry_drift;
+int lx_drift;
+int ly_drift;
+int drift_calib;
+
+int _var;
+
+init
+{
+	mvt_direction = 1;
+	min_aim_assit = AIM_ASSIST/2;
+	Aim_Assit_1 = min_aim_assit;	
+	Aim_Assit_2 = AIM_ASSIST;
+	Inc_Dec_State_1 = TRUE;
+	Inc_Dec_State_2 = FALSE;
+	
+    update_timer = REFRESH_RATE;
+	
+	if(INVERTED == 1)
+		inverted = -1;
+	else
+		inverted = 1;
+		
+	angle = 90 * inverted;
+	cw_angle = 90 * inverted;
+			
+	drift_calib = 100;
+}
+
+
+main {
+
+	vm_tctrl(-6);
+	
+	if(drift_calib)
+	{
+		rx_drift = max(rx_drift, abs(get_ival(PS4_RX))+ 2);
+		ry_drift = max(ry_drift, abs(get_ival(PS4_RY))+ 2);
+
+		lx_drift = max(lx_drift, abs(get_ival(PS4_LX))+ 2);
+		ly_drift = max(ly_drift, abs(get_ival(PS4_LY))+ 2);
+
+		rx_drift = min(rx_drift, MAX_DRIFT);
+		ry_drift = min(ry_drift, MAX_DRIFT);
+
+		lx_drift = min(lx_drift, MAX_DRIFT);
+		ly_drift = min(ly_drift, MAX_DRIFT);
+
+		drift_calib--;
+	}
+	else
+	{
+		if(USE_RUMBLE == FALSE)
+		{
+			block_rumble();
+		}
+
+		if(USE_HAIR_TRIGGER)
+		{
+			if(get_ival(PS4_R2) > 10)
+				set_val(PS4_R2, 100);
+
+			if(get_ival(PS4_L2)> 10)
+				set_val(PS4_L2, 100);
+		}
+
+		C_RX = get_ival(PS4_RX);
+		C_RY = get_ival(PS4_RY);
+
+		C_LX = get_ival(PS4_LX);
+		C_LY = get_ival(PS4_LY);
+
+		if(abs(C_RX) <= rx_drift)
+		C_RX = 0;
+
+		if(abs(C_RY) <= ry_drift)
+		C_RY = 0;
+
+		if(abs(C_LX) <= lx_drift)
+		C_LX = 0;
+
+		if(abs(C_LY) <= ly_drift)
+		C_LY = 0;
+
+		if(get_val(ADS_BUTTON) > 50 || get_val(FIRE_BUTTON) > 50)
+		{
+			if(update_timer >= REFRESH_RATE)
+			{
+				block(PS4_RX, REFRESH_RATE);
+				block(PS4_RY, REFRESH_RATE);
+
+				_ret = get_mvt_direction(C_RX, L_RX);
+
+				if(_ret != 0)
+				mvt_direction = _ret;
+
+				//set_val(TRACE_1, mvt_direction);
+
+				if(USE_EVIL_BOT == TRUE)
+				{
+					if(Inc_Dec_State_1 == FALSE)
+					{
+						Aim_Assit_1 -= 1;
+
+						if(Aim_Assit_1 < min_aim_assit)
+						Inc_Dec_State_1 = TRUE;
+					}
+					else
+					{
+						Aim_Assit_1 += 1;
+
+						if(Aim_Assit_1 > AIM_ASSIST)
+						Inc_Dec_State_1 = FALSE;
+					}
+
+					if(Inc_Dec_State_2 == FALSE)
+					{
+						Aim_Assit_2 -= 1;
+
+						if(Aim_Assit_2 < min_aim_assit)
+						Inc_Dec_State_2 = TRUE;
+					}
+					else
+					{
+						Aim_Assit_2 += 1;
+
+						if(Aim_Assit_2 > AIM_ASSIST)
+						Inc_Dec_State_2 = FALSE;
+					}
+				}
+
+				update_timer = 0;
+
+				L_RX = C_RX;
+				L_RY = C_RY;
+			}
+
+			if((EVIL_AR) && ((get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON)> 50)) && check_magnitude(MAGNITUDE, C_RX, L_RX, C_RY, L_RY))
+			{
+				if(EVIL_AR == USE_RUMBLE_EVIL_AR)
+				{
+					T_RY = get_rumble_evil_ar();
+				}
+				else
+				{
+					T_RY = get_dynamic_evil_ar(C_RX, C_RY, AR_STRENGTH);
+				}
+
+				if(inverted == -1)
+				{
+					C_RY += inv(T_RY);
+				}
+				else
+				{
+					C_RY += T_RY;
+				}
+			}
+
+			if(mvt_direction == 1)
+			{
+				C_RX += (get_polar_coordinate(Aim_Assit_1, sin(angle)) + get_polar_coordinate(Aim_Assit_2/2, sin(cw_angle)));
+				C_RY += (get_polar_coordinate(Aim_Assit_2, cos(angle)) + get_polar_coordinate(Aim_Assit_1/2, cos(cw_angle)));
+			}
+			else
+			{
+				C_RX += (get_polar_coordinate(Aim_Assit_1, cos(angle))+ get_polar_coordinate(Aim_Assit_2/2, cos(cw_angle)));
+				C_RY += (get_polar_coordinate(Aim_Assit_2, sin(angle))+ get_polar_coordinate(Aim_Assit_1/2, sin(cw_angle)));
+			}
+
+			angle += AIM_SLOPE;
+			angle = angle % 360;
+
+			cw_angle = (cw_angle + 1) % 360;
+
+			if(USE_EVIL_STEADY_AIM == TRUE)
+			{
+				C_RX = get_steady_aim(C_RX, RESOLUTION);
+				C_RY = get_steady_aim(C_RY, RESOLUTION);
+			}
+
+			set_val(PS4_RX, clamp(C_RX, -100, 100));
+			set_val(PS4_RY, clamp(C_RY, -100, 100));
+
+			update_timer += get_rtime();
+		}
+		else
+		{
+			update_timer = 0;
+			update_timer = REFRESH_RATE;
+
+			angle = 90 * inverted;
+			cw_angle = 90 * inverted;
+
+			Aim_Assit_1 = min_aim_assit;
+			Aim_Assit_2 = AIM_ASSIST;
+
+		}
+	}
+}
+
+//#################################################################################################
+
+function get_rumble_evil_ar()
+{	
+	_ret = max(get_rumble(RUMBLE_A),get_rumble(RUMBLE_B));
+	
+	if (_ret > 10 && _ret < 90)
+	{
+		return (_ret - AR_STRENGTH);
+	}
+
+	return 0;
+}
+
+//#################################################################################################
+
+function get_dynamic_evil_ar(_C_RX, _C_RY, _AR_STRENGTH)
+{	
+	_ret = (get_ptime(FIRE_BUTTON)/ (160));
+	_var = 	(AR_STRENGTH/2) + AR_STRENGTH;				
+	
+	if(_ret > _var)
+		_ret = _var;
+						
+	_ret = _ret +  _AR_STRENGTH - ((abs(_C_RX * _C_RX) + abs(_C_RY * _C_RY))/1000) ;
+
+	return _ret;
+}
+						
+//#################################################################################################
+
+function get_steady_aim( _axis, _resolution)
+{
+	if (_axis >= 0)
+	{
+		_ret = (_axis % _resolution);
+
+		if (_ret >= (_resolution / 2))
+		{
+			_axis = _axis + (_resolution - _ret);
+		}
+		else
+		{
+			_axis -= _ret;
+		}
+	}
+	else
+	{
+		_ret = (_axis % _resolution);
+
+		if (abs(_ret) >= (_resolution / 2))
+		{
+			_axis = _axis - (_resolution + _ret);
+		}
+		else
+		{
+			_axis += abs(_ret);
+		}
+	}
+
+	return _axis;
+}
+
+//#################################################################################################
+
+function check_magnitude( _mag, _x_val, _x_lval, _y_val, _y_lval)
+{
+	//set_val(TRACE_3,isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)));
+
+	if (isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)) <= _mag)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+//################################################################################################# 
+
+function get_mvt_direction( _val, _lval)
+{
+	if (abs(_val - _lval) <= 2)
+		return 0;
+
+	if (_val < _lval) //move left
+		return -1;
+
+	if (_val > _lval)
+		return 1;
+
+	return 0;
+}
+
+//################################################################################################# 
+
+function sin(angle)
+{   
+    if(angle <= 90)
+    {             
+        _ret = (Lookup_Table[angle]);
+    }
+    else if (angle <= 180)
+    {      
+        _ret = (Lookup_Table[180 - angle]);
+    }
+    else if (angle <= 270)
+    {
+        _ret = inv(Lookup_Table[angle - 180]);     
+    }
+    else 
+    {
+       	_ret = inv(Lookup_Table[360 - angle]);      
+    }
+    
+    return _ret;
+}
+
+//################################################################################################# 
+
+function cos(angle)
+{   
+    if(angle <= 90)
+    {             
+        _ret = (Lookup_Table[90 - angle]);
+    }
+    else if (angle <= 180)
+    {      
+        _ret = inv(Lookup_Table[angle - 90]);
+    }
+    else if (angle <= 270)
+    {
+        _ret = inv(Lookup_Table[270 - angle]);       
+    }
+    else 
+    {
+        _ret = (Lookup_Table[angle - 270]);       
+    }
+    
+    return _ret;
+}
+
+//################################################################################################# 
+
+function get_polar_coordinate(radius, coef)
+{
+	if(radius > 32)
+	{
+		radius = 32;
+	}
+		
+	return((radius * coef) / 1000);		
+}
+
+
+/*
+	This script is protecteted by U.S and International copyright loaws. 
+	Reproduction, sale and distribution of the script without Sami ABADA permission is prohibited.
+		
+						© 2021, Sami ABADA - Sweet EviL, All Rights Reserved
+*/
