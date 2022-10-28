@@ -1,0 +1,346 @@
+/*		    36936936936936936
+            36936936936936936				8888888b.            .d8888b.       88888888888 888               8888888888 d8b  .d8888b.  888  88888888888       8888888b. 
+            369369369369369369				888  "Y88b          d88P  Y88b          888     888               888        Y8P d88P  Y88b 888      888           888   Y88b
+           36936936936936933693				888    888          888    888          888     888               888            888    888 888      888           888    888
+		  3693693693693693693693			888    888  .d88b.  888        88888888 888     88888b.   .d88b.  8888888    888 888        88888b.  888   .d88b.  888   d88P
+         369369369369369369369369			888    888 d88""88b 888  88888    d88P  888     888 "88b d8P  Y8b 888        888 888  88888 888 "88b 888  d8P  Y8b 8888888P"
+         3693693693693693693693699			888    888 888  888 888    888   d88P   888     888  888 88888888 888        888 888    888 888  888 888  88888888 888 T88b
+        3693693693693693693693699369		888    888 888  888 888    888  d88     888     888  888 888""""  888        888 888    888 888  888 888  888""""  888  T88b
+       36936939693693693693693693693693		8888888P"   "Y88P"   "Y8888P88 88888888 888     888  888  "Y8888  888        888  "Y8888P88 888  888 888   "Y8888  888   T88b
+     3693693693693693693693693693693636936	 \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+   36936936936936936936936936936   369369369  \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+  36936   369336936369369369369        36936   \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+ 36936   36936 369369336936936					\|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+36933   36936  36936   3693636					 \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+693    36936  36936     369363					  \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/	
+      36936  36936      369369					   \|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||/
+     36936   36936       36936
+     36936   36936        36936
+     36936   36936        36936
+      369    36936          369
+		   	  369	
+	DoGz PoLaR ProGReSSioN V2.00
+	
+	PROGRESSION RADIUS & PROGRESSION ANGLE WORKS WITH ADS OR FIRE BUTTONS
+	
+	MENU ON = HOLD L2/LT & PRESS PS/XBOX BUTTON 
+	WHILE IN MENUS PRESS UP OR DOWN TO CHANGE VALUE/TIME OR HOLD FOR FAST SCROLL
+	PRESS LEFT TO SWITCH TO THE PREVIOUS VALUE (-) 
+	PRESS RIGHT TO SWITCH TO THE NEXT VALUE (+)
+
+	PRESS TRIANGLE OR CIRCLE TO EXIT MENUS AT ANY TIME OR IT WILL SWITCH ITSELF OFF AFTER 25 SECONDS	*/
+	
+	// DO NOT TOUCH \\ 
+	const uint8 FONT_STATS [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }}; 
+	const uint8 REFERENCE [] = {48,49,50,51,52,53,54,55,56,57};	
+
+	const string A   = " RADIUS MINIMUM";
+	const string B   = " RADIUS MAXIMUM";
+	const string C   = "RADIUS INCREMENT";
+	const string D   = "  ANGLE MINIMUM";
+	const string E   = "  ANGLE MAXIMUM";
+	const string F   = " ANGLE INCREMENT";
+	const string G   = "  POLAR RELEASE";
+	const string MENU1  = "MENU1";
+	const string MOD1   = "MOD1";
+	const string MOD2   = "MOD2";
+	const string MOD3   = "MOD3";
+	const string MOD4   = "MOD4";
+	const string MOD5   = "MOD5";
+	const string MOD6   = "MOD6";
+	const string MOD7   = "MOD7";
+	const string MODS   = " < >";
+	const string VALUE  = "v";
+	const string VALUE1 = "^";
+	const string MODE0  = " CIRCLE TO EXIT";
+	const string MODE1  = "TRIANGLE TO EXIT";
+	const string MODES  = " 8)";
+	
+	// DO NOT TOUCH \\
+	define SMALL = 0,MEDIUM = 1,LARGE = 2,TEXT_HORIZONTAL = 5,TEXT_VERTICAL = 8,OLED_W = 127,OLED_H = 63,START = 0,SINGLE = 1;  
+	define FONT_W = 0,FONT_H = 1,FONT_L = 2,FONT_VERTICAL = 25,BLACK = 0,WHITE = 1,UNFILL = 0,FILL = 1,THICKNESS = 2,NEG = 45;
+
+	// DO NOT TOUCH \\
+	define ON  = TRUE;
+	define OFF = FALSE;
+	
+	// DO NOT TOUCH \\
+	define MENU_TIMEOUT_  = 25000;
+	define IDX_MIN = 1,IDX_MAX = 7;
+	
+	// DO NOT TOUCH \\
+	define POLAR = TRUE;
+	define PXS   = FALSE;
+	define PYS   = FALSE;
+	
+	// DO NOT TOUCH \\
+	int   PPFX  = PXS;    
+	int   PPFY  = PYS;    
+	int   PVID;      
+	int   PFD   = TRUE;  
+	int   PPFD  = TRUE; 
+	int   MENU,CHANGE,AA,IDX,SHUNT,MENU_TIMEOUT,COUNT,ADJUST,NO = ON;
+	
+	// PRE GAME CONFIG SETTINGS \\ (ADJUST IN MENU VIA ZEN ALSO)
+	// |ROW1_DEFAULT|   ROW2_MINIMUM__________|   ROW3_MAXIMUM___|___VALUE REFERENCE____|
+	int PXA   =    5;   define PXA_MIN  =    1,   PXA_MAX  =   20;// POLAR RADIUS MINIMUM VALUE
+	int PXSE  =   15;   define PXSE_MIN =    1,   PXSE_MAX =   40;// POLAR RADIUS MAXIMUM VALUE  
+	int PVSI  =    1;   define PVSI_MIN =    1,   PVSI_MAX =    5;// POLAR RADIUS INCREMENT VALUE
+	
+	int PYA   = -200;   define PYA_MIN  = -360,   PYA_MAX  =  360;// POLAR ANGLE MINIMUM
+	int PYSE  =  200;   define PYSE_MIN = -360,   PYSE_MAX =  360;// POLAR ANGLE MAXIMUM
+	int PVS   =   20;   define PVS_MIN  =    5,   PVS_MAX  =   80;// POLAR ANGLE INCREMENT VALUE
+	
+	int REL   =   20;   define REL_MIN  =   10,   REL_MAX  =   40;// POLAR RELEASE
+	
+	define ADS  = PS4_L2;
+	define FIRE = PS4_R2;
+
+main {
+
+	if (POLAR){		
+		
+    if (get_ival(ADS) || get_ival(FIRE)) {
+    if (abs(get_ival(PS4_RX)) < REL && abs(get_ival(PS4_RY)) < REL) {
+    		
+    	PPFX = PolarFlow(PPFX,PXS + PXA,PXSE,PVSI,PFD,1);
+        PPFY = PolarFlow(PPFY,PYS + PYA,PYSE,PVS,PPFD,2);
+       	    
+   		set_polar(POLAR_RS,PPFY,(abs(get_ival(POLAR_RX)) + abs(get_ival(POLAR_RY))) / 4 + 327 * PPFX);
+   			}
+   		}
+    }
+    if (get_ival(PS4_L2) && event_press(PS4_OPTIONS)) {
+		MENU = ON;
+		AA = ON;
+		IDX = ON;
+		NAME();
+		SHUNT = PS4_OPTIONS;
+	}
+	if (MENU) {
+	if (AA) { 	
+		MENU_TIMEOUT += get_rtime();
+	}
+	if (get_ival(PS4_UP) || get_ival(PS4_DOWN) || get_ival(PS4_LEFT) || get_ival(PS4_RIGHT)) {
+		MENU_TIMEOUT = OFF;
+	}
+	if (MENU_TIMEOUT >= MENU_TIMEOUT_ || event_press(PS4_TRIANGLE) || event_press(PS4_CIRCLE)) {
+		cls_oled(BLACK);
+		MENU = OFF;
+		AA = OFF;
+		IDX = OFF;
+		combo_stop (EXIT);
+		MENU_TIMEOUT = OFF;
+		SHUNT = PS4_CIRCLE;
+	}
+	if (AA) {
+		IDX = ADJUSTA(IDX,IDX_MIN,IDX_MAX,SINGLE,IDX);
+	if (IDX == 1) {
+		PXA = ADJUST(PXA,PXA_MIN,PXA_MAX,SINGLE,IDX);
+    }
+	if (IDX == 2) {
+		PXSE = ADJUST(PXSE,PXSE_MIN,PXSE_MAX,SINGLE,IDX);
+    }
+	if (IDX == 3) {
+		PVSI = ADJUST(PVSI,PVSI_MIN,PVSI_MAX,SINGLE,IDX);
+    }
+	if (IDX == 4) {
+		PYA = ADJUST(PYA,PYA_MIN,PYA_MAX,SINGLE,IDX);
+    }
+	if (IDX == 5) {
+		PYSE = ADJUST(PYSE,PYSE_MIN,PYSE_MAX,SINGLE,IDX);
+    }
+	if (IDX == 6) {
+		PVS = ADJUST(PVS,PVS_MIN,PVS_MAX,SINGLE,IDX);
+    }
+	if (IDX == 7) {
+		REL = ADJUST(REL,REL_MIN,REL_MAX,SINGLE,IDX);
+    		}
+		}
+	BLOCK(PS4_DOWN); BLOCK(PS4_UP); BLOCK(PS4_LEFT); BLOCK(PS4_RIGHT);
+	}
+	if (SHUNT) {
+	if (event_release(SHUNT)) {
+		SHUNT = OFF;
+	}
+	else {
+		set_val (SHUNT,OFF);
+		}
+	}
+}
+
+combo EXIT {
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 40,SMALL,WHITE,MODE0[START]);
+	wait(500);
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 40,SMALL,WHITE,MODE1[START]);
+}    
+
+function BLOCK (BUTTON) {
+if (!get_ival(BUTTON)) 
+		return; 
+	set_val(BUTTON,OFF);
+}
+
+function PolarFlow(PFB,PSV,PFV,PV,PF,PID) {
+if(PF) {
+	PFB += PV;
+if(PFB <= PFV)  
+    return PFB;
+if(PFB > PFV) {
+	PVID[PID] = 0;
+		return PFB - PV;
+    }
+}
+else {
+	PFB -= PV;    
+if(PFB >= PSV)  
+	return PFB;
+if(PFB < PSV) {
+	PVID[PID] = 1; 
+		return PFB + PV;
+	}
+} 
+   	return FALSE;    
+}  
+
+function NAME () {
+	cls_oled(BLACK);
+if (AA == ON) {
+	GRID ();
+	printf(TEXT_HORIZONTAL + 83,TEXT_VERTICAL + 15,SMALL,WHITE,MENU1[START]);
+	CHANGE = OFF;
+	combo_run (EXIT); 
+if (IDX == 1) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,A[START]);
+	EDITNUMBER(PXA,NUMBER(PXA));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD1[START]);
+}
+if (IDX == 2) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,B[START]);
+	EDITNUMBER(PXSE,NUMBER(PXSE));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD2[START]);
+}
+if (IDX == 3) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,C[START]);
+	EDITNUMBER(PVSI,NUMBER(PVSI));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD3[START]);
+}
+if (IDX == 4) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,D[START]);
+	EDITNUMBER(PYA,NUMBER(PYA));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD4[START]);
+}
+if (IDX == 5) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,E[START]);
+	EDITNUMBER(PYSE,NUMBER(PYSE));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD5[START]);
+}
+if (IDX == 6) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,F[START]);
+	EDITNUMBER(PVS,NUMBER(PVS));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD6[START]);
+}
+if (IDX == 7) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,G[START]);
+	EDITNUMBER(REL,NUMBER(REL));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD7[START]);
+		}
+	}
+}
+
+function GRID () {
+	line_oled(OLED_W - 3,START + 20,START + 4,START + 20,THICKNESS,WHITE);
+	rect_oled(START + 1,START + 1,OLED_W,OLED_H,UNFILL,WHITE);
+	rect_oled(START + 4,START + 3,OLED_W - 6,OLED_H - 4,UNFILL,WHITE);
+	rect_oled(START + 7,OLED_H - 17,OLED_W - 12,START + 13,UNFILL,WHITE);
+	rect_oled(START + 5,START + 20,OLED_H - 31,START + 22,UNFILL,WHITE);
+	rect_oled(OLED_W - 40,START + 23,OLED_H - 25,START + 22,UNFILL,WHITE);
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL + 23,SMALL,WHITE,MODS[START]);
+	printf(TEXT_HORIZONTAL + 74,TEXT_VERTICAL + 18,SMALL,WHITE,VALUE1[START]);
+	printf(TEXT_HORIZONTAL + 74,TEXT_VERTICAL + 24,SMALL,WHITE,VALUE[START]);
+	printf(TEXT_HORIZONTAL + 87,TEXT_VERTICAL + 25,SMALL,WHITE,MODES[START]);
+}
+
+function ADJUST (VALUE,MIN,MAX,AMOUNT,INDEX) {
+if (event_press(PS4_UP) || get_ival (PS4_UP) && get_ptime (PS4_UP) >= 250) {
+	CHANGE = ON;
+	VALUE += AMOUNT;
+		return VALUE;
+    }
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(PS4_DOWN) || get_ival (PS4_DOWN) && get_ptime (PS4_DOWN) >= 250) {
+	CHANGE = ON;
+	VALUE -= AMOUNT;
+		return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (CHANGE == ON && INDEX == IDX) {
+	NAME();
+	}		
+	return VALUE;
+}
+
+function ADJUSTA (VALUE,MIN,MAX,AMOUNT,INDEX) {
+if (event_press(PS4_RIGHT)) {
+	CHANGE = ON;
+	VALUE += AMOUNT;
+	return VALUE;
+	}
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(PS4_LEFT)) {
+	CHANGE = ON;
+	VALUE -= AMOUNT;
+	return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (CHANGE == ON && INDEX == IDX) {
+	NAME();
+	}		
+	return VALUE;
+}
+
+function EDITNUMBER (DIGIT,FDIGIT) {
+if (DIGIT < START) {
+	putc_oled(NO,NEG);
+	NO += 1;
+	DIGIT = abs(DIGIT);
+	COUNT = ON;
+	}
+else 
+	COUNT = START;
+if (FDIGIT >= 3) {
+	putc_oled(NO,REFERENCE[DIGIT / 100]);
+	DIGIT = DIGIT % 100;
+	NO +=  1;
+	}
+if (FDIGIT >= 2) {
+	putc_oled(NO,REFERENCE[DIGIT / 10]);
+	DIGIT = DIGIT % 10;
+	NO += 1;
+	}
+	putc_oled(NO,REFERENCE[DIGIT]);
+	puts_oled(CENTER(FDIGIT + COUNT,FONT_H),FONT_VERTICAL,MEDIUM,NO,WHITE);    
+	NO = ON;
+} 
+function NUMBER (NUM) {
+    NUM = abs(NUM);
+if (NUM /  100 > START) 
+	return 3;
+if (NUM /   10 > START) 
+	return 2;
+		return 1;
+}    
+
+function CENTER (CHAR,SIZE) {
+    ADJUST = CHAR * FONT_STATS[SIZE][FONT_W];
+    ADJUST = (OLED_W - ADJUST) / FONT_L;
+		return ADJUST;
+}

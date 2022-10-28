@@ -1,0 +1,205 @@
+//Posted by Taylordrift21, a member of the Cronus Community - https://cronusmax.com/forums
+ 
+//Posted : Saturday 12th of June, 2021 17:56 UTC  
+ 
+ 
+/*
+___________                .__                   ________           .__   _____   __   ________   ____ 
+\__    ___/_____    ___.__.|  |    ____  _______ \______ \  _______ |__|_/ ____\_/  |_ \_____  \ /_   |
+  |    |   \__  \  <   |  ||  |   /  _ \ \_  __ \ |    |  \ \_  __ \|  |\   __\ \   __\ /  ____/  |   |
+  |    |    / __ \_ \___  ||  |__(  <_> ) |  | \/ |    `   \ |  | \/|  | |  |    |  |  /       \  |   |
+  |____|   (____  / / ____||____/ \____/  |__|   /_______  / |__|   |__| |__|    |__|  \_______ \ |___|
+                \/  \/                                   \/                                    \/   
+                
+                			DontAtMe Polar Aim Assist With Taylor Shapes
+                			
+                							v1.00
+                							
+Script Credits = TaylorDrift21 && DoNotAtMe 
+ 
+ 
+=================================================================
+***  D E S C R I P T I O N  F O R  T H E  A I M  A S S I S T  ***
+=================================================================
+ 
+ 
+TaylorRadius       = Strength Of The Aim Assist ( Higher the Value more Screen Shake ) 
+ 
+ 
+TaylorAngle        = Speed Of The Aim Assist ( Higher the value faster it draws the shape ) 
+ 
+ 
+TaylorRadiusMin    = Used with Shapes Like ( Tall Oval = 2 , Wide Oval = 3, Spiral = 4 ) This is how much the shape is reduced to ) 
+ 
+ 
+ToggleRumbleBoost  = If you want more strength of Aim Assist when Firing your weapon turn this ON, this works from Rumble Detection. 
+ 
+ 
+TaylorAngleBoost   = When Boost Enabled, adjust the value higher/lower for more speed when firing. 
+ 
+ 
+PolarBoost         = When Boost Enabled, adjust the value higher/lower for more AimAssist Strength when Firing.
+ 
+ 
+ToggleTaylorAssist = 0 = OFF        ( Choose your Shape ) 
+                   = 1 = Circular 
+                   = 2 = Tall Oval
+                   = 3 = Wide Oval
+                   = 4 = Spiral
+                   = 5 = Helix 
+ 
+
+Adjust Your Values Below... 
+ 
+ 
+*/
+int ToggleTaylorAssist =  5;     // Choose your shape  
+int TaylorRadius       = 15;           
+int TaylorAngle        = 15;
+int TaylorRadiusMin    =  5;
+ 
+ 
+// Toogle and Values for Boost...
+int ToggleRumbleBoost  = TRUE;   // Change to TRUE; , if you want BOOST
+int TaylorAngleBoost   = 5;      // For Boost ONLY 
+int PolarBoost         = 10;     // For Boost ONLY  
+ 
+ 
+// Change The Triggers Here If you Play Flipped \\
+define Ads = PS4_L2; 
+define Fire = PS4_R2;
+ 
+ 
+// Everything Below you do not need to touch!! \\
+define True = TRUE;
+define False = FALSE; 
+int RX,RY,angle,CosAngle,SinAngle,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,PolarStrength,Angle;
+const int8 DamPolar[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,    
+80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7, 
+6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,  
+-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, 
+-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,   
+-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, 
+-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,
+9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,
+82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};  
+ 
+ 
+main { 
+ 
+ 
+		if(ToggleTaylorAssist) 
+	    {      
+			RX = get_val(PS4_RX);                                
+    		RY = get_val(PS4_RY); 
+  			ActualMagnitude = isqrt(pow(RX, 2) + pow(RY, 2));   
+  			MaxMagnitude = (ActualMagnitude < 100);             
+ 
+			angle += TaylorAngle + Angle;                                    
+			angle = angle % 360;  
+			CosAngle = DamPolar[(angle + 270) % 360];  
+			SinAngle = DamPolar[angle % 360];
+ 
+   		   	if(ToggleRumbleBoost)
+    		{
+    			if(get_ival(Fire))
+    			{
+    				SmartRumble = get_rumble(RUMBLE_A);
+    				Angle = TaylorAngleBoost;
+ 
+    		    	if(SmartRumble > 10 && SmartRumble < 40) 
+    		    	{
+    				    PolarStrength  = (TaylorRadius + PolarBoost + TaylorAngleBoost + SmartRumble / 10); 
+    					SmartRumble    = 0;
+    				}
+    	    	}
+    		}
+    		if(get_ival(Ads) || get_ival(Fire))         
+    		{
+        		if(ActualMagnitude < TaylorRadius)           
+        		{
+           			SinAngle -= RY;                                                              
+					CosAngle -= RX;
+	    		}
+	   			else 
+	   			{     
+					SinAngle = (SinAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;  
+					CosAngle = (CosAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;   
+				}                                                  
+				if(!get_rumble(RUMBLE_A))
+    				GetShapes(TaylorRadius); 
+    			else 
+    				GetShapes(PolarStrength); 
+				}
+				PolarStrength = 0; 
+    			SmartRumble   = 0;  
+			}
+		}
+int Position;   
+function GetShapes(f_var) {     
+ 
+    if(!SpiralPosition1)                                
+	{
+		InnerSpiral -= 1;
+		if(InnerSpiral < TaylorRadiusMin)
+			SpiralPosition1 = True;
+	}
+	else
+	{
+	    InnerSpiral += 1;
+		if(InnerSpiral > f_var)
+			SpiralPosition1 = False;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+		if(OuterSpiral < TaylorRadiusMin)
+			SpiralPosition2 = True;
+	}
+	else
+	{
+		OuterSpiral += 1;
+		if(OuterSpiral >  f_var)
+			SpiralPosition2 = False;
+	} 
+	if(ToggleTaylorAssist == 1)                    
+	{ 
+        RY = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+        RX = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;  
+	} 
+	if(ToggleTaylorAssist == 2)        
+	{ 
+        RY = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+        RX = (get_val(PS4_RX))  + ( (CosAngle * TaylorRadiusMin) )/100; 
+	}
+	if(ToggleTaylorAssist == 3)                     
+	{ 
+        RX = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;  
+        RY = (get_val(PS4_RY))  + ( (SinAngle * TaylorRadiusMin) )/100;
+ 
+	} 
+	if(ToggleTaylorAssist == 4)                  
+	{
+        RY = (get_val(PS4_RY))  + ( (SinAngle * InnerSpiral) )/100;
+        RX = (get_val(PS4_RX))  + ( (CosAngle * OuterSpiral) )/100;  
+	}
+    if(ToggleTaylorAssist == 5)
+	{
+		if(Position == 0 || Position == 1)
+    	{  
+		    RX = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;
+		}
+	    if(Position == 2 || Position == 3)
+		{  
+		    RY = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+		}
+			Position++;		
+ 
+		if(Position == 4)
+		{
+			Position = 0;
+		}
+    } 
+    set_val(PS4_RX,RX);
+    set_val(PS4_RY,RY);
+}

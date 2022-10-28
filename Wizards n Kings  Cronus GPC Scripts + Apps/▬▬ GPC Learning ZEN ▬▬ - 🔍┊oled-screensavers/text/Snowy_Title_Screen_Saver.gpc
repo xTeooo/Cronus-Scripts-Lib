@@ -1,0 +1,109 @@
+// SNOWY TITLE SCREEN SAVER
+
+const string MiscString  [] = {"","DoGzTheFiGhTeR's","Zen Designer v1.0"};
+int Timer,Snow_x,Snow_y,Snow_t,Snow_c = 1;
+
+int Saver = TRUE;
+define TimeoutLimit = 30000; // Milliseconds (1000 = 1 second)
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+init {
+	cls_oled(0);
+}
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+
+	/*
+	ADD ADDITIONAL CODE HERE
+	*/
+	
+	if (!Saver && event_press(PS4_CROSS)) { // A Command which will re-trigger the screen saver
+		cls_oled(0);
+		Saver = TRUE;
+	}
+	
+	if (Saver) { 
+        Timer += get_rtime();
+        Saver ();
+    } 
+	
+	if (Timer >= TimeoutLimit) {
+    	Saver = FALSE;
+    	Timer = 0;
+    	cls_oled(0);
+    }
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+	/*
+	ADD ADDITIONAL CODE HERE
+	*/
+
+combo Snow { 
+
+	if (Snow_c) {
+    	Snow_x = random(1,128); 
+     	Snow_x = random(1,128); 
+     	Snow_y = random(1,64);
+     	Snow_y = random(1,64);
+    }
+    	else {
+    	     Snow_x = random(1,128); 
+     	     Snow_x = random(1,128);
+     	     Snow_x = random(1,128); 
+     	     Snow_y = random(1,64);
+     	     Snow_y = random(1,64);
+     	     Snow_y = random(1,64);
+     	}
+} 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+	/*
+	ADD ADDITIONAL CODE HERE
+	*/
+
+function Saver () {
+    
+    if (Saver) { 
+        
+        pixel_oled(Snow_x,Snow_y,Snow_c);
+        pixel_oled(Snow_x,Snow_y,Snow_c);
+        combo_run(Snow);      
+        Snow_t += get_rtime(); 
+              
+        if (Snow_c && Snow_t == 5000) { 
+            printf(5,15,0,0,MiscString[1]); 
+            printf(5,30,0,0,MiscString[2]); 
+            Snow_t = 0; 
+            Snow_c = 0; 
+       }  
+                
+             else if (!Snow_c && Snow_t == 5000) { 
+                printf(5,15,0,1,MiscString[1]); 
+                printf(5,30,0,1,MiscString[2]); 
+                Snow_t = 0; 
+                Snow_c = 1; 
+              } 
+    } 
+}

@@ -1,0 +1,123 @@
+/* 	Made By Batts 
+	Identify console and controller inputs
+   	Display name of any reported value from controller 
+*/
+int boot_delay = 100;
+int button_id[4];
+int button_idx,buffer_idx,idx_count;
+int i,j;
+
+main {
+
+    if(boot_delay) {
+        boot_delay -= get_rtime();
+        if(!boot_delay) {
+            oled_setup();
+        }
+    }else{
+        button_idx = get_button();
+        if(button_idx) {
+            rect_oled(10,28,108,30,TRUE,BLACK);
+            idx_count = button_idx;
+            buffer_idx = 1;
+            for(j = 0; j <  button_idx; j++) {
+        		for(i = 1; i <= BUTTON[button_id[j]][0]; i++) {
+        	    	putc_oled(buffer_idx,BUTTON[button_id[j]][i]);
+        	    	buffer_idx++;
+        		}
+        		idx_count--;
+        		if(idx_count) {
+        		    putc_oled(buffer_idx,32);
+        			buffer_idx++;
+        		}
+        	 }
+        	 puts_oled((OLED_WIDTH / 2) - (buffer_idx * MEDIUM_FONT_WIDTH / 2),35,MEDIUM,buffer_idx - 1,WHITE);
+        }else{
+            rect_oled(10,28,108,30,TRUE,BLACK);
+        }
+    }
+}
+
+int btn_idx;
+
+function get_button() {
+    btn_idx = 0;
+	for(i = 0; i <= 20; i++) {
+	    if(abs(get_val(i)) > 10) {
+	        set_val(i,0);
+	    	button_id[btn_idx] = i;    
+            btn_idx++;
+            if(btn_idx > 4) {
+                break;
+            }
+        }
+    }
+    return btn_idx;
+}
+
+const string CONSOLE = "Console:";
+const string CONTROLLER = "Controller:";
+const string PS4 ="PS4";
+const string XB1 = "XB1";
+
+function oled_setup() {
+	cls_oled(BLACK);
+	printf(2,0,SMALL,WHITE,CONSOLE[0]);
+	printf(2,12,SMALL,WHITE,CONTROLLER[0]);
+	if(get_console() == PIO_PS4) {
+	    printf(sizeof(CONSOLE) * SMALL_FONT_WIDTH + 1,0,SMALL,WHITE,PS4[0]);
+	}else if(get_console() == PIO_XB1) {
+		printf(sizeof(CONSOLE) * SMALL_FONT_WIDTH + 1,0,SMALL,WHITE,XB1[0]); 
+	}
+	if(get_controller() == PIO_PS4) {
+		printf(sizeof(CONTROLLER) * SMALL_FONT_WIDTH + 1,12,SMALL,WHITE,PS4[0]); 
+	}else if(get_controller() == PIO_XB1) {
+		printf(sizeof(CONTROLLER) * SMALL_FONT_WIDTH + 1,12,SMALL,WHITE,XB1[0]); 
+	}
+} 
+
+define  _0 = 48,   _A = 65,   _K = 75,   _U =  85,   _e = 101,   _o = 111,   _y = 121;    
+define  _1 = 49,   _B = 66,   _L = 76,   _V =  86,   _f = 102,   _p = 112,   _z = 122;   
+define  _2 = 50,   _C = 67,   _M = 77,   _W =  87,   _g = 103,   _q = 113;           
+define  _3 = 51,   _D = 68,   _N = 78,   _X =  88,   _h = 104,   _r = 114;              
+define  _4 = 52,   _E = 69,   _O = 79,   _Y =  89,   _i = 105,   _s = 115;             
+define  _5 = 53,   _F = 70,   _P = 80,   _Z =  90,   _j = 106,   _t = 116;              
+define  _6 = 54,   _G = 71,   _Q = 81,   _a =  97,   _k = 107,   _u = 117;              
+define  _7 = 55,   _H = 72,   _R = 82,   _b =  98,   _l = 108,   _v = 118;              
+define  _8 = 56,   _I = 73,   _S = 83,   _c =  99,   _m = 109,   _w = 119;              
+define  _9 = 57,   _J = 74,   _T = 84,   _d = 100,   _n = 110,   _x = 120;  
+	
+define BLACK  = 0;
+define WHITE  = 1;
+define SMALL  = 0;
+define MEDIUM = 1;
+define LARGE  = 2;
+
+define SMALL_FONT_WIDTH = 7;
+define SMALL_FONT_HEIGHT = 10;
+define MEDIUM_FONT_WIDTH  = 11;
+define MEDIUM_FONT_HEIGHT = 18;
+
+const byte BUTTON[][] = {
+	{4, _X, _B, _O, _X,  0},
+	{4, _V, _I, _E, _W,  0},
+	{4, _M, _E, _N, _U,  0},
+	{2, _R, _B,  0,  0,  0},
+	{2, _R, _T,  0,  0,  0},
+	{2, _R, _S,  0,  0,  0},
+	{2, _L, _B,  0,  0,  0},
+	{2, _L, _T,  0,  0,  0},
+	{2, _L, _S,  0,  0,  0},
+	{2, _R, _X,  0,  0,  0},
+	{2, _R, _Y,  0,  0,  0},
+	{2, _L, _X,  0,  0,  0},
+	{2, _L, _Y,  0,  0,  0},
+	{2, _U, _P,  0,  0,  0},
+	{4, _D, _O, _W, _N,  0},
+	{4, _L, _E, _F, _T,  0},
+	{5, _R, _I, _G, _H, _T},
+	{1, _Y,  0,  0,  0,  0},
+	{1, _B,  0,  0,  0,  0},
+	{1, _A,  0,  0,  0,  0},
+	{1, _X,  0,  0,  0,  0} 
+};

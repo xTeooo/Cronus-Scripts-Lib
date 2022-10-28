@@ -1,0 +1,195 @@
+//######################################### Sweet_EviL_14 #########################################
+//#############################################5.30################################################ 
+//################################################################################################# 
+//#######################################  Script parameters ###################################### 
+//#################################################################################################	
+	define Sampling_Time = 10;
+
+	define Aim_Boost = 7;
+
+	define Aim_Correction = 12;
+
+	define Aim_Perfection_Limit = 30;
+
+	define POS_Aim_Limit = 70;
+	define NEG_Aim_Limit = -70;
+
+	define POS_Micro_MVT_Limit = 25;
+	define NEG_Micro_MVT_Limit = -25;
+
+	int X_Last_Value     = 0;
+	int Y_Last_Value     = 0;
+	int X_Current_Value  = 0;
+	int Y_Current_Value  = 0;
+	int Sampling_Done = FALSE;
+
+	int spiroide_pulse = 0;
+	int fine_pulse = 0;
+
+
+	int Joystick_calibration = FALSE;
+	int RX_Axis_Joystick_calibrate = 0; 
+	int RY_Axis_Joystick_calibrate = 0;
+
+
+   	
+   	
+   	
+main {
+ 
+	 vm_tctrl(-2);
+	 
+   if (Joystick_calibration == FALSE){
+       RX_Axis_Joystick_calibrate = get_val(PS4_RX); 
+       RY_Axis_Joystick_calibrate = get_val(PS4_RY); 
+       Joystick_calibration = TRUE;}     
+       X_Last_Value = X_Current_Value;
+       Y_Last_Value = Y_Current_Value;
+       X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+       Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate;
+   if(get_val(PS4_L2)){ 
+   if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit){    
+   if(abs(X_Last_Value - X_Current_Value) < 15){
+       combo_stop(Aim_Assist_Perfection);
+       Sampling_Done = FALSE;
+   if(get_val(PS4_R2) > 95){ 
+        combo_stop(Fine_Tune_Aim);
+        fine_pulse = 0;
+        combo_run(spiroide_Aim_Assit);}
+   else{
+        combo_stop(spiroide_Aim_Assit);
+        spiroide_pulse = 0;
+        combo_run(Fine_Tune_Aim);}}}
+   else if(abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit){ 
+        combo_stop(Fine_Tune_Aim);
+        combo_stop(spiroide_Aim_Assit);
+        spiroide_pulse = 0;
+        fine_pulse = 0;
+        combo_run(Aim_Assist_Perfection);}}
+    else {
+        combo_stop(Fine_Tune_Aim);
+        combo_stop(spiroide_Aim_Assit);
+        combo_stop(Aim_Assist_Perfection);
+        spiroide_pulse = 0;
+        fine_pulse = 0;
+        Sampling_Done = FALSE;}}    
+            
+
+combo Aim_Assist_Perfection{ 
+    X_Last_Value = X_Current_Value
+    Y_Last_Value = Y_Current_Value
+    wait(Sampling_Time);
+    X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+    Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE ){
+    Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+    Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 );} 
+    X_Last_Value = X_Current_Value;
+    Y_Last_Value = Y_Current_Value;
+    wait(Sampling_Time);
+    X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+    Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE ){
+    Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+	Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 );}
+    Sampling_Done = TRUE; 
+    wait(Sampling_Time);
+}        
+combo Fine_Tune_Aim {
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_LX,(-15 + fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time); 
+    set_val(PS4_RY,(10 - fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_LX,(15 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RY,(-10 + fine_pulse)); 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    fine_pulse = fine_pulse + 2;
+    if ( fine_pulse >10){
+    fine_pulse = 0;}   
+}
+combo spiroide_Aim_Assit {
+    set_val(PS4_RX,(4 + spiroide_pulse));
+    set_val(PS4_LX,(-15+ spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-4 - spiroide_pulse));
+    set_val(PS4_LX,15 - spiroide_pulse );
+    wait(Sampling_Time);
+    wait(Sampling_Time)
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+	spiroide_pulse = spiroide_pulse + 2;
+	if ( spiroide_pulse >10){
+	spiroide_pulse = 0;}
+}  
+
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) {
+	if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit){ 
+	if(Last_Value < Current_Value){
+	if (Boost){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value + Aim_Boost));}
+	else if(Correction){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value - Aim_Correction));}}            
+	else{
+	if (Boost){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value - Aim_Boost));}
+	else if(Correction){                         
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value + Aim_Correction));}}
+}}
+       

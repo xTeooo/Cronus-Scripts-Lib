@@ -1,0 +1,683 @@
+/* 
+
+Zen OLED Menu Template ( Advanced ++  With 3 Profiles & Quick Toggles Via Menu )  v1.00  
+
+Made By = TaylorDrift21
+
+Credits... Noozbar - Batts - DoGzTheFiGhTeR - Excalibur - Swizzy - LegitCloudzzz - XBL Jedi - DKGE - DontAtMe - MaxADMIN 
+
+There are only a few people I use examples or code in this script, but the reason to mention everyone above is because of their 
+outstanding support, I came here with NO knowledge and those above have given me their time of day to help me learn. I have learned a great deal in GPC... and look where I am now!!! 
+Thank you all for your support, I appreciate it very much! 
+
+===========================================================
+		  *** M e n u  N a v i g a t i o n ***
+===========================================================
+Enter Mod Menu             = Hold L2/LT & Press Options 
+Exit Mod Menu              = Press Circle/B
+Enter Edit Menu            = Press Cross/A
+Exit Edit Menu             = Press Circle/B 
+Enable/Disable KillSwitch  = Hold L2/LT & Press Share/View 
+Change Profiles In ModMenu = Press TRIANGLE/Y 
+Turn Mods ON/OFF           = Press UP/Down 
+
+===========================================================
+    	 *** Choosing Buttons Via OLED Menu *** 
+===========================================================
+When Choosing Buttons Via OLED Menu... 
+
+To Cycle Through The Button Choices        = Hold L2/LT & Press LEFT Or RIGHT 
+To Select Which Button You Want To Edit... = Press UP/DOWN  
+
+===========================================================
+	*** B u t t o n  C o n f i g u r a t i o n ***
+===========================================================
+
+Button Layout , Change these buttons to suit your Controller Layout In Game 
+
+Examples... PS4_L1 , PS4_L2 , PS4_L3 , PS4_R1 , PS4_R2 , PS4_R3 , PS4_CIRCLE ,PS4_CROSS, PS4_SQUARE ,PS4_TRIANGLE ,PS4_SHARE , PS4_OPTIONS , PS4_UP , PS4_DOWN , PS4_LEFT , PS4_RIGHT 
+
+Do not worry if you use an XBOX Controller the Identifiers Above will work the same. However there are XBOX identifiers too. 
+
+XB1_LB , XB1_LT , XB1_LS , XB1_RB , XB1_RT , XB1_RS ,XB1_Y ,XB1_A , XB1_B , XB1_X , XB1_UP ,XB1_DOWN ,XB1_LEFT, XB1_RIGHT ,XB1_VIEW ,XB1_MENU ,XB1_XBOX
+
+*/
+define AdsBtn		  = PS4_L2;
+define FireBtn		  = PS4_R2;
+define CrouchBtn 	  = PS4_R3;  
+define JumpBtn  	  = PS4_L1;
+define SprintBtn	  = PS4_L3;
+define PingBtn		  = PS4_UP; 
+
+/*
+*** String Lists For Display ***
+
+In order to save some space and have less repeated code... String Lists are the way forward. 
+*/
+// Add More Strings for Misc Display Text, Example Add More to the Title Screen Display \\
+const string Misc[] = { "Title Screen", "On", "Off","Menu Template","Made By","Taylordrift21","KillSwitch","Enabled","Disabled"," Profile 1 "," Profile 2 "," Profile 3 "," Choose Button/s ","" };  
+
+// This is for the Mod Menu,this is where we display Mods that are added to the script \\
+const string ModNames[] = { "Mod1","Mod2", "Mod3","Profile Btn","Resync Btn","3rd Profile Btns","Mod1 QToggle","Mod2 QToggle","Mod3 QToggle",""};
+// ModName Number             0       1       2         3             4             5            6     
+
+// This for editable values in the script for Edit Menu, change the values \\
+const string ValNames[] = { "Val1","Val2","Val3",""}; 
+// ValName Number              0      1      2   
+
+// Display Choosable Buttons Via Menu \\ 
+const string HoldButtons[]       = { "< Select >","L2/LT","R2/RT","L1/LB","R1/RB","L3/LS","R3/RS", ""};
+
+const string PressButtons[]      = { "Select","Triangle/Y","Dpad Down","Dpad UP","Dpad Left","Dpad Right","Cross/A","Circle/B","Square/X", ""};
+
+const int8   HoldBtns []         = { -1,  PS4_L2      ,PS4_R2  , PS4_L1, PS4_R1  , PS4_L3   , PS4_R3 }; 
+
+const int8   PressBtns[]         = { -1,  PS4_TRIANGLE,PS4_DOWN, PS4_UP, PS4_LEFT, PS4_RIGHT, PS4_CROSS, PS4_CIRCLE, PS4_SQUARE };
+
+
+define AmountOfValues = 2;  // If You Add More Editable Values, You need To Increase The Value Here...
+
+// Profiles Variable 
+int ProfileIdx; 
+
+// Mod Menu/Toggle Variables/ [3] For 3 Profiles
+int Mod1[3];
+int Mod2[3];
+int Mod3[3]; 
+
+// Edit Menu /Editable Variables/Values [3] For 3 Profiles
+int Val1[3];
+int Val2[3];
+int Val3[3];  
+
+define TotalNumberOfProfiles = 2; // Amount Of Profiles Available \\ 
+
+define AmountOfModsPerProfiles = 3;  // Amount Of Mods That Can Be Used On Each Profile
+
+// Mixed Variables Needed For The Script To Function \\
+ 
+int DisplayTitle = TRUE; // Display Title When The Script Loads, This Needs TO Be TRUE. 
+
+int ScreenSaver,BlankScreen,ModMenu,DisplayMenu,ModNameIdx,Toggle,EditMenu,ValNameIdx,KillSwitch,SelectedProfileIdx,Profile3; // Menu Variables \\
+
+define ActivateButtonCount = 5;
+int ActivateHoldButton[ActivateButtonCount];
+int ActivatePressButton[ActivateButtonCount];
+int ActivateHoldBtnIdx[ActivateButtonCount];
+int ActivatePressBtnIdx[ActivateButtonCount];
+int ActivateIndividualButton = 0;
+int ActivateIndividualBtnIdx;
+int QuickToggleActive,ToggleWidth,ToggleWidth1,ToggleFont,ToggleFont1,TogglePosition;
+
+main { 
+        
+       ActivateAllButtons(); // Call The Function So That We Can Select Buttons Via Menu, Activate Profiles OR Quick Toggles \\
+       
+      /* Enter The Mod Menu */ 
+        if(get_ival(AdsBtn))  // AdsBtn , This is so that if you play flipped and define your button above you can still enter the menu \\ 
+        {
+        	if(event_press(PS4_OPTIONS))
+        	{
+        		ModMenu     = TRUE;      // Mod Menu Will Activate \\
+        		DisplayMenu = TRUE;      // Display The Mod Menu \\  
+        		EditMenu    = FALSE;     // Make Sure We Don't Enter Edit Menu when  Entering Mod Menu \\
+        		
+        		if(!ModMenu)             // If NOT in the Mod Menu, Display Title \\
+        	    	DisplayTitle = TRUE; 
+        	}
+        	if(event_press(PS4_SHARE)) 
+        	{ 
+        		KillSwitch =! KillSwitch;
+        		combo_run(KillSwitch) 
+        	} 	
+        	set_val(PS4_OPTIONS,0); set_val(PS4_SHARE,0); // We Block these Buttons from being Activated IN GAME \\ 
+        }
+        if(!DisplayTitle)                // If NOT on The Display Title, we are In Mod Menu Instead \\
+        {
+	        if(ModMenu)                  // If we are In Mod Menu \\
+	        { 
+	            // Menu Navigation Is One Function To Navigate The Menu , 0,2 < <  0 is the minimum Mods Available , 2 is the Maximum Mods Available \\
+	            
+	        	ModNameIdx               = MenuNavigation(ModNameIdx,0,8);   // ModNameIdx = Variable To Identify So The Script knows Which Menu We Are In \\
+	        	
+	        	// Toggles For Mods On/Off Press Up/Down , ModNameIdx == 0 , < < This is so we know which mod you are turning ON/OFF
+	        	
+	        	// Toggles Have A Min and Max, Because We Have Multiple Toggle Options Via Menu, We Need To State How Many, 0 Is Min , 1 Is Max , Below You Will See I Have More Than 1...
+	        	
+	        	Mod1[ProfileIdx]         = ToggleSwitch(ModNameIdx == 0,Mod1[ProfileIdx],0,1); // ProfileIdx , This Means This Mod Can have Different Toggle Status Dependant On Profile \\ 
+	        	Mod2[ProfileIdx]         = ToggleSwitch(ModNameIdx == 1,Mod2[ProfileIdx],0,1); // 0 = Off , 1 = On , \\ OR Example We could Have More Choices Like Below...
+	        	Mod3[ProfileIdx]         = ToggleSwitch(ModNameIdx == 2,Mod3[ProfileIdx],0,1);
+	        	
+	        //====== Profile Button Activation Via Menu ======\\ 
+	        	ActivateIndividualBtnIdx = ToggleSwitch(ModNameIdx == 3,ActivateIndividualBtnIdx,0,8); // 8 Is the amount of choices of Buttons ( 0 Min , 8 Max ) 
+	        //====== Call The Button Activation Function For Profiles / Resync & Profile 3 =====\\
+	        	ButtonActivation(0,ModNameIdx,4);  // This is the function I made to Choose 2 Buttons Via The Menu \\ 0 Indicates The 1st Option For Buttons \\// 4 = ModNameIdx == 4
+            	ButtonActivation(1,ModNameIdx,5);  // This is the function I made to Choose 2 Buttons Via The Menu \\ 1 Indicates The 2nd Option For Buttons \\// 5 = ModNameIdx == 5 
+            //====== Quick Toggle Button Selection Via Menu ====== \\
+                ButtonActivation(2,ModNameIdx,6);  // This is the function I made to Choose 2 Buttons Via The Menu \\ 3 Indicates The 3rd Option For Buttons \\// 6 = ModNameIdx == 6 
+                ButtonActivation(3,ModNameIdx,7);  // This is the function I made to Choose 2 Buttons Via The Menu \\ 4 Indicates The 4th Option For Buttons \\// 7 = ModNameIdx == 7
+                ButtonActivation(4,ModNameIdx,8);  // This is the function I made to Choose 2 Buttons Via The Menu \\ 5 Indicates The 5th Option For Buttons \\// 8 = ModNameIdx == 8
+	        }
+	        if(EditMenu)   // We are In Edit Menu \\
+	        {
+	            // Menu Navigation Is One Function To Navigate The Menu , 0,2 < <  0 is the minimum Editable Values Available , 2 is the Maximum Editble Values Available \\
+	            
+	        	ValNameIdx        = MenuNavigation(ValNameIdx,0,2); // ValNameIdx = Variable To Identify So The Script knows Which Menu We Are In \\
+	        	
+	        	// Edit Menu, This is where we Edit Values , 0 , 99 < < 0 Is the Minimum Editble Value , 99 < < Is the Maximum Value for That mod \\
+	        	
+	        	Val1[ProfileIdx]  = EditValues(ValNameIdx , 0,Val1[ProfileIdx]  , 0, 99);  // ProfileIdx , This Means You can have 3 Different Values Per Profile
+	            Val2[ProfileIdx]  = EditValues(ValNameIdx , 1,Val2[ProfileIdx]  , 0, 99); 
+	            Val3[ProfileIdx]  = EditValues(ValNameIdx , 2,Val3[ProfileIdx]  , 0, 99); 
+	            
+	            // Limit Values Per Mods , For example AntiRecoil - Vertical - Horizontal , 0 , 1 which is used with the first ModNameIdx == 0 
+	            
+	            if(ModNameIdx == 0) ValNameIdx = cycle(ValNameIdx,0,1);	
+	        }
+	    } 
+        if(DisplayMenu) // Display The Menu \\ 
+        {
+        	cls_oled(OLED_BLACK);  // Clear The OLED Display \\ 
+        	rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); // Display The Rectangle Around The Text \\ 
+        	//line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE); // Display The Line In Between Text Top/Bottom \\ 
+        	led(ProfileIdx); // Different Led Colour Based On Which Profile You Are Using \\ 
+        	
+        	if(EditMenu)  // If EditMenu Display The Editable Mods \\ 
+        	{
+        		printf(center_x(get_valName_chars(ValNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ValNames[ValNameIdx]);
+        		
+        		// 7 is the position of the text, 7 Pixels from the top of the OLED Screen, Change this value if you want the text lower or higher \\
+        		
+        		//printf(center_x(get_valName_chars(ValNameIdx), OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,ValNames[ValNameIdx]); If you want smaller Text \\
+        	} 
+        	else if(ModMenu) // If Mod Menu Display Mods
+        	{
+        		printf(center_x(get_modName_chars(ModNameIdx), OLED_FONT_SMALL_WIDTH),5,OLED_FONT_SMALL,OLED_WHITE,ModNames[ModNameIdx]); // Display ModNames ( Medium Text ) 
+        		
+        		// 5 is the position of the text, 5 Pixels from the top of the OLED Screen, Change this value if you want the text lower or higher \\
+        		
+        		//printf(center_x(get_modName_chars(ModNameIdx), OLED_FONT_SMALL_WIDTH),5,OLED_FONT_SMALL,OLED_WHITE,ModNames[ModNameIdx]); // If you want smaller Text = Longer String Names \\
+        	
+        	    // While In Mod Menu Display On/Off Toggles For Mods \\
+        	    if(ModNameIdx >= 0 && ModNameIdx <= 2) 
+        	    {
+        	    	if(Toggle == 1) // If Toggle Is ON = Display ON 
+        	    
+        	        	 // 42 is the position of the text, 42 Pixels from the top of the OLED Screen, Change this value if you want the text lower or higher \\
+        	         
+    					printf(center_x(get_misc_chars(1), OLED_FONT_MEDIUM_WIDTH),42,OLED_FONT_MEDIUM,OLED_WHITE,Misc[1]);	// Display ON Medium Text \\ // Misc[1] < This is number string in Misc String List
+    				
+    					//printf(center_x(get_misc_chars(1), OLED_FONT_SMALL_WIDTH),42,OLED_FONT_SMALL,OLED_WHITE,Misc[1]);	// Display ON Small Text \\ // Misc[1] < This is number string in Misc String List
+    				
+           			else if(Toggle == 0) // If Toggle Is OFF =  Display OFF 
+           		
+           				// 42 is the position of the text, 42 Pixels from the top of the OLED Screen, Change this value if you want the text lower or higher \\
+           			
+            			printf(center_x(get_misc_chars(2), OLED_FONT_MEDIUM_WIDTH),42,OLED_FONT_MEDIUM,OLED_WHITE,Misc[2]);  /// Display OFF Medium Text \\ // Misc[2] < This is number string in Misc String List
+            		
+            			//printf(center_x(get_misc_chars(2), OLED_FONT_SMALL_WIDTH),42,OLED_FONT_SMALL,OLED_WHITE,Misc[2]); // Display OFF Small Text \\ // Misc[2] < This is number string in Misc String List
+            	}
+            	// This IS The Button Selection For 1 Button For Profiles \\ // Choice of 8 Buttons \\ 
+            	if(ModNameIdx == 3) 
+            	{
+            		printf(center_x(get_PressButton_chars(ActivateIndividualBtnIdx), OLED_FONT_MEDIUM_WIDTH),40,OLED_FONT_MEDIUM,OLED_WHITE,PressButtons[ActivateIndividualBtnIdx]);
+            	} 
+            	// Profile System , Display Which Profile You Are On \\
+            	if(ModNameIdx < AmountOfModsPerProfiles) 
+            	{
+            		if(ProfileIdx == 0) 
+        				printf(center_x(get_misc_chars(9), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[9]);
+           	    	else if(ProfileIdx == 1) 
+            			printf(center_x(get_misc_chars(10), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[10]); 
+            		else if(ProfileIdx == 2) 
+            	    	printf(center_x(get_misc_chars(11), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[11]); 
+            	}
+            	// On These Mods We Choose To Display Custom Text Only \\ 
+            	if(ModNameIdx >= 3 && ModNameIdx <= 8) 
+            	{
+            		printf(center_x(get_misc_chars(12), OLED_FONT_SMALL_WIDTH),18,OLED_FONT_SMALL,OLED_WHITE,Misc[12]); // Choose Btn/s \\ 
+            	} 
+        	}
+        	Toggle = FALSE; 
+            DisplayMenu = FALSE;
+            
+        } // End Of Display Menu \\
+        
+        if(!ModMenu && !EditMenu) // When NOT In Mod Menu And Edit Menu \\
+        {
+			if(DisplayTitle)  // We Are Displaying Title \\
+			{
+				cls_oled(OLED_BLACK);  // Clear OLED Display \\
+				rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); // Display The Rectangle Around The Text 
+				printf(center_x(get_misc_chars(0), OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,Misc[0]);  // Display "Title Screen"  \\ Misc[0] = 1st String In The Misc String List \\
+				//printf(center_x(get_misc_chars(3), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[3]); // Display "Menu Template" \\ Misc[3] = 3rd String In The Misc String List \\
+				//printf(center_x(get_misc_chars(4), OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,Misc[4]); // Display "Made By"       \\ Misc[4] = 4th String In The Misc String List \\
+				//printf(center_x(get_misc_chars(5), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[5]); // Display "Taylordrift21" \\ Misc[5] = 5th String In The Misc String List \\
+				
+				// Display The Correct Profile ON The Display Title Screen \\
+				
+				if(ProfileIdx == 0) 
+        			printf(center_x(get_misc_chars(9), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[9]);
+           	    else if(ProfileIdx == 1) 
+            		printf(center_x(get_misc_chars(10), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[10]); 
+            	else if(ProfileIdx == 2) 
+            	    printf(center_x(get_misc_chars(11), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[11]); 
+				
+				DisplayTitle = FALSE;
+        		ScreenSaver  = TRUE; 
+			}
+			if(ScreenSaver)  // ScreenSaver, After 10 seconds The Display Will Go Blank , THIS IS TO PREVENT SCREEN BURN \\ 
+    		{
+       			BlankScreen += get_rtime();
+        	
+    			if(BlankScreen >= 10000)
+    			{
+    				cls_oled(OLED_BLACK);
+    				BlankScreen = 0;
+    				ScreenSaver = TRUE; 
+    				
+        		}// End Of BlankScreen \\
+        		
+    		} // End of ScreenSaver \\
+    		
+    		// Switch Profile Activation OutSide The Mod Menu \\ // In Menu Above \\ ButtonActivation(0,ModNameIdx,4); << This Is Related To Chosing Buttons For Profiles 
+    		
+    		// ActivateIndividualButton Is The Single Button You Chose Via Menu \\// Example TRIANGLE \\ 
+    		
+    		// ActivateHoldButton[0] and ActivatePressButton[0] Are The Resync Buttons Chosen Via Menu \\ // Example L2 and Down \\ 
+    		if(event_release(ActivateIndividualButton) && get_ptime(ActivateIndividualButton) < 150 || ActivateHoldButton[0] &&  get_ival(ActivateHoldButton[0]) && event_release(ActivatePressButton[0]))
+        	{
+    			SelectedProfileIdx =! SelectedProfileIdx;
+    			Profile3 = FALSE;
+    
+    			if(ModMenu) 
+    				DisplayMenu = TRUE; 
+        		else
+            		DisplayTitle = TRUE;
+            	    
+            	if(!Profile3) 
+            	{
+            		if(SelectedProfileIdx) 
+            	   		ProfileIdx = 1;
+            		else
+            	   		ProfileIdx = 0; 
+    			}
+    			if(ActivateHoldButton[0] &&  get_ival(ActivateHoldButton[0])) // Block The Profile Buttons IN Game \\
+	    			set_val(ActivatePressButton[0], 0);  
+	    	} 
+	    	// Profile 3 Activation \\ 
+	    	// ActivateHoldButton[1] And ActivatePressButton[1] Are The Buttons Chosen Via Menu TO Activate Profile 3 \\// In The Mod Menu It Looks Like This // ButtonActivation(1,ModNameIdx,5); \\
+	    	if(get_ival(ActivateHoldButton[1]) && get_ival(ActivatePressButton[1]))
+            {
+             	ProfileIdx = 2; 
+	       	   	Profile3 = TRUE;
+	       	    
+	       	    if(ModMenu) 
+    				DisplayMenu = TRUE; 
+        		else
+            		DisplayTitle = TRUE;
+	       	}           
+	       	if(ActivateHoldButton[1] &&  get_ival(ActivateHoldButton[1])) // Block The Buttons From IN Game \\ 
+	    		set_val(ActivatePressButton[1], 0);   
+	   	}   		
+        if(!KillSwitch) // If KillSwitch IS NOT Active The Mods Will Be Active \\  
+        { 
+            // Quick Toggle Activation \\ Change The Variables If You Want QuickToggles \\ 0,1,2 < ModNameIdx Number , Choose Your Buttons At The Top Of The Script \\
+            
+        	Mod1[ProfileIdx]  = Quick_Toggle( ActivateHoldButton[2] , ActivatePressButton[2]  ,Mod1[ProfileIdx],0); // ActivateHoldButton[2] , ActivatePressButton[2] =  ButtonActivation(2,ModNameIdx,6);
+			Mod2[ProfileIdx]  = Quick_Toggle( ActivateHoldButton[3] , ActivatePressButton[3]  ,Mod2[ProfileIdx],1); // ActivateHoldButton[3] , ActivatePressButton[3] =  ButtonActivation(3,ModNameIdx,7);
+			Mod3[ProfileIdx]  = Quick_Toggle( ActivateHoldButton[4] , ActivatePressButton[4]  ,Mod3[ProfileIdx],2); // ActivateHoldButton[4] , ActivatePressButton[4] =  ButtonActivation(4,ModNameIdx,8);
+		
+		   
+        	// Mods Input Here Below QuickToggles \\
+        	// For Example \\
+        	/*
+        	if(AntiRecoil) 
+        	{ 
+        		if(get_ival(FireBtn) 
+        		{
+        			combo_run(LegacyRecoil) 
+        		} 
+        	} 
+        	*/   	
+        } // End Of Mods \\  
+   	
+}// End Of Script \\ 
+    
+// Menu Navigation Function For BOTH Menu's \\    
+function MenuNavigation(f_modorval,f_min,f_max) { 
+
+	if(!get_val(AdsBtn))
+	{
+		if(event_press(PS4_RIGHT))   // Press Right To See Next Mod/Value
+		{     
+	        f_modorval = cycle(f_modorval + 1, f_min , f_max  );
+	        DisplayMenu = TRUE;   
+   		}     
+		if(event_press(PS4_LEFT))    // Press Left To See Next Mod/Value 
+		{  
+	        f_modorval = cycle(f_modorval - 1, f_min , f_max  );
+	        DisplayMenu = TRUE;
+		} 
+        set_val(PS4_RIGHT,0); set_val(PS4_LEFT,0);  
+	}
+	// Example \\
+	
+	//if(f_modorval <= AmountOfEditableValues)  At the Top Of The Script " define AmountOfEditbleValues = 4 " Example..
+	
+	if(f_modorval == 0)  // If ModNameIdx == 0  \\ IF You Have Mutiple Mods That Can Be Edited \\ You Could Do This... 
+	{
+		if(event_press(PS4_CROSS))  // Enter Edit Menu  \\
+    	{ 
+        	ValNameIdx  = AmountOfValues + 1; // Total Amount Of Values Available In Edit Menu \\ 
+        	EditMenu    = TRUE;
+        	ModMenu     = FALSE;
+        	DisplayMenu = TRUE;
+    	}
+    	set_val(PS4_CROSS,0); 
+    }
+    if(ModMenu)  // When In Mod Menu  \\
+    {
+    	if(event_press(PS4_CIRCLE))  // Press Circle To Exit The Menu && Display The Title Screen \\  
+    	{    
+        	DisplayTitle = TRUE;
+        	ModMenu      = FALSE; 
+        	DisplayMenu  = FALSE; 
+        	combo_run(RumbleOff);     
+    	} 
+    	set_val(PS4_CIRCLE,0); 
+    }
+    if(EditMenu) // When In Edit Menu \\
+    {
+    	if(event_press(PS4_CIRCLE))  // Press Circle To Exit The Edit Menu && Display The Mod Menu \\
+    	{       
+        	EditMenu     = FALSE; 
+       		ModMenu      = TRUE;
+        	DisplayMenu  = TRUE;   	
+    	}
+    	set_val(PS4_CIRCLE,0); 
+    } 
+    if(event_press(PS4_TRIANGLE)) 
+    { 
+        ProfileIdx = cycle(ProfileIdx + 1, 0, TotalNumberOfProfiles);
+        DisplayMenu = TRUE;   	
+    }
+    return f_modorval; 
+} 
+// Toggle Function \\ 
+function ToggleSwitch(f_name,f_val,f_min,f_max) { 
+	
+    if(f_name) 
+    {       
+		if(event_press(PS4_UP))
+   		{
+            f_val = cycle(f_val ++, f_min, f_max);
+            DisplayMenu = TRUE;
+            combo_run(RumbleOn); 
+        }
+   	 	if(event_press(PS4_DOWN))
+   		{
+            f_val = cycle(f_val --, f_min, f_max);
+            DisplayMenu = TRUE;
+            combo_run(RumbleOff); 
+    	}
+		Toggle = f_val
+		set_val(PS4_UP,0); set_val(PS4_DOWN,0); // Block Buttons 
+    }
+    return f_val;
+}
+// Editable Values Function, Adjust & Display The Values \\ 
+function EditValues(f_idx,f_num,ValueIndex,ValueIndexMin,ValueIndexMax) {  
+    if(f_num == f_idx) 
+    { 
+        if(get_ival(AdsBtn))  // Hold AdsBtn When Changing Values 
+        {
+            if(event_press(PS4_RIGHT))  // While Holding L2 Press Right To Increse The Value IN Edit Menu 
+            {
+                ValueIndex = cycle(ValueIndex + 1, ValueIndexMin,ValueIndexMax); 
+                DisplayMenu = TRUE;     // Display The Value
+            }
+            if(event_press(PS4_LEFT))   // While Holding L2 Press Left To Increase The Value IN Edit Menu  
+            {
+                ValueIndex = cycle(ValueIndex - 1, ValueIndexMin,ValueIndexMax); 
+                DisplayMenu = TRUE;     // Display The Value
+            }
+            set_val(PS4_RIGHT,0); set_val(PS4_LEFT,0); // Block The Buttons In The Menu 
+        }
+        number_to_string(ValueIndex,find_digits(ValueIndex));  // Display The Number On OLED Display  
+    }
+    return ValueIndex;                
+ } 
+// Quick Toggle Function \\ 
+function Quick_Toggle(f_hold, f_press, f_val, f_idx) {  
+	if (f_hold == 0 || f_press == 0) return f_val;
+	
+	if(get_ival(f_hold))
+	{
+		if(get_ival(f_press) && get_ptime(f_press) == (get_rtime() * 30))
+		{
+			ModNameIdx = f_idx; 
+			
+			if(f_val == 0)
+			{
+				f_val = 1;
+				combo_run(RumbleOn); 
+			}
+			else
+			{
+				f_val = 0;
+				combo_run(RumbleOff); 
+			}
+			DisplayQuickToggles();  // Call The Display Quick Toggle Function \\ 
+			combo_run(QuickToggles);// Combo Run For Quick Toggles , Clear's The Screen \\
+			if(f_val == 1)  
+    			printf(center_x(get_misc_chars(1), OLED_FONT_MEDIUM_WIDTH),42,OLED_FONT_MEDIUM,OLED_WHITE,Misc[1]); 
+           	else if(f_val== 0)
+            	printf(center_x(get_misc_chars(2), OLED_FONT_MEDIUM_WIDTH),42,OLED_FONT_MEDIUM,OLED_WHITE,Misc[2]); 
+    	} 
+	    set_val(f_press, 0)
+   } 
+   return f_val;
+}
+// Display 
+function DisplayQuickToggles() { 
+
+	ScreenSaver = FALSE;
+	cls_oled(OLED_BLACK); 
+	rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE);
+    line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE);
+	printf(center_x(get_modName_chars(ModNameIdx), OLED_FONT_MEDIUM_WIDTH),5,OLED_FONT_MEDIUM,OLED_WHITE,ModNames[ModNameIdx]); 
+	        
+    if(ProfileIdx == 0) 
+        printf(center_x(get_misc_chars(9), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[9]);
+    else if(ProfileIdx == 1) 
+        printf(center_x(get_misc_chars(10), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[10]);
+    else if(Profile3) 
+        printf(center_x(get_misc_chars(11), OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Misc[11]);
+     
+} 
+function ButtonActivation(i,f_name,f_idx){
+
+	if(f_name == f_idx) 
+ 	{ 
+ 		if(event_press(PS4_UP) || event_press(PS4_DOWN))
+     	{
+			 QuickToggleActive =! QuickToggleActive;
+			 DisplayMenu = TRUE;
+     	}
+     	if(!QuickToggleActive)
+     	{
+		 	 ToggleWidth    = OLED_FONT_SMALL_WIDTH;
+		 	 ToggleFont     = OLED_FONT_SMALL;
+		 	 TogglePosition = 50;
+		 	 ToggleWidth1   = OLED_FONT_MEDIUM_WIDTH;
+		 	 ToggleFont1    = OLED_FONT_MEDIUM;
+		}
+	 	else
+	    {
+		     ToggleWidth    = OLED_FONT_MEDIUM_WIDTH;
+		     ToggleFont     = OLED_FONT_MEDIUM;
+		     TogglePosition = 43;
+		     ToggleWidth1   = OLED_FONT_SMALL_WIDTH;
+		     ToggleFont1    = OLED_FONT_SMALL;
+	    } 
+	   
+	    if(get_ival(AdsBtn))
+	    {
+        	if(event_press(PS4_RIGHT)) 
+         	{
+             	if(!QuickToggleActive) 
+             		ActivateHoldBtnIdx[i]= cycle(ActivateHoldBtnIdx[i] + 1, 0 , 6 ); 
+             	else 
+             		ActivatePressBtnIdx[i]= cycle(ActivatePressBtnIdx[i] + 1, 0 , 8 ); 
+             		DisplayMenu = TRUE;
+         	}  
+            if(event_press(PS4_LEFT)) 
+            {
+             	if(!QuickToggleActive)
+             		ActivateHoldBtnIdx[i]= cycle(ActivateHoldBtnIdx[i] - 1, 0 , 6 ); 
+             	else
+             		ActivatePressBtnIdx[i]= cycle(ActivatePressBtnIdx[i] - 1, 0 , 8 ); 
+             		DisplayMenu = TRUE;
+            }
+        }
+        printf(center_x(get_HoldButton_chars(ActivateHoldBtnIdx[i])  ,ToggleWidth1),30,ToggleFont1,OLED_WHITE,HoldButtons[ActivateHoldBtnIdx[i]]);
+        printf(center_x(get_PressButton_chars(ActivatePressBtnIdx[i]),ToggleWidth),TogglePosition,ToggleFont,OLED_WHITE,PressButtons[ActivatePressBtnIdx[i]]); 
+     }
+ } 
+function ActivateAllButtons(){
+    
+    for (i = 0; i < ActivateButtonCount; i++) 
+    {
+        ActivateHoldButton[i]          = HoldBtns[clamp(ActivateHoldBtnIdx[i], 0, sizeof(HoldBtns))];
+        ActivatePressButton[i]         = PressBtns[clamp(ActivatePressBtnIdx[i],0, sizeof(PressBtns))];
+        ActivateIndividualButton       = PressBtns[clamp(ActivateIndividualBtnIdx, 0, sizeof(PressBtns))]; 
+    }
+    return;
+    
+} 
+// Used Combo's and other Functions In The Script \\
+combo QuickToggles{ 
+wait(1500) 
+DisplayTitle   = TRUE; 
+reset_leds(); 
+}   
+combo RumbleOn {
+set_ledx(2, 2);
+set_rumble(RUMBLE_B, 50);
+wait(150);
+reset_rumble();
+wait(100);
+set_rumble(RUMBLE_B, 50);
+wait(150);
+reset_rumble();
+reset_leds();
+led(ProfileIdx);
+}
+combo RumbleOff {						
+set_ledx(1, 1);
+set_rumble(RUMBLE_A, 50);
+wait(300);
+reset_rumble();
+wait(400);
+reset_leds();
+led(ProfileIdx);
+}
+combo KillSwitch { 
+cls_oled(OLED_BLACK); 
+if(KillSwitch){  
+printf(center_x(get_misc_chars(6), OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,Misc[6]);
+printf(center_x(get_misc_chars(7), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,Misc[7]);}
+if(!KillSwitch){ 
+printf(center_x(get_misc_chars(6), OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,Misc[6]);
+printf(center_x(get_misc_chars(8), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,Misc[8]);} 
+wait(1500);
+DisplayTitle = TRUE;
+} 
+function cycle(f_val, f_lo, f_hi) {
+	if(f_val > f_hi) return f_lo;
+	if(f_val < f_lo) return f_hi;
+	return f_val;
+}
+function get_misc_chars(f_idx){
+	if (Misc[f_idx + 1] != -1) 
+		return Misc[f_idx + 1] - Misc[f_idx] - 1;
+	return sizeof(Misc) - Misc[f_idx];		
+}
+function get_modName_chars(f_idx){
+	if (ModNames[f_idx + 1] != -1) 
+		return ModNames[f_idx + 1] - ModNames[f_idx] - 1;
+	return sizeof(ModNames) - ModNames[f_idx];		
+}
+function get_valName_chars(f_idx){
+	if (ValNames[f_idx + 1] != -1) 
+		return ValNames[f_idx + 1] - ValNames[f_idx] - 1;
+	return sizeof(ValNames) - ValNames[f_idx];		
+}
+function get_HoldButton_chars(f_idx){
+	if (HoldButtons[f_idx + 1] != -1) 
+		return HoldButtons[f_idx + 1] - HoldButtons[f_idx] - 1;
+	return sizeof(HoldButtons) - HoldButtons[f_idx];		
+}
+function get_PressButton_chars(f_idx){
+	if (PressButtons[f_idx + 1] != -1) 
+		return PressButtons[f_idx + 1] - PressButtons[f_idx] - 1;
+	return sizeof(PressButtons) - PressButtons[f_idx];		
+}
+function center_x(f_chars,f_font) {
+
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+function number_to_string(value,f_digits){
+
+    i = 1;  c_val = 10000;
+    
+	if(value < 0) 
+	{          
+         putc_oled(i,45);    
+         i += 1;
+         value = abs(value);
+	} 
+	for(c = 5; c >= 1; c--) 
+	{
+	    if(f_digits >= c) 
+	    {
+            putc_oled(i,ASCII_NUM[value / c_val]);
+            value = value % c_val;
+            i +=  1; 
+            if(c == 4) 
+            {
+                putc_oled(i,44);   
+                i += 1;
+            }
+        }
+        c_val /= 10;
+    }   
+    puts_oled(center_x(i - 1,OLED_FONT_LARGE_WIDTH),37,OLED_FONT_LARGE,i - 1,OLED_WHITE); // Position/Size Of The Number Shown In Edit Menu \\ 
+}
+function led(f_color){
+for(i = 0; i <= 3; i++) 
+{
+ set_led(i,duint8((f_color * 4) + i));
+ }
+}	
+function find_digits(f_num) {
+    f_num = abs(f_num);
+    if(f_num / 10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /   100 > 0) return 3;
+    if(f_num /    10 > 0) return 2;
+                          return 1;
+}
+// Constant bytes - Convert numbers array - ASCII_NUM[column number]
+	const uint8 ASCII_NUM[] = 
+//	  0  1  2  3  4  5  6  7  8  9  (column numbers)
+  	{48,49,50,51,52,53,54,55,56,57};
+// Variables for function number_to_string()\\ 
+	int i;
+	int c,c_val;
+data(
+//  0 Blue    1 Pink   2 SkyBlue  3 Green         
+    1,0,0,0,  0,0,0,1,  1,0,1,0,  0,0,1,0,
+//  4 Yellow  5 White   6 Red      7 OFF         
+    0,1,1,0,  1,1,1,0,  0,1,0,0,  0,0,0,0 );

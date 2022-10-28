@@ -1,0 +1,75 @@
+// The Reducer Aim Assist
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define FallOffAARY   = 20;
+define FallOffAARX   = 20;
+define FallOffAAWait = 10;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define FallOffAssist = On;
+define FallOffAAHip  = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+
+
+    if (FallOffAssist) {
+    
+        if (get_ival(Ads) || (FallOffAAHip && get_ival(Fire))) {
+        
+            combo_run(FallOffAssist);
+        
+        } else {
+        
+            combo_stop(FallOffAssist); 
+        }
+    }
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo FallOffAssist {
+   
+   set_Val(AimY,inv(FallOffAARY));
+   wait(FallOffAAWait);
+   set_Val(AimX,FallOffAARX);
+   wait(FallOffAAWait);
+   set_Val(AimY,FallOffAARY);
+   wait(FallOffAAWait);
+   set_Val(AimX,inv(FallOffAARX));
+   wait(FallOffAAWait);
+} 
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+    return; 
+}

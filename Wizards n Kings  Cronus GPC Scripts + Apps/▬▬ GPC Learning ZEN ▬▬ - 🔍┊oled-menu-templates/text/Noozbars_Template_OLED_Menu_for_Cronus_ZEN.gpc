@@ -1,0 +1,573 @@
+/*
+
+Template OLED Menu for Cronus ZEN
+Author: noozbar
+
+	L2/LT + Options/Menu = main menu (open/close)
+	
+		while in main menu, 
+			- tap Cross/A for Edit menu (Circle/B to main menu)
+			- tap Square/X for Weapon menu (Circle/B to main menu)
+
+	Tap d pad and buttons displayed to clear corresponding text zone
+*/
+int display_new;
+int ModMenu;
+int ModEdit;
+int ModWeapon;
+
+const string PROFILE = "My Profile";
+const string MOD = "Mod Name";
+const string VAL_NAME = "Value Name"
+const string OFF = "ON / OFF";
+const string VAL = "1981";
+const string CAT = "Category";
+const string WEP = "Weapon Name";
+const string INFO_MENU1 = "Info Menu";
+const string INFO_EDIT1 = "Info Edit";
+const string INFO_WEAPON1 = "Info Weapon";
+
+main {
+
+	if(get_val(PS4_L2) && event_release(PS4_OPTIONS)) 
+	{
+		cls_oled(OLED_BLACK);
+		
+		if(ModWeapon)
+			ModWeapon = FALSE;
+			
+		else if(ModEdit)
+			ModEdit = FALSE;
+			
+		else
+			ModMenu = !ModMenu;
+		
+		if(!ModMenu)
+			cls_oled(OLED_BLACK);
+			
+		if(ModMenu)
+		{
+			draw_base_menu();
+			draw_modMenu();
+			draw_chars_line1();
+			draw_chars_line2();
+			draw_chars_line3();
+			
+			display_new = TRUE;
+		}
+	}
+	
+	if(ModMenu)
+	{
+		if(event_press(PS4_CROSS))
+		{
+			ModEdit = TRUE;
+			ModMenu = FALSE;
+			draw_modEdit();
+			draw_chars_line1();
+			draw_chars_line2();
+			draw_chars_line3();
+			
+			display_new = TRUE;
+		}
+		if(event_press(PS4_SQUARE))
+		{
+			ModWeapon = TRUE;
+			ModMenu = FALSE;
+			draw_chars_line1();
+			draw_chars_line2();
+			draw_chars_line3();
+			
+			display_new = TRUE;
+		}
+	}
+	
+	if(ModEdit)
+	{
+		if(event_press(PS4_CIRCLE))
+		{
+			ModMenu = TRUE;
+			ModEdit = FALSE;
+			draw_modMenu();	
+			draw_chars_line1();
+			draw_chars_line2();
+			draw_chars_line3();
+			
+			display_new = TRUE;
+		}
+	}
+	
+	if(ModWeapon)
+	{
+		if(event_press(PS4_CIRCLE))
+		{
+			ModMenu = TRUE;
+			ModWeapon = FALSE;
+			draw_chars_line1();
+			draw_chars_line2();
+			draw_chars_line3();
+			
+			display_new = TRUE;
+		}
+	}
+	
+	if(ModMenu || ModEdit || ModWeapon)
+		btn_anim();
+	
+	if(display_new)
+	{	
+		if(ModMenu || ModWeapon)
+		{
+		// Profile (line 1)
+			printf(center_x(sizeof(PROFILE) - 1, OLED_FONT_SMALL_WIDTH),LINE_1_Y,OLED_FONT_SMALL,OLED_WHITE,PROFILE[0]);
+			
+			if(ModMenu)
+			{
+			// Mod Name (line 2)
+				printf(center_x(sizeof(MOD) - 1, OLED_FONT_SMALL_WIDTH),LINE_2_Y,OLED_FONT_SMALL,OLED_WHITE,MOD[0]); 
+			// Toggle (line 3)
+				printf(center_x(sizeof(OFF) - 1, OLED_FONT_SMALL_WIDTH),LINE_3_Y,OLED_FONT_SMALL,OLED_WHITE,OFF[0]);	
+			// Display info	(line 4)
+				rect_oled(1, 50, 126, 13, OLED_WHITE, OLED_BLACK); // bottom rectangle (clear)
+				printf(center_x(sizeof(INFO_MENU1) - 1, OLED_FONT_SMALL_WIDTH),LINE_4_Y,OLED_FONT_SMALL,OLED_WHITE,INFO_MENU1[0]); 
+			}
+			if(ModWeapon)
+			{
+			// Category Name (line 2)
+				printf(center_x(sizeof(CAT) - 1, OLED_FONT_SMALL_WIDTH),LINE_2_Y,OLED_FONT_SMALL,OLED_WHITE,CAT[0]); 
+			// Weapon Name (line 3)
+				printf(center_x(sizeof(WEP) - 1, OLED_FONT_SMALL_WIDTH),LINE_3_Y,OLED_FONT_SMALL,OLED_WHITE,WEP[0]); 
+			// Display info	(line 4)
+				rect_oled(1, 50, 126, 13, OLED_WHITE, OLED_BLACK); // bottom rectangle (clear)
+				printf(center_x(sizeof(INFO_WEAPON1) - 1, OLED_FONT_SMALL_WIDTH),LINE_4_Y,OLED_FONT_SMALL,OLED_WHITE,INFO_WEAPON1[0]); 
+			}
+		}
+		else if(ModEdit)
+		{
+		// Value Name (line 1)
+			printf(center_x(sizeof(VAL_NAME) - 1, OLED_FONT_SMALL_WIDTH),LINE_1_Y,OLED_FONT_SMALL,OLED_WHITE,VAL_NAME[0]);
+		// Editable Value (line 2 and 3)
+			printf(center_x(sizeof(VAL) - 1, OLED_FONT_MEDIUM_WIDTH),28,OLED_FONT_MEDIUM,OLED_WHITE,VAL[0]);
+		// Display info	(line 4)
+			rect_oled(1, 50, 126, 13, OLED_WHITE, OLED_BLACK); // bottom rectangle (clear)
+			printf(center_x(sizeof(INFO_EDIT1) - 1, OLED_FONT_SMALL_WIDTH),LINE_4_Y,OLED_FONT_SMALL,OLED_WHITE,INFO_EDIT1[0]); 
+		}
+    	display_new = FALSE;
+    
+	}
+	
+/*
+set_val(TRACE_1, col_rec_left);
+set_val(TRACE_2, col_rec_right);
+set_val(TRACE_3, col_char_left);
+set_val(TRACE_4, col_char_right);
+*/
+set_val(TRACE_1, ModMenu);
+set_val(TRACE_2, ModEdit);
+set_val(TRACE_3, ModWeapon);
+}
+
+
+
+function draw_base_menu() {
+	rect_oled(0, 0, 128, 49, OLED_BLACK, OLED_WHITE); // white contour 
+	line_oled(1, 16, 126, 16, 1, OLED_WHITE); // draw line 1
+	
+// Filled white rectangle (emplacement for the chars line 1)	
+	rect_oled(2, 2, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 3, OLED_WHITE , OLED_WHITE); // rectangle left (line 1)
+	rect_oled(115, 2, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 3, OLED_WHITE, OLED_WHITE); // rectangle right (line 1)
+/*
+			Rectangle (rec) used to create a "button" with an arrow or letter (char) printed in it
+			When the rectangle is filled, the char is empty, when the rectangle is empty, the char is filled 
+			Also, the rectangle allows the char to be correctly centred when it's filled or empty
+			That's why there are a lot of small adjustments (+4 here, +6 there...)
+*/
+}
+
+function draw_modMenu() {
+// Clear line 2 and 3 (value zone while in ModEdit)
+	rect_oled(1, 17, 126, 31, OLED_WHITE, OLED_BLACK);
+	
+// Separate ex value zone
+	line_oled(1, 32, 126, 32, 1, OLED_WHITE); // draw line 2 
+	
+// Filled white rectangle (emplacement for the chars line 2, 3)
+	rect_oled(2, 18, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 3, OLED_WHITE , OLED_WHITE); // rectangle left (line 2)
+	rect_oled(115, 18, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 3, OLED_WHITE, OLED_WHITE); // rectangle right (line 2)
+	rect_oled(2, 34, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 3, OLED_WHITE , OLED_WHITE); // rectangle left (line 3)
+	rect_oled(115, 34, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 3, OLED_WHITE, OLED_WHITE); // rectangle right (line 3)
+
+}
+
+function draw_modEdit() {
+// Clear line 2 and 3
+	rect_oled(1, 17, 126, 31, OLED_WHITE, OLED_BLACK);
+	
+// Filled white rectangle 
+	// Emplacement for the chars line 2, 3)	
+	rect_oled(2, 18, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 4, OLED_WHITE , OLED_WHITE); // rectangle left (line 2)
+	rect_oled(115, 18, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 4, OLED_WHITE, OLED_WHITE); // rectangle right (line 2)
+	rect_oled(2, 33, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 4, OLED_WHITE , OLED_WHITE); // rectangle left (line 3)
+	rect_oled(115, 33, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 4, OLED_WHITE, OLED_WHITE); // rectangle right (line 3)
+	// Emplacement for + / -
+	rect_oled(14, 18, OLED_FONT_MEDIUM_WIDTH + 1, OLED_FONT_MEDIUM_HEIGHT + 11, OLED_WHITE , OLED_WHITE); // rectangle left (line 2 + 3)
+	rect_oled(102, 18, OLED_FONT_MEDIUM_WIDTH + 1, OLED_FONT_MEDIUM_HEIGHT + 11, OLED_WHITE, OLED_WHITE); // rectangle right (line 2 + 3)
+
+// Display - / +
+	line_oled(16, 31, 23, 31, 2, OLED_BLACK); // left -
+	putc_oled(1, 43); // +
+	puts_oled(103, 24, OLED_FONT_MEDIUM, 1, OLED_BLACK); // right + 	    
+
+}
+
+int col_char_left; 
+int col_char_right;
+int col_rec_left = 1;
+int col_rec_right = 1;
+
+function btn_anim() {
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~	
+	if(event_press(PS4_TRIANGLE))
+	{
+		col_char_left = 1;
+		col_char_right = 1;
+		col_rec_left = 0;
+		col_rec_right = 0;
+		
+		if(ModMenu || ModWeapon)
+			draw_chars_line1();
+	}
+	else if(event_release(PS4_TRIANGLE))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		col_char_left = 0;
+		col_char_right = 0;
+		col_rec_left = 1;
+		col_rec_right = 1;
+			
+		if(ModMenu || ModWeapon)
+			draw_chars_line1();
+	}	
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	if(event_press(PS4_LEFT))
+	{
+		col_char_left = 1;
+		col_char_right = 0;
+		col_rec_left = 0;
+		col_rec_right = 1;
+		
+		if(ModMenu)
+			draw_chars_line2();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line2();
+			else
+			{
+				draw_chars_line1();
+			}
+		}
+		
+		if(ModWeapon)
+			draw_chars_line3();
+	}
+	if(event_release(PS4_LEFT))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		col_char_left = 0;
+		col_char_right = 0;
+		col_rec_left = 1;
+		col_rec_right = 1;
+		
+		if(ModMenu)
+			draw_chars_line2();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line2();
+			else
+				draw_chars_line1();
+		}
+		
+		if(ModWeapon)
+			draw_chars_line3();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_RIGHT))
+	{
+		col_char_left = 0;
+		col_char_right = 1;
+		col_rec_left = 1;
+		col_rec_right = 0;	
+		
+		if(ModMenu)
+			draw_chars_line2();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line2();
+			else
+			{
+				draw_chars_line1();
+			}
+		}
+		
+		if(ModWeapon)
+			draw_chars_line3();
+	}
+	if(event_release(PS4_RIGHT))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		col_char_left = 0;
+		col_char_right = 0;
+		col_rec_left = 1;
+		col_rec_right = 1;
+		
+		if(ModMenu)
+			draw_chars_line2();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line2();
+			else
+				draw_chars_line1();
+		}
+		
+		if(ModWeapon)
+			draw_chars_line3();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_UP))
+	{
+		col_char_left = 0;
+		col_char_right = 1;
+		col_rec_left = 1;
+		col_rec_right = 0;
+		
+		if(ModMenu)
+			draw_chars_line3();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line3();
+		}
+		
+		if(ModWeapon)
+			draw_chars_line2();
+	}
+	if(event_release(PS4_UP))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		col_char_left = 0;
+		col_char_right = 0;
+		col_rec_left = 1;
+		col_rec_right = 1;
+		
+		if(ModMenu)
+			draw_chars_line3();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line3();
+		}
+		
+		if(ModWeapon)
+			draw_chars_line2();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_DOWN))
+	{
+		col_char_left = 1;
+		col_char_right = 0;
+		col_rec_left = 0;
+		col_rec_right = 1;
+		
+		if(ModMenu)
+			draw_chars_line3();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line3();
+		}
+		
+		if(ModWeapon)
+			draw_chars_line2();
+	}
+	if(event_release(PS4_DOWN))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		col_char_left = 0;
+		col_char_right = 0;
+		col_rec_left = 1;
+		col_rec_right = 1;
+		
+		if(ModMenu)
+			draw_chars_line3();
+			
+		if(ModEdit)
+		{
+			if(get_val(PS4_CROSS))
+				draw_chars_line3();
+		}
+		
+		if(ModWeapon)
+			draw_chars_line2();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	if(event_press(PS4_CROSS))
+	{
+		col_char_left = 1;
+		col_char_right = 1;
+		col_rec_left = 0;
+		col_rec_right = 0;
+		
+		if(ModEdit)	
+			draw_hold_to_edit();
+	}
+	if(event_release(PS4_CROSS))//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	{
+		col_char_left = 0;
+		col_char_right = 0;
+		col_rec_left = 1;
+		col_rec_right = 1;
+		
+		if(ModEdit)	
+			draw_hold_to_edit();
+	}
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+}
+
+define UP = 131; define DOWN = 132; define LEFT = 133; define RIGHT = 134; define TRIANGLE = 130; define Y = 89; define CROSS = 127; define A = 65;
+define LEFT_X = 4; define RIGHT_X = 117;
+define LINE_1_Y = 4; define LINE_2_Y = 20;  define LINE_3_Y = 36; define LINE_4_Y = 53;
+int btn_left;
+int btn_right;
+
+function draw_chars_line1() {
+
+	if(ModMenu || ModWeapon)
+	{	
+	// Define button
+		btn_left = TRIANGLE;
+		btn_right = Y;
+	}
+	if(ModEdit)
+	{
+	// Define button
+		btn_left = LEFT;
+		btn_right = RIGHT;
+	}
+// Clear line 1
+	rect_oled(13, 1, 102, OLED_FONT_SMALL_HEIGHT + 5, OLED_WHITE , OLED_BLACK);
+// Clear/fill rectangle
+	rect_oled(3, 3, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 1, OLED_WHITE , col_rec_left); // rectangle left (line 1)
+	rect_oled(116, 3, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 1, OLED_WHITE, col_rec_right); // rectangle right (line 1)
+// Display chars	
+	putc_oled(1,btn_left); 
+	puts_oled(LEFT_X, LINE_1_Y, OLED_FONT_SMALL, 1, col_char_left); 	
+	putc_oled(1,btn_right); 
+	puts_oled(RIGHT_X, LINE_1_Y, OLED_FONT_SMALL, 1, col_char_right); 
+
+}
+
+function draw_chars_line2() {
+
+	if (ModMenu || ModEdit)
+	{
+	// Define button
+		btn_left = LEFT;
+		btn_right = RIGHT;
+	}
+	if (ModWeapon)
+	{
+	// Define button
+		btn_left = DOWN;
+		btn_right = UP;
+	}
+	
+	if(ModMenu || ModWeapon)
+	// Clear line 2
+		rect_oled(13, 17, 102, OLED_FONT_SMALL_HEIGHT + 5, OLED_WHITE , OLED_BLACK);
+
+	if(ModEdit)
+	{
+	// Clear/fill rectangle
+		rect_oled(3, 19, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 2, OLED_WHITE , col_rec_left); // rectangle left (line 2)
+		rect_oled(116, 19, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 2, OLED_WHITE, col_rec_right); // rectangle right (line 2)
+	}
+	else
+	{
+	// Clear/fill rectangle
+		rect_oled(3, 19, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 1, OLED_WHITE , col_rec_left); // rectangle left (line 2)
+		rect_oled(116, 19, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 1, OLED_WHITE, col_rec_right); // rectangle right (line 2)
+	}
+// Display chars	
+	putc_oled(1,btn_left); 
+	puts_oled(LEFT_X, LINE_2_Y, OLED_FONT_SMALL, 1, col_char_left); 	
+	putc_oled(1,btn_right); 
+	puts_oled(RIGHT_X, LINE_2_Y, OLED_FONT_SMALL, 1, col_char_right); 
+	
+}
+
+function draw_chars_line3() { 
+
+	if (ModMenu || ModEdit)
+	{
+	// Define button
+		btn_left = DOWN;
+		btn_right = UP;
+	}
+	if (ModWeapon)
+	{
+	// Define button
+		btn_left = LEFT;
+		btn_right = RIGHT;
+	}
+	
+	if(ModMenu || ModWeapon)
+	// Clear line 3
+		rect_oled(13, 33, 102, OLED_FONT_SMALL_HEIGHT + 5, OLED_WHITE , OLED_BLACK);
+
+	if(ModEdit)
+	{
+	// Clear/fill rectangle
+		rect_oled(3, 34, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 2, OLED_WHITE , col_rec_left); // rectangle left (line 3)
+		rect_oled(116, 34, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 2, OLED_WHITE, col_rec_right); // rectangle right (line 3)	
+	}
+	else
+	{
+	// Clear/fill rectangle
+		rect_oled(3, 35, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 1, OLED_WHITE , col_rec_left); // rectangle left (line 3)
+		rect_oled(116, 35, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT + 1, OLED_WHITE, col_rec_right); // rectangle right (line 3)
+	}
+// Display chars	
+	putc_oled(1,btn_left); 
+	puts_oled(LEFT_X, LINE_3_Y, OLED_FONT_SMALL, 1, col_char_left); 
+	putc_oled(1,btn_right); 
+	puts_oled(RIGHT_X, LINE_3_Y, OLED_FONT_SMALL, 1, col_char_right);  
+	
+}
+
+function draw_hold_to_edit() { 
+// Clear/fill rectangle "hold X / A"
+	rect_oled(28, 19, OLED_FONT_SMALL_WIDTH + 1 , OLED_FONT_SMALL_HEIGHT , OLED_WHITE , col_rec_left); 
+	rect_oled(91, 19, OLED_FONT_SMALL_WIDTH + 2, OLED_FONT_SMALL_HEIGHT  , OLED_WHITE, col_rec_right); 
+// Display chars	
+	putc_oled(1, A);
+	puts_oled(92, LINE_2_Y , OLED_FONT_SMALL, 1, col_char_left);
+	putc_oled(1, CROSS);
+	puts_oled(28, LINE_2_Y - 1, OLED_FONT_SMALL, 1, col_char_right);
+// Contour for chars X / A (must be after display chars)
+	rect_oled(27, 18, OLED_FONT_SMALL_WIDTH + 3 , OLED_FONT_SMALL_HEIGHT + 2 , OLED_BLACK , OLED_WHITE); // small rectangle left (line 2)
+	rect_oled(90, 18, OLED_FONT_SMALL_WIDTH + 4, OLED_FONT_SMALL_HEIGHT + 2 , OLED_BLACK, OLED_WHITE); // small rectangle right (line 2)
+
+}	
+
+function center_x(f_chars,f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 

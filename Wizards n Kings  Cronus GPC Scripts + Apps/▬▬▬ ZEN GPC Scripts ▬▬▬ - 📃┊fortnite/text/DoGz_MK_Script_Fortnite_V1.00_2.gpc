@@ -1,0 +1,1509 @@
+/*
+ _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+|       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+| ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+| ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+| ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+| ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+| ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+| ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+ \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+                              __       __          __    __       ______                    __            __     
+                             |  \     /  \   __   |  \  /  \     /      \                  |  \          |  \    
+                             | ▓▓\   /  ▓▓  |  \  | ▓▓ /  ▓▓    |  ▓▓▓▓▓▓\ _______  ______  \▓▓ ______  _| ▓▓_   
+                             | ▓▓▓\ /  ▓▓▓__| ▓▓__| ▓▓/  ▓▓     | ▓▓___\▓▓/       \/      \|  \/      \|   ▓▓ \  
+                             | ▓▓▓▓\  ▓▓▓▓    ▓▓  \ ▓▓  ▓▓       \▓▓    \|  ▓▓▓▓▓▓▓  ▓▓▓▓▓▓\ ▓▓  ▓▓▓▓▓▓\\▓▓▓▓▓▓  
+                             | ▓▓\▓▓ ▓▓ ▓▓\▓▓▓▓▓▓▓▓ ▓▓▓▓▓\       _\▓▓▓▓▓▓\ ▓▓     | ▓▓   \▓▓ ▓▓ ▓▓  | ▓▓ | ▓▓ __ 
+                             | ▓▓ \▓▓▓| ▓▓  | ▓▓  | ▓▓ \▓▓\     |  \__| ▓▓ ▓▓_____| ▓▓     | ▓▓ ▓▓__/ ▓▓ | ▓▓|  \
+                             | ▓▓  \▓ | ▓▓   \▓▓  | ▓▓  \▓▓\     \▓▓    ▓▓\▓▓     \ ▓▓     | ▓▓ ▓▓    ▓▓  \▓▓  ▓▓
+                              \▓▓      \▓▓         \▓▓   \▓▓      \▓▓▓▓▓▓  \▓▓▓▓▓▓▓\▓▓      \▓▓ ▓▓▓▓▓▓▓    \▓▓▓▓ 
+                        ________  ______  _______  ________ __    __ ______ ________ ________ | ▓▓               
+                       |        \/      \|       \|        \  \  |  \      \        \        \| ▓▓               
+                       | ▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\\▓▓▓▓▓▓▓▓ ▓▓\ | ▓▓\▓▓▓▓▓▓\▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓▓ \▓▓               
+                       | ▓▓__   | ▓▓  | ▓▓ ▓▓__| ▓▓  | ▓▓  | ▓▓▓\| ▓▓ | ▓▓    | ▓▓  | ▓▓__    
+                       | ▓▓  \  | ▓▓  | ▓▓ ▓▓    ▓▓  | ▓▓  | ▓▓▓▓\ ▓▓ | ▓▓    | ▓▓  | ▓▓  \   
+                       | ▓▓▓▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓\  | ▓▓  | ▓▓\▓▓ ▓▓ | ▓▓    | ▓▓  | ▓▓▓▓▓   
+                       | ▓▓     | ▓▓__/ ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓ \▓▓▓▓_| ▓▓_   | ▓▓  | ▓▓_____ 
+                       | ▓▓      \▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓  \▓▓▓   ▓▓ \  | ▓▓  | ▓▓     \
+                        \▓▓       \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓   \▓▓   \▓▓\▓▓▓▓▓▓   \▓▓   \▓▓▓▓▓▓▓▓
+
+******************** You Created This Script At 13:19:18 On 02/11/2021 Using DoGzTheFiGhTeRs Fortnite Zen Designer 8 ) ********************
+
+Menu System
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+KEY_M = MENU ON SWITCH
+KEY_L = MENU OFF SWITCH
+KEY_N = MENU SWAP MENUS [TOGGLES/VALUES]
+
+KEY_UP    = MENU CHANGE DISPLAYED VALUE/TOGGLE SWITCH [+]
+KEY_DOWN  = MENU CHANGE DISPLAYED VALUE/TOGGLE SWITCH [-]
+KEY_LEFT  = MENU CHANGE DISPLAYED MOD [-]
+KEY_RIGHT = MENU CHANGE DISPLAYED MOD [+]
+____________________________________________________________
+
+Mod Triggers
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+KEY_T  = FAST RESET
+KEY_H  = RAMP FLOOR WALL 
+KEY_R  = PUMP WALL
+KEY_V  = PUMP RAMP
+KEY_C  = GHOST PEEK
+KEY_Z  = EDIT SHOT
+____________________________________________________________
+
+Mod Toggles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+KEY_6  = AIM ASSIST 
+KEY_7  = ANTI RECOIL
+KEY_8  = DROP SHOT 
+KEY_9  = JUMP SHOT 
+KEY_0  = RAPID FIRE
+____________________________________________________________
+
+Recoil On The Fly Adjustment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+KEY_F1 = RECOIL STRENGTH ADJUST [+] MOVE CROSSHAIR DOWN 
+KEY_F2 = RECOIL STRENGTH ADJUST [-] MOVE CROSSHAIR UP
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Menu Arrays                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","DoGzTheFiGhTeR's","Zen Designer v1.0","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off"};
+const string ModToggle [] = {"" , "Polar Aim Assist"  , "Dam Polar Assist"  , "Polar RadiusBoost"  , "Polar Angle Boost"  , " Fall Off Assist"  , "Legacy AntiRecoil" , "    Drop Shot"  , "    Jump Shot" , "   Rapid Fire"  , "    Pump Wall"  , "    Pump Ramp"  , " Instant Pickaxe"  , " Edit Shot Reset"  , "    Ghost Peek" , " Ramp Floor Wall"  , "Instant EditReset"  , "   Edit Assist"  , "    Fast Reset"  , "   Build Track"  , "   Block Rumble"  , "LED Rainbow Flow" , "PS4/5 On Xbox/PC"};
+const string ModValue [] = {""  , "Polar/Dam Radius"  , "Polar/Dam Angle"  , "Polar/Dam Boost R"  , "Polar/Dam Boost A"  , "Polar/Dam AA Rel"  , "Falloff RX Assist"  , "Falloff RY Assist"  , "   Falloff Wait"  , "Fall+DoGz Release"  , "LegacyAR RY Power"  , "  Drop Shot Wait"  , "  Jump Shot Wait"  , " Rapid Fire Hold"  , " Rapid Fire Wait"  , "  Pump Wall Wait"  , "  Pump Ramp Wait"  , "InstaPickaxe Hold"  , "Edit Shot Hold"  , "Ghost Peek Wait"  , " Edit Hold Time"  , "Edit Assist Delay"  , "BuildTrackSynTime" , "Button PressTime" , " LED Brightness" };
+const int16 ModDigitMin [] = {  0 , 1  , 5   , 1  , 1  , 1  , 1  , 1  , 10  , 1  , 1   , 30  , 30  , 30  , 30  , 20  , 20  , 20  , 250 , 50  , 100 , 10  , 1000 , 10  , 1  };
+const int16 ModDigitMax [] = {  0 , 50 , 180 , 20 , 80 , 80 , 40 , 40 , 150 , 80 , 100 , 500 , 500 , 500 , 500 , 250 , 250 , 250 , 600 , 250 , 200 , 200 , 9000 , 120 , 50 };
+const int16 ModDigitInc [] = {  0 , 1  , 1   , 1  , 1  , 1  , 1  , 1  , 10  , 1  , 1   , 10  , 10  , 10  , 10  , 10  , 10  , 10  , 10  , 10  , 10  , 10  , 100  , 10  , 1  };
+const int16 KeyButtons [] =  {  0 , ChangeMenuPress, FireModPress , JumpShotPress , DropShotPress , RecoilPress , AssistPress , EditShotPress , RecoilUpPress , RecoilDownPress ,PumpRampPress , PumpWallPress , FastReset , RampFloorWall, Left , Right , Up , Down};  
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Toggle Strings                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const string AimAssistL  = "Master Aim Assist";
+const string AntiRecoilL = "Master AntiRecoil";
+const string DropShotL   = "  Drop Shot Mod";
+const string JumpShotL   = "  Jump Shot Mod";
+const string FireModL    = " Master Fire Mod";
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;       // Match To In Game Button
+define Ads      = PS4_L2;       // Match To In Game Button
+define N_Weapon = PS4_R1;       // Match To In Game Button
+define P_Weapon = PS4_L1;       // Match To In Game Button
+define Pickaxe  = PS4_TRIANGLE; // Match To In Game Button
+define Jump     = PS4_CROSS;    // Match To In Game Button
+define Crouch   = PS4_R3;       // Match To In Game Button
+define Edit     = PS4_CIRCLE;	// Match To In Game Button [USED IN ==> Instant Edit & Reset] (Old School)
+define Select   = PS4_R2;       // Match To In Game Button
+define Confirm  = PS4_CIRCLE;   // Match To In Game Button
+define Reset    = PS4_R3;       // Match To In Game Button
+define Build    = PS4_CIRCLE;   // Match To In Game Button
+define Wall     = PS4_R2;       // Match To In Game Button
+define Floor    = PS4_R1;       // Match To In Game Button
+define Ramp     = PS4_L2;       // Match To In Game Button
+define Roof     = PS4_L1;		// Match To In Game Button
+
+define RX       = PS4_RX;
+define RY       = PS4_RY;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Mod Buttons/Triggers                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define EditAssist    = PS4_L3; // EDIT ASSIST + FAST RESET EDIT BUTTON (Match To In Game Button [edit] [ NO HOLD TIME!!! ])
+define FastReset     = KEY_T;
+define RampFloorWall = KEY_H;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Triggers                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define PumpWallPress  = KEY_R;
+define PumpRampPress  = KEY_V;
+define GhostPeekPress = KEY_C;
+define EditShotPress  = KEY_Z;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define AssistPress     = KEY_6;
+define RecoilPress     = KEY_7;
+define DropShotPress   = KEY_8;
+define JumpShotPress   = KEY_9;
+define FireModPress    = KEY_0;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Recoil On The Fly Buttons            )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define RecoilUpPress   = KEY_F1;
+define RecoilDownPress = KEY_F2;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Menu Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define MenuEnterPress  = KEY_M; // MENU ON SWITCH
+define MenuExitPress   = KEY_L; // MENU OFF SWITCH
+define ChangeMenuPress = KEY_N; // MENU SWAP MENUS [TOGGLES/VALUES]
+
+define Up    = KEY_UP;   // MENU CHANGE DISPLAYED VALUE/TOGGLE SWITCH [+]
+define Down  = KEY_DOWN; // MENU CHANGE DISPLAYED VALUE/TOGGLE SWITCH [-]
+define Left  = KEY_LEFT; // MENU CHANGE DISPLAYED MOD [-]
+define Right = KEY_RIGHT;// MENU CHANGE DISPLAYED MOD [+]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define TimeoutLimit  = 2;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 22;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 24;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int LedDec,Rgb,LedInc,Colour[3];
+int ToggleT,ToggleTime,ToggleName,Modled;
+
+int Pressed,PressedM,PressedF,PressedJ,PressedD,PressedR,PressedA,PressedE,PressedYU,PressedYD,PressedPR,PressedPW,PressedFR,PressedRF,PressedML,PressedMR,PressedMU,PressedMD;
+int angle,cos_angle,sin_angle,actual_X,actual_Y,actual_Magnitude,max_Magnitude,Radius,Angle,Speed,Edit1,Edit2,EditT,BuildTrack,BuildCount,Axe,KeyPress;
+int MenuPress,FireM,JumpM,DropM,RecoilM,AssistM,EditM,EditRU,EditRD,PumpPR,PumpPW,FastM,FastRF,MenuL,MenuR,MenuU,MenuD,PressTime;
+int Saver,Ms,Sec,Min,ScreenTime,TimeL,TimerP,TimerE,Length,X_POS1,Y_POS1,X_POS2,Y_POS2,Steps1,Steps2,XorY1,XorY2,Dir1,Dir2;
+
+define PressedButton = 10; // Keyboard Pressed [10 or 20]
+define KeyPressTime = 150; // Keyboard Event Press Delay Ms (To PREVENT Spamming)
+
+define ScreenSaver  =  On;
+define KeyboardKeys =  On;
+define LegacyInvert = Off;
+define LegacyARHip  = Off; // [LegacyARHip  = Off (ADS & FIRE)]   or   [LegacyARHip  = On (FIRE)]
+define EditHold     =  On; // Using Edit Hold Time Via Old School Method [InstaEditReset  =  On]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModDigit;
+int PolarRadius    = 5;
+int PolarAngle     = 20;
+int PolarRBoost    = 2;
+int PolarABoost    = 10;
+int PolarRelease   = 15;
+int FalloffAARX    = 5;
+int FalloffAARY    = 5;
+int FalloffAAWait  = 10;
+int FallOffRelease = 50;
+int ArLegacyRY     = 21;
+int DropShotWait   = 50;
+int JumpShotWait   = 570;
+int RapidFireHold  = 30;
+int RapidFireWait  = 30;
+int PumpWallHTime  = 50;
+int PumpRampHTime  = 50;
+int PickaxeHold    = 30;
+int EditShotHTime  = 500;
+int GhostPeekWait  = 125;
+int EditHoldTime   = 130;
+int EditDelay      = 30;
+int BuildSyncTime  = 1500;
+int ButtonTime     = 30;
+int LedBrightness  = 10;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModSwitch;
+int PolarAimAssist  = Off;
+int DamPolarAssist  =  On;
+int RadiusBoost     =  On;
+int AngleBoost      =  On;
+int FallOffAA       = Off;
+int LegacyARecoil   =  On;
+int DropShot        =  On;
+int JumpShot        =  On;
+int RapidFire       =  On;
+int PumpWall        =  On;
+int PumpRamp        =  On;
+int InstantPickaxe  =  On;
+int EditShot        =  On;
+int GhostPeek       =  On;
+int RampFlrWall     =  On;
+int InstaEditReset  =  On;
+int QuickEditAssist =  On;
+int InstaFastReset  =  On;
+int BuildTracker    =  On;
+int BlockRumble     =  On;
+int LEDRainbowFlow  =  On;
+int PSonXBOX        =  On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(               Toggle Default State                 ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int DropShotMod = On; 
+int JumpShotMod = On;
+int AimAssistMod = On;
+int AntiRecoilMod = On;
+int FireMod = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+init {
+    
+    combo_run(Boot);
+    LedInc = 1
+    Colour = 150;
+}
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+
+	Key_press();
+	
+	if (PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        
+        swap(PS4_TOUCH,PS4_SHARE);
+    }
+    
+    if (BlockRumble) {
+        
+        block_rumble();
+    }
+
+	if (QuickEditAssist) {
+	 	
+	 	if (get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = On;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = Off;	
+			Edit1 = Off;
+		}
+		
+		if (Edit1 && event_press(Reset)) {  
+            
+        	combo_run(InstantReset);
+            Edit1 = Off;
+        }
+	}
+
+    if (InstaFastReset) {
+    	
+    	if (get_keyboard(FastReset)) {
+	    	
+	    	PressedFR += get_rtime();
+	    	FastM = On;
+	    	
+	    	if (FastM && PressedFR == PressedButton) {
+    
+    			combo_run(FastReset);
+    			FastM = Off;
+    		}
+    	}
+    }	
+
+	if (InstaEditReset) {
+        
+        if (EditHold) {
+        	
+        	if (get_ival(Edit) && get_ptime(Edit) > EditHoldTime) {
+        
+            	Edit1 = On;
+            	Edit2 = On;
+			}
+        }
+        	
+        else if (event_press(Edit)) {
+        			
+        		Edit1 = On;
+            	Edit2 = On;
+		}
+		
+		if (Edit2) {
+            
+            if (event_release(Select)) {  
+                
+                Edit1 = Off;
+                Edit2 = Off;
+            }
+		}
+    }
+
+    if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack) {
+            
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                
+                BuildTrack = Off;
+                BuildCount = Off;
+            }
+            
+            if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_keyboard(RampFloorWall)) 
+                    
+            	BuildCount = Off;
+        }
+    }
+
+    if (BuildTrack || !BuildTracker) {
+        
+        if (RampFlrWall) {
+            
+    	    if (get_keyboard(RampFloorWall)) {
+	        	
+	        	PressedRF += get_rtime();
+	        	FastRF = On;
+	        	
+	        	if (FastRF && PressedRF == PressedButton) {
+            
+    	    		combo_run(RampFloorWall);
+    	    		FastRF = Off;
+    	    	}
+    	    }
+    	}	            
+    }
+
+    if (!BuildTrack) { 
+
+        if (InstantPickaxe) {
+            
+            if (event_press(Pickaxe)) 
+                
+                Axe = On;
+        
+            if (Axe) {
+                
+                if (event_press(Build) || event_press(Ads) || event_press(N_Weapon) || event_press(P_Weapon)) 
+                    
+                    Axe = Off;
+                    
+                if (event_release(Fire))
+                
+                	combo_run(Pickaxe);
+            }
+        }
+
+        if (AimAssistMod) {
+	    
+            if (PolarAimAssist) {
+	        
+                if ((get_ival(Ads) || get_ival(Fire)) && abs(get_ival(RX)) <= PolarRelease && abs(get_ival(RY)) <= PolarRelease) {
+                    
+                    if (RadiusBoost && get_ival(Fire)) {
+                        
+                        Radius = PolarRadius + PolarRBoost;
+                    
+                    } else {
+                        
+                        Radius = PolarRadius;
+                    }
+                    
+                    if (AngleBoost && get_ival(Fire)) {
+                    	
+                    	Angle = PolarAngle + PolarABoost;
+                    
+                    } else {
+                        
+                        Angle = PolarAngle;
+                    }
+                    
+                    set_polar(POLAR_RS,Speed = (Speed + Angle) % 360,(abs(get_ival(POLAR_RX)) + abs(get_ival(POLAR_RY))) / 4 + Radius * 328);
+                }
+            }
+
+            if (DamPolarAssist) {
+	        
+                if ((get_ival(Ads) || get_ival(Fire))) {
+                    
+                    actual_X = get_ival(RX);
+                    actual_Y = get_ival(RY);
+                    actual_Magnitude = isqrt(pow(actual_X,2) + pow(actual_Y,2));
+                    max_Magnitude = (actual_Magnitude < 100);
+	        
+                    if (RadiusBoost && get_ival(Fire)) {
+                        
+                        Radius = PolarRadius + PolarRBoost;
+                    
+                    } else {
+                        
+                        Radius = PolarRadius;
+                    }
+                    
+                    if (AngleBoost && get_ival(Fire)) {
+                    	
+                    	Angle = PolarABoost;
+                    
+                    } else {
+                        
+                        Angle = 0;
+                    }
+                                         
+                        angle += PolarAngle + Angle;
+                        angle = angle % 360;
+                        sin_angle = DamPolar[angle % 360];
+                        cos_angle = DamPolar[(angle + 270) % 360];
+                        cos_angle = (cos_angle * Radius) / 100;
+                        sin_angle = (sin_angle * Radius) / 100;
+	        
+                    if (actual_Magnitude <= PolarRadius / 2) { 
+                        
+                        sin_angle -= actual_Y; 
+                        cos_angle -= actual_X; 
+                    
+                    } else { 
+                        
+                        sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+                        cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+                    } 
+	        
+                    set_val(RX,clamp(actual_X + cos_angle, -100,100));
+                    set_val(RY,clamp(actual_Y + sin_angle, -100,100)); 
+                }
+            }
+
+            if (FallOffAA){        
+            
+                if ((get_ival(Ads) || get_ival(Fire)) && abs(get_ival(RX)) <= FallOffRelease && abs(get_ival(RY)) <= FallOffRelease) {
+                    
+                    combo_run(FallOff);
+                
+                } else {
+                    
+                    combo_stop(FallOff);
+                }
+            }
+		}
+
+        if (DropShotMod) {
+        
+            if (DropShot && get_val(Ads) && get_ival(Fire)) {
+                
+                combo_run(DropShot);
+            
+            } else {
+                
+                combo_stop(DropShot);
+            }
+        }
+	    
+        if (JumpShotMod) {
+        
+            if (JumpShot && !get_val(Ads) && get_ival(Fire)) {
+                
+                combo_run(JumpShot);
+            
+            } else {
+                
+                combo_stop(JumpShot);
+            }
+        }
+
+        if (FireMod) {
+        
+            if (RapidFire && get_ival(Fire)) {
+            
+            	combo_run(RapidFire);
+            
+            } else {
+                
+                combo_stop(RapidFire);
+            }
+	    }
+    
+        if (PumpWall) {
+
+ 			if (get_keyboard(PumpWallPress)) {
+	    	
+	    	    PressedPW += get_rtime();
+	    	    PumpPW = On;
+	    	        
+	    	    if (PumpPW && PressedPW == PressedButton) {           
+            		
+            		combo_run(PumpWall);
+            		PumpPW = Off;
+        		}
+        	}
+        }
+
+        if (PumpRamp) {
+
+			if (get_keyboard(PumpRampPress)) {
+	    	
+	    	    PressedPR += get_rtime();
+	    	    PumpPR = On;
+	    	        
+	    	    if (PumpPR && PressedPR == PressedButton) {
+              
+            		combo_run(PumpRamp);
+            		PumpPR = Off;
+        		}
+        	}
+        }
+
+        if (GhostPeek && get_keyboard(GhostPeekPress)) {
+            
+            combo_run(GhostPeek);
+        }
+
+        if (AntiRecoilMod) {
+
+            if (LegacyARecoil){        
+                    
+                if (LegacyARHip) {
+                
+                	if (get_ival(Fire))
+                     
+						LegacyAR();
+                
+                	} else if (get_ival(Ads) && get_ival(Fire)) {
+
+                    	LegacyAR();
+                    }
+            
+				if (get_keyboard(RecoilDownPress)) {
+	    	
+	    	        PressedYU += get_rtime();
+	    	        EditRU = On;
+	    	        
+	    	        if (EditRU && PressedYU == PressedButton) {
+    
+                		ArLegacyRY = clamp(ArLegacyRY++,1,99);
+						EditRU = Off;
+                	}
+				}
+				
+				if (get_keyboard(RecoilUpPress)) {
+	    	
+	    	        PressedYD += get_rtime();
+	    	        EditRD = On;
+	    	        
+	    	        if (EditRD && PressedYD == PressedButton) {
+
+               			ArLegacyRY = clamp(ArLegacyRY--,1,99);
+						EditRD = Off;
+                	}
+				}
+			} 
+    	}
+	}
+	
+    if (EditShot) {
+    
+	    if (get_keyboard(EditShotPress)) {
+	    	
+	    	PressedE += get_rtime();
+	    	EditM = On;
+	    	
+	    	if (EditM && PressedE == PressedButton) {
+    
+    			combo_run(EditShot);
+    			EditM = Off;
+    		}
+	    }
+	}
+
+	if (!MainMenu && key_press(MenuEnterPress)) {
+
+		MenuToggle(On,On,On,On,Off);
+	}
+
+	if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        MenuTimeout += get_rtime();
+
+		if (get_keyboard(Up) || get_keyboard(Down) || get_keyboard(Left) || get_keyboard(Right) || get_keyboard(ChangeMenuPress)) {
+
+			MenuTimeout = Off;
+		}
+
+			if (MenuTimeout >= TimeoutLimitM || key_press(MenuExitPress)) {
+
+				MenuToggle(Off,Off,Off,Off,Off);
+			}
+
+			if (get_keyboard(ChangeMenuPress)) {
+				
+				PressedM += get_rtime();
+				MenuPress = On;
+				
+				if (MenuPress && PressedM == PressedButton) {
+				
+				    MenuValues = !MenuValues;
+				    MenuSwitch = !MenuSwitch;
+				    ModIndex = On;
+				    Update = On;
+				    MenuPress = Off;
+				}
+			}
+
+
+		if (MenuValues) {
+
+			ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModDigitInc[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+		if (MenuSwitch) {
+
+			ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}
+	}
+ 
+    if (!MainMenu && Saver) { 
+        
+        ScreenTime (); 
+     	Saver (); 
+	} 
+
+    if (!MainMenu && LEDRainbowFlow) { 
+        
+        LedFlow();
+    }
+
+    if (ToggleTime) {
+        
+        TimeToggle();
+    }
+
+	if (get_keyboard(AssistPress)) {
+		
+		PressedA += get_rtime();
+		AssistM = On;
+		
+		if (AssistM && PressedA == PressedButton) {        
+        	
+        	AimAssistMod = !AimAssistMod;
+        	ToggleName = On;
+        	Toggle(AimAssistMod,AimAssistL[0]);
+        	AssistM = Off;
+    	}
+    }
+
+	if (get_keyboard(RecoilPress)) {
+		
+		PressedR += get_rtime();
+		RecoilM = On;
+		
+		if (RecoilM && PressedR == PressedButton) {
+                
+            AntiRecoilMod = !AntiRecoilMod;
+            ToggleName = On;
+            Toggle(AntiRecoilMod,AntiRecoilL[0]);
+            RecoilM = Off;
+    	}
+    }
+
+	if (get_keyboard(DropShotPress)) {
+		
+		PressedD += get_rtime();
+		DropM = On;
+		
+		if (DropM && PressedD == PressedButton) {
+        
+		    DropShotMod = !DropShotMod;
+            ToggleName = On;
+            Toggle(DropShotMod,DropShotL[0]);
+            DropM = Off;
+    	}
+	}
+
+	if (get_keyboard(JumpShotPress)) {
+		
+		PressedJ += get_rtime();
+		JumpM = On;
+		
+		if (JumpM && PressedJ == PressedButton) {
+        
+		    JumpShotMod = !JumpShotMod;
+            ToggleName = On;
+            Toggle(JumpShotMod,JumpShotL[0]);
+            JumpM = Off;
+    	}
+    }
+
+	if (get_keyboard(FireModPress)) {
+		
+		PressedF += get_rtime();
+		FireM = On;
+		
+		if (FireM && PressedF == PressedButton) {
+        
+            FireMod = !FireMod;
+            ToggleName = On;
+            Toggle(FireMod,FireModL[0]);
+            FireM = Off;
+    	}
+    }
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo FallOff {
+
+    if (LegacyARecoil && !get_ival(Fire) || !LegacyARecoil) 
+    	
+    	Set_Val(RY,FalloffAARY);
+    	
+    Set_Val(RX,FalloffAARX);
+    wait(FalloffAAWait);
+    
+    if (LegacyARecoil && !get_ival(Fire) || !LegacyARecoil)
+    	
+    	Set_Val(RY,FalloffAARY * -1);
+    	
+    Set_Val(RX,FalloffAARX * -1);
+    wait(FalloffAAWait);
+}
+
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidFireHold);
+    set_val(Fire,0);
+    wait(RapidFireWait);
+}
+
+combo DropShot {
+
+	set_val(Crouch,100);
+	wait(50);
+	set_val(Crouch,0);
+	wait(20);
+	wait(DropShotWait);
+}
+
+combo JumpShot {
+
+    set_val(Jump,100);
+    wait(50);
+    set_val(Jump,0);
+    wait(20);
+    wait(JumpShotWait);
+}
+
+combo Pickaxe {
+    
+    set_val(Pickaxe,100);
+    wait(PickaxeHold);
+    Axe = Off;
+}
+
+combo PumpWall {
+
+    set_val(Fire,100);
+    wait(PumpWallHTime);
+ 	set_val(Build,100);
+    wait(PumpWallHTime);
+    set_val(Wall,100);
+    wait(PumpWallHTime);
+    set_val(Build,100);
+    wait(50);
+    wait(30);
+}
+
+combo PumpRamp {
+
+    set_val(Fire,100);
+    wait(PumpRampHTime);
+ 	set_val(Build,100);
+ 	set_val(Ramp,0);
+    wait(PumpRampHTime);
+    set_val(Ramp,100);
+    wait(PumpRampHTime);
+    set_val(Build,100);
+    wait(50);
+    wait(30);
+}
+
+combo GhostPeek {
+    
+    set_val(Crouch,100);
+    wait(45);
+    set_val(Crouch,0);
+    wait(65);
+    set_val(Fire,100);
+    wait(15); 
+    wait(10);
+    set_val(Crouch,100);
+    wait(15);
+    set_val(Crouch,0); 
+    wait(GhostPeekWait);
+}
+
+combo EditShot {
+    
+	set_val(EditAssist,100);
+    wait(12);
+    set_val(Select,100);
+    wait(12);
+    set_val(Select,0);
+    set_val(EditAssist,0);
+    wait(12);
+    set_val(Fire,100);
+    wait(EditShotHTime);
+    set_val(Fire,0);
+    set_val(EditAssist,100);
+    wait(12);
+    set_val(EditAssist,0);
+    wait(12);
+    set_val(Reset,100);
+    wait(20);
+    set_val(Reset,0);
+    set_val(Confirm,100);
+    wait(20);
+    set_val(Confirm,0);
+    wait(10);
+    set_val(Pickaxe,100);
+    wait(20);
+    set_val(Pickaxe,0);
+    wait(10);
+    set_val(Pickaxe,100);
+    wait(20);
+    set_val(Pickaxe,0);
+    wait(10);
+    BuildTrack = Off;
+    Edit1  = Off;
+    Edit2 = Off;
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(ButtonTime)
+    set_val(Reset,100);        
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+combo RampFloorWall {                                                                                                                    
+    
+    set_val(Ramp,100);
+    wait(60);
+    wait(30);
+    set_val(Floor,100);
+    wait(60);
+    wait(30);
+    set_val(Wall,100);
+    wait(60);
+    wait(40);
+}
+
+combo Boot {
+        
+        wait(Slot);
+    if (Slot == 20000)    
+        cls_oled(0);
+        
+        if (Slot) {
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+combo VibrateBlink {
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+    else 
+        
+        set_rgb(255,0,0);
+    
+    wait(350);
+    set_rgb(0,0,0);
+    wait(250);
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+    else 
+        
+        set_rgb(255,0,0);
+	
+	wait(350);
+    reset_leds();
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+function EditAssist () {
+
+    EditT += get_rtime();
+        if (get_ival(EditAssist)) {
+            if (EditT >= EditDelay)
+                  Press(Select);
+          }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        return;
+            set_val(Button, 100);
+}
+
+function LegacyAR () {
+    
+    if(LegacyInvert) {
+        Set_Val(RY,ArLegacyRY * -1);
+    }
+        else {    
+            Set_Val(RY,ArLegacyRY);
+        }
+}
+
+function Set_Val(Input,Output) {
+
+      set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        return; 
+}
+
+function Toggle(ModT,ModP) {
+    
+    if (combo_running(Boot))    
+        
+        combo_stop(Boot);
+    
+        Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+        combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        
+        Saver = 0;
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[8]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[6]);    
+        
+        } else {
+                
+            printf(36,38,0,1,MiscString[7]);
+        }
+        
+        ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+    if (!MainMenu && ToggleT >= 5000) {
+        cls_oled(0);
+        ToggleTime = Off;
+        ToggleT = 0;
+    }
+}
+
+function key_press(Key) {
+    
+    if (get_keyboard(Key) && !KeyPress) {
+        
+        KeyPress = On;
+        return On;
+    }
+    
+    if (!get_keyboard(Key)) {
+    	
+    	KeyPress = Off;
+    }
+    
+    return Off;
+}
+
+function LedFlow () {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 120) {
+        set_rgb(Colour / LedBrightness,Colour[1] / LedBrightness,Colour[2] / LedBrightness);
+        Colour[LedDec] -= 2; 
+        Colour[LedInc] += 2;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+}
+
+function Saver () {
+    
+    if (Saver) { 
+
+		TimeL += get_rtime();
+	
+		if(TimeL == 30) {            
+  			pixel_oled(X_POS1,Y_POS1,1);
+        	pixel_oled(X_POS2,Y_POS2,1);
+             
+             	TimerP += 1;    Length -= 1;
+             	TimerE += 1;    Length -= 1;
+                
+            	if(XorY1)  X_POS1 +=Dir1;
+            	if(XorY2)  X_POS2 +=Dir2;
+            	if(!XorY1) Y_POS1 +=Dir1;
+            	if(!XorY2) Y_POS2 +=Dir2;
+ 
+            if(Y_POS1 < 1)   Y_POS1 = 63;
+            if(Y_POS2 < 1)   Y_POS2 = 63;
+            if(X_POS1 < 1)   X_POS1 = 127;
+            if(X_POS2 < 1)   X_POS2 = 127;
+            if(Y_POS1 > 63)  Y_POS1 = 1;
+            if(Y_POS2 > 63)  Y_POS2 = 1;
+            if(X_POS1 > 127) X_POS1 = 1;
+            if(X_POS2 > 127) X_POS2 = 1;
+    
+    	if(Length < 1) {
+        	cls_oled(0);
+        	Y_POS2 = random(1,64);
+        	Y_POS1 = random(1,64);
+        	X_POS1 = random(1,128);
+        	X_POS2 = random(1,128);
+        	Steps1 = random(5,25);
+        	Steps2 = random(5,25);
+        	Length = random(200,1000);
+    	}
+    
+        	if(TimerP > Steps1) { 
+            	TimerP = 0;
+            	Steps1 = random(5,25);
+            	XorY1 = !XorY1;
+            	Dir1 = random(1,3);
+    
+           	 		if(Dir1 == 2) Dir1 = -1;
+        	} 
+
+		if(TimerE > Steps2)    {
+			TimerE = 0;
+            Steps2 = random(5,25);
+            XorY2 = !XorY2;
+            Dir2 = random(1,3);
+    
+				if(Dir2 == 2) Dir2 = -1;
+		}                                    
+        	TimeL = 0;
+     	}
+ 	}   
+	
+		if (!Saver)
+			cls_oled(0);
+}
+
+function ScreenTime () { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+             Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+  
+function MenuToggle (Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod (ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			} 
+		Update = Off; 
+	} 
+
+	    if (get_keyboard(Up)) {
+	    	
+	    	PressedMU += get_rtime();
+	    	MenuU = On;
+	    	
+	    	if (MenuU && PressedMU == 10) {
+	    
+ 	    		Update = On;
+            	ModVal += ModValInc;
+            	ModMonitor(ModValLbl);
+            	MenuU = Off;
+	    
+            if (ModVal > ModValMax) ModVal = ModValMin;
+	    
+            } 
+ 	    }
+ 	    
+	    if (get_keyboard(Down)) {
+	    	
+	    	PressedMD += get_rtime();
+	    	MenuD = On;
+	    	
+	    	if (MenuD && PressedMD == 10) { 
+	    
+            	Update = On;
+            	ModVal -= ModValInc;
+            	ModMonitor(ModValLbl);
+             	MenuD = Off;
+	    
+            if (ModVal < ModValMin) ModVal = ModValMax;
+	    
+            }
+        }
+        
+	    if (get_keyboard(Right)) {
+	    	
+	    	PressedMR += get_rtime();
+	    	MenuR = On;
+	    	
+	    	if (MenuR && PressedMR == 10) {
+	    
+	    		Update = On;
+	    		ModIndex += 1;
+	    		MenuR = Off;
+        
+	    	if (ModIndex > IndexMax) ModIndex = IndexMin;
+	    	
+	    	}
+	    }
+  
+	    if (get_keyboard(Left)) {
+	    	
+	    	PressedML += get_rtime();
+	    	MenuL = On;
+	    	
+	    	if (MenuL && PressedML == 10) {
+			
+				Update = On;
+				ModIndex -= 1;
+				MenuL = On;
+ 
+			if (ModIndex < IndexMin) ModIndex = IndexMax;
+		
+			} 
+		}
+		
+	return ModVal;
+} 
+ 
+function ModMonitor (Mon) {
+    
+    if (Mon == ModToggle[1]) { 
+        DamPolarAssist  = Off;
+        FallOffAA       = Off;
+    }
+    
+    if (Mon == ModToggle[2]) { 
+        PolarAimAssist  = Off;
+        FallOffAA       = Off;
+    }
+    
+    if (Mon == ModToggle[5]) { 
+        DamPolarAssist  = Off;
+        PolarAimAssist  = Off;
+    }
+}
+
+function Key_press () {
+	 
+	for(PressTime = 1; PressTime <= 17; PressTime++) {  
+	
+		if (Pressed[PressTime] >= KeyPressTime) Pressed[PressTime] = 0; 
+		if (!get_keyboard(KeyButtons[PressTime])) Pressed[PressTime] = 0;
+	}
+}
+
+function Grid () { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll () {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,  TRIANGLE ,   SPACE   ,     O     ,     r     ,   SPACE   ,     Y     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   };
+
+const int8 DamPolar[]= {
+    100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,
+    71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,
+    -8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,
+    -65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,
+    -97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,
+    -94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,
+    -56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,
+    11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,
+    81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};

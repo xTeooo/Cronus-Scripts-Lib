@@ -1,0 +1,79 @@
+// Batt's Sticky Aim Assist
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+define Strafe   = PS4_LX;
+
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define BattStickyPower = 20;
+define BattStickyWait  = 20;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define BattsStickyAA = On;
+define BattsAAHip    = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+
+
+    if (BattsStickyAA) {
+    
+        if (get_ival(Ads) || (BattsAAHip && get_ival(Fire))) {
+        
+            combo_run(BattsStickyAssist);
+        
+        } else {
+        
+            combo_stop(BattsStickyAssist); 
+        }
+    }
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo BattsStickyAssist {
+   
+   set_val(AimY,AxisRelease(AimY,BattStickyPower));
+   wait(BattStickyWait);
+   set_val(AimX,AxisRelease(AimX,BattStickyPower));
+   set_val(Strafe,AxisRelease(Strafe,BattStickyPower));
+   wait(BattStickyWait);
+   set_val(AimY,AxisRelease(AimY,inv(BattStickyPower)));
+   wait(BattStickyWait);
+   set_val(AimX,AxisRelease(AimX,inv(BattStickyPower)));
+   set_val(Strafe,AxisRelease(Strafe,inv(BattStickyPower)));
+   wait(BattStickyWait);
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+function AxisRelease(AxisXY,AxisVal) {
+    
+    if (abs(get_ival(AxisXY)) <= BattStickyPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}

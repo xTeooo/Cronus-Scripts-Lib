@@ -1,0 +1,67 @@
+// Legacy Aim Assist
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define LegacyAARY    = 20;
+define LegacyAARX    = 20;
+define LegacyAAWait  = 20;
+define LegacyRelease = 20;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define LegacyAssist = On;
+define LegacyAAHip  = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+
+    if (LegacyAssist) {
+    
+        if (get_ival(Ads) || (LegacyAAHip && get_ival(Fire))) {
+        
+            if (abs(get_ival(AimX)) <= LegacyRelease && abs(get_ival(AimY)) <= LegacyRelease) {
+        
+                combo_run(LegacyAssist);
+        
+            } else {
+        
+                combo_stop(LegacyAssist); 
+            }
+        }
+    }
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo LegacyAssist {
+   
+   set_val(AimY,inv(LegacyAARY));
+   wait(LegacyAAWait);
+   set_val(AimX,LegacyAARX);
+   wait(LegacyAAWait);
+   set_val(AimY,LegacyAARY);
+   wait(LegacyAAWait);
+   set_val(AimX,inv(LegacyAARX));
+   wait(LegacyAAWait);
+}    

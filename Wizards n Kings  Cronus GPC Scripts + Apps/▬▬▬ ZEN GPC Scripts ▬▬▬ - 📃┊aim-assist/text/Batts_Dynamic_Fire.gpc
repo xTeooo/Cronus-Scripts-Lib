@@ -1,0 +1,68 @@
+// Batt's Dynamic Fire
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire = PS4_R2;
+define Ads  = PS4_L2;
+
+define On  = TRUE;
+define Off = FALSE;
+
+int DynamicWait;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define DynaFireHold = 40;
+define DynaFireWait = 33;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define DynaRapidFire = On;
+define DynaFireHip   = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+
+
+    if (DynaRapidFire) { 
+    
+        DynamicWait = DynaFireWait * 10 - (get_ival(Fire) * 3);
+        
+        if (DynaFireHip) {
+        
+            if (get_ival(Fire)) {
+            
+                combo_run(DynaFire);
+            }    
+        
+        } else if (get_ival(Ads) && get_ival(Fire)) {
+            
+        	combo_run(DynaFire);
+        
+        } else {   
+            
+             combo_stop(DynaFire);
+        }
+    }
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo DynaFire {
+
+    set_val(Fire,100);
+    wait(DynaFireHold);
+    set_val(Fire,0);
+    wait(DynamicWait);
+}
