@@ -1,0 +1,132 @@
+// GPC Online Library
+// 2k22_three_point_shooter_&_curry_slide.gpc
+
+/* *
+* GPC SCRIPT
+*
+*  GPC is a scripting language with C-like syntax.
+*  To learn more access GPC Language Reference on Help menu.
+* *********************************************************** */
+
+main {
+
+    //
+    // The main procedure is called before every report is sent to
+    // console. You can think of this procedure as a loop which only
+    // ends when the script is unloaded.
+    //
+    // TODO: handle/change values of buttons, analog stick and/or sensors
+    //
+
+}int timedshot = 550;		// <---- Timing for when standing still
+int timedshot2 = 380;		// <---- Timing for when walking (stick no further than 65% out in any direction
+
+int stand;
+int walk;
+
+init{
+
+	timedshot  = get_pvar(SPVAR_1, 300, 1000, timedshot);
+	timedshot2 = get_pvar(SPVAR_2, 300, 1000, timedshot2);
+	
+}
+main {
+	
+	set_val(TRACE_1,timedshot);
+	set_val(TRACE_2,timedshot2);
+	
+	if(get_val(XB1_LT)){
+		if(event_press(XB1_LEFT)){
+			timedshot += 10;
+		}
+		if(event_press(XB1_RIGHT)){
+			timedshot -= 10;
+		}
+		if(event_press(XB1_UP)){
+			timedshot2 += 10;
+		}
+		if(event_press(XB1_DOWN)){
+			timedshot2 -= 10;
+		}
+	}
+    
+    if(event_press(PS4_R3)){
+		combo_run(RHCurry);
+	}
+	
+	if(event_press(PS4_L3)){
+		combo_run(LHCurry);
+	}
+	
+	if(get_ival(XB1_LT) && get_ival(XB1_RT) && event_press(XB1_MENU)){
+		set_pvar(SPVAR_1,timedshot);
+		set_pvar(SPVAR_2,timedshot2);
+		combo_run(rumble);
+	}
+		
+	if(isqrt(pow(get_ival(XB1_RX),2) + pow(get_ival(XB1_LX),2)) <= 30) {
+		stand = TRUE;
+		walk = FALSE;
+	}
+
+	if((isqrt(pow(get_ival(XB1_RX),2) + pow(get_ival(XB1_LX),2)) > 50) || (isqrt(pow(get_ival(XB1_RY),2) + pow(get_ival(XB1_LY),2)) > 50)) {
+		stand = FALSE;
+		walk = TRUE;
+    }
+    
+    if(get_ival(XB1_X)){
+    	set_val(XB1_X,0);
+	    if(stand) {
+	    	combo_run(test);
+    	}
+	    if(walk) {
+	    	combo_run(test2);
+    	}
+    }
+
+}
+
+combo LHCurry{
+	set_val(XB1_RT, 100);
+	wait(50);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	wait(70);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, 0);
+	set_val(PS4_RY, 0);
+
+}
+
+combo RHCurry{
+	set_val(XB1_RT, 100);
+	wait(50);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, -75);
+	set_val(PS4_RY, 75);
+	wait(70);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, 0);
+	set_val(PS4_RY, 0);
+}
+
+combo rumble{
+    wait(100);
+    set_rumble(RUMBLE_A,80);
+    wait(100);
+    reset_rumble();
+}
+
+combo test{
+	set_val(XB1_X,100);
+	wait(timedshot);
+	set_val(XB1_X,0);
+	wait(20);
+}
+combo test2{
+	set_val(XB1_X,100);
+	wait(timedshot2);
+	set_val(XB1_X,0);
+	wait(20);
+}

@@ -1,0 +1,305 @@
+/*___________________.___  _________.___  _________ _______________  _______________________  ____ ______________.___________    _______   ________ __________  ____   ________     ____ 
+\_   ___ \______   \   |/   _____/|   |/   _____/ \_   _____/\   \/  /\_   _____/\_   ___ \|    |   \__    ___/|   \_____  \   \      \  \_____  \\______   \ \   \ /   /_   |   /_   |
+/    \  \/|       _/   |\_____  \ |   |\_____  \   |    __)_  \     /  |    __)_ /    \  \/|    |   / |    |   |   |/   |   \  /   |   \  /   |   \|       _/  \   Y   / |   |    |   |
+\     \___|    |   \   |/        \|   |/        \  |        \ /     \  |        \\     \___|    |  /  |    |   |   /    |    \/    |    \/    |    \    |   \   \     /  |   |    |   |
+ \______  /____|_  /___/_______  /|___/_______  / /_______  //___/\  \/_______  / \______  /______/   |____|   |___\_______  /\____|__  /\_______  /____|_  /    \___/   |___| /\ |___|
+        \/       \/            \/             \/          \/       \_/        \/         \/                                \/         \/         \/       \/                   \/      */                                                  
+///Rapid Fire - ADS + Right///
+
+
+////////Aim Assist Always on/////////////////////////////////////////////////////////////////   
+int AimAssist         = TRUE;      //Change "TRUE" to "FALSE" to turn off aim assist     ////   
+int AimAssistValues   = 18;        //AimAssist shake values (higher numbers = more shake)////   
+int delay             = 24;        //AimAssist speed (lower numbers = faster shake)      ////   
+/////////////////////////////////////////////////////////////////////////////////////////////       
+
+////////Aim Abuse////////////////////////////////////////////////////////////////////////////
+int AimAbuse          = FALSE;     //Change "FALSE" to "TRUE" for no Aim Abuse            ////       
+int ZoomInValues      = 200;      //Zoom in values                                       ////
+int ZoomOutValues     = 24;       //Zoom out values                                      ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//Ghost Peek - L2 & RIGHT_BUMP///////////////////////////////////////////////////////////////
+int ghostpeek = TRUE;             //Need to crouch before doing it for                   //// 
+int gpreset = 120;                //being invisible when doing ghost peek                ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//100% Accuracy - L2 & RIGHT_BUMP////////////////////////////////////////////////////////////   
+int PerfectAccuracy = TRUE;                                                              ////
+                                                                                         ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+                                                                                            
+//Dropshot - HOLD ADS + SQUARE TO ACTIVATE///////////////////////////////////////////////////
+                                                   ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//Rapid Fire - HOLD ADS + RIGHT TO ACTIVATE//////////////////////////////////////////////////
+int RapidFire      = TRUE;                                                              ////
+                                                                                         ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+ 
+//PUMP-SMG --- L2 + DOWN TO ACTIVATE/////////////////////////////////////////////////////////
+int PUMP_SMG = TRUE;                                                                    ////
+int tap;                                                                                 ////
+int R2_block;                                                                            ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//Anti Recoil////////////////////////////////////////////////////////////////////////////////
+int recoil_onoff = TRUE;   //Change "TRUE" to "FALSE" to turn off Anti Recoil           ////
+int ANTI_RECOIL = 26;                                                                    ////
+int ANTI_RECOIL_H = 0;                                                                   ////
+int anti_recoil_H;                                                                       ////
+int anti_recoil;                                                                         ////
+define AR_Release = 30;                                                                  ////
+define SCOPE_ACTIVATED = TRUE;                                                           ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+//INSTA EDIT & INSTA RESET///////////////////////////////////////////////////////////////////
+           ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+////LED//////////////////////////////////////////////////////////////////////////////////////
+int a; int b;                                                                            ////
+                                                                                         ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+///BUTTON LAYOUT: BUILDER PRO////////////////////////////////////////////////////////////////
+ define FIRE_BTN = 4; //XB1_RT //PS4_R2                                                  ////                                  
+ define ADS_BTN = 7; //XB1_LT //PS4_L2                                                   ////
+ define CROUCH_BTN = 5; //XB1_RS //PS4_R3                                                ////
+ define SPRINT_BTN = 8; //XB1_LS //PS4_L3                                                ////
+ define JUMP_BTN = 19; //XB1_A  //PS4_CROSS                                              ////
+ define NEXT_PIECE = 3; //XB1_RT //PS4_R1                                                ////
+ define LEFT_BUMP = 6; //XB1_LB //PS4_L1                                                 ////
+ define RIGHT_BUMP = 3; // XB1_RB //PS4_R1                                               ////
+ define SWAP_BTN = 17; //XB1_Y  //PS4_TRIANGLE                                           ////
+ define BUILD_BTN = 18; //XB1_B  //PS4_CIRCLE                                            ////
+ define WALL_BTN = 4; //XB1_RB //PS4_R2                                                  //// 
+ define STAIRS_BTN = 7; //XB1_LB //PS4_L2                                                ////
+ define FLOOR_BTN = 3; //XB1_RT //PS4_R1                                                 ////
+ define ROOF_BTN = 6; //XB1_LT //PS4_L1                                                  ////
+ define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE                                            ////
+ define R_X = 9; //XB1_RX //PS4_RX                                                       ////
+ define R_Y = 10; //XB1_RY //PS4_RY                                                      ////
+ define L_X = 11; //XB1_LX //PS4_LX                                                      ////
+ define L_Y = 12; //XB1_LY //PS4_LY                                                      ////
+ define UP = 13; //XB1_UP //PS4_UP                                                       ////
+ define DOWN = 14; //XB1_DOWN //PS4_DOWN                                                 ////
+ define LEFT = 15; //XB1_LEFT //PS4_LEFT                                                 ////
+ define RIGHT = 16; //XB1_RIGHT //PS4_RIGHT                                              ////
+ define MENU		= XB1_MENU;                                                          ////
+ define VIEW_SHARE = PS4_SHARE;                                                          ////
+ define MENU_OPTIONS = PS4_OPTIONS;                                                      ////
+//End of Buttons Definitions Section/////////////////////////////////////////////////////////
+
+/*ENTER ON BUILD MODE////////////////////////////////////////////////////////////////////////
+                                                                                         ////
+ #ENTER ON   DROPSHOT: DROPSHOT WILL DESACTIVATE          !                              ////
+ #ENTER ON Rapid Fire: Rapid Fire WILL DESACTIVATE        !                              ////
+ #ENTER ON   PUMP-SMG: change back to pump (L1) and shoot !                              ////
+                                                                                         ////
+///////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+
+
+//-------------------------------------------------------------------------MAIN SECTION----------------------------------------------------------------------------//
+main {
+
+//InstaEdit & InstaReset/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+
+//Ghost Peek/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+  combo_run(ghostpeek_Hold);
+  combo_run(Notify);a=4;b=2;
+set_val(RIGHT_BUMP, 0);
+      } else {
+  combo_stop(ghostpeek_Hold);
+}
+
+//100% ACCURACY///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+  PerfectAccuracy = !PerfectAccuracy
+   combo_run(Notify);a=0;b=2;
+  combo_run(PerfectAccuracy);
+set_val(RIGHT_BUMP, 0);
+      } else {
+  combo_stop(PerfectAccuracy);
+}
+
+//Rapidfire//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if(get_val(ADS_BTN) && event_press(RIGHT)){
+   rumble_A_if_true(RapidFire);
+   RapidFire =! RapidFire;
+   if(RapidFire == TRUE){combo_run(Notify);a=0;b=2;} 
+   if(RapidFire == FALSE){combo_run(Notify);a=2;b=0;}
+   }
+   if(RapidFire){
+     if(get_val(FIRE_BTN)){
+        combo_run(Rapidfire);                                          
+       } 
+     }
+     
+//Dropshot///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//PUMP/SMG///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+
+//------------------------------------------------///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
+//ANTI RECOIL////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if (!SCOPE_ACTIVATED || get_val(ADS_BTN) && get_val(FIRE_BTN )) {
+        combo_run(AntiRecoil);
+        }
+ 
+    if ( abs(get_val(10)) > AR_Release || abs(get_val(9)) > AR_Release) {  
+        combo_stop (AntiRecoil);
+        } 
+//AIM ASSIST/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if (AimAssist) {
+if (get_val(7)> 98){ combo_run(cAimAssist);}
+}
+if (abs(get_val(9)) > 19 || abs(get_val(10)) > 19){ 
+combo_stop(cAimAssist);}
+
+//AIM ABUSE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+if(AimAbuse){                                                                            
+      if(get_val(ADS_BTN)> 95){                                                          
+      combo_run(AimAbuse);}                                                             
+      if(event_release(ADS_BTN)){ combo_stop(AimAbuse);}
+}  
+}
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//-------------------------------------------------------------COMBO SECTION---------------------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------// 
+combo TAP 
+	{
+    doubleClick = TRUE;
+	wait(400);
+	doubleClick = FALSE;
+	}
+combo PerfectAccuracy {
+set_val(FIRE_BTN,100);
+wait(100);
+wait(250);
+set_val(FIRE_BTN,100);
+}
+combo Rapidfire {
+set_val(FIRE_BTN, 100); 
+wait(120);
+set_val(FIRE_BTN, 0); 
+wait(30);
+}
+combo cAimAssist {                                                                        
+set_val(R_X, AimAssistValues);                                                            
+wait(delay);                                                                                                                                                        
+set_val(R_X, AimAssistValues*(-1));                                                      
+wait(delay);                                                                             
+}  
+
+combo AimAbuse {                                                                         
+set_val(ADS_BTN, 100);                                                                   
+wait(ZoomInValues);                                                                      
+set_val(ADS_BTN, 0);                                                                     
+wait(ZoomOutValues);                                                                     
+}   
+
+combo ghostpeek_Hold {
+set_val(5, 100);
+wait(15); wait(15);
+set_val(4, 100);
+wait(15); wait(10);
+set_val(5, 100);
+wait(15); wait(gpreset);
+}
+
+
+combo Double_Tact_R1 {
+R2_block = TRUE;
+set_val(4, 100);
+wait(15);
+wait(5);
+set_val(7, 100);
+set_val(8, 100);
+set_val(3, 100);
+wait(15);
+R2_block = FALSE;
+} 
+combo RUMBLE {
+set_rumble(RMBLE, 100); wait(300);
+reset_rumble(); }
+
+combo Notify {
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+}
+
+combo VIBRATE {
+    set_rumble(rumble_type, 100);
+    wait(300);
+    reset_rumble();
+}
+combo master {
+	wait(WAIT);
+	set_val(button, 100);
+	wait(28);
+	set_val(button, 0);
+	wait(28);
+	i = i + 1;
+}
+combo AntiRecoil {
+    if(recoil_onoff) {
+    anti_recoil = get_val(10) + ANTI_RECOIL;
+    if(anti_recoil > 100) anti_recoil = 100;
+    set_val(10, anti_recoil);
+    anti_recoil_H = get_val(9) + ANTI_RECOIL_H;
+    if(anti_recoil_H > 100) anti_recoil_H = 100;
+    set_val(9, anti_recoil_H);
+    }
+        }
+function resetPress(P0,P1,P2,P3,T,S) {                                              
+if(!P0){pressedIt[0] = FALSE;}    else if(P0) {pressedIt[0] = TRUE;}                     
+if(!P1){pressedIt[1] = FALSE;}    else if(P1) {pressedIt[1] = TRUE;}                        
+if(!P2){pressedIt[2] = FALSE;}    else if(P2) {pressedIt[2] = TRUE;}                        
+if(!P3){pressedIt[3] = FALSE;}    else if(P3) {pressedIt[3] = TRUE;}                      
+}
+function set_click(B, Num, Wait) {
+	WAIT = Wait;
+	i = 0;
+	button = B;
+	num = Num;
+	a = TRUE;
+}
+int edit = FALSE;                                                                       
+int pressedIt[6];                                                                       
+int WAIT;                                                                                
+int num, i;                                                                           
+int button;
+function rumble_A_if_true(var) {
+}
+//End/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

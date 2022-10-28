@@ -1,0 +1,307 @@
+// GPC Online Library
+// rainbow:_six_siege_(_r6_)_|_mini_mods_1.22.gpc
+
+/*
+
+		Authour: ||kek|| & Spenzy (jitter crouchspam)
+		Game: Rainbow: Six Siege
+		Date: 02 / 12 / 19
+		Version: 1.22
+		Controls;
+		
+			LT/L2 + DOWN = Toggle Crouch Spam
+			LT/L2 + RIGHT = Toggle Recoil Assist (runs while shooting)
+			LT/L2 + VIEW/SHARE = Toggle QE(Lean) Spam (runs while shooting)
+			LT/L2 + MENU/OPTIONS = Toggle AutoLean (runs while ADS)
+			UP = Toggle Rapid Fire (runs while shooting) (must ADS to change firerate)
+			Scan Once(HOLD Y/TRIANGLE) = Enable AutoScan, exit Camera View to disable
+		LED;
+		
+			GREEN - Rapid Fire ENABLED
+			RED - Rapid Fire DISABLED
+		
+			PINK - Crouch Spam ENABLED
+			WHITE - Crouch Spam DISABLED
+		
+			CYAN (light blue) Recoil Assist ENABLED
+			OFF (no colour) Recoil Assist DISABLED
+			
+			YELLOW - QE Spam ENABLED
+			BLUE - QE Spam DISABLED
+			
+			BLUE(flashing) - AutoLean ENABLED
+			BLUE - AutoLean DISABLED
+			
+			YELLOW(flashing) - AutoScan ENABLED
+			BLUE - AutoScan DISABLE
+		
+		NOTE: If you use an elite controller/scuff controller and wish to use the paddles, below are the values which represent the paddles to swap out within the "press" argument
+			  within the main loop.
+			  
+			  Right 1 (top right) - 24
+			  Right 2 (bottom right) - 25 
+			  
+			  Left 1 (top left) - 26
+			  Left 2 (bottom left) - 27
+
+
+
+
+*/
+
+// static values
+define VERTICLE = 18; // vert pulldown rate
+define LEFT = 0; // horz move left rate
+define RIGHT = 0; // horz move right rate
+define FRAG_COOK_TIME = 0xEFB; // dont change
+define SCAN_TIME = 0x500; // dont change
+define LEAN_TIME = 0x5F; // dont change
+define CROUCH_TIME = 100; // time between each crouch in CrouchSpam
+define AUTOLEAN_AMOUNT = 30; // amount of movement in the left stick to start leaning
+
+
+// booleans
+int flashActive;
+int crouchActive;
+int qeSpam;
+int rapidFire;
+int recoilActive;
+int autoScan;
+int autoLean;
+int rapidHip = FALSE; // TRUE/1 = rapid fire is lower when firing from the hip | FALSE/0 = rapid fire is same speed no matter what
+int scanActive = FALSE; // TRUE/1 = holding Y for 1.5 seconds enables a loop for scanning constantly, disabled by exiting cam view | FALSE/0 = script is inactive (turned off)
+int flipTriggers = FALSE; // TRUE/1 = RT/R2 & LT/L2 are flipped to RB/R1 & LB/R1 (vice versa) | FALSE/0 = normal triggers
+int impactActive = FALSE; // TRUE/1 = holding LB will release a nade before it explodes, allowing for a short-distance explosion (for soft destuction/kills) | FALSE/0 = script is inactive (turned off)
+int hairTriggers = TRUE; // TRUE/1 = the slightest touch of the triggers will have instant response ingame | FALSE/0 = script is inactive (turned off)
+int rapidBindActive = TRUE; // TRUE/1 = pressing UP on the dpad will not affect firerate unless you do so while ADS | FALSE/0 = script is no active (turned off)
+
+
+// indexes
+int colourID;
+int bind;
+int flashColourID;
+
+
+// misc data
+int ARv;
+int ARl;
+int ARr;
+int leanPos; // uses LEAN enum
+int first;	 // first direction to lean (LS/RS)
+int second;	 // second direction to lean (LS/RS)
+
+// enums
+define COLOUR_OFF = 0x1;
+define COLOUR_BLUE = 0x2;
+define COLOUR_RED = 0x3;
+define COLOUR_GREEN = 0x4;
+define COLOUR_PINK = 0x5;
+define COLOUR_CYAN = 0x6;
+define COLOUR_YELLOW = 0x7;
+define COLOUR_WHITE = 0x8;
+
+define LEAN_NONE = 0;
+define LEAN_LEFT = 0x1;
+define LEAN_RIGHT = 0x2;
+
+// colour array
+data (1,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2,2,0,2,0,0,2,2,0,2,2,2,2);
+
+// shorterned functions
+function set(id,val){set_val(id,val);} // usage - set(XB1_RT, 100) (void)
+									   // 		  	  id - button index (int)
+									   //			  val - value to be applied to button index (int)
+function unset(id){set_val(id, 0);} // usage - unset(XB1_RT) (void)
+									//			     id - button index (int)
+function get(id){return get_val(id);} // usage - get(XB1_RT) (boolean)
+									  //			 id - button index (int)
+function press(id){return event_press(id);} // usage - press(XB1_RT) (boolean)
+											//				 id - button index (int)
+function release(id){return event_release(id);} // usage - release(XB1_RT) (boolean)
+												//				   id - button index (int)
+function trace(id,val){if(id>0&&id<7){set(0x1D+id,val);}} // usage - trace(1,1) (void) (debugger)
+														  //			  id - trace index (1-6)
+														  //			  val - value to be set
+
+// script functions
+
+//
+// usage - colourLED(COLOUR_NONE) (void) 
+// 		   colour - colour state (COLOUR enum)
+//
+function colourLED(int colour){
+	colourID = (colour*4) - 3;
+	reset_leds();
+	set_led(0, dbyte(colourID));
+	set_led(1, dbyte(colourID + 1));
+	set_led(2, dbyte(colourID + 2));
+	set_led(3, dbyte(colourID + 3));
+}
+
+//
+// usage - isADS() (boolean)
+//
+function isADS(){ 
+	return get(0x7) == 0x64 && get_ptime(0x7) >= 30;
+}
+
+//
+// usage - perfect_impact_nade() (void)
+// only call within a loop
+//
+function perfect_impact_nade(){ 
+	if(get(0x6) && get_ptime(0x6) >= FRAG_COOK_TIME){
+		unset(0x6);
+	}
+}
+
+//
+// usage - hairTrigger() (void)
+// only call within a loop
+//
+function hairTrigger(){
+	if(get(0x7)){set(0x7, 0x64);}
+	if(get(0x4)){set(0x4, 0x64);}
+}
+
+//
+// usage - toggleLED(scriptActive, COLOUR_GREEN, COLOUR_RED) (void)
+// 					event - boolean state (int/boolean)
+// 					onC	 - colour state to set when boolean is TRUE (COLOUR enum)
+// 					offC  - colour state to set when boolean is FALSE (COLOUR enum)
+//
+// best usage in loop
+function toggleLED(int event, int onC, int offC){
+	if(event){colourLED(onC);return;}
+	colourLED(offC);return;
+}
+
+//
+// initiation sequence
+//
+init{
+	first=0x8;second=0x5;
+}
+
+
+//
+// main loop
+//
+main{
+	// Display Script Toggle Values (monitor view)
+	trace(1, crouchActive); trace(2, rapidFire); trace(3, recoilActive); trace(4, qeSpam); trace(5, autoScan); trace(6, autoLean);
+	// Trigger Flip Check
+	if(flipTriggers){swap(0x4, 0x3);swap(0x7, 0x6);}
+	// SPAM QE MECHANICS
+	if(!isADS()){leanPos=LEAN_NONE;}
+	if(isADS()){if(press(0x8) && (leanPos != LEAN_LEFT || leanPos == LEAN_NONE)){leanPos=LEAN_LEFT;first=0x5;second=0x8;}if(press(0x5) && (leanPos != LEAN_RIGHT || leanPos == LEAN_NONE)){leanPos=LEAN_RIGHT;first=0x8;second=0x5;}}
+	if((press(0x8) && leanPos == LEAN_LEFT) || (press(0x5) && leanPos == LEAN_RIGHT)){leanPos=LEAN_NONE;}
+	// HAIR TRIGGERS
+	if(hairTriggers) hairTrigger();
+	// GRENADE SCRIPT
+	if(impactActive) perfect_impact_nade();
+	// LT + DOWN TOGGLE CrouchSpam
+	if(isADS() && press(0xE)){ bind=0xE; crouchActive = !crouchActive; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;}toggleLED(crouchActive, COLOUR_PINK, COLOUR_WHITE);} // DPAD DOWN
+	// Run CrouchSpam
+	if(crouchActive){combo_run(crouchSpam); }
+	// UP TOGGLE RapidFire
+	if(press(0xD)){ if(!isADS() && rapidBindActive){bind=0xD;}rapidFire=!rapidFire; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;} toggleLED(rapidFire, COLOUR_GREEN, COLOUR_RED);} // DPAD UP (not ADS requirment for quick access in an intense gunfight)
+	// Run RapidFire
+	if(rapidFire && get(4)){if(isADS() || !rapidHip){combo_run(adsRapid);}if(rapidHip && !isADS()){combo_run(hipRapid);}}
+	// LT + RIGHT TOGGLE RecoilAssist
+	if(isADS() && press(0x10)){ bind=0x10;recoilActive=!recoilActive; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;} toggleLED(recoilActive, COLOUR_CYAN, COLOUR_OFF);} // DPAD RIGHT
+	// Run RecoilAssist
+	if(recoilActive && get(0x4)){combo_run(recoilAssist);}
+	// LT + BACK TOGGLE QeSpam
+	if(isADS() && press(1)){ bind = 1; qeSpam=!qeSpam; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;} toggleLED(qeSpam, COLOUR_YELLOW, COLOUR_BLUE);} // VIEW/SHARE
+	// Run QeSpam
+	if(qeSpam && isADS() && get(0x4)){combo_run(qe);}
+	// Disable QE if no longer ADS or not shooting
+	if(combo_running(qe) && (!isADS() || release(0x4))){combo_stop(qe);}
+	// HOLD Y Enable AutoScan
+	if(scanActive){if(get(0x11) && get_ptime(0x11) >= SCAN_TIME){autoScan=TRUE;}} // hold Y to scan once to enable auto scanning
+	// Run AutoScan
+	if(autoScan){combo_run(autoScan);flashColourID=COLOUR_YELLOW;flashActive=TRUE;combo_run(flash);}
+	// DOWN or B Disable AutoScan
+	if(autoScan && (press(0xE) || press(0x12))){combo_stop(autoScan);autoScan=FALSE;flashActive=FALSE;colourLED(COLOUR_BLUE);} // if B or DPAD DOWN is pressed (exit cam view), kill combo
+	// LT + START TOGGLE AutoLean
+	if(isADS() && press(0x2)){bind = 2; autoLean=!autoLean;if(autoLean){flashColourID=COLOUR_BLUE;flashActive=TRUE;}if(!autoLean){flashActive=FALSE;}}
+	// Run FlashLED
+	if(autoLean && flashActive){combo_run(flash);}
+	// Run AutoLean
+	if(autoLean){if(isADS() && abs(get(11)) > AUTOLEAN_AMOUNT){if(get_val(11) < 0){if(!get(8)){set(8, 100);}}else{if(!get(5))set(5, 100);}}}
+	// Disable input for non-conflicting in-game binds
+	if(bind){if(release(bind)){bind = 0;}else{unset(bind);}}
+}
+
+// script combos
+
+combo adsRapid{
+	set(0x4, 0x64);
+	wait(0x1);
+	unset(0x4);
+	wait(0x1);
+	set(0x4, 0x64);
+	wait(0x1);
+}
+combo hipRapid{
+	set(0x4, 0x64);
+	wait(0x4B);
+	unset(0x4);
+	wait(0x4B);
+	set(0x4, 0x64);
+	wait(0x4B);
+}
+
+combo flash{
+	set_ledx(-1, 0); // set LED state OFF
+	wait(120);
+	colourLED(flashColourID); // set LED state to specified ID
+	wait(80);
+	reset_leds();
+}
+
+combo autoScan{
+	set(0x11, 0x64);
+	wait(SCAN_TIME);
+	unset(0x11);
+	wait(0x1);
+	unset(0x11);
+	wait(0x1);
+}
+
+
+combo qe{
+	set(first, 0x64);
+	wait(0x96);
+	unset(first);
+	wait(LEAN_TIME);
+	set_val(second, 0x64);
+	wait(0x96);
+	unset(second);
+	wait(LEAN_TIME);
+	set_val(first, 0x64);
+	wait(0x96);
+	unset(first);
+	wait(LEAN_TIME);
+	set_val(second, 0x64);
+	wait(0x96);
+	unset(second);
+}
+
+combo crouchSpam{
+set_val(PS4_L1,100);
+wait(20);
+set_val(PS4_L1,0);
+wait(20);
+
+}
+
+combo recoilAssist{ // just an anti recoil script I found, but used a lower pull rate to only assist in pulling down instead of doing it for you (good players are too used to pulling down)
+	ARv = get(0xA)+VERTICLE;
+    if(ARv > 0x64) ARv = 0x64;set(0xA, ARv);
+    ARl = get(0x9)-LEFT;
+    if(ARl > 0x64) ARl = 0x64;set(0x9, ARl);
+    ARr = get(0x9)+RIGHT;
+    if(ARr > 0x64) ARr = 0x64;set(0x9, ARr);
+}

@@ -1,0 +1,118 @@
+define Fire = PS4_R2; // Fire In Game
+define Ads  = PS4_L2; // Ads In Game
+define AimY = PS4_RY; // Vertical Aim Axis In Game
+define AimX = PS4_RX; // Horizontal Aim Axis In Game
+define On   = TRUE
+define Off  = FALSE
+define Build = PS4_CIRCLE
+define Pickaxe = PS4_TRIANGLE
+define Roof    = PS4_L1
+define Floor   = PS4_R1
+define Wall    = PS4_R2
+define Ramp   = PS4_L2
+define Trap   = PS4_SQUARE
+int AAT,Axis;
+
+int ReetAssist    = TRUE;  // Aim Assist [ON / OFF]
+int ReetHipAssist = TRUE;  // Operate on Fire Or Ads [If FALSE It Will Only Run On ADS]
+int AimAssistTimed      = TRUE; // Aim Assist Will Cut Out After 2 seconds By Default (Change Below)
+define BuildTracker  = On; // Isolate Aim Assist And Head Shot Mod In Build Mode
+define BuildSyncTime = 2000; // Auto De-Sync After 2 Seconds Of being Idol [Pickaxe == Manual Re-Sync]
+int BuildTrack,BuildCount,BuildPro = 2000
+int Power  = 1;    //  Aim Assist Power [1,2,3] ==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+int AATime = 1000; //  Aim Assist Will Cut Out After Time [1000] = 1 Second, [2000] = 2 Second
+
+main {	
+	
+	if (ReetAssist) {
+		
+		if (AimAssistTimed) {
+		
+			if (get_ival(Ads) && get_ptime(Ads) <= AATime || ReetHipAssist && get_ival(Fire) && get_ptime(Fire) <= AATime) {
+	    	
+	    		AimAssist();
+	    	}
+	    	
+	    } else if (get_ival(Ads)|| ReetHipAssist&& get_ival(Fire)) {
+	    	
+	    		AimAssist();
+	    }
+	    
+	    if (!get_ival(Ads) && !get_ival(Fire)) {
+	    
+	    	AAT = 0;
+	    	Axis = 0;
+	    }
+	}
+if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack && !BuildPro) {
+            
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                
+                BuildTrack = Off;
+                BuildCount = 0;
+            }
+            
+            if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) 
+                
+                BuildCount = 0;
+        }
+    }
+}
+function AimAssist() {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10 * 2);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10 * 2);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10 * 2));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10 * 2));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+
+
+ }
+combo BuildPro {   
+    
+    set_val(Switch,0);
+    wait(50);      
+    set_val(Switch,100);
+    wait(50);
+}
+
+    
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+    return; 
+}

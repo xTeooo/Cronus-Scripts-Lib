@@ -1,0 +1,474 @@
+                                                                                                                                                             /*
+   ___                                       
+  / __\_ __  ___  ___   ___  ___  _ __   ___ 
+ / /  | '__|/ _ \/ __| / __|/ _ \| '_ \ / __|
+/ /___| |  |  __/\__ \| (__|  __/| | | |\__ \
+\____/|_|   \___||___/ \___|\___||_| |_||___/  For Sensitivty Corrections And Sticky Aim Assist
+                                             
+ __                       _           __         _  _ 
+/ _\__      __ ___   ___ | |_        /__\__   __(_)| |
+\ \ \ \ /\ / // _ \ / _ \| __|      /_\  \ \ / /| || |
+_\ \ \ V  V /|  __/|  __/| |_      //__   \ V / | || |
+\__/  \_/\_/  \___| \___| \__|_____\__/    \_/  |_||_|  For Silent Aim Abuse Script 7.10
+                             |_____|                  
+   ____ __        ____                 __  
+  /  _// /_ ___  / __/___  ___ _ ____ / /__
+ _/ / / __//_ / _\ \ / _ \/ _ `// __//  '_/
+/___/ \__/ /__//___//_//_/\_,_/ \__//_/\_\  For Anti-Recoil
+                                             
+   ____ ____     _  __ _  __          __       _ 
+  / __// __/    / |/ /(_)/ /__ ___   / /___ _ (_)
+ _\ \ _\ \     /    // //  '_// _ \ / // _ `// / 
+/___//___/____/_/|_//_//_/\_\ \___//_/ \_,_//_/  For Putting All This Together 
+         /___/                                   
+
+                                       =================
+                                       === Important ===                                                   
+ ==========================================================================================================
+ ===  RECOIL HOLD BUTTON = X (JUMP) +  ( UP ) OR ( DOWN ) OR ( LEFT ) OR ( RIGHT ) TO ADJUST RECOIL ===
+ ==========================================================================================================*/
+//--Cancel Slide 
+	int CancelSlide = TRUE;
+//--Rapid Fire (L2 + LEFT)
+	int Rapid_Fire = FALSE;
+
+//--Dropshot (L2 + RIGHT)
+	int DropShot = FALSE; 
+	int DropShotSpeed = 30; 
+
+//--Hair Triggers
+    int HairTriggers = TRUE; //Change FALSE TO TRUE if you don't want to play with Hair Triggers
+
+//--Change FALSE To True If You Want Easy Slide TAP CROUCH/PRONE BUTTON TO PRONE/EASY SLIDE
+    define EASY__SLIDE_DROP = FALSE;
+
+//--Change FALSE TO TRUE If you want Hold Breath
+    int Hold_Breath = FALSE;
+
+//--Easy Plate (DOUBLE TAP TRIANGLE) [TURN FALSE TO TRUE IF YOU WANT ON BY DEFAULT]
+    define easy_plate = FALSE;  //Holding triangle to place one plate will automatically hold triangle until all plates are full, cancel by firing, ads or tapping reload
+
+//--Easy Revive (DOUBLE TAP SQUARE) [TURN FALSE TO TRUE IF YOU WANT ON BY DEFAULT]
+    define easy_revive = FALSE; //Double clicking square will automatically hold square button for 10 seconds while you revive, cancel by firing, ads or tapping reload
+
+//--Sticky Aim Assist
+	define sticky_aim_assist = 1;   //[0 = OFF / 1 = ON] strongest aim assist for COD 
+	define _v = 21;                 //If your screen shakes whilst using aim assist - lower this value (try 22, 20)
+
+//--Aim Sensitivty Corrections
+	int in_game_menu_sens = 14;        // Must Be 3 HIGHER Then your in-game sensitivity [Read Below For Better Understanding]
+	define aim_sens_corrections = 0;   // [0 = OFF / 1 = ON / 2 = ON + ZOOM SENS IS ALSO ON] - zoom sensitivity does not work with bumpers/triggers flipped] 
+	define StickNoise = 8;            // Dead Zone value for your thumbsticks (only active when you fire, allowing micro aiming)	
+                                                                                                                                                             /*
+    THE IDEA BEHIND AIM CORRECTIONS IS THAT YOU HIGHER YOUR IN-GAME SENSITIVITY WITH 2 OR 3
+    CLICKS. THIS WILL ALLOW YOU TO TURN AROUND FAST WITHOUT LOSING CONTROL OVER YOUR AIM:
+    THE SCRIPT WILL LOWER YOUR SENSITIVITY WHEN YOU AIM AND EVEN MORE WHEN YOU AIM & FIRE 
+    SO THAT YOU CAN LOCK ON TARGET. SO FOR EXAMPLE: IF YOU PLAY NORMALLY WITH SENS 8 IN THE 
+    GAME, SET YOUR SENSITIVITY TO 11 IN THE GAME MENU AND FOLLOW THE STEPS BELOW.  
+                                                                                                                                                                 
+	1) FILL OUT THE IN_GAME_MENU_SENS STICK SENSITIVITY UP ABOVE
+    2) THAT`S IT! YOU`RE ALL SET AND GOOD TO GO!                                                                                                                                                             */
+
+//--Anti Recoil (L2 + OPTIONS) RECOIL HOLD BUTTON = CROSS AND PRESS ( UP ) OR ( DOWN ) OR ( LEFT ) OR ( RIGHT ) TO ADJUST RECOIL
+    define SNACKS_RECOIL_HOLD_BUTTON = PS4_CROSS;
+    define INTVERTED_RECOIL   =   1;//ITzSNACK'S INVERTED RECOIL METHOD ( IF INVERTED SET TO    -1   INSTEAD OF   1 )
+    define DEFAULT_VERTICAL   =  26;//RECOIL  DEFAULT VERTICAL VALUE IF YOU GO BEYOND THE LIMITS WHILE ADJUSTING ( TO SAVE GOING BACK TO ZERO ) ( SET THE SAME AS VERTICAL BELOW )
+    define DEFAULT_HORIZONTAL =   4;//RECOIL  DEFAULT VERTICAL VALUE IF YOU GO BEYOND THE LIMITS WHILE ADJUSTING ( TO SAVE GOING BACK TO ZERO ) ( SET THE SAME AS HORIZONTAL BELOW )
+    int VERTICAL_RECOIL       =  26;//RECOIL VERTICAL   * STARTING VALUE * ( DEFAULT VALUE/STREGNTH )
+    int HORIZONTAL_RECOIL     =   4;//RECOIL HORIZONTAL * STARTING VALUE * ( DEFAULT VALUE/STREGNTH )
+    define SNACKS_ANTIRECOIL  =  TRUE;//RECOIL MASTER CONTROL ( IF YOU DON'T WANT ANTI-RECOIL RUNNING AT ALL INPUT NO HERE )
+    define VIBRATION_RECOIL   =  TRUE;//RECOIL ACTIVE ON VIBRATE OR JUST ON THE TRIGGERS ( L2 & R2 ) ( ON = VIBRATION  OR  OFF = TRIGGERS ) ( MASTER ABOVE MUST BE SET TO ON ) 
+
+//--Layout
+	define PS = PS4_PS; //XBOX
+	define SHARE = PS4_SHARE; //VIEW
+	define OPTIONS = PS4_OPTIONS; //MENU
+	define R1 = PS4_R1; //RB
+	define R2 = PS4_R2; //RT
+	define R3 = PS4_R3; //RS
+	define L1 = PS4_L1; //LB
+	define L2 = PS4_L2; //LT
+	define L3 = PS4_L3; //LS
+	define RX = PS4_RX;
+	define RY = PS4_RY;
+	define LX = PS4_LX;
+	define LY = PS4_LY;
+	define UP = PS4_UP;
+	define DOWN = PS4_DOWN;
+	define LEFT = PS4_LEFT;
+	define RIGHT = PS4_RIGHT;
+	define TRIANGLE = PS4_TRIANGLE; //Y
+	define CIRCLE = PS4_CIRCLE; //B
+	define CROSS = PS4_CROSS; //A
+	define SQUARE = PS4_SQUARE //X
+	define TOUCHPAD = PS4_TOUCH;
+    define VIB_A = RUMBLE_A;
+    //--Sweet_Evil 7.10 
+	int Current_State          = 0;
+	int Aim_Abuse_State      = 3;
+	define Get_Last_Value     = 1;
+	define Get_Current_Value = 2;
+	define Aim_Correction      = 5;
+	define Aim_Boost          = 3;
+	define Aim_Perfection_Limit = 35;
+	int X_Last_Value     = 0;
+	int Y_Last_Value     = 0;
+	int X_Current_Value  = 0;
+	int Y_Current_Value  = 0;
+	int mvt = 0;
+	int Aim_Boost_Val = 0; 
+	int Aim_Correction_Val = 0;
+//--Variable Shit Just Ignore
+	int current_x, current_y;						
+    int ads_grenade_sens, ads_fire_sens, Sens; 
+    int SNACKSS_ANTIRECOIL;
+    int VIIBRATION_RECOIL;
+    int RECOIL;
+    int q;											
+    int double__tap[30];
+    init {
+    while(q < 30) 
+    {double__tap[q] = -1;       
+    q++;}}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/   	
+main {
+    if(CancelSlide)
+    {
+	   if((get_val(PS4_LY) < -90) || (get_val(PS4_LY) > 90) || (get_val(PS4_LX) < -90) || (get_val(PS4_LX) > 90))
+    	{ 
+    	if(event_release (PS4_CIRCLE))
+			combo_run(CancelSlide)
+		    }
+         }
+    vm_tctrl(-2)
+        if(get_val(PS4_L2)) 
+        {        
+            if (Current_State == Get_Last_Value)
+            {
+                X_Last_Value = get_lval(PS4_RX);
+                Y_Last_Value = get_lval(PS4_RY);
+                Current_State = Get_Current_Value;
+            }
+            else if (Current_State == Get_Current_Value)
+            {
+                X_Current_Value = get_val(PS4_RX);
+                Y_Current_Value = get_val(PS4_RY);
+                if(Aim_Abuse_State == Aim_Correction)
+                {    
+                    Current_State = Aim_Boost;
+                }
+                else
+                {
+                    Current_State = Aim_Correction;
+                }    
+            }
+            if (Current_State == Aim_Boost)
+            {
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Boost;  
+            }
+            else if (Current_State == Aim_Correction)
+            {
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Correction; 
+            } 
+        }
+        else
+        {
+            Current_State = Get_Last_Value;
+            Aim_Abuse_State = Aim_Correction;}      
+         if(Hold_Breath && get_val(PS4_L2)) {
+        set_val(PS4_L3,100);}
+	  if(HairTriggers) {
+      deadzone(PS4_L2,PS4_R2,100,100); }
+        if(EASY__SLIDE_DROP && get_val(PS4_CIRCLE))combo_run(DROP_SHOT);
+       if (get_val (PS4_R2))
+    {    
+    current_x = dz(PS4_RX,0);
+    current_y = dz(PS4_RY,0);
+    }
+  	if(easy_plate) {
+		if(double_click(PS4_TRIANGLE))
+		combo_run(easy_plate);
+		if(get_val(PS4_R2)>10)
+		combo_stop(easy_plate);
+		if(get_val(PS4_L2)>10)
+		combo_stop(easy_plate);
+		if(get_val(PS4_SQUARE))
+		combo_stop(easy_plate);
+		}
+	if(easy_revive) {
+		if(double_click(PS4_SQUARE))
+		combo_run(easy_revive);
+		if(get_val(PS4_R2)>10)
+		combo_stop(easy_revive);
+		if(get_val(PS4_L2)>10)
+		combo_stop(easy_revive);
+		if(get_val(PS4_SQUARE))
+		combo_stop(easy_revive);
+		}
+    if(abs(get_val(PS4_LY)) < 12 && abs(get_val(PS4_LX)) < 12 ){        
+    	set_val(PS4_LY,0);                                                
+    	set_val(PS4_LX,0);                                                
+    }                                                                   
+    if(abs(get_val(PS4_RY)) < 12 && abs(get_val(PS4_RX)) < 12 ){         
+    	set_val(PS4_RY,0);                                                 
+    	set_val(PS4_RX,0);                                                
+    }
+	if(aim_sens_corrections) {
+       ads_grenade_sens=100-(in_game_menu_sens); ads_fire_sens=96-(in_game_menu_sens); 
+       if (get_val (PS4_L2))
+         {
+         if(get_val(PS4_R2) && get_val(PS4_L2))                              
+         { 
+         Sens = ads_fire_sens;                                              
+         }
+         if(!get_val(PS4_R2) && !get_val(PS4_L2) || get_val (PS4_R2) &&!get_val(PS4_L2)) 
+         {
+         Sens = 100;
+         }   
+         if(!get_val(PS4_R2) && get_val(PS4_L2) || get_val (PS4_R1) && !get_val (PS4_L2) || get_val (PS4_L1) && !get_val (PS4_L2)) 
+         {
+         Sens = ads_grenade_sens;
+         }
+        if(Sens > 100) Sens = 100;  
+        sensitivity(PS4_RX, NOT_USE, Sens);
+        sensitivity(PS4_RY, NOT_USE, Sens);}
+    }
+if(get_val(PS4_L2) && event_press(PS4_LEFT)) {
+        combo_run (vibrate);
+        Rapid_Fire=!Rapid_Fire;}
+        if (Rapid_Fire) {
+   if(get_val(PS4_R2)) {
+        combo_run (Rapiid_Fire);}}
+   if(get_val(PS4_L2) && event_press(PS4_RIGHT)) {
+        combo_run (vibrate);
+        DropShot=!DropShot;}
+        if (DropShot) {
+   if(get_val(PS4_R2)) {
+        combo_run (DroppShott);}}
+   if (sticky_aim_assist) {
+   if(get_val(PS4_L2)) combo_run(STICKY_AIM);
+        else combo_stop(STICKY_AIM);}
+   if(get_val(PS4_L2) && event_press(PS4_OPTIONS)) {
+        combo_run (vibrate);
+        SNACKSS_ANTIRECOIL=!SNACKSS_ANTIRECOIL;}
+   if(get_val(PS4_L2) && event_press(PS4_OPTIONS)) {
+        combo_run (vibrate);
+        VIIBRATION_RECOIL=!VIIBRATION_RECOIL;}
+		if (SNACKS_ANTIRECOIL) {
+if (VIBRATION_RECOIL) {
+if (get_val(PS4_L2) && get_val(PS4_R2) && get_rumble(VIB_A)) {
+    combo_run(RECOIL);
+    }
+}
+else 
+if (!VIBRATION_RECOIL && get_val(PS4_L2) && get_val(PS4_R2)) {
+    combo_run(RECOIL);
+}
+if (get_val(SNACKS_RECOIL_HOLD_BUTTON)) { 
+if (event_press(PS4_UP)) {
+    VERTICAL_RECOIL = VERTICAL_RECOIL + 1;
+    combo_run(VIIBRATE);
+    }
+if (event_press(PS4_DOWN)) {
+    VERTICAL_RECOIL = VERTICAL_RECOIL - 1;
+    combo_run(VIIBRATE);
+    }
+if (event_press(PS4_RIGHT)) {
+    HORIZONTAL_RECOIL = HORIZONTAL_RECOIL + 1;
+    combo_run(VIIBRATE);
+    }
+if (event_press(PS4_LEFT)) {
+    HORIZONTAL_RECOIL = HORIZONTAL_RECOIL - 1;
+    combo_run(VIIBRATE);
+    }
+if (VERTICAL_RECOIL < 0 || VERTICAL_RECOIL > 100) {
+	VERTICAL_RECOIL = DEFAULT_VERTICAL;
+}
+if (HORIZONTAL_RECOIL < 0 || HORIZONTAL_RECOIL > 100) {
+	HORIZONTAL_RECOIL = DEFAULT_HORIZONTAL;
+}
+	set_val(PS4_UP,0); set_val(PS4_DOWN,0); set_val(PS4_RIGHT,0); set_val(PS4_LEFT,0);
+}
+if (abs(get_val(PS4_RY)) > VERTICAL_RECOIL + 2 || abs(get_val(RX)) > VERTICAL_RECOIL + 2) {
+    combo_stop(RECOIL);
+	}  
+}
+    }
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo Rapiid_Fire {
+	set_val(PS4_R2, 100); 
+	wait(35);
+	set_val(PS4_R2, 0); 
+	wait(25);
+}
+combo DroppShott {
+	set_val(PS4_CIRCLE,100);
+	wait(40);
+	wait(DropShotSpeed);
+	set_val(PS4_CIRCLE,100);
+}
+combo DROP_SHOT{
+set_val(PS4_CIRCLE,100); 	
+wait(800); 
+}
+combo STICKY_AIM {
+	set_val(PS4_RY,xy_val(PS4_RY, _v));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v));
+	set_val(PS4_LX,xy_val(PS4_LX, _v));
+	wait(20);
+	set_val(PS4_RY,xy_val(PS4_RY, _v * -1));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v * -1));
+	set_val(PS4_LX,xy_val(PS4_LX, _v * -1));
+	wait(20);
+}
+combo VIIBRATE {
+    set_rumble(VIB_A,60);
+    wait(350);
+	reset_rumble ();
+}
+combo easy_revive {
+	set_rumble(RUMBLE_A,100);
+    wait(200);
+    reset_rumble();
+    set_val(PS4_SQUARE,100);
+	wait(10000); //time revive is held for adjust higher or lower 500 if you fail to get the revive
+	}
+ combo RECOIL {
+    RECOIL = get_val(PS4_RY) + VERTICAL_RECOIL;
+if(RECOIL > 100) RECOIL = 100;
+    set_val(PS4_RY,RECOIL * INTVERTED_RECOIL);
+    RECOIL = get_val(PS4_RX) + HORIZONTAL_RECOIL;
+if(RECOIL > 100) RECOIL = 100;
+    set_val(PS4_RX,RECOIL);
+}
+combo easy_plate {	
+	set_rumble(RUMBLE_A,100);
+    wait(200);
+    reset_rumble();
+	set_val(PS4_TRIANGLE,100);
+    wait(6000) //time triangle is held for adjust higher or lower 500 if you only get 2 plates or cant switch weapons after replating
+	}
+combo CancelSlide 
+    {
+    set_val(PS4_CIRCLE, 100);          
+    wait(180);                         
+    set_val(PS4_CIRCLE, 0);            
+    wait(60);                          
+    set_val(PS4_CIRCLE, 100);          
+    wait(100);                          
+    set_val(PS4_CIRCLE, 100);          
+    set_val(PS4_CROSS,   100);           
+    wait(100);                          
+    set_val(PS4_CIRCLE, 0);            
+    set_val(PS4_CROSS, 100);          
+    wait(80);                        
+    set_val(PS4_CROSS, 0);         
+        }  
+combo vibrate {     
+set_rumble(RUMBLE_A, 85);      
+wait(225);                         
+reset_rumble();                    
+}                                  
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/                                
+function dz(f_axis,f_val) {
+f_val = get_val(f_axis);
+if(abs(f_val) < StickNoise) {
+set_val(f_axis,0); 
+return 0;}
+return f_val;
+}
+function double_click(button) {        
+if (double__tap[button] >= 0) {    
+double__tap[button] += get_rtime(); 
+if (double__tap[button] > 450)
+double__tap[button] = -1;               
+}   
+if (event_release(button) && get_ptime(button) <= 200) { 
+if (double__tap[button] < 0) {
+double__tap[button] = 0;
+} else { 
+double__tap[button] = -1;   
+return 1;   
+} 
+}  
+return 0;
+}
+function xy_val(f_axis,f_val) {
+if(abs(get_val(f_axis)) < (_v + 1))  
+return f_val;    
+return get_val(f_axis);
+}
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) 
+    { 
+       mvt = abs(Last_Value) + abs(Current_Value);
+       Aim_Boost_Val = ( mvt + 1 )/2;
+       Aim_Correction_Val = Aim_Boost_Val + 4;
+       if(Aim_Boost_Val >= 10)
+       {
+           Aim_Boost_Val = 10;
+           Aim_Correction_Val = 14;
+       }
+       else if(Aim_Boost_Val == 0)
+       {
+            Aim_Boost_Val = 2
+            Aim_Correction_Val = 4;
+       }
+       if(mvt < Aim_Perfection_Limit) 
+       {
+            if(Last_Value < Current_Value)
+            {           
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Correction_Val));            
+                }
+            }
+            else 
+            {
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Correction_Val));            
+                }
+            }
+        }
+    } 
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | | D | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

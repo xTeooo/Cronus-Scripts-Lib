@@ -1,0 +1,4247 @@
+/*	 _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+    |       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+    | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+    | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+    | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+    | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+    | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+    | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+     \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+     __       __                     __              __      __    __                       __                  __          __    __ ______ 
+    |  \     /  \                   |  \            |  \    |  \  /  \                     |  \                |  \        |  \  |  \      \
+    | ▓▓\   /  ▓▓ ______   ______  _| ▓▓_    ______ | ▓▓    | ▓▓ /  ▓▓ ______  ______ ____ | ▓▓____   ______  _| ▓▓_       | ▓▓  | ▓▓\▓▓▓▓▓▓
+    | ▓▓▓\ /  ▓▓▓/      \ /      \|   ▓▓ \  |      \| ▓▓    | ▓▓/  ▓▓ /      \|      \    \| ▓▓    \ |      \|   ▓▓ \       \▓▓\/  ▓▓ | ▓▓  
+    | ▓▓▓▓\  ▓▓▓▓  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\\▓▓▓▓▓▓   \▓▓▓▓▓▓\ ▓▓    | ▓▓  ▓▓ |  ▓▓▓▓▓▓\ ▓▓▓▓▓▓\▓▓▓▓\ ▓▓▓▓▓▓▓\ \▓▓▓▓▓▓\\▓▓▓▓▓▓        >▓▓  ▓▓  | ▓▓  
+    | ▓▓\▓▓ ▓▓ ▓▓ ▓▓  | ▓▓ ▓▓   \▓▓ | ▓▓ __ /      ▓▓ ▓▓    | ▓▓▓▓▓\ | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓  | ▓▓/      ▓▓ | ▓▓ __      /  ▓▓▓▓\  | ▓▓  
+    | ▓▓ \▓▓▓| ▓▓ ▓▓__/ ▓▓ ▓▓       | ▓▓|  \  ▓▓▓▓▓▓▓ ▓▓    | ▓▓ \▓▓\| ▓▓__/ ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓__/ ▓▓  ▓▓▓▓▓▓▓ | ▓▓|  \    |  ▓▓ \▓▓\_| ▓▓_ 
+    | ▓▓  \▓ | ▓▓\▓▓    ▓▓ ▓▓        \▓▓  ▓▓\▓▓    ▓▓ ▓▓    | ▓▓  \▓▓\\▓▓    ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓    ▓▓\▓▓    ▓▓  \▓▓  ▓▓    | ▓▓  | ▓▓   ▓▓ \
+     \▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓         \▓▓▓▓  \▓▓▓▓▓▓▓\▓▓     \▓▓   \▓▓ \▓▓▓▓▓▓ \▓▓  \▓▓  \▓▓\▓▓▓▓▓▓▓  \▓▓▓▓▓▓▓   \▓▓▓▓      \▓▓   \▓▓\▓▓▓▓▓▓
+                                                                                                                                            
+	========================================================= 
+	=========================================================		
+	¦		¦¦¦¦ MOD MENU SYSTEM ¦¦¦¦                       ¦
+    ¦                                                       ¦
+	¦ * Enter Menu   = L2/LT + OPTIONS/MENU                 ¦
+	¦ * Switch Menu  = CROSS/A                              ¦
+	¦ * Exit Menu    = CIRCLE/B or (Timeout[20s])           ¦
+	¦	                                                    ¦
+	¦ * Next Mod     = RIGHT                                ¦
+	¦ * Previous Mod = LEFT                                 ¦
+	¦	                                                    ¦
+	¦ * Adjust +     = UP                                   ¦
+	¦ * Adjust -     = DOWN                                 ¦
+	¦ * Toggle ON    = UP                                   ¦
+	¦ * Toggle OFF   = DOWN                                 ¦
+	¦	                                                    ¦
+	¦ 		¦¦¦¦ QUICK CHARACTER SELECT ¦¦¦¦                ¦
+	¦                                                       ¦
+	¦ * Enter Quick Menu   = L2/LT + PS/XBOX                ¦
+	¦ * Exit Menu          = CIRCLE/B or (Timeout[5s])      ¦
+	¦ * Next Character     = UP or RIGHT                    ¦
+	¦ * Previous Character = DOWN or LEFT                   ¦
+	¦                                                       ¦
+    ¦    	¦¦¦¦ SHOW CURRENT SLOT IN USE ¦¦¦¦              ¦                                                 ¦
+    ¦    	                                                ¦
+    ¦ * Show Slot    = R3/RS + LEFT                         ¦
+    ¦    	                                                ¦
+    ¦    	¦¦¦¦ KILL SWITCH TOGGLES ¦¦¦¦                   ¦
+    ¦    	                                                ¦
+    ¦ * Kill Switch  = L2/LT + SHARE                        ¦
+	========================================================= 
+	========================================================= 
+	¦        ¦¦¦¦ FINISHERS/KOMBOS/SPECIALS ¦¦¦¦	        ¦
+	¦	                                                    ¦
+	¦	  Move List Is Referenced Further Down 	            ¦
+	¦                                                       ¦
+	¦  * Finisher One   = HOLD[L3/LS] + TAP[SQUARE/X]       ¦
+    ¦  * Finisher Two   = HOLD[L3/LS] + TAP[CROSS/A]        ¦
+    ¦  * Finisher Three = HOLD[L3/LS] + TAP[CIRCLE/B]       ¦
+	¦                                                       ¦
+	¦  * Kombo One      = HOLD[R3/RS] + TAP[L1/LB]          ¦
+    ¦  * Kombo Two      = HOLD[R3/RS] + TAP[L2/LT]          ¦
+    ¦  * Kombo Three    = HOLD[R3/RS] + TAP[R1/RB]          ¦
+	¦  * Kombo Four     = HOLD[R3/RS] + TAP[R2/RT]          ¦
+	¦  * Kombo Five     = HOLD[R3/RS] + TAP[L3/LS]          ¦
+	¦  * Kombo Six      = HOLD[R3/RS] + TAP[TOUCH/VIEW/SYNC]¦
+	¦                                                       ¦
+	¦  * Special One    = RY UP    [RIGHT STICK UP]         ¦
+    ¦  * Special Two    = RY DOWN  [RIGHT STICK DOWN]       ¦
+    ¦  * Special Three  = RX LEFT  [RIGHT STICK LEFT]       ¦
+    ¦  * Special Four   = RX RIGHT [RIGHT STICK RIGHT]      ¦
+	¦                                                       ¦
+	¦     ** ONLY ONE MOVE WILL RUN AT ANYTIME **           ¦
+	¦                                                       ¦
+	¦  ?(SOME MOVES ONLY SUPPORT FIGHTING LEFT TO RIGHT)?   ¦
+	¦   ? CURRENT VERSION REQUIRES TESTING + FEEDBACK ?     ¦
+	¦                                                       ¦
+	========================================================= 
+	========================================================= 
+*/    
+const uint8 FontSize [][]  = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits []  = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","DoGzTheFiGhTeR's","Mortal Kombat XI","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off","Name:"};
+const string ModToggle []  = {"","Character's Name","LED Rainbow Flow","   Block Rumble","PS[DS4]On PC/XBOX"};
+const string ModValue []   = {"","Combo Block Time","Button Press Time","Button Press Wait"," LED Brightness"};
+const int16 ModDigitMin [] = {  0 , 50   , 10  , 10  , 1 };
+const int16 ModDigitMax [] = {  0 , 3000 , 350 , 350 , 50};
+const int16 ModIncrement[] = {  0 , 10   , 10  , 10  , 1 };
+const string ModCharacter [] = {"","Scorpion","Sub-Zero","Johnny Cage","Raiden","Baraka","Skarlet","Sonya Blade","Cassie Cage",
+                                   "Cetrion","D'Vorah","Erron Black","Frost","Fujin","Geras","JacquiBriggs","Jade","Jax Briggs",
+                                   "Joker","Kabal","Kano","Kitana","Kollector","Kotal Kahn","Kung Lao","Liu Kang","Mileena","Nightwolf",
+                                   "Noob Saibot","Rain","Rambo","Robocop","Shang Tsung","Shao Kahn","Sheeva","Sindel","Spawn","Terminator"};
+/*  
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Toggle Strings                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const string KillSwitchL  = "Master KillSwitch";
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              Script Constant Buttons               )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define R1       = PS4_R1;
+define L1       = PS4_L1;
+define R2       = PS4_R2;
+define L2       = PS4_L2;
+define Cross    = PS4_CROSS;
+define Circle   = PS4_CIRCLE;
+define Square   = PS4_SQUARE;
+define Triangle = PS4_TRIANGLE;
+define L3       = PS4_L3;
+define R3       = PS4_R3;
+define Touch    = PS4_TOUCH;
+define T1F      = PS4_FINGER1;
+define T1FX     = PS4_FINGER1X;
+define T1FY     = PS4_FINGER1Y;
+define T2F      = PS4_FINGER2;
+define T2FX     = PS4_FINGER2X;
+define T2FY     = PS4_FINGER2Y;
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define RX       = PS4_RX;
+define RY       = PS4_RY;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define A        = PS4_CROSS;
+define B        = PS4_CIRCLE;
+define X        = PS4_SQUARE;
+define Y        = PS4_TRIANGLE;
+define U        = PS4_UP;
+define D        = PS4_DOWN;
+define L        = PS4_LEFT;
+define R        = PS4_RIGHT;
+define PL1      = XB1_PL1;
+define PL2      = XB1_PL2;
+define PR1      = XB1_PR1;
+define PR2      = XB1_PR2;
+define On       = TRUE;
+define Off      = FALSE;
+define RA       = 250;
+define LA       = 251;
+define XA       = 252;
+define UA       = 253;
+define RB       = 254;
+define LB       = 255;
+define YB       = 256;
+define UB       = 257;
+define DB       = 258;
+define RS       = 259;	
+define LS       = 260;
+define DX       = 261;
+define UXA      = 262;   
+define DXA      = 263;
+define RT       = 264;
+define LT       = 265;
+define DY       = 266;
+define UY       = 267;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Menu Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define MenuEnterHold   = PS4_L2;		// Hold [L2/LT]
+define MenuEnterPress  = PS4_OPTIONS;	// Tap [OPTIONS/MENU] --> Enter Main Menu
+
+define MenuExitPress   = PS4_CIRCLE; 	// Tap [CIRCLE/B]     --> Exit Menu
+define ChangeMenuPress = PS4_CROSS;		// Tap [CROSS/A]      --> Swap Menu
+
+define FindSlotHold    = PS4_R3;		// Hold [R3/RS]
+define FindSlotPress   = PS4_LEFT;		// Tap [LEFT]         --> To Display Current Slot In Use
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              Quick Character Select                )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define QuickCharacterHold  = PS4_L2; 	// Hold [L2/LT]
+define QuickCharacterPress = PS4_PS;	// Tap [PS/XBOX] [Recommended NOT To Change This As It Will Be Blocked While Holding [L2/LT][QuickCharacterHold]     
+
+//	--> ** USE [UP] or [DOWN] or [LEFT] or [RIGHT] To Change Character When Display Active **
+
+define QuickCharacterExit  = PS4_CIRCLE;// Tap [CIRCLE/B] --> Exit Quick Character Select
+define CharacterLimit      = 5000; 		// Menu Time Limit (If Manual Exit Not Pressed) [5 Seconds]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define KillSwitchHold  = PS4_L2;     	// Hold [L2/LT]     --> KILL SWITCH HOLD TOGGLE
+define KillSwitchPress = PS4_SHARE;  	// Tap [SHARE/VIEW] --> KILL SWITCH PRESS TOGGLE
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define O = -1;
+define TimeoutLimit  = 1;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 4;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 4;
+define CharMinValues    = 1;
+define CharMaxValues    = 37;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS;
+int Number = 1; 
+int Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int Saver,Ms,Sec,Min,ScreenTime,LedDec,Rgb,LedInc,Colour[3];
+int TimeL,TimerP,TimerE,Length,X_POS1,Y_POS1,X_POS2,Y_POS2,Steps1,Steps2,XorY1,XorY2,Dir1,Dir2,Clear;
+int KillSwitch,Shunt,ToggleT,ToggleTime,ToggleName,Modled,VibA,VibB,Press,ComboTime,CharP,CharC,CharTimeout;
+int Col,ComboT,Run,Finisher,Combos,Special,Basic,Line,Input,Steps,Wait;
+
+//¦¦¦¦¦¦¦¦  DO NOT TOUCH ABOVE!!!  ¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModDigit;
+int ComboBlock    = 500; // Combo Block Time
+int ButtonPress   = 150; // Button Press Time 
+int ButtonWait    = 100; // Button Release Time
+int LedBrightness = 10;  // LED Brightness (Zen Eyes)
+
+// Character's ID Do Not Alter ( USE AS REFERENCE ONLY !! )
+define Scorpion     = 1;
+define SubZero      = 2;
+define JohnnyCage   = 3;
+define Raiden       = 4;
+define Baraka       = 5;
+define Skarlet      = 6;
+define SonyaBlade   = 7;
+define CassieCage   = 8;
+define Cetrion      = 9;
+define D_Vorah      = 10;
+define ErronBlack   = 11;
+define Frost        = 12;
+define Fujin        = 13;
+define Geras        = 14;
+define JacquiBriggs = 15;
+define Jade         = 16;
+define JaxBriggs    = 17;
+define Joker        = 18;
+define Kabal        = 19;
+define Kano         = 20;
+define Kitana       = 21;
+define Kollector    = 22;
+define KotalKahn    = 23;
+define KungLao      = 24;
+define LiuKang      = 25;
+define Mileena      = 26;
+define Nightwolf    = 27;
+define NoobSaibot   = 28;
+define Rain         = 29;
+define Rambo        = 30;
+define Robocop      = 31;
+define ShangTsung   = 32;
+define ShaoKahn     = 33;
+define Sheeva       = 34;
+define Sindel       = 35;
+define Spawn        = 36;
+define Terminator   = 37;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*////////////////// (On or Off)  \\\\\\\\\\\\\\\\\\\\ 
+int ModSwitch;										
+int Character      = CassieCage; // Enter Either Name Or ID From Above = ( Scorpion OR SubZero OR JohnnyCage OR Raiden OR Baraka OR Skarlet OR SonyaBlade OR CassieCage Etc...)
+int LEDRainbowFlow =  On;  	  	 // Led Rainbow ( Zen Eyes )
+int BlockRumble    =  On;  	  	 // On = Block Controller Vibration |Or| Off = Vibration On Controller
+int PSonXboxPC     =  On;     	 /* PS Controller On Xbox Or PC (Swaps Touch + Share)
+
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================| 
+¦	----> FINSIHERS/FATALITIES <---- [BUTTON TRIGGERS + COMMAND LIST]            
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================*/
+	
+	define FinisherHold   = PS4_L3;		// HOLD[L3/LS]   + TAP THE FOLLOWING 1-3 BUTTONS  		[CHARACTERS/FINISHER -> REFERENCE BELOW IN TABLE]
+	
+	define FinisherPress1 = PS4_SQUARE; // TAP[SQUARE/X]
+	define FinisherPress2 = PS4_CROSS;  // TAP[CROSS/A]
+	define FinisherPress3 = PS4_CIRCLE; /* TAP[CIRCLE/B]
+_____________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+¦CHAR NAME  ¦|Scorpion          |Sub-Zero          |Johnny Cage             |Raiden                 |Baraka               |Skarlet            |Sonya Blade       |Cassie Cage       | Cetrion                | D'Vorah           | Erron Black       | Frost                   | Fujin              | Geras                   | Jacqui Briggs       | Jade              | Jax Briggs        | Joker                  | Kabal             | Kano                       | Kitana             | Kollector             | Kotal Kahn         | Kung Lao          | Liu Kang              | Mileena                    | Nightwolf         | Noob Saibot       | Rain              | Rambo                   | Robocop                       | Shang Tsung                | Shao Kahn         | Sheeva            | Sindel                      | Spawn             | Terminator           |
+=====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦Press 1 -> ¦|You're Next[F]    |Ice-Cutioner[M]   |Mr C's Neighbourhood[C] |Alternating Current[M] |Food For Thought [C] |Bloody Mess[M]     |To The Choppa[M]  |I > 3 U[M]        | Maintaining Balance[M] | New Species[C]    | Melted[M]         | Ice Sculpture[C]        | Wind Blade [F]     | Phasing Through Time[A] | Spide Mines[M]      | Bow Before Me[A]  | Coming In Hot[C]  | Party Pooper[M]        | Road Rash[M]      | Last Dance[C]              | Gore-Nando[M]      | For The Kollection[C] | Totem Sacrifice[C] | Headed Nowhere[C] | Burn Out[C]           | Spinning Out Of Control[M] | War Ritual[C]     | Split Decision[M] | Eye-Solated[A]    | Straight To Valhalla[F] | Dead Or Alive[C]              | Kondemned To The Damned[M] | Back Blown Out[C] | Stomp The Yard[C] | Scream Queen[C]             | Rest In Pieces[M] | I'm Back[C]          |
+¦Press 2 -> ¦|Chain Reaction[M] |Frozen In Time[M] |Who Hired This Guy[C]   |Direct Current[C]      |Rock,Paper,Baraka[C] |Heart Condition[M] |Supply Drop[C]    |#GirlPower[M]     | Good And Evil[M]       | Can't Die [M]     | Death Trap[M]     | The Cyber Initiative[M] | Twisted Twister[C] | Peeling Back[C]         | Nothin' But Neck[M] | Pole Dance[C]     | Still Got It[C]   | Pop Goes The Mortal[M] | Hooked[C]         | Face Like A Dropped Pie[C] | Royal Execution[M] | Head lantern[C]       | Kat Food[C]        | Meat Slicer[C]    | Belly of the Beast[M] | Violent Delighhts[C]       | Komo-tose[C]      | Double Trouble[C] | Power Washer[C]   | Parrilla Thrilla[C]     | Thank U 4 Your Cooperation[M] | Shokan Reborn[M]           | Kahn-Sequences[C] | Spinal Tap[C]     | Hair Today Gone Tomorrow[M] | Unchained[M]      | Target Terminated[M] |
+¦Press 3 -> ¦|Stage Fatality[C] |Stage Fatality[C] |Stage Fatality[C]       |Stage Fatality[C]      |Stage Fatality[C]    |Stage Fatality[C]  |Stage Fatality[C] |Stage Fatality[C] | Stage Fatality[C]      | Stage Fatality[C] | Stage Fatality[C] | Stage Fatality[C]       | Stage Fatality[C]  | Stage Fatality[C]       | Stage Fatality[C]   | Stage Fatality[C] | Stage Fatality[C] | Stage Fatality[C]      | Stage Fatality[C] | Stage Fatality[C]          | Stage Fatality[C]  | Stage Fatality[C]     | Stage Fatality[C]  | Stage Fatality[C] | Stage Fatality[C]     | Stage Fatality[C]          | Stage Fatality[C] | Stage Fatality[C] | Stage Fatality[C] | Stage Fatality[C]       | Stage Fatality[C]             | Stage Fatality[C]          | Stage Fatality[C] | Stage Fatality[C] | Stage Fatality[C]           | Stage Fatality[C] | Stage Fatality[C]    |
+¦====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦ 	[C] Close Distance  [M] Mid Distance  [F] Far Distance  [A] Any Distance                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+¦====================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+
+	^^^^^^  FINISHERS/FATALITIES  ^^^^^^  
+ ______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+	
+	vvvvvv  KOMBO ATTACKS  vvvvvv     
+
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================| 
+¦	----> KOMBOS <---- [BUTTON TRIGGERS + COMMAND LIST]
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================*/
+	
+	define KomboHold   = PS4_R3; 	// HOLD[R3/RS]   + TAP THE FOLLOWING 1-6 BUTTONS  		[CHARACTERS/KOMBO -> REFERENCE BELOW IN TABLE] 
+	
+	define KomboPress1 = PS4_L1;    // TAP[L1/LB] 
+	define KomboPress2 = PS4_L2;    // TAP[L2/LT]
+	define KomboPress3 = PS4_R1;    // TAP[R1/RB]
+	define KomboPress4 = PS4_R2;    // TAP[R2/RT]
+	define KomboPress5 = PS4_L3;    // TAP[L3/LS]
+	define KomboPress6 = PS4_TOUCH; /* TAP[TOUCH/VIEW/SYNC]
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+¦CHAR NAME  ¦| Scorpion         | Sub-Zero         | Johnny Cage        | Raiden             | Baraka          | Skarlet              | Sonya Blade    | Cassie Cage      | Cetrion            | D'Vorah       | Erron Black      | Frost                 | Fujin             | Geras                  | Jacqui Briggs  | Jade            | Jax Briggs       | Joker            | Kabal                    | Kano                | Kitana           | Kollector       | Kotal Kahn   | Kung Lao      | Liu Kang          | Mileena        | Nightwolf         | Noob Saibot           | Rain                     | Rambo             | Robocop                      | Shang Tsung     | Shao Kahn        | Sheeva                | Sindel          | Spawn                 | Terminator                |
+=======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦Press 1 -> ¦| Torment          | Cold Encounter[K]| Bad Scripts        | Power Discharge    | Mangled         | Marrow Massacre      | At Ease        | Hot Take[K]      | Wind Storm         | Black Widow   | Violent Ends     | Blood Sweat + Circuits| Gusting Cyclone[K]| Out Of Time[K]         | Ground Recon   | Teaser          | Major Force[E][K]| Super Sanity     | Hooks And Blood Splatters| Blood Worth Bottling| Brutal Judgment  | Price To Pay    | Soleil       | Fatal Blow    | Dark Orders       | Ridin' Dirty[E]| Blade And Edge    | Empty Grave           | Scandalous               | Don't Push It[E]  | Crime Prevention Unit 001    | Soul Torment    | DIE [K]          | Deadly Kuatan         | Come Forward    | D-E-D. Dead!          | Rose From Ashes           |
+¦Press 2 -> ¦| Haunted          | Frozen Over      | The Gist Of My Fist| Distant Thunder    | Outworld Bash[K]| Thicker Than Water[K]| Shoot And Scoot| Assaulted        | Imminent Eruption  | Parasite[E][K]| Hideout[E]       | Blizzard              | Tornado Twist     | The Undying            | Snake Eater    | Tiny Dancer     | Get In Line      | Have A Laugh     | Extermination Squad[K]   | Fair Suck Of The Sav| No Mercy         | Ill-Gotten Gains| Cuazquia[K]  | Monk Dunk     | The Time Has Come | Man Eater      | Ancestral Rites   | Tormented Souls       | Insatiable Prince        | Expandable[E]     | Close Heavy Hand Of The Law  | Reserved Pain[K]| Merging Realms   | Queen Of The Shokan   | Banshee's Cry   | Fighting The Phlebiacs| Robot Apocalypse          |
+¦Press 3 -> ¦| The Killing      | New Threat       | Cage Match         | Sudden Energy      | Splintered      | Quick Transfusion    | No Back Up     | The Rushdown     | Seismic Energy     | Bugging Out   | At The Dooooor   | No Humility           | Calm B4 The Storm | Timeless               | In The Trenches| Betrayal[E]     | Breakdown        | Pale Moonlight   | Vapor Trails             | Figjam[E]           | A Royal Welcome  | Mine Mine Mine  | Metzli       | Deadly Path   | Done Listening    | Play Time      | Deadly Dance      | For The Brotherhood[K]| No Rain, No Gain         | No More POWs      | Far Heavy Hand Of The Law    | Burning Vigor   | Is That Your Best| Centurian Hunter      | Evil Queen      | Heaven And Hell[K]    | Say Goodbye (Amplified[E])|
+¦Press 4 -> ¦| Wrath[E]         | Unchained        | King Of A Big Deal | Deadly Storm       | Bloody Mess     | Simple Slaughter     | Vedette        | Keepin' It Classy| Fire-Nado          | Recluse[E][K] | Dead Man's Hand  | One True Warrioress   | Whirlwind         | Matter Of Time         | Total Overload | IP Girl         | Sleep, Bitch     | Harlequin Of Hate| Sandman                  | Takedown[E]         | Dark Empress[K]  | Taxed           | Coatl Strikes| Broken Faith  | Lost Soul         | Flesh Pits     | Helmsplitter[E][K]| Resurrected           | Thieves In Edenian Temple| Diddy-Bopping     | Waste Makes Haste            | Burning Evil    | Die By My Hands  | Slam Dance            | Malevolent Queen| Vacillator's Decision | Catastrophic Crash        |
+¦Press 5 -> ¦| Hack And Slash[E]| Final Draw[K]    | Tear Jerker[K]     | Might Of Mordulus  | Cutting Loose   | Koagulation          | Going Rogue    | Shocker          | Unlimited Potential| Tsetse[E][K]  | To The Gallows[E]| Freezing Point        | Whisked Away[K]   | Dangerous Chronology[K]| Justice For All| Fatal Attraction| America Strong   | Show's Over[K]   | Maimed And Mangled[K]    | Blown Away          | Leave Now        | Greed           | Mehtizquia   | Heavy Mountain| Dragon's Breath   | Let Us Dance   | Violent Divide    | Wailing Wraith        | Rain Or Shine            | Blood Trail       | I'd Buy That For A Dollar![K]| Deadly Truth    | Bow To Me        | Ruthless Shokan       | Back It Up[K]   | Pale Moonlight        | No Escape                 |
+¦Press 6 -> ¦| Soulless         | Frosty           | Wing Man           | Massive Destruction| Doom Kicks[K]   | Bleeding             | Last Patrol    | Heavy Hitter     | Lifecycle          | Killer Bee    | Keep'em Honest   | Reborn                | Blown Away        | Ripple In Time         | Fallin Soldier | My Pleasure     | Get Outta Here   | Grand Entrance[K]| Left For Dead            | Penal Colony[E][K]  | Follow The Leader| Take And Deny   | Melahuac     | Iron Broom    | Chinese Warrior[K]| All Or Nothing | Razor's Edge[E]   | Sinister Silhouette[K]| Rain And Suffering       | Nothing Is Over[E]| I'll Call You An Ambulance   | Sorcerer Sweep  | Fear Me          | Goddess Of Destruction| Dark Intentions | For Wanda             | Unstoppable Machine[K]    |
+¦======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦	[K] KRUSHING BLOW, Certain Condition Must Be Met                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+¦	[E] Requirment Needed                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+¦======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+
+
+	^^^^^^  KOMBO ATTACKS  ^^^^^^  
+ ______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+|______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________|
+	
+	vvvvvv  SPECIAL MOVES  vvvvvv  
+
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================| 
+¦	----> SPECIAL MOVES <---- [STICK TRIGGERS + COMMAND LIST]
+¦=============================================================================================================================================================================================================================================================================================================================================================================================================================================================*/
+
+	define KomboStick1 = PS4_RY;    // [RY] Right Analogue Stick   >> UP[MOD1]    <--->  DOWN[MOD2]  <<
+	define KomboStick2 = PS4_RX;    /* [RX] Right Analogue Stick   >> LEFT[MOD3]  <--->  RIGHT[MOD4] <<
+_______________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
+¦CHAR NAME     ¦| Scorpion           | Sub-Zero               | Johnny Cage    | Raiden            | Baraka            | Skarlet          | Sonya Blade            | Cassie Cage          | Cetrion         | D'Vorah             | Erron Black   | Frost             | Fujin           | Geras             | Jacqui Briggs        | Jade            | Jax Briggs       | Joker            | Kabal           | Kano               | Kitana               | Kollector         | Kotal Kahn     | Kung Lao                  | Liu Kang             | Mileena       | Nightwolf           | Noob Saibot         | Rain                     | Rambo        | Robocop                               | Shang Tsung           | Shao Kahn         | Sheeva         | Sindel                    | Spawn                   | Terminator         |
+=======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦RY UP    1 -> ¦| Spear              | Ice Ball               | Mime Time[E][K]| Lightning Bolt    | Blade Spark       | Bloodshot        | Ass Whooping           | Dual Wielding[K]     | Natural Barrier | Ground Swarm        | Zaterrean Spit| Ice Auger[E][K]   | Krossbow Blast  | Temporal Advantage| Shrapnel Blast       | Razor-Rang      | Lethal Clap[E]   | Batsy-Poo        | Hook Grab[E]    | Rack Off[E]        | Fan Toss             | Up Demonic Mace[E]| Mehtizquia Cut | Hat Toss                  | Fireball             | Sai Blast     | Spirit Arrow        | Spirit Ball[E]      | Geyser Palm[E]           | M.R.E.[E]    | Straight Auto-9                       | Crashing Flames       | Scum Grab         | Shokan Flame   | Mane Squeeze              | Necro Blast             | Ion Grenade[E]     |
+¦RY DOWN  2 -> ¦| Close Hell Flame[E]| Death-Circle Barrage[E]| Pissed Off[E]  | Summon Lightning  | Blade Charge[E][K]| Blood Spatter    | (Air)Soaring General[E]| Shoulder Charge[E]   | Bouncing Boulder| Widow's Kiss[E]     | Cattle Toss[E]| Burrowing Auger[E]| Tornado         | Quick Sand[E][K]  | Bionic Dash[K]       | Pole Vault[E]   | Quad Grab[E]     | Jumping Jester[E]| Extended Hook[E]| Lumbar Check[E]    | Close Dancing Fans[E]| Shotel Fury       | Tecuani Maul[E]| Buzz Saw[E]               | Flying Dragon Kick[K]| Sai Slide[E]  | Rising Tomahawk[E]  | Shadow Strike[E]    | Argus Plunge             | FUBAR[E]     | Arm Crowd Control Cannon[E]           | Far Ground Eruption[E]| Up Wrath Hammer[E]| Shokan Snag[E] | Hair Kut[E]               | Hell Chain[E]           | Infiltrator Toss[E]|
+¦RX LEFT  3 -> ¦| Demon Dash[E]      | Slide                  | Shadow Kick    | Electric Fly      | Spine Burst[E]    | Retch-Rebution[E]| Low Kounter[E][K]      | Close Flippin' Out[E]| Earthquake[E]   | Bombardier Beetle[E]| Acid Pour     | Arctic Barrage[E] | Pressure Bomb[E]| Bed Of Spikes[E]  | (Air) Dive Bomb[E]   | Edenian Spark[E]| Duck And Weave[E]| KAPOW[E][K]      | Low Spinner[E]  | Black Dragon Ball  | Edenian Razors[E]    | Bag Bomb[E]       | Tonatiuh Burst | Hat Possession[E]         | Dragon Parry[E][K]   | Stabyscotch[E]| Lunar Orbit[E]      | Close Sickle Toss[E]| Geyser Kick              | Hidden M60[E]| Flamethrower[E]                       | Scatter Souls[E]      | Spear Charge[E]   | Death March[E] | (Air) Bellowing Banshee[E]| Soul Shattering War Club| Gorilla Press Slam |
+¦RX RIGHT 4 -> ¦| Death Spin[E]      | Creeping Ice[E]        | Stunt Double[E]| Rolling Thunder[E]| Baraka-Serker[E]  | Blood Tentacle   | Standing Kounter[E][K] | Kneecappin'[E]       | Geyser[E][K]    | Flipping Out[E][K]  | Up Peacemaker | Microburst[E]     | Wind Kicks      | Sand Pillar[E]    | (Air) Ground Pound[E]| Deadly Butterfly| Burning Hammer[E]| Corpse Trot[E]   | Gas Blast[E]    | Molotov Cocktail[E]| Edenian Twist[K][E]  | Damned Bola       | Huehhueyi[E]   | Spiritual Guidance(GSB)[E]| Kusari Slam[E]       | Tele-Drop     | Tomahawk Swing[E][K]| Sickle Snag[E]      | Retreating Hydro Boost[E]| Snare Trap[E]| Very Far Shoulder Crowd Control Cannon| Sorcery Rush          | Ground Shatter[E] | Battle Scars[E]| (Air) Banshee Barrage[E]  | (Air) Fallen Angel[E]   | Death Grip[E]      |
+¦======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+¦	[K] KRUSHING BLOW, Certain Condition Must Be Met                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+¦	[E] Requirment Needed             								*** SOME SPECIALS WILL CHANGE DEPENDING ON REQUIREMENTS ***                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+¦======================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================================|
+									FOR REFERENCE TO MOVE LIST SEE LINK HERE -->      https://mk11moves.com/#home      <--
+*/
+init {
+    
+    combo_run(Boot);
+    LedInc = 1
+    Colour = 150;
+}
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+	
+	if (BlockRumble) {
+		
+		block_rumble();
+	}
+
+	if (PSonXboxPC) {
+		
+		if (get_console() == PIO_XB360 && get_controller() == PIO_PS4) {	
+			
+			swap (PS4_TOUCH,PS4_SHARE);
+		}
+	}
+
+	if (!MainMenu) {
+	
+		if (get_ival(KillSwitchHold) && event_press(KillSwitchPress)) {
+        	
+        	Shunt = KillSwitchPress;
+        	KillSwitch = !KillSwitch;
+        	ToggleName = On;
+        	Toggle(KillSwitch,KillSwitchL[0]);
+    	}
+	}
+
+	if (!KillSwitch) {
+		
+		if (!Press) {
+	
+			if (Character == Scorpion) {
+			
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,0,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,1,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,2,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,3,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,4,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,5,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,0,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,1,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,2,4);
+		    	    }
+		    	}
+		    
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,0,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,1,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,2,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,3,4);
+		    	}
+		    }
+		    
+		    if (Character == SubZero) {
+		    	
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,6,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,7,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,8,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,9,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,10,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,11,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,3,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,4,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,5,4);
+		    	    }
+		    	}
+		    	
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,4,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,5,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,6,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,7,4);
+		    	}
+		    }
+
+		    if (Character == JohnnyCage) {
+	    
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,12,4);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,13,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,14,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,15,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,16,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,17,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,6,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,7,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,8,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,8,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,9,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,10,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,11,4);
+		    	}
+		    }
+
+			if (Character == Raiden) {
+	    
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,18,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,19,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,20,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,21,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,22,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,23,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,9,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,10,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,11,4);
+		    	    }
+		    	}
+		    	
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,12,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,13,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,14,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,15,4);
+		    	}
+		    }
+		    	    
+	        if (Character == Baraka) {
+	    
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,24,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,25,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,26,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,27,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,28,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,29,2);
+		    	    }
+		    	}
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,12,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,13,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,14,4);
+		    	    }
+		    	}
+		    	
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,16,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,17,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,18,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,19,4);
+		    	}
+		    }
+		    	    
+	    	if (Character == Skarlet) {
+	    
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,30,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,31,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,32,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,33,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,34,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,35,2);
+		    	    }
+		    	}
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,15,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,16,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,17,4);
+		    	    }
+		    	}
+		    
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,20,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,21,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,22,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,23,3);
+		    	}
+		    }
+		    		    
+	    	if (Character == SonyaBlade) {
+	    
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,36,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,37,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,38,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,39,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,40,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,41,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,18,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,19,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,20,4);
+		    	    }
+		    	}	    
+ 	    		
+	    		// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,24,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,25,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,26,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,27,4);
+		    	}
+		    }
+		    
+	    	if (Character == CassieCage) {
+	    
+				// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,42,2);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,43,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,44,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,45,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,46,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,47,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,21,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,22,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,23,4);
+		    	    }
+		    	}
+		    	
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,28,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,29,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,30,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,31,4);
+		    	}
+		    }
+		    	    
+			if (Character == Cetrion) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,48,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,49,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,50,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,51,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,52,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,53,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,24,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,25,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,26,4);
+		    	    }
+		    	}
+ 		       
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,32,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,33,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,34,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,35,4);
+		    	}
+		    }
+		    
+	    	if (Character == D_Vorah) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,54,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,55,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,56,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,57,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,58,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,59,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,27,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,28,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,29,4);
+		    	    }
+		    	}
+
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,36,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,37,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,38,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,39,3);
+		    	}
+		    }
+		    
+			if (Character == ErronBlack) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,60,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,61,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,62,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,63,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,64,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,65,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,30,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,31,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,32,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,40,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,41,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,42,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,43,3);
+		    	}
+		    }
+		    
+			if (Character == Frost) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,66,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,67,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,68,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,69,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,70,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,71,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,33,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,34,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,35,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,44,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,45,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,46,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,47,4);
+		    	}
+		    }
+		    
+	    	if (Character == Fujin) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,72,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,73,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,74,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,75,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,76,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,77,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,36,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,37,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,38,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,48,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,49,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,50,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,51,4);
+		    	}
+		    }
+		    
+	    	if (Character == Geras) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,78,4);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,79,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,80,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,81,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,82,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,83,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,39,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,40,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,41,4);
+		    	    }
+		    	}		    
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,52,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,53,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,54,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,55,3);
+		    	}
+		    }
+		    			
+	    	if (Character == JacquiBriggs) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,84,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,85,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,86,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,87,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,88,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,89,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,42,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,43,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,44,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,56,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,57,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,58,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,59,4);
+		    	}
+		    }
+		    		    
+	    	if (Character == Jade) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,90,2);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,91,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,92,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,93,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,94,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,95,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,45,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,46,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,47,4);
+		    	    }
+		    	}		    
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,60,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,61,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,62,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,63,3);
+		    	}
+		    }
+		    		    
+	    	if (Character == JaxBriggs) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,96,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,97,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,98,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,99,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,100,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,101,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,48,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,49,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,50,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,64,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,65,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,66,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,67,4);
+		    	}
+		    }
+		    
+	    	if (Character == Joker) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,102,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,103,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,104,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,105,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,106,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,107,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,51,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,52,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,53,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,68,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,69,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,70,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,71,4);
+		    	}
+		    }
+		    		    
+	    	if (Character == Kabal) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,108,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,109,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,110,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,111,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,112,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,113,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,54,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,55,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,56,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,72,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,73,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,74,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,75,4);
+		    	}
+		    }
+		    
+	    	if (Character == Kano) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,114,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,115,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,116,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,117,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,118,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,119,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,57,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,58,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,59,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,76,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,77,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,78,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,79,3);
+		    	}
+		    }
+		    
+	    	if (Character == Kitana) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,120,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,121,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,122,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,123,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,124,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,125,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,60,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,61,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,62,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,80,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,81,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,82,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,83,3);
+		    	}
+		    }
+		    
+	    	if (Character == Kollector) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,126,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,127,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,128,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,129,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,130,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,131,4);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,63,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,64,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,65,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,84,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,85,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,86,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,87,4);
+		    	}
+		    }
+		    
+	    	if (Character == KotalKahn) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,132,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,133,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,134,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,135,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,136,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,137,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,66,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,67,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,68,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,88,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,89,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,90,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,91,4);
+		    	}
+		    }
+		    		
+	    	if (Character == KungLao) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,138,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,139,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,140,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,141,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,142,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,143,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	    
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,69,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,70,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,71,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,92,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,93,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,94,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,95,1);
+		    	}
+		    }
+		    	
+	    	if (Character == LiuKang) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,144,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,145,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,146,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,147,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,148,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,149,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,72,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,73,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,74,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,96,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,97,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,98,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,99,4);
+		    	}
+		    }
+		    
+	    	if (Character == Mileena) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,150,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,151,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,152,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,153,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,154,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,155,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,75,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,76,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,77,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,100,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,101,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,102,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,103,4);
+		    	}
+		    }
+		    
+	    	if (Character == Nightwolf) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,156,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,157,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,158,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,159,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,160,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,161,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,78,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,79,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,80,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,104,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,105,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,106,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,107,4);
+		    	}
+		    }
+		    
+	    	if (Character == NoobSaibot) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,162,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,163,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,164,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,165,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,166,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,167,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,81,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,82,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,83,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,108,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,109,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,110,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,111,4);
+		    	}
+		    }
+		    		    
+	    	if (Character == Rain) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,168,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,169,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,170,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,171,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,172,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,173,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,84,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,85,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,86,5);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,112,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,113,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,114,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,115,4);
+		    	}
+		    }
+		    
+	    	if (Character == Rambo) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,174,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,175,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,176,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,177,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,178,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,179,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,87,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,88,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,89,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,116,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,117,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,118,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,119,4);
+		    	}
+		    }
+		    		
+	    	if (Character == Robocop) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,180,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,181,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,182,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,183,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,184,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,185,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,90,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,91,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,92,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,120,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,121,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,122,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,123,4);
+		    	}
+		    }
+		    			    
+	    	if (Character == ShangTsung) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,186,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,187,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,188,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,189,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,190,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,191,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	    
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,93,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,94,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,95,4);
+		    	    }
+		    	}		    
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,124,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,125,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,126,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,127,3);
+		    	}
+		    }
+		    			
+	    	if (Character == ShaoKahn) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,192,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,193,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,194,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,195,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,196,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,197,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,96,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,97,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,98,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,128,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,129,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,130,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,131,4);
+		    	}
+		    }
+		    
+	    	if (Character == Sheeva) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,198,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,199,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,200,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,201,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,202,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,203,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	    
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,99,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,100,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,101,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,132,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,133,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,134,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,135,4);
+		    	}
+		    }
+		    			
+	    	if (Character == Sindel) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,204,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,205,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,206,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,207,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,208,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,209,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,102,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,103,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,104,4);
+		    	    }
+		    	}
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,136,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,137,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,138,3);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,139,4);
+		    	}
+		    }
+		    		    
+	    	if (Character == Spawn) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,210,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,211,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,212,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,213,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,214,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,215,3);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	    
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,105,5);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,106,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,107,4);
+		    	    }
+		    	}	
+
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,140,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,141,3);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,142,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,143,3);
+		    	}
+		    }
+		    		    
+	    	if (Character == Terminator) {
+	    
+		    	// Kombo's   =======================================================
+		    	if (get_ival(KomboHold)) {
+		    	    
+		    	    if (event_press(KomboPress1)) { // R3/RS + L1/LB
+		    	    	
+		    	    	Activated(KomboPress1,On,Off,On,Off,Off,216,3);
+		    	    }
+				    
+		    	    if (event_press(KomboPress2)) { // R3/RS + L2/LT
+		    	    	
+		    	    	Activated(KomboPress2,On,Off,On,Off,Off,217,4);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress3)) { // R3/RS + R1/RB
+		    	    	
+		    	    	Activated(KomboPress3,On,Off,On,Off,Off,218,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress4)) { // R3/RS + R2/RT
+		    	    	
+		    	    	Activated(KomboPress4,On,Off,On,Off,Off,219,3);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress5)) { // R3/RS + L3/LS
+		    	    	
+		    	    	Activated(KomboPress5,On,Off,On,Off,Off,220,2);
+		    	    }
+		    	    
+		    	    if (event_press(KomboPress6)) { // R3/RS + TOUCH/SYNC/VIEW
+		    	    	
+		    	    	Activated(KomboPress6,On,Off,On,Off,Off,221,2);
+		    	    }
+		    	}
+		    	
+		    	// Finishers =======================================================
+		    	if (get_ival(FinisherHold)) {
+		    	
+		    	    if (event_press(FinisherPress1)) { // L3/LS + SQUARE/X
+		    	    	
+		    	    	Activated(FinisherPress1,On,On,Off,Off,Off,108,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress2)) { // L3/LS + CROSS/A
+		    	    
+		    	    	Activated(FinisherPress2,On,On,Off,Off,Off,109,4);
+		    	    }
+		            
+		    	    if (event_press(FinisherPress3)) { // L3/LS + CIRCLE/B
+		    	    
+		    	    	Activated(FinisherPress3,On,On,Off,Off,Off,110,4);
+		    	    }
+		    	}
+		    
+		    	// Special's   =======================================================
+		    	if (get_ival(KomboStick1) <= -90) { // RY AXIS UP
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,144,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick1) >= 90) {  // RY AXIS DOWN
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,145,4);
+		    	}
+		    
+		    	if (get_ival(KomboStick2) <= -90) { // RX AXIS LEFT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,146,4);
+		    	}
+				    
+		    	if (get_ival(KomboStick2) >= 90) {  // RX AXIS RIGHT
+		    	    	
+		    	    Activated(-1,On,Off,Off,On,Off,147,4);
+		    	}
+		    }
+		}//EO!P       
+		    
+		if (Run) {
+		  	
+		    Press = On;
+		    ActionF ();
+		    
+		    if (Combos) {
+		        
+		        if (ActionK[Line][Col] == RA) {
+		            	
+		        	set_val(Right,100);
+		        	set_val(Cross,100);			
+		        }		       
+		           
+		        if (ActionK[Line][Col] == LA) {
+		         	
+		         	set_val(Left,100);
+		         	set_val(Cross,100);			
+		        }		       
+		        
+		        if (ActionK[Line][Col] == XA) {
+		         	
+		         	set_val(Square,100);
+		         	set_val(Cross,100);			
+		        }		       
+		        
+		        if (ActionK[Line][Col] == UA) {
+		         	
+		         	set_val(Up,100);
+		         	set_val(Cross,100);			
+		        }
+		        
+		        if (ActionK[Line][Col] == RB) {
+		         	
+		         	set_val(Right,100);
+		         	set_val(Circle,100);			
+		        } 
+		        
+		        if (ActionK[Line][Col] == LB) {
+		         	
+		         	set_val(Left,100);
+		         	set_val(Circle,100);			
+		        }		       
+		        
+		        if (ActionK[Line][Col] == YB) {
+		         	
+		         	set_val(Triangle,100);
+		         	set_val(Circle,100);			
+		        }		       
+		        
+		        if (ActionK[Line][Col] == UB) {
+		         	
+		         	set_val(Up,100);
+		         	set_val(Circle,100);			
+		        }		       
+		        
+		        if (ActionK[Line][Col] == DB) {
+		         	
+		         	set_val(Down,100);
+		         	set_val(Circle,100);			
+		        }		       
+		        
+		        
+		        if (ActionK[Line][Col] == LS) {
+		         	
+		         	set_val(Left,100);
+		         	set_val(Square,100);			
+		        }
+		         
+		        if (ActionK[Line][Col] == RS) {
+		         	
+		         	set_val(Right,100);
+		         	set_val(Square,100);			
+		        }
+		        
+		        if (ActionK[Line][Col] == DX) {
+		         	
+		         	set_val(Down,100);
+		         	set_val(Square,100);
+		        }
+		        
+		        if (ActionK[Line][Col] == UXA) {
+		         	
+		         	set_val(Up,100);
+		         	set_val(Square,100);
+		         	set_val(Cross,100);
+		        }
+		        
+		        if (ActionK[Line][Col] == DXA) {
+		         	
+		         	set_val(Down,100);
+		         	set_val(Square,100);
+		         	set_val(Cross,100);
+		        }
+		        
+		        if (ActionK[Line][Col] == RT) {
+		         	
+		         	set_val(Right,100);
+		         	set_val(Triangle,100);
+			    }
+			    
+			    if (ActionK[Line][Col] == DY) {
+		         	
+		         	set_val(Down,100);
+		         	set_val(Triangle,100);
+			    }
+			    
+			    if (ActionK[Line][Col] == LT) {
+		         	
+			    	set_val(Left,100);
+		         	set_val(Triangle,100);
+			    }
+			}
+		}
+	
+		if (!MainMenu) {
+    	
+    		if (get_ival(QuickCharacterHold)) {
+    		
+    			if (event_press(QuickCharacterPress)) {
+    	
+    				Shunt = QuickCharacterPress;
+    				VibB = On;
+					combo_run(Rumble);
+    				CharC = On;
+    				CharP = On;
+    			}
+    			
+   				set_val(QuickCharacterPress,0);
+   			}
+   			
+			if (CharC) {
+    	
+    		    Character();
+    		    CharTimeout += get_rtime();
+    	        
+    		    if (event_press(Up) || event_press(Right)) {
+	    	    
+	    	    	ModSwitch[1] = clamp(ModSwitch[1] + 1,1,37);
+	    	    	CharP = On;
+	    	    }
+			    
+	    	    if (event_press(Left) || event_press(Down)) {
+	    	    
+	    	    	ModSwitch[1] = clamp(ModSwitch[1] - 1,1,37);
+	    	    	CharP = On;
+	    	    }
+			    
+			    if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right)) {
+			    
+			    	CharTimeout = Off;
+			    }
+		
+				BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right);
+			}
+		}
+	}//EOKS
+	
+	if (!MainMenu && get_ival(MenuEnterHold) && event_press(MenuEnterPress)) {
+
+		Shunt = MenuEnterPress;
+		MenuToggle(On,Off,On,On,On);
+		VibB = On;
+		combo_run(Rumble);
+	}
+
+	if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        CharC = Off;
+        MenuTimeout += get_rtime();
+
+		if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(ChangeMenuPress)) {
+
+			MenuTimeout = Off;
+		}
+
+			if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+
+				MenuToggle(Off,Off,Off,Off,Off);
+				VibB = On;
+				combo_run(Rumble);
+			}
+
+			if (event_press(ChangeMenuPress)) {
+
+				MenuValues = !MenuValues;
+				MenuSwitch = !MenuSwitch;
+				ModIndex = On;
+				Update = On;
+			}
+
+
+		if (MenuValues) {
+
+			ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModIncrement[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+		if (MenuSwitch && ModIndex > 1) {
+
+			ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}
+		
+		else if (MenuSwitch && ModIndex == 1){
+			
+			ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],CharMinValues,CharMaxValues,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}		
+ 
+				
+			BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+	}
+ 
+    if (!MainMenu && Saver) { 
+        
+        ScreenTime (); 
+     	Saver (); 
+	} 
+
+    if (!MainMenu && LEDRainbowFlow) { 
+        
+        LedFlow();
+    } 
+
+    if (!MainMenu && get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+        
+        Shunt = FindSlotPress;
+        Saver = Off;
+        ScreenTime = Off;
+        Slot = On;
+        combo_run(Boot);
+    }
+
+    if (ToggleTime) {
+        
+        TimeToggle();
+    }
+	
+	if (Press) {
+	
+		ComboTime += get_rtime();
+		
+		if (ComboTime >= ComboBlock) {
+			
+			ComboTime = 0;
+			Press = Off;
+		}	
+	}
+	
+	if (Basic) {
+	
+		Shunt = Off;	
+	}
+	
+	if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        }
+            
+            else {
+                
+                set_val (Shunt,Off);
+            }
+    }
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+combo Rumble {
+    
+    if (VibA)
+        
+        set_rumble(RUMBLE_A,15);
+        
+        else if (VibB)
+            
+            set_rumble(RUMBLE_B,15);
+    
+    	wait(250);
+    	VibA = Off;
+    	VibB = Off;
+    	reset_rumble();
+}
+
+combo Boot {
+        
+        wait(Slot);
+    
+    if (Slot == 20000)    
+        
+        cls_oled(0);
+        
+        if (Slot) {
+            
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    }    
+        else {
+            
+            set_rgb(255,0,0);
+            set_rumble(RUMBLE_B,15);
+        }
+     	
+     	wait(150);
+    	set_rgb(0,0,0);
+    	wait(150);
+    	reset_rumble();    
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+        else
+            
+            set_rgb(255,0,0);
+	
+		wait(150);
+		reset_leds();
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+function Activated (Btn,Tog,TypeF,TypeC,TypeS,TypeO,ModL,ModI) {
+	
+	Shunt = Btn;
+	Run = Tog;
+	Finisher = TypeF;
+	Combos = TypeC;
+	Special = TypeS;
+	Basic = TypeO;
+	Line  = ModL;
+	Input = ModI;
+}
+
+function ActionF () {
+
+	if (Run) {
+
+		if (Steps < Input) {
+			
+			ComboT += get_rtime();
+			
+			if (!Wait) {
+			
+			    if (Finisher)
+			    	set_val(ActionF[Line][Col],100);
+			    
+			    if (Combos)
+			    	set_val(ActionK[Line][Col],100);
+			    
+			    if (Special)
+			    	set_val(ActionS[Line][Col],100);
+			    	
+			    if (ComboT >= ButtonPress) {
+			    	
+			    	Wait = On;
+			    	Steps++;
+			    	Col++;
+			    	ComboT = 0;
+			    }
+			}
+			
+			if (Wait && ComboT >= ButtonWait) {
+			
+			    if (Finisher)	
+			    	set_val(ActionF[Line][Col],0);
+			    
+			    if (Combos)
+			    	set_val(ActionK[Line][Col],0);				
+				
+				if (Special)
+			    	set_val(ActionS[Line][Col],0);
+			    	
+				ComboT = 0;
+				Wait = Off;
+			}
+		}
+		
+		else if (Steps >= Input) {
+			
+			Wait  = Off;
+			Steps = Off;
+			Input = Off;
+			Col   = Off;
+			Press = Off;
+			Finisher = Off;
+			Combos = Off;
+			Special = Off;
+			Basic = Off;
+			Run   = Off;
+		}
+	}
+}
+
+function Toggle(ModT,ModP) {
+    
+    if (combo_running(Boot))    
+        
+        combo_stop(Boot);  
+        CharC = Off;
+        Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+	    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+    	
+    	Saver = 0;
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[8]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[6]);    
+        }
+            else {
+                
+                printf(36,38,0,1,MiscString[7]);
+            }
+                ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+        if (ToggleT >= 5000) {
+            cls_oled(0);
+            ToggleTime = Off;
+            ToggleT = 0;
+    }
+}
+
+function Character () {
+ 	
+ 		Saver = Off;
+ 		combo_stop(Boot);
+ 	
+ 	if (CharP) {
+ 		
+ 		cls_oled(0);
+	    rect_oled(1,1,127,63,0,1);
+	    printf(3,26,0,1,MiscString[9]);
+	    printf(38,26,0,1,ModCharacter[ModSwitch[1]]);
+	    CharP = Off;
+	}
+    
+    if (CharTimeout >= CharacterLimit || event_press(QuickCharacterExit)) {
+	
+		if (event_press(QuickCharacterExit))	
+			Shunt = QuickCharacterExit;
+		
+		CharC = Off;
+		VibB = On;
+		combo_run(Rumble);
+ 		cls_oled(0);
+ 		CharTimeout = 0;
+ 		Saver = On;
+ 	}
+}
+
+function LedFlow () {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 120) {
+        set_rgb(Colour / LedBrightness,Colour[1] / LedBrightness,Colour[2] / LedBrightness);
+        Colour[LedDec] -= 2; 
+        Colour[LedInc] += 2;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+}
+
+function Saver () {
+    
+    if (Saver) { 
+
+		TimeL += get_rtime();
+	
+		if(TimeL == 30) {            
+  			
+  			pixel_oled(X_POS1,Y_POS1,1);
+        	pixel_oled(X_POS2,Y_POS2,1);
+             
+             	TimerP += 1;    Length -= 1;
+             	TimerE += 1;    Length -= 1;
+                
+            	if(XorY1)  X_POS1 +=Dir1;
+            	if(XorY2)  X_POS2 +=Dir2;
+            	if(!XorY1) Y_POS1 +=Dir1;
+            	if(!XorY2) Y_POS2 +=Dir2;
+ 
+            if(Y_POS1 < 1)   Y_POS1 = 63;
+            if(Y_POS2 < 1)   Y_POS2 = 63;
+            if(X_POS1 < 1)   X_POS1 = 127;
+            if(X_POS2 < 1)   X_POS2 = 127;
+            if(Y_POS1 > 63)  Y_POS1 = 1;
+            if(Y_POS2 > 63)  Y_POS2 = 1;
+            if(X_POS1 > 127) X_POS1 = 1;
+            if(X_POS2 > 127) X_POS2 = 1;
+    
+    	if(Length < 1) {
+        	
+        	cls_oled(0);
+        	Y_POS2 = random(1,64);
+        	Y_POS1 = random(1,64);
+        	X_POS1 = random(1,128);
+        	X_POS2 = random(1,128);
+        	Steps1 = random(5,25);
+        	Steps2 = random(5,25);
+        	Length = random(200,1000);
+    	}
+    
+        	if(TimerP > Steps1) { 
+            	
+            	TimerP = 0;
+            	Steps1 = random(5,25);
+            	XorY1 = !XorY1;
+            	Dir1 = random(1,3);
+    
+           	 		if(Dir1 == 2) Dir1 = -1;
+        	} 
+
+		if(TimerE > Steps2)    {
+			
+			TimerE = 0;
+            Steps2 = random(5,25);
+            XorY2 = !XorY2;
+            Dir2 = random(1,3);
+    
+				if(Dir2 == 2) Dir2 = -1;
+		}                                    
+        	TimeL = 0;
+     	}
+ 	}   
+	
+		if (!Saver)
+			
+			cls_oled(0);
+}
+
+function ScreenTime () { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+             Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+
+function BlockButton (Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+  
+function MenuToggle (Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod (ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+		
+		if (MenuSwitch && ModIndex > 1) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			}
+				
+		else if (MenuSwitch && ModIndex == 1) {
+				
+			printf(35,29,0,1,ModCharacter[ModVal]); 
+		}
+			
+			Update = Off; 
+	} 
+
+	if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+		Update = On;
+		ModVal += ModValInc;
+            
+            if (ModVal >= ModValMax){ 
+            	return ModValMax;
+            }
+	} 
+ 
+		if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+			Update = On;
+			ModVal -= ModValInc;
+				
+				if (ModVal <= ModValMin){
+					return ModValMin;
+				}
+		}
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+
+function Grid () { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll () {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  _A = 65, _K = 75, _U =  85, _e = 101, _o = 111, _y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  _B = 66, _L = 76, _V =  86, _f = 102, _p = 112, _z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  _C = 67, _M = 77, _W =  87, _g = 103, _q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  _D = 68, _N = 78, _X =  88, _h = 104, _r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  _E = 69, _O = 79, _Y =  89, _i = 105, _s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  _F = 70, _P = 80, _Z =  90, _j = 106, _t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  _G = 71, _Q = 81, _a =  97, _k = 107, _u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  _H = 72, _R = 82, _b =  98, _l = 108, _v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  _I = 73, _S = 83, _c =  99, _m = 109, _w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  _J = 74, _T = 84, _d = 100, _n = 110, _x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,   CIRCLE  ,   SPACE   ,    _O     ,    _r     ,   SPACE   ,    _B     ,   SPACE   ,    _T     ,    _o     ,   SPACE   ,    _E     ,    _x     ,    _i     ,    _t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,    _O     ,    _r     ,   SPACE   ,    _A     ,   SPACE   ,    _T     ,    _o     ,   SPACE   ,    _N     ,    _e     ,    _x     ,    _t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,    _O     ,    _r     ,   SPACE   ,   DOWN    ,   SPACE   ,    _T     ,    _o     ,   SPACE   ,    _A     ,    _d     ,    _j     ,    _u     ,    _s     ,    _t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,    _O     ,    _r     ,   SPACE   ,   RIGHT   ,   SPACE   ,    _N     ,    _e     ,    _x     ,    _t     ,   SPACE   ,    _M     ,    _o     ,    _d     ,   SPACE   };
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                 Move List Arrays                   ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+const int16 ActionF [][] = {
+/* Scorpion      */ {L,D,D,X,O},{D,R,L,Y,O},{D,R,D,X,O},
+/* SubZero       */ {L,R,L,Y,O},{R,D,R,B,O},{D,L,D,Y,O},
+/* JohnnyCage    */ {R,L,D,D,B},{R,D,R,X,O},{D,D,D,B,O},
+/* Raiden        */ {L,D,L,X,O},{D,R,L,A,O},{R,R,D,A,O},
+/* Baraka        */ {L,D,L,Y,O},{L,R,L,A,O},{R,R,D,B,O},
+/* Skarlet       */ {R,L,D,A,O},{D,D,R,B,O},{L,U,D,B,O},
+/* SonyaBlade    */ {D,R,L,Y,O},{L,R,D,A,O},{R,D,L,Y,O}, 
+/* CassieCage    */ {D,D,R,B,O},{L,D,D,L,Y},{D,R,D,A,O},
+/* Cetrion       */ {L,D,R,D,B},{L,D,L,A,O},{U,D,U,B,O},  
+/* D_Vorah       */ {L,R,L,A,O},{L,D,D,B,O},{D,R,D,B,O},
+/* ErronBlack    */ {D,D,D,X,O},{D,R,D,Y,O},{R,U,D,X,O},
+/* Frost         */ {R,L,D,X,O},{L,R,D,R,B},{R,D,U,Y,O},
+/* Fujin         */ {L,D,D,L,X},{R,L,D,Y,O},{D,D,D,B,O},
+/* Geras         */ {L,D,D,A,O},{D,R,L,X,O},{D,L,D,X,O},
+/* JacquiBriggs  */ {R,L,R,A,O},{L,R,L,B,O},{D,R,D,A,O},
+/* Jade          */ {D,D,R,D,B},{L,R,D,R,X},{L,R,D,B,O},
+/* JaxBriggs     */ {R,D,R,A,O},{L,R,L,D,X},{D,R,D,B,O},
+/* Joker         */ {D,R,L,Y,O},{L,D,L,X,O},{L,R,U,B,O},
+/* Kabal         */ {L,R,D,R,A},{D,D,D,B,O},{U,D,D,Y,O},
+/* Kano          */ {R,D,D,X,O},{L,D,R,Y,O},{U,U,L,A,O},
+/* Kitana        */ {D,D,D,D,Y},{D,L,R,X,O},{R,D,D,X,O},
+/* Kollector     */ {D,D,D,D,B},{D,R,L,X,O},{R,U,R,X,O},
+/* KotalKahn     */ {L,D,L,A,O},{L,R,L,R,X},{R,L,D,X,O},
+/* KungLao       */ {D,R,L,D,Y},{D,R,D,A,O},{R,D,D,A,O},
+/* LiuKang       */ {D,L,D,R,X},{L,D,L,R,Y},{L,R,L,A,O},
+/* Mileena       */ {L,D,L,Y,O},{R,D,D,B,O},{D,D,D,X,O},
+/* Nightwolf     */ {L,R,L,R,Y},{D,D,D,D,B},{L,R,L,X,O},
+/* NoobSaibot    */ {L,R,L,R,B},{D,D,D,X,O},{R,R,D,A,O},
+/* Rain          */ {L,R,L,D,Y},{L,D,D,X,O},{R,L,D,D,A},
+/* Rambo         */ {L,R,D,X,O},{D,R,D,B,O},{U,D,L,Y,O},
+/* Robocop       */ {L,R,D,D,Y},{R,D,R,X,O},{L,D,D,X,O},
+/* ShangTsung    */ {L,R,D,D,X},{L,R,L,B,O},{U,U,L,X,O},
+/* ShaoKahn      */ {L,R,D,D,Y},{L,R,L,X,O},{D,D,L,B,O},
+/* Sheeva        */ {D,D,D,X,O},{R,D,D,R,A},{R,D,L,X,O},
+/* Sindel        */ {D,D,R,B,O},{L,R,L,X,O},{D,D,D,X,O},
+/* Spawn         */ {R,L,D,D,A},{R,L,R,B,O},{R,L,D,Y,O},
+/* Terminator    */ {L,R,L,X,O},{D,R,D,B,O},{U,R,L,X,O}};
+
+const int16 ActionK [][] = {
+/* Scorpion      */ {X,X,Y,O},{LS,B,X,O},{LS,B,A,O},{Y,X,YB,O},{RA,Y,O,O},{RB,Y,A,O},
+/* SubZero       */ {X,Y,B,O},{LS,B,A,O},{Y,X,Y,O},{LT,X,O,O},{RT,B,O,O},{LA,Y,X,O},
+/* JohnnyCage    */ {Y,B,B,UB},{RT,X,Y,O},{A,B,UA,O},{RA,B,B,UB},{RB,A,O,O},{RB,B,O,O},
+/* Raiden        */ {LS,Y,XA,O},{LS,B,O,O},{RS,X,Y,O},{A,Y,X,O},{LA,X,YB,O},{RA,Y,O,O},
+/* Baraka        */ {X,X,Y,O},{X,Y,Y,O},{Y,XA,O,O},{RT,X,Y,O},{LA,X,Y,O},{RB,B,O,O},
+/* Skarlet       */ {X,Y,B,O},{LS,Y,O,O},{RT,X,O,O},{LA,B,O,O},{B,B,O,O},{RB,A,O,O},
+/* SonyaBlade    */ {X,A,B,O},{LS,B,O,O},{RT,X,B,O},{A,A,A,DB},{LA,DB,O,O},{LA,UB,A,O},
+/* CassieCage    */ {LS,A,O,O},{Y,X,X,Y},{Y,X,DY,O},{LT,B,A,O},{RT,XA,O,O},{RA,B,A,O},
+/* Cetrion       */ {X,X,Y,O},{X,X,B,O},{RS,A,Y,O},{Y,X,Y,O},{RT,A,B,O},{LA,Y,O,O},
+/* D_Vorah       */ {X,Y,X,O},{X,Y,XA,O},{RT,Y,B,O},{RT,Y,UXA,O},{RT,Y,DXA,O},{LA,B,O,O},
+/* ErronBlack    */ {X,X,B,O},{LS,Y,Y,O},{LT,Y,Y,O},{LT,UB,O,O},{RT,X,Y,X},{RA,Y,O,O},
+/* Frost         */ {X,A,Y,O},{LS,Y,X,O},{Y,Y,A,O},{Y,Y,B,O},{A,B,B,Y},{LA,Y,DX,O},
+/* Fujin         */ {X,X,UB,O},{Y,A,X,B},{Y,A,YB,O},{LT,XA,O,O},{RA,X,O,O},{B,Y,A,O},
+/* Geras         */ {X,X,X,XA},{Y,B,X,O},{LT,Y,O,O},{RT,X,Y,O},{RT,Y,XA,O},{RA,Y,O,O},
+/* JacquiBriggs  */ {X,X,Y,O},{Y,Y,B,O},{LA,Y,B,O},{LA,B,O,O},{RA,X,B,XA},{RB,B,O,O},
+/* Jade          */ {LS,Y,O,O},{Y,X,Y,O},{LT,X,Y,B},{RT,X,O,O},{LA,B,A,B},{RB,X,O,O},
+/* JaxBriggs     */ {Y,Y,XA,O},{Y,Y,DB,O},{RT,X,O,O},{LA,Y,XA,O},{RA,A,X,O},{RB,Y,O,O},
+/* Joker         */ {X,Y,Y,O},{RS,B,Y,O},{Y,X,A,O},{Y,X,B,O},{RT,X,Y,O},{RA,Y,O,O},
+/* Kabal         */ {X,X,X,O},{LS,Y,DY,O},{Y,Y,X,O},{Y,A,O,O},{RT,Y,B,O},{RB,XA,O,O},
+/* Kano          */ {X,X,Y,O},{RS,Y,LT,O},{Y,Y,XA,R1},{Y,B,XA,R1},{RT,U,DB,O},{RB,A,O,O},
+/* Kitana        */ {X,Y,DY,O},{LS,A,X,O},{LT,A,X,O},{LT,A,X,DY},{RT,Y,Y,Y},{RT,A,B,O},
+/* Kollector     */ {X,A,X,O},{RS,Y,O,O},{Y,XA,O,O},{RT,Y,XA,O},{LT,A,A,O},{RA,X,Y,A},
+/* KotalKahn     */ {X,Y,Y,O},{RS,Y,Y,O},{RS,B,O,O},{Y,Y,X,O},{LT,Y,A,O},{RA,B,O,O},
+/* KungLao       */ {X,Y,Y,O},{RS,Y,O,O},{RS,A,UY,O},{Y,X,B,O},{LA,Y,O,O},{LA,Y,X,O},
+/* LiuKang       */ {LS,Y,B,O},{Y,X,Y,O},{Y,X,Y,X},{LT,DY,O,O},{RA,A,A,A},{RB,A,UA,O},
+/* Mileena       */ {X,X,XA,O},{LS,X,Y,O},{RS,Y,B,O},{Y,A,A,B},{LA,B,O,O},{RB,A,O,O},
+/* Nightwolf     */ {X,X,Y,O},{LS,A,Y,O},{RS,Y,X,Y},{Y,Y,XA,O},{RT,X,Y,X},{LA,B,XA,O},
+/* NoobSaibot    */ {X,X,Y,O},{X,X,A,O},{LS,XA,O,O},{Y,X,Y,O},{RT,Y,X,Y},{LA,XA,O,O},
+/* Rain          */ {X,X,Y,O},{Y,B,Y,XA},{Y,B,DB,O},{LT,X,Y,O},{RT,DB,O,O},{LA,B,O,O},
+/* Rambo         */ {X,Y,XA,O},{RS,Y,XA,O},{LT,X,Y,O},{RT,DB,O,O},{RT,X,X,O},{LA,XA,O,O},
+/* Robocop       */ {X,Y,A,O},{LS,Y,L,O},{LS,Y,R,O},{Y,Y,A,O},{RT,X,Y,O},{LA,Y,O,O},
+/* ShangTsung    */ {LS,X,Y,O},{LS,DY,O,O},{Y,X,UY,DY},{RT,B,Y,X},{LA,UB,A,B},{LA,DB,O,O},
+/* ShaoKahn      */ {X,Y,XA,O},{X,B,Y,O},{Y,X,Y,O},{Y,A,Y,O},{RT,X,Y,O},{RT,B,O,O},
+/* Sheeva        */ {X,Y,X,O},{LS,Y,Y,X},{RS,B,O,O},{Y,X,X,O},{LT,B,O,O},{RB,B,A,O},
+/* Sindel        */ {X,X,Y,O},{Y,A,B,O},{RT,X,UY,O},{RT,X,DY,O},{LA,B,Y,O},{RB,UA,O,O},
+/* Spawn         */ {X,X,Y,O},{LS,Y,O,O},{Y,B,UA,Y},{RT,X,UY,O},{RT,A,B,O},{RB,X,A,O},
+/* Terminator    */ {X,Y,A,O},{Y,X,Y,B},{RT,XA,R1,O},{LA,X,Y,O},{RA,Y,O,O},{RA,B,O,O}};
+
+const int16 ActionS [][] = {
+/* Scorpion      */ {L,R,X,R1},{D,R,X,L},{L,R,Y,R1},{D,R,B,R1},
+/* SubZero       */ {D,R,X,R1},{D,L,Y,O},{L,R,A,R1},{D,R,B,R1},
+/* JohnnyCage    */ {D,L,X,R1},{D,L,R,X},{L,R,B,O},{D,L,B,R1},
+/* Raiden        */ {L,R,X,R1},{D,L,Y,R1},{L,R,A,R1},{D,L,A,R1},
+/* Baraka        */ {D,L,X,R1},{L,R,Y,O},{D,L,A,O},{L,R,A,R1},
+/* Skarlet       */ {L,R,Y,R1},{L,R,A,R1},{L,R,B,R1},{D,L,B,O},
+/* SonyaBlade    */ {L,R,Y,R1},{L,R,A,R1},{L,D,A,R1},{D,L,A,R1}, 
+/* CassieCage    */ {L,R,X,R1},{D,L,A,R1},{D,L,A,L},{D,L,X,R1},
+/* Cetrion       */ {D,L,X,R1},{D,L,Y,O},{D,D,A,O},{D,L,Y,R1},  
+/* D_Vorah       */ {D,L,X,R1},{D,L,A,R1},{D,R,A,R1},{D,L,B,O},
+/* ErronBlack    */ {D,L,X,O},{D,L,R,X},{L,R,X,O},{D,R,Y,O},
+/* Frost         */ {L,R,X,R1},{D,L,X,R1},{L,R,B,O},{D,L,B,R1},
+/* Fujin         */ {L,R,X,R1},{D,L,Y,R1},{D,L,A,R1},{D,L,B,R1},
+/* Geras         */ {L,R,X,R1},{D,L,X,O},{L,R,Y,R1},{D,R,A,O},
+/* JacquiBriggs  */ {D,L,X,R1},{L,R,Y,O},{D,R,A,O},{D,L,A,R1},
+/* Jade          */ {L,R,X,R1},{L,R,A,O},{D,L,A,O},{L,R,Y,O},
+/* JaxBriggs     */ {D,L,X,O},{D,L,R,X},{L,R,Y,R1},{L,R,B,R1},
+/* Joker         */ {L,R,X,R1},{D,L,X,R1},{L,R,Y,O},{L,R,B,R1},
+/* Kabal         */ {D,L,Y,R1},{D,L,A,O},{L,R,Y,R1},{L,R,B,R1},
+/* Kano          */ {D,L,Y,R1},{D,L,R,Y},{L,R,A,R1},{L,R,B,O},
+/* Kitana        */ {D,R,X,R1},{D,R,X,R},{D,L,Y,O},{L,R,A,O},
+/* Kollector     */ {D,L,Y,O},{D,L,A,R1},{D,R,X,O},{L,R,B,R1},
+/* KotalKahn     */ {D,R,Y,O},{L,R,B,R1},{D,L,X,R1},{D,L,Y,R1},
+/* KungLao       */ {L,R,Y,O},{D,L,Y,R1},{D,L,X,O},{D,L,B,A},  
+/* LiuKang       */ {L,R,X,R1},{L,R,A,R1},{D,L,A,R1},{D,L,R,Y},
+/* Mileena       */ {L,R,X,R1},{D,L,X,O},{R,D,L,Y},{D,D,A,R1},
+/* Nightwolf     */ {L,R,X,R1},{D,R,A,R1},{D,R,Y,O},{D,L,R,A},
+/* NoobSaibot    */ {L,R,X,O},{L,R,A,O},{D,L,Y,L},{D,L,X,R1},
+/* Rain          */ {D,L,X,R1},{L,R,A,O},{L,R,B,R1},{L,R,B,L},
+/* Rambo         */ {D,L,X,O},{D,L,R,X},{D,L,Y,R1},{D,L,A,R1},
+/* Robocop       */ {L,R,X,R1},{L,R,Y,R1},{L,R,A,R1},{D,L,B,U},
+/* ShangTsung    */ {D,L,X,R1},{D,L,X,R},{D,R,A,R1},{L,R,B,O},
+/* ShaoKahn      */ {D,L,X,R1},{D,L,Y,O},{L,R,A,R1},{L,D,B,R1},
+/* Sheeva        */ {L,R,X,R1},{D,L,X,O},{L,R,A,O},{L,R,B,R1},
+/* Sindel        */ {L,R,X,R1},{D,L,X,R1},{D,L,Y,O},{L,R,A,R1},
+/* Spawn         */ {L,R,X,R1},{L,R,Y,O},{L,R,A,R1},{D,R,B,O},
+/* Terminator    */ {L,R,X,R1},{D,L,Y,R1},{D,L,R,Y},{L,R,B,R1}};    

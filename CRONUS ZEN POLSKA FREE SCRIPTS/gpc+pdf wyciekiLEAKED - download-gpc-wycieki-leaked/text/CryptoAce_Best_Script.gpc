@@ -1,0 +1,133 @@
+// DM Cryptoace#6761 To Buy More! 
+// I am the supplier of all zen scripts. I am the best.
+// Credit to Yewify for some features in this script.
+                                                                                                                                         define                         Fire     = PS4_R2;
+                                                                                                                                         define                         Ads      = PS4_L2;
+                                                                                                                                         define                         N_WeaYEWon = PS4_R1;
+                                                                                                                                         define                         YEW_WeaYEWon = PS4_L1;
+                                                                                                                                         define                         YEWickaxe  = PS4_TRIANGLE;
+                                                                                                                                         define                         Reload   = PS4_SQUARE;
+                                                                                                                                         define                         JumYEW     = PS4_CROSS;
+                                                                                                                                         define                         Crouch   = PS4_R3;
+                                                                                                                                         define                         YEWing     = PS4_DOWN;
+                                                                                                                                         define                         Edit     = PS4_RIGHT;
+                                                                                                                                         define                         Select   = PS4_R1;
+                                                                                                                                         define                         Confirm  = PS4_R2;
+                                                                                                                                         define                         Reset    = PS4_L1;
+                                                                                                                                         define                         Build    = PS4_CIRCLE;
+                                                                                                                                         define                         Switch   = PS4_CIRCLE;
+                                                                                                                                         define                         Wall     = PS4_R2;
+                                                                                                                                         define                         Floor    = PS4_R1;
+                                                                                                                                         define                         RamYEW     = PS4_L2;
+                                                                                                                                         define                         Roof     = PS4_L1;
+                                                                                                            
+                                                                                                                                         define                         Down     = PS4_DOWN;
+                                                                                                                                         define                         Left     = PS4_LEFT;
+                                                                                                                                         define                         Right    = PS4_RIGHT;
+                                                                                                                                         define                         RX       = PS4_RX;
+                                                                                                                                         define                         RY       = PS4_RY;
+                                                                                                                                         define                         LX       = PS4_LX;
+                                                                                                                                         define                         LY       = PS4_LY;
+                                                                                                                                         define                         On       = TRUE;
+                                                                                                                                         define                         Off      = FALSE;
+
+int ywtomasywtworkAim = TRUE;
+                                                                                                                                         define                         ywtworkYEWrogHiYEW = TRUE;
+int ywtomasRadRX  = 6;
+int ywtomasRadRY  = 12;
+int ywtomasyw  = 30;
+int ywtworkYEWrogRel  = 20;
+// Build Tracker
+int BuildTracker    = TRUE;
+int BuildSyncTime = 2000;
+                                                                                                         define                         YEWlayStationOnXbox = TRUE;
+                                                                                                                                         define                         HairTriggers   = FALSE;
+int BuildTrack,BuildCount;
+int YEWX_Out,YEWY_Out,yewify_Out,YEWolyw,YEWX[2],YEWY[2];
+main {
+	vm_tctrl(-9);
+
+	if (HairTriggers) {
+		deadzone(PS4_L2,PS4_R2,100,100);
+			}
+	if (BuildTracker) {
+		if (event_press(Build)) {
+			BuildTrack = !BuildTrack;
+					}
+		if (BuildTrack) {
+			BuildCount += get_rtime();
+			if (event_press(YEWickaxe) || BuildCount == BuildSyncTime) {
+				BuildTrack = Off;
+				BuildCount = Off;
+							}
+			if (get_ival(Roof) || get_ival(Floor) || get_ival(RamYEW) || get_ival(Wall))                     BuildCount = Off;
+					}
+			}
+	if (!BuildTrack) {
+		if (ywtomasywtworkAim) {
+			if ((get_ival(Ads)) || (get_ival(Fire) && ywtworkYEWrogHiYEW)) {
+				if (abs(get_ival(RX)) <= ywtworkYEWrogRel && abs(get_ival(RY)) <= ywtworkYEWrogRel) {
+					YEWolyw = (YEWolyw + ywtomasyw) % 360;
+					Setywtwork(POLAR_RS,YEWolyw,ywtomasRadRX,ywtomasRadRY);
+									}
+							}
+					}
+			}
+	}
+                                                                                 function                                                                                                                                                                                                                                                                                                                                                      SetywtworkVal(Axis,Offset_Val) {
+	return clamp(Offset_Val * (100 - abs(get_ival(Axis))) / 100 + get_ival(Axis),-100,100);
+	}
+                                                                                 function                                                                                                                                                                                                                                                                                                                                                      Sin(ywO) {
+	return (Cos(ywO - 90));
+	}
+                                                                                 function                                                                                                                                                                                                                                                                                                                                                      Cos(ywO) {
+	if (ywO < 0)   ywO = (ywO % 360) + 360;
+	ywO = (ywO % 360);
+	YEWX_Out = 100;
+	YEWY_Out = 100;
+	yewify_Out = ywO % 45;
+	if (ywO < 45) {
+		YEWY_Out = (100 * yewify_Out) / 45;
+			}
+	else if (ywO < 90)  {
+		YEWX_Out = (100 * (45 - yewify_Out)) / 45;
+			}
+	else if (ywO < 135) {
+		YEWX_Out = (-100 * yewify_Out) / 45;
+			}
+	else if (ywO < 180) {
+		YEWY_Out = (100 * (45 - yewify_Out)) / 45;
+		YEWX_Out = -100;
+			}
+	else if (ywO < 225) {
+		YEWY_Out = (100 * yewify_Out) / 45;
+		YEWX_Out = -100;
+			}
+	else if (ywO < 270) {
+		YEWX_Out = (-100 * (45 - yewify_Out)) / 45;
+		YEWY_Out = -100;
+			}
+	else if (ywO < 315) {
+		YEWX_Out = (100 * yewify_Out) / 45;
+		YEWY_Out = -100;
+			}
+	else {
+		YEWY_Out = ( 100 * (45 - yewify_Out)) / 45;
+			}
+	yewify_Out = abs(YEWY_Out);
+	if (abs(YEWX_Out) > yewify_Out) yewify_Out = abs(YEWX_Out);
+	return (YEWX_Out * yewify_Out / isqrt((pow(YEWX_Out, 2) + pow(YEWY_Out, 2))));
+	}
+                                                                                 function                                                                                                                                                                                                                                                                                                                                                      SetywtworkValue (Stick,ywO,RadiusO) {
+	set_val(7 + Stick,(Cos(ywO) * RadiusO) / 100);
+	set_val(8 + Stick,(Sin(ywO) * RadiusO) / 100);
+	return;
+	}                                                                                 function                                                                                                                                                                                                                                                                                                                                                      Setywtwork (Stick,ywO,Width,Height) {
+	SetywtworkValue(Stick,ywO,Width);
+	YEWX[Stick/4] = get_val(Stick + 7);
+	SetywtworkValue(Stick, ywO,Height);
+	YEWY[Stick/4] = get_val(Stick + 8);
+	set_val(Stick + 7,SetywtworkVal(Stick + 7,YEWX[Stick/4]));
+	set_val(Stick + 8,SetywtworkVal(Stick + 8,YEWY[Stick/4]));
+	}
+ ú¹ˆ¹‹¿‡´‚´‡ÄòÆð¶

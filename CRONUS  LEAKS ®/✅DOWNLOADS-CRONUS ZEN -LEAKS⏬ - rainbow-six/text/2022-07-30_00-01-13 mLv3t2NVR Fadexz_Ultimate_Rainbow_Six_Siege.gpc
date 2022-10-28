@@ -1,0 +1,348 @@
+// GPC Online Library
+// fadexz's_ultimate_rainbow_six_siege_script_[no_recoil,_jitter_mod,_rapid_fire,_auto_ping,_auto_scan,_crouch_spam,_and_more!].gpc
+
+/*
+
+  ************************************************************
+  ************************************************************
+  ***                                                      ***
+  ***   Fadexz's Ultimate Rainbow Six Siege Script v1.1    ***
+  ***                                                      ***
+  ************************************************************
+  ************************************************************
+
+  -  -  -  -  -  PLEASE CHECK EVERYTHING BELOW!  -  -  -  -  -
+
+ ???????????????????????????????????????????????????????????????
+ ???????????????????????? Settings ?????????????????????????????   * = Main Values to Change to your Preference
+ ???????????????????????????????????????????????????????????????
+ ??*/ define RIGHT_STICK_ADS_HORIZONTAL_SENSITIVITY  =   45 /*?? * Right Stick Aim Down Sights Horizontal Sensitivity - Default: 40 - Range [0~327] - Not same speed as in-game sensitivity
+ ??*/ define RIGHT_STICK_ADS_VERTICAL_SENSITIVITY    =   40 /*?? * Right Stick Aim Down Sights Vertical Sensitivity - Default: 35 - Range [0~327] - Not same speed as in-game sensitivity
+ ??*/ define RIGHT_STICK_LOOK_HORIZONTAL_SENSITIVITY =   77 /*?? * Right Stick Look Horizontal Sensitivity - Default: 72 - Range [0~327] - Not same speed as in-game sensitivity
+ ??*/ define RIGHT_STICK_LOOK_VERTICAL_SENSITIVITY   =   57 /*?? * Right Stick Look Vertical Sensitivity - Default: 52 - Range [0~327] - Not same speed as in-game sensitivity
+ ??*/ define RIGHT_STICK_HORIZONTAL_MIDPOINT         =   50 /*??   Right Stick Horizontal Midpoint - Default: 50 - Range [0~100] - Point where 50% pull will be, higher value allows for more control over small movement but less control over fast movement
+ ??*/ define RIGHT_STICK_VERTICAL_MIDPOINT           =   50 /*??   Right Stick Vertical Midpoint - (Same as Horizontal ^^^)
+ ??*/ define LONGEST_PRESS_FOR_TURN_ON               =  250 /*??   Longest Press Time on Menu Button - Default: 250 - Range [0~32767] - To activate "Turn On" (quick 180 spin) - Holding any longer will do the original action (press Menu)
+ ??*/ define TIME_FOR_TURN_ON                        =  235 /*??   Time to Turn Until Turned 180º - Default: 235 - Range [0~32767]
+ ??*/ define DIRECTION_FOR_TURN_ON                   = -100 /*??   Direction to Turn for Turn On - Default: -100 - Range [-100~100] - -100 for left or 100 for right
+ ??*/ define MINIMUM_WALK_SPEED_FOR_SPRINT           =  -14 /*??   Minimum Walk Speed for Sprint Activation - Default: -14 - Range [-100~100] - Allows for sprint to be activated while walking at slower speeds - May need to increase slightly if your deadzone is more than 6
+ ??*/ define MINIMUM_SPRINT_SPEED                    =  -84 /*??   Minimum Speed for Sprinting to Activate - Default: -84 - Range [-100~100] - May need to increase a small amount if your LS deadzone is above 6%
+ ??*/ define AUTO_PING_AIM_AND_SHOOTING_TIME_REQ     =  150 /*??   Required Time of Aim and Shooting to Auto Ping - Default: 150 - Range [0~32767] - Prevents spotting when tap firing (Destroying Equipment)
+ ??*/ int RIGHT_STICK_VERTICAL_DEADZONE_UP           =  -10 /*?? * Block Right Stick Up Input Until Greater than this Amount of Force is Applied - Default: -10 - Range [0~-100] - Use the Device Monitor and put heavy RESTING pressure Up on the Right Stick (This should only be when the stick is being rested in that direction, not forced) and set it one value higher than the highest value you get
+ ??*/ int RIGHT_STICK_VERTICAL_DEADZONE_DOWN         =   10 /*?? * Block Right Stick Down Input Until Greater than this Amount of Force is Applied - Default: 10 - Range [0~100] - Use the Device Monitor and put heavy RESTING pressure Down on the Right Stick (This should only be when the stick is being rested in that direction, not forced) and set it one value higher than the highest value you get
+ ??*/ int RIGHT_STICK_HORIZONTAL_DEADZONE_LEFT       =  -10 /*?? * Block Right Stick Left Input Until Greater than this Amount of Force is Applied - Default: -10 - Range [0~-100] - Use the Device Monitor and put heavy RESTING pressure Left on the Right Stick (This should only be when the stick is being rested in that direction, not forced) and set it one value higher than the highest value you get
+ ??*/ int RIGHT_STICK_HORIZONTAL_DEADZONE_RIGHT      =   10 /*?? * Block Right Stick Right Input Until Greater than this Amount of Force is Applied - Default: 10 - Range [0~100] - Use the Device Monitor and put heavy RESTING pressure Right on the Right Stick (This should only be when the stick is being rested in that direction, not forced) and set it one value higher than the highest value you get
+ ???????????????????????????????????????????????????????????????
+
+
+ ============================================
+ ===   How to use Activations in script   ===
+ ============================================
+
+ == Activate Toggles ==
+
+ At least Short Hold View/Touch Pad Button, then while still holding at the same time press...
+  Up D-Pad     = Rapid Fire For Both
+  Left D-Pad   = Rapid Fire For Secondary
+  Down D-Pad   = Rapid Fire/Jitter Off
+  Right D-Pad  = Right Jitter
+  LB           = LB Jitter
+  RB           = RB Jitter
+  B            = Crouch Spam
+  LS           = High Anti-Recoil Value
+  RS           = Low Anti-Recoil Value
+
+ If successful scoreboard will close.
+
+ Note: A throwable gadget is required for the jitter mod to work.
+
+ == Activate Turn On (180° Spin) ==
+
+ Press Menu/Options Button, Quickly Double Tap for 360° Spin
+
+ (Hold for more than 250ms for original action (Short Hold for press))
+
+ == Activate Auto Scan ==
+ 
+ Long Hold Y/Triangle (for the duration of one scan)
+
+ (Tap LT/L2, Y/Triangle or Home/PS (AKA Xbox/Playstaion) buttons to stop it)
+
+
+ ======================================
+ ===        In-Game Settings        ===
+ ======================================
+ 
+ Vertical Sensitivity      = 100
+ Horizontal Sensitivity    = 100
+ Right Stick Dead Zone (%) = 5     (Not required but recommended to set a custom deadzone in the script)
+ Aim Down Sights           = 100
+ Drone Deployment          = Advanced
+
+*/
+
+define RIGHT = XB1_RIGHT;         // Jitter
+define RB = XB1_RB;               // Jitter
+define LB = XB1_LB;               // Jitter
+
+int CAM_SCAN_LOOP;                // Auto Camera Scan
+int Hold_Y = 0;                   // Auto Camera Scan
+int TURN_ON_DIRECTION             // Turn On (180 Spin)
+int TURN_ON_TIME                  // Turn On (180 Spin)
+int Crouch_Spam;                  // Crouch Spam
+int Jitter_Toggle;                // Jitter
+int Gadget = XB1_RIGHT;           // Jitter
+int Anti_Deploy = XB1_LB;         // Jitter
+int Rapid_Fire;                   // Rapid Fire
+int Rapid_Fire_Sec;               // Rapid Fire
+int Rapid_Fire_Is_Sec;            // Rapid Fire
+int AR_Up   = -26;                // Anti-Recoil   // High = 35 | Medium = 29 | Low = 26
+int AR_Down =  26;                // Anti-Recoil   // High = 35 | Medium = 29 | Low = 26
+int AR_Delay = 17;  // Switch     // Anti-Recoil
+int AR_Release;                   // Anti-Recoil
+int v;                            // Anti-Recoil
+int SCOREBOARD_BUTTON;            // PS4 Button Fix
+int rumb_count;                   // Activation Rumble
+int rumb_type;                    // Activation Rumble
+
+init {
+
+ AR_Release = AR_Down + 1;   // Anti-Recoil   // Anti-Recoil Release Value (Positive)
+}
+
+main {
+
+ vm_tctrl(+7);   // 17 ms update time (from default 10ms) makes use of each frame AKA more inputs per second - Increases input delay slightly
+
+ if(get_controller() == PIO_PS4)
+  SCOREBOARD_BUTTON = PS4_TOUCH;
+  else SCOREBOARD_BUTTON = XB1_VIEW;
+
+ if(get_val(XB1_LT))   // LT Hair Trigger
+  set_val(XB1_LT,100);
+
+ if(get_val(XB1_RT))   // RT Hair Trigger
+  set_val(XB1_RT,100);
+
+ if(get_val(XB1_LY) <= MINIMUM_WALK_SPEED_FOR_SPRINT && get_val(XB1_LS) && get_val(XB1_LT) == 0)   // Always Allow Sprint While Walking
+  set_val(XB1_LY,MINIMUM_SPRINT_SPEED);
+
+ if(get_val(XB1_RS) && get_ptime(XB1_RS) >= 400) {   // Ez Melee
+  combo_run(MELEE_LOOP);
+  set_rumb(1,RUMBLE_B); }
+
+ if(get_val(XB1_RT) && get_ptime(XB1_RT) >= AUTO_PING_AIM_AND_SHOOTING_TIME_REQ)   // Auto Ping
+  combo_run(Auto_Ping);
+
+ if(get_val(XB1_LB) && get_ptime(XB1_LB) >= 3300) {   // Auto Release Frag
+  set_val(XB1_LB,0); }
+
+ if(get_val(XB1_LB) && get_ptime(XB1_LB) >= 1800) {   // Auto Release Frag
+  set_rumb(1,RUMBLE_LT); }
+
+ if(event_release(XB1_MENU) && get_ptime(XB1_MENU) <= LONGEST_PRESS_FOR_TURN_ON) {   // Turn On (180 Spin)
+  TURN_ON_TIME = TIME_FOR_TURN_ON;
+  TURN_ON_DIRECTION = DIRECTION_FOR_TURN_ON; }
+
+ if(get_ptime(XB1_MENU) <= LONGEST_PRESS_FOR_TURN_ON)   // Turn On (180 Spin)
+  sensitivity(XB1_RX,50,100);
+   
+ if(get_val(XB1_MENU) && get_ptime(XB1_MENU) <= LONGEST_PRESS_FOR_TURN_ON)   // Turn On (180 Spin)
+  set_val(XB1_MENU,0);
+
+ if(TURN_ON_TIME >= 0 ) {   // Turn On (180 Spin)
+  TURN_ON_TIME = TURN_ON_TIME - get_rtime()
+  set_val(XB1_RX,TURN_ON_DIRECTION) }
+
+ if(TURN_ON_TIME < 0 && get_val(XB1_LT)) {   // Play ADS Sensitivity
+  sensitivity(XB1_RX,RIGHT_STICK_HORIZONTAL_MIDPOINT,RIGHT_STICK_ADS_HORIZONTAL_SENSITIVITY);
+  sensitivity(XB1_RY,50,RIGHT_STICK_ADS_VERTICAL_SENSITIVITY); }
+
+ if(TURN_ON_TIME < 0 && get_val(XB1_LT) == 0) {   // Play Look Sensitivity
+  sensitivity(XB1_RX,RIGHT_STICK_HORIZONTAL_MIDPOINT,RIGHT_STICK_LOOK_HORIZONTAL_SENSITIVITY);
+  sensitivity(XB1_RY,50,RIGHT_STICK_LOOK_VERTICAL_SENSITIVITY); }
+
+ if(event_release(XB1_Y) && get_ptime(XB1_Y) >= 1225)   // Auto Camera Scan
+  CAM_SCAN_LOOP = TRUE;
+  
+ if(CAM_SCAN_LOOP == TRUE) {   // Auto Camera Scan
+  set_rumb(1,RUMBLE_B); }
+
+ if(get_val(XB1_Y) || get_val(XB1_XBOX) || get_val(XB1_MENU) || get_val(XB1_LT) && CAM_SCAN_LOOP) {   // Auto Camera Scan
+  CAM_SCAN_LOOP = FALSE;
+  Hold_Y = 0; }
+
+ if(Hold_Y >= 1 || CAM_SCAN_LOOP) {   // Auto Camera Scan
+  Hold_Y = Hold_Y - get_rtime()
+  set_val(XB1_Y,100);
+  if(!CAM_SCAN_LOOP)
+   set_val(XB1_DOWN,0);
+   else
+   if(Hold_Y < 0) set_val(XB1_Y,0);
+   if(Hold_Y <= -40) Hold_Y = 1225; }   // Original = 1230 [Testing]
+
+ if(Jitter_Toggle) {   // Jitter
+  if(get_val(XB1_RT)) {
+   combo_run(Swap_Jitter);
+   sensitivity(XB1_RX,50,80); }
+  if(get_val(XB1_RT) && get_ptime(XB1_RT) >= 1)
+   set_val(XB1_LT,100);
+  if(Gadget == XB1_LB)
+   Anti_Deploy = XB1_RB;
+  if(event_release(XB1_RT)) {
+   combo_run(Anti_Gadget_Deploy); }
+  sensitivity(XB1_RY,50,100); }
+
+  // Toggles
+
+ if(get_val(SCOREBOARD_BUTTON) && get_ptime(SCOREBOARD_BUTTON) > 200) {   // Rapid Fire   // Jitter   // Crouch Spam   // Anti-Recoil
+  if(event_press(XB1_B))   // Crouch Spam
+   Crouch_Spam = !Crouch_Spam;
+  if(event_press(XB1_DOWN)) {   // Rapid Fire/Jitter Off
+   Rapid_Fire = FALSE;
+   Rapid_Fire_Sec = FALSE;
+   Rapid_Fire_Is_Sec = FALSE;
+   Jitter_Toggle = FALSE; }
+  if(event_press(XB1_LEFT)) {   // Rapid Fire Secondary
+   Rapid_Fire = FALSE;
+   Rapid_Fire_Sec = TRUE;
+   Rapid_Fire_Is_Sec = FALSE;
+   Jitter_Toggle = FALSE; }
+  if(event_press(XB1_UP)) {   // Rapid Fire Both
+   Rapid_Fire = TRUE;
+   Rapid_Fire_Sec = FALSE;
+   Jitter_Toggle = FALSE; }
+  if(event_press(XB1_RIGHT)) {   // Jitter RIGHT
+   Gadget = RIGHT;
+   Jitter_Toggle = TRUE; }
+  if(event_press(XB1_LB)) {   // Jitter LB
+   Gadget = LB;
+   Jitter_Toggle = TRUE; }
+  if(event_press(XB1_RB)) {   // Jitter RB
+   Gadget = RB;
+   Jitter_Toggle = TRUE; }
+  if(event_press(XB1_LS)) {   // Anti-Recoil
+   AR_Down = 28;
+   AR_Up = -28; }
+  if(event_press(XB1_RS)) {   // Anti-Recoil
+   AR_Down = 26;
+   AR_Up = -26; }
+  if(event_press(XB1_LEFT) || event_press(XB1_UP) || event_press(XB1_DOWN) || event_press(XB1_RIGHT) || event_press(XB1_LB) || event_press(XB1_RB) || event_press(XB1_B) || event_press(XB1_LS) || event_press(XB1_RS))
+   combo_run(Close_Scoreboard);
+   combo_run(Stop_Button_Activation); }
+
+ if(Rapid_Fire == TRUE && get_val(XB1_RT))   // Rapid Fire
+  combo_run(Rapid_Fire);
+
+ if(Rapid_Fire_Sec == TRUE && event_press(XB1_Y))   // Rapid Fire
+  Rapid_Fire_Is_Sec = !Rapid_Fire_Is_Sec;
+
+ if(Rapid_Fire_Is_Sec == TRUE && get_val(XB1_RT))   // Rapid Fire
+  combo_run(Rapid_Fire); 
+
+ if(Crouch_Spam && get_val(XB1_LT))
+  combo_run(Crouch_Spam);
+
+ combo_run(RS_Deadzones);   // Anti-Recoil
+
+ if(get_val(XB1_RT))
+  combo_run(Vertical_Anti_Recoil);   // Anti-Recoil
+
+ if(rumb_count) {   // Activation Rumble
+  combo_run(NOTIFY); }
+}
+
+combo MELEE_LOOP {   // Ez Melee
+ set_val(XB1_RS,0);
+ wait(700);
+ set_val(XB1_RS,100);
+ wait(300); }
+
+combo Auto_Ping {   // Auto Ping
+ set_val(XB1_LEFT,100);
+ wait(40);
+ set_val(XB1_LEFT,0);
+ wait(40);
+ wait(1900); }
+
+combo Crouch_Spam {   // Crouch Spam
+ set_val(XB1_B,100);
+ wait(17);
+ set_val(XB1_B,0);
+ wait(17); }
+
+combo Swap_Jitter {   // Jitter
+ set_val(Gadget,100);
+ wait(17);
+ set_val(XB1_Y,100);
+ wait(17); }
+
+combo Anti_Gadget_Deploy {   // Jitter
+ wait(17);
+ set_val(Anti_Deploy,100);
+ wait(17);
+ set_val(Anti_Deploy,0);
+ wait(17);
+ set_val(XB1_Y,100);
+ wait(34);
+ set_val(XB1_Y,0);
+ wait(17); }
+
+combo Rapid_Fire {   // Rapid Fire
+ set_val(XB1_RT,100);
+ wait(17);
+ set_val(XB1_RT,0);
+ wait(17); }
+
+combo Close_Scoreboard {   // Anti-Recoil
+ set_val(SCOREBOARD_BUTTON,0);
+ wait(34);
+ set_rumb(1,RUMBLE_A);
+ set_rumb(1,RUMBLE_B);
+ wait(68); }
+
+combo Stop_Button_Activation {   // Toggles   // Rapid Fire   // Jitter   // Crouch Spam   // Anti-Recoil
+ set_val(XB1_UP,0);
+ set_val(XB1_DOWN,0);
+ set_val(XB1_LEFT,0);
+ set_val(XB1_RIGHT,0);
+ set_val(XB1_LB,0);
+ set_val(XB1_RB,0);
+ set_val(XB1_B,0);
+ set_val(XB1_LS,0);
+ set_val(XB1_RS,0);
+ wait(350); }
+
+combo RS_Deadzones {   // Anti-Recoil
+ set_val(XB1_RX,dz_v(XB1_RX,RIGHT_STICK_HORIZONTAL_DEADZONE_RIGHT,RIGHT_STICK_HORIZONTAL_DEADZONE_LEFT));
+ set_val(XB1_RY,dz_v(XB1_RY,RIGHT_STICK_VERTICAL_DEADZONE_DOWN,RIGHT_STICK_VERTICAL_DEADZONE_UP));
+ set_val(XB1_LX,dz_v(XB1_LX,RIGHT_STICK_HORIZONTAL_DEADZONE_RIGHT,RIGHT_STICK_HORIZONTAL_DEADZONE_LEFT));
+ set_val(XB1_LY,dz_v(XB1_LY,RIGHT_STICK_VERTICAL_DEADZONE_DOWN,RIGHT_STICK_VERTICAL_DEADZONE_UP)); }
+
+combo Vertical_Anti_Recoil {   // Anti-Recoil
+ set_val(XB1_RY,ar_v(XB1_RY,AR_Down));  // Down
+ wait(AR_Delay);
+ set_val(XB1_RY,ar_v(XB1_RY,AR_Up));  // Up
+ wait(AR_Delay); }
+
+combo NOTIFY {   // Activation Rumble
+ set_rumble(rumb_type,2);
+ wait(136);
+ reset_rumble();
+ wait(136);
+ rumb_count --; }
+
+function ar_v(f_axis,f_val) {   // Return Anti-Recoil Value Or Controller Value If Above Release   // Anti-Recoil
+ v = get_val(f_axis);
+ if(abs(v) < AR_Release)
+  return f_val + v;
+  return v; }
+
+function dz_v(f_axis,f_pv,f_nv) {   // Return zero if between postive & negative limits   // Anti-Recoil
+ if(get_val(f_axis) < f_pv && get_val(f_axis) > f_nv)  
+  return 0;
+  return get_val(f_axis); }
+
+function set_rumb (r_num,r_type) {   // Activation Rumble
+ rumb_count = r_num;
+ rumb_type = r_type; }

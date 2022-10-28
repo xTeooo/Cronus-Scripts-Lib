@@ -1,0 +1,665 @@
+																																																								/*
+   _____    _____            _   _   _   _              _           _       _____  __          __      _____                 _           _   
+  / ____|  / ____|          | \ | | (_) | |            | |         (_)     / ____| \ \        / /     / ____|               (_)         | |  
+ | (___   | (___            |  \| |  _  | | __   ___   | |   __ _   _     | |       \ \  /\  / /     | (___     ___   _ __   _   _ __   | |_ 
+  \___ \   \___ \           | . ` | | | | |/ /  / _ \  | |  / _` | | |    | |        \ \/  \/ /       \___ \   / __| | '__| | | | '_ \  | __|
+  ____) |  ____) |          | |\  | | | |   <  | (_) | | | | (_| | | |    | |____     \  /\  /        ____) | | (__  | |    | | | |_) | | |_ 
+ |_____/  |_____/           |_| \_| |_| |_|\_\  \___/  |_|  \__,_| |_|     \_____|     \/  \/        |_____/   \___| |_|    |_| | .__/   \__|
+                    ______                                                                                                      | |          
+                   |______|                                                                                                     |_|          
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   _____                            _         ______           _   _            ______       _   _   _     _                 
+  / ____|                          | |       |  ____|         (_) | |          |  ____|     | | (_) | |   (_)                
+ | (___   __      __   ___    ___  | |_      | |__    __   __  _  | |          | |__      __| |  _  | |_   _    ___    _ __  
+  \___ \  \ \ /\ / /  / _ \  / _ \ | __|     |  __|   \ \ / / | | | |          |  __|    / _` | | | | __| | |  / _ \  | '_ \ 
+  ____) |  \ V  V /  |  __/ |  __/ | |_      | |____   \ V /  | | | |____      | |____  | (_| | | | | |_  | | | (_) | | | | |
+ |_____/    \_/\_/    \___|  \___|  \__|     |______|   \_/   |_| |______|     |______|  \__,_| |_|  \__| |_|  \___/  |_| |_|
+                                                                                                                             
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+												Credits :
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- Sweet_EviL for amazing Polar Aim on CMP + Anti Recoil AND Steady Aim!
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- Skadezy for Smart Slide Cancel
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- ItzSnack for Strafe, Drop shot, Prone On Shot & Rapid fire
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- Me, SS_Nikolai for putting all this together
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+								IMPORTANT BELOW FOR ANTI RECOIL ADJUSTMENTS WHILE IN-GAME
+					 ===============================================================================
+					 === Hold L1 And Press UP For +1 to Vertical and DOWN For -1                 ===
+					 === Hold L1 And Press RIGHT For +1 to Horizontal and LEFT For -1            ===
+					 === Heavy Rumble = Increase  -  Light Rumble = Decrease                     ===
+					 =============================================================================*/
+
+//--BUTTONS ( Customize To Your Layout )
+	int INVERTED     =     1; // <--- Make 2 If you play inverted
+	define FLIPPED   = FALSE; // <--- Make TRUE if you play flipped
+    define TACTICAL  = PS4_L1;
+    define LETHAL    = PS4_R1;
+    define SPRINT    = PS4_L3;
+    define MELEE     = PS4_R3;
+	define SWAP      = PS4_TRIANGLE;
+    define PRONE     = PS4_CIRCLE;
+    define JUMP      = PS4_CROSS;
+    define RELOAD    = PS4_SQUARE;
+	define AIM_X	 = PS4_RX;
+	define AIM_Y	 = PS4_RY;
+	define STRAFE 	 = PS4_LX;
+	define WALK 	 = PS4_LY;
+
+//--Sweet_Evil Polar
+	int Sweet_EviL_Polar	  =  TRUE;
+	int Sweet_EviL_SteadyAim  = FALSE;
+	
+	int	AIM_ASSIST			  = 14; // Strength - Even Numbers Only
+	int	AIM_SLOPE			  =  8; // Speed    - Even Numbers Only
+	define RESOLUTION		  =  8; // 4, 6, 8
+
+//--Sweet_Evil Recoil
+	int EVIL_AR				  = USE_DYNAMIC_EVIL_AR;  // <--- Choose AR Type From Above
+	int AR_STRENGTH			  = 20;  		          // <--- Can be negative if you want more AR and use : USE_RUMBLE_EVIL_AR
+	define MAGNITUDE 		  = 85; 				  // <--- Don't change, tweak this if you have AR drift issue
+
+//--Quick Toggle Button Combos
+	define QUICK_TOGGLES	  = TRUE;       // Make TRUE If You Want The Ability To Turn On Mods Without Using Button Combonations
+	define KILL_SWITCH_BUTTON = PS4_OPTIONS; // Double Tap This Button To Activate & Deactivate Kill Switch
+	define RAPID_FIRE_BUTTON  = PS4_LEFT;	 // ADS + This Button To Activate Rapid Fire
+	define DROP_SHOT_BUTTON   = PS4_RIGHT;	 // ADS + This Button To Activate Drop Shot
+
+//--0 Disable, 1 CW Standard, 2 CW Rumble	
+	int Slide_Cancel_Mode	  =  1; 
+	define CW_Slide_Delay	  = 80;	
+	define THRESHOLD          = 85; // Value needed for Slide Cancel to activate
+
+//--If you want controller vibrations set TRUE otherwise make FALSE. If Rumble_Block_EVIL_AR Rumble_Block MUST BE TRUE
+	int	Rumble_Block		  = TRUE;
+
+//--Hair Triggers ( IF L2/LT OR R2/RT IS HELD MORE THEN 10% IT'LL REGISTER AS 100% IN THE GAME )
+	int Hair_Triggers		  = TRUE;
+
+//--Change FALSE to TRUE if you want Rapid Fire on by default
+	int rapid_fire_toggle     = TRUE;
+	define rapid_fire_speed   =    5;  // Increasing the number will multiply the time per tap making it slower
+
+//--Change FALSE to TRUE if you want Drop Shot on by default
+	int DropShot              = FALSE; 
+	int DropShotSpeed         =    35; // Drop Shot Speed - Higher Value = Slower , Lower Value = Faster
+
+//--Change FALSE to TRUE if you want Hold Breath on by default
+	define Hold_Breath		  = FALSE;
+
+//--Variable Just Leave Alone
+	int ADS;
+	int FIRE;
+    int q;
+    int double__tap[30];
+  	int KS;
+	int wait_time_correction;
+	int update_timer;
+	int C_RX;
+	int C_RY;
+	int C_LX;
+	int C_LY;
+	int L_RX;
+	int L_RY;
+	int T_RY;
+	int Inc_Dec_State_1;
+	int Inc_Dec_State_2;
+	int Aim_Assit_1;
+	int Aim_Assit_2;
+	int angle;
+	int _ret;
+	int mvt_direction;
+	int min_aim_assit;
+	int cw_angle;
+	int inverted;
+	int rx_drift;
+	int ry_drift;
+	int lx_drift;
+	int ly_drift;
+	int drift_calib;
+	int _var;
+	int slide_enable;
+	int REFRESH_RATE = TIME_BASE * 10;  // don't change
+	define Blue		 =  1;
+	define Red		 =  2;
+	define Green	 =  3;
+	define Pink		 =  4;
+	define SkyBlue	 =  5;
+	define Black	 =  6;
+	define White	 =  7;
+	define DISABLED  = 0;
+	define Rumble_Block_EVIL_AR = 1;
+	define USE_DYNAMIC_EVIL_AR  = 2;
+	define TIME_BASE =  4;	// don't change	
+	define MAX_DRIFT = 12;	// don't change	if calculated drift is greater than 12, the controller is dead
+	data ( 1, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2, 2, 2, 2 )
+	const int Lookup_Table[] = { 0, 17, 34, 52, 69, 87, 104, 121, 139, 156, 173, 190, 207, 224, 241, 258, 275, 292, 309, 325, 342, 358, 374, 390, 406, 422, 438, 453, 469, 484, 500, 515, 529, 544, 559, 573, 587, 601, 615, 629, 642, 656, 669, 682, 694, 707, 719, 731, 743, 754, 766, 777, 788, 798, 809, 819, 829, 838, 848, 857, 866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 939, 945, 951, 956, 961, 965, 970, 974, 978, 981, 984, 987, 990, 992, 994, 996, 997, 998, 999, 999, 1000};
+
+init {
+	mvt_direction = 1;
+	min_aim_assit = AIM_ASSIST / 2;
+	Aim_Assit_1 = min_aim_assit;	
+	Aim_Assit_2 = AIM_ASSIST;
+	Inc_Dec_State_1 = TRUE;
+	Inc_Dec_State_2 = FALSE;
+	
+    update_timer = REFRESH_RATE;
+	
+	if(INVERTED == 2)
+		inverted = -1;
+	else
+		inverted = 1;
+		
+	angle = 90 * inverted;
+	cw_angle = 90 * inverted;
+			
+	drift_calib = 100;
+
+	if(rapid_fire_speed > 1)
+	wait_time_correction = -10;
+
+	while(q < 30) {
+    double__tap[q] = -1;
+    q++; }
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/   	
+main {
+
+	vm_tctrl(-6);
+
+	if(FLIPPED) {
+		ADS  = PS4_L1;
+		FIRE = PS4_R1;
+	} else {
+		ADS  = PS4_L2;
+		FIRE = PS4_R2;
+	}
+
+	if(double_click(KILL_SWITCH_BUTTON)) {
+		KS = !KS;  }
+	if(!KS) {
+
+	if(drift_calib)
+	{
+		rx_drift = max(rx_drift, abs(get_val(AIM_X))  + 2);
+		ry_drift = max(ry_drift, abs(get_val(AIM_Y))  + 2);
+
+		lx_drift = max(lx_drift, abs(get_val(STRAFE)) + 2);
+		ly_drift = max(ly_drift, abs(get_val(WALK))   + 2);
+
+		rx_drift = min(rx_drift, MAX_DRIFT);
+		ry_drift = min(ry_drift, MAX_DRIFT);
+
+		lx_drift = min(lx_drift, MAX_DRIFT);
+		ly_drift = min(ly_drift, MAX_DRIFT);
+
+		drift_calib--;
+	}
+	else
+	{
+		if(Rumble_Block == FALSE) {
+			block_rumble();
+		}
+
+		if(Hair_Triggers) {
+			if(get_val(PS4_R2) > 10)
+			set_val(PS4_R2, 100);
+
+			if(get_val(PS4_L2) > 10)
+			set_val(PS4_L2, 100);
+		}
+
+		C_RX = get_val(AIM_X);
+		C_RY = get_val(AIM_Y);
+
+		C_LX = get_val(STRAFE);
+		C_LY = get_val(WALK);
+
+		if(isqrt(pow(C_RX, 2) + pow(C_RY, 2)) <= rx_drift)
+		{
+			C_RX = 0;
+			C_RY = 0;
+		}
+
+		if(isqrt(pow(C_LX, 2) + pow(C_LY, 2)) <= lx_drift)
+		{
+			C_LX = 0;
+			C_LY = 0;
+		}
+
+		if(get_val(ADS) > 50 || get_val(FIRE) > 50 || combo_running(Rapid_Fire))
+		{
+			if(update_timer >= REFRESH_RATE)
+			{
+				block(AIM_X, REFRESH_RATE);
+				block(AIM_Y, REFRESH_RATE);
+
+				_ret = get_mvt_direction(C_RX, L_RX);
+
+				if(_ret != 0)
+				mvt_direction = _ret;
+
+				if(Sweet_EviL_Polar == TRUE)
+				{
+					if(Inc_Dec_State_1 == FALSE)
+					{
+						Aim_Assit_1 -= 1;
+
+						if(Aim_Assit_1 < min_aim_assit)
+						Inc_Dec_State_1 = TRUE;
+					}
+					else
+					{
+						Aim_Assit_1 += 1;
+
+						if(Aim_Assit_1 > AIM_ASSIST)
+						Inc_Dec_State_1 = FALSE;
+					}
+
+					if(Inc_Dec_State_2 == FALSE)
+					{
+						Aim_Assit_2 -= 1;
+
+						if(Aim_Assit_2 < min_aim_assit)
+						Inc_Dec_State_2 = TRUE;
+					}
+					else
+					{
+						Aim_Assit_2 += 1;
+
+						if(Aim_Assit_2 > AIM_ASSIST)
+						Inc_Dec_State_2 = FALSE;
+					}
+				}
+
+				update_timer = 0;
+
+				L_RX = C_RX;
+				L_RY = C_RY;
+			}
+
+			if((EVIL_AR) && (((get_val(ADS) > 50) && (get_val(FIRE)> 50)) || combo_running(Rapid_Fire)) && check_magnitude(MAGNITUDE, C_RX, L_RX, C_RY, L_RY))
+			{
+				if(EVIL_AR == Rumble_Block_EVIL_AR)
+				{
+					T_RY = get_rumble_evil_ar();
+				}
+				else
+				{
+					T_RY = get_dynamic_evil_ar(C_RX, C_RY, AR_STRENGTH);
+				}
+
+				if(inverted == -1)
+				{
+					C_RY += inv(T_RY);
+				}
+				else
+				{
+					C_RY += T_RY;
+				}
+			}
+
+			if(Sweet_EviL_Polar == TRUE)
+			{
+				if(mvt_direction == 1)
+				{
+					C_RX += (get_polar_coordinate(Aim_Assit_1, sin(angle)) + get_polar_coordinate(Aim_Assit_2/2, sin(cw_angle)));
+					C_RY += (get_polar_coordinate(Aim_Assit_2, cos(angle)) + get_polar_coordinate(Aim_Assit_1/2, cos(cw_angle)));
+				}
+				else
+				{
+					C_RX += (get_polar_coordinate(Aim_Assit_1, cos(angle))+ get_polar_coordinate(Aim_Assit_2/2, cos(cw_angle)));
+					C_RY += (get_polar_coordinate(Aim_Assit_2, sin(angle))+ get_polar_coordinate(Aim_Assit_1/2, sin(cw_angle)));
+				}
+
+				angle += AIM_SLOPE;
+				angle = angle % 360;
+
+				cw_angle = (cw_angle + 1) % 360;
+			}
+
+			if(Sweet_EviL_SteadyAim == TRUE)
+			{
+				C_RX = get_steady_aim(C_RX, RESOLUTION);
+				C_RY = get_steady_aim(C_RY, RESOLUTION);
+			}
+
+			set_val(AIM_X, clamp(C_RX, -100, 100));
+			set_val(AIM_Y, clamp(C_RY, -100, 100));
+
+			update_timer += get_rtime();
+		}
+		else
+		{
+			update_timer = 0;
+			update_timer = REFRESH_RATE;
+
+			angle = 90 * inverted;
+			cw_angle = 90 * inverted;
+
+			Aim_Assit_1 = min_aim_assit;
+			Aim_Assit_2 = AIM_ASSIST;
+
+		}
+
+		if(Slide_Cancel_Mode) {
+	        if((get_val(WALK) < -THRESHOLD) || (get_val(WALK) > THRESHOLD) || (get_val(STRAFE) < -THRESHOLD) || (get_val(STRAFE) > THRESHOLD)) {
+	            slide_enable = 0;
+	        if(event_release(PRONE)) {
+	                if (Slide_Cancel_Mode == 1) 
+	                {
+	                    slide_enable = 1;
+	                }
+	                else if (Slide_Cancel_Mode == 2) 
+	                {
+	                    if(((get_rumble(RUMBLE_A) == 100 || get_rumble(RUMBLE_A) == 36))) {
+	                        slide_enable = 1;
+	                    }
+	                }
+	            }
+	         if(slide_enable) {
+	                if(slide_enable == 1)
+	                    combo_run(CANCEL_SLIDE_CW);
+	            }
+	        }
+	    }
+		if(Hold_Breath) {
+			if(get_val(ADS))
+			set_val(SPRINT, 100);
+
+			if(get_val(WALK) <-90 && get_val(ADS) && get_ptime(ADS) > 200 && combo_running(HOLD_BREATH))
+			combo_stop(HOLD_BREATH);
+
+			if(event_press(ADS))
+			combo_run(HOLD_BREATH);
+
+			if(get_val(ADS) && get_lval(SPRINT))
+			set_val(SPRINT, 0);
+		}
+	}
+	if(QUICK_TOGGLES) {
+		if(get_val(ADS) && event_press(RAPID_FIRE_BUTTON)) {
+			combo_run (vibrate);
+			combo_restart (BLINK);
+   		rapid_fire_toggle = !rapid_fire_toggle;}
+		}
+		if(rapid_fire_toggle && get_val(FIRE)) {
+		combo_run(Rapid_Fire);
+	} else {
+		combo_stop(Rapid_Fire);
+	}
+	if(QUICK_TOGGLES) {
+		if(get_val(ADS) && event_press(DROP_SHOT_BUTTON)) {
+			combo_run (vibrate);
+			combo_restart (BLIINK);
+		DropShot = !DropShot;}
+		}
+        if (DropShot) {
+   if(get_val(FIRE)) {
+        combo_run (DroppShott); }
+		}
+	}
+	if(get_val(PS4_L1)) {
+	  if(event_press(PS4_UP)) {
+			AR_STRENGTH = AR_STRENGTH + 1;
+				combo_run(Increase);  }
+	  if(event_press(PS4_DOWN)) {
+			AR_STRENGTH = AR_STRENGTH - 1;
+				combo_run(Decrease); }
+			set_val(PS4_UP, 0); set_val(PS4_DOWN, 0);
+	  if(event_press(PS4_LEFT)) {
+			AR_STRENGTH = AR_STRENGTH + 10;
+				combo_run(Increase); }
+	  if(event_press(PS4_RIGHT)) {
+            AR_STRENGTH = AR_STRENGTH - 10;
+				combo_run(Decrease); }
+			set_val(PS4_LEFT, 0); set_val(PS4_RIGHT, 0); 
+	}
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo Increase {
+	set_rumble(RUMBLE_A, 100);
+	wait(250);
+	reset_rumble();
+}
+combo Decrease {
+	set_rumble(RUMBLE_B, 100);
+	wait(150);
+	reset_rumble();
+}
+combo DroppShott {
+	set_val(PRONE, 100);
+	wait(40);
+	wait(DropShotSpeed);
+	set_val(PRONE, 100);
+}
+combo BLINK {
+	if(rapid_fire_toggle) LED_CM (Green); 
+	else  LED_CM (Red);
+	wait(1650);
+	LED_CM (Black)
+}
+combo BLIINK {
+	if(DropShot) LED_CM (Green); 
+	else  LED_CM (Red);
+	wait(1650);
+	LED_CM (Black)
+}
+combo vibrate {
+	set_rumble(RUMBLE_A, 85);
+	wait(225);
+	reset_rumble();
+}
+combo CANCEL_SLIDE_CW {
+	set_val(PRONE, 100);
+    wait(CW_Slide_Delay);
+	set_val(PRONE, 0);
+	wait(20);
+	set_val(SPRINT, 0);
+	set_val(ADS, 100);
+	wait(10);
+	set_val(ADS, 0);
+	set_val(PRONE, 100);
+	set_val(SPRINT, 100);
+	wait(20);
+	set_val(PRONE, 0);
+	set_val(SPRINT, 0);
+	wait(20);
+}
+combo Rapid_Fire {
+	set_val(FIRE, 100);
+	wait(20 * rapid_fire_speed);
+	set_val(FIRE, 0);
+	wait(10 * rapid_fire_speed - wait_time_correction);
+	set_val(FIRE, 0); 
+}
+combo HOLD_BREATH {
+	set_val(SPRINT, 0);
+	wait(64);
+	set_val(SPRINT, 100);
+	wait(112);
+	set_val(SPRINT, 0);
+	wait(112);
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+function get_rumble_evil_ar() {	
+	_ret = max(get_rumble(RUMBLE_A),get_rumble(RUMBLE_B));
+	
+	if (_ret > 10 && _ret < 90)
+	{
+		return (_ret - AR_STRENGTH);
+	}
+
+	return 0;
+}
+function get_dynamic_evil_ar(_C_RX, _C_RY, _AR_STRENGTH) {	
+	_ret = (get_ptime(FIRE) / (160));
+	_var = 	(AR_STRENGTH / 2) + AR_STRENGTH;				
+	
+	if(_ret > _var)
+		_ret = _var;
+						
+	_ret = _ret +  _AR_STRENGTH - ((abs(_C_RX * _C_RX) + abs(_C_RY * _C_RY)) / 1000) ;
+
+	return _ret;
+}
+function get_steady_aim( _axis, _resolution) {
+	if (_axis >= 0)
+	{
+		_ret = (_axis % _resolution);
+
+		if (_ret >= (_resolution / 2))
+		{
+			_axis = _axis + (_resolution - _ret);
+		}
+		else
+		{
+			_axis -= _ret;
+		}
+	}
+	else
+	{
+		_ret = (_axis % _resolution);
+
+		if (abs(_ret) >= (_resolution / 2))
+		{
+			_axis = _axis - (_resolution + _ret);
+		}
+		else
+		{
+			_axis += abs(_ret);
+		}
+	}
+
+	return _axis;
+}
+function check_magnitude( _mag, _x_val, _x_lval, _y_val, _y_lval) {
+	if (isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)) <= _mag)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+function get_mvt_direction( _val, _lval) {
+	if (abs(_val - _lval) <= 2)
+		return 0;
+
+	if (_val < _lval) //move left
+		return -1;
+
+	if (_val > _lval)
+		return 1;
+
+	return 0;
+}
+function sin(angle) {   
+    if(angle <= 90)
+    {             
+        _ret = (Lookup_Table[angle]);
+    }
+    else if (angle <= 180)
+    {      
+        _ret = (Lookup_Table[180 - angle]);
+    }
+    else if (angle <= 270)
+    {
+        _ret = inv(Lookup_Table[angle - 180]);     
+    }
+    else 
+    {
+       	_ret = inv(Lookup_Table[360 - angle]);      
+    }
+    
+    return _ret;
+}
+function cos(angle) {   
+    if(angle <= 90)
+    {             
+        _ret = (Lookup_Table[90 - angle]);
+    }
+    else if (angle <= 180)
+    {      
+        _ret = inv(Lookup_Table[angle - 90]);
+    }
+    else if (angle <= 270)
+    {
+        _ret = inv(Lookup_Table[270 - angle]);       
+    }
+    else 
+    {
+        _ret = (Lookup_Table[angle - 270]);       
+    }
+    
+    return _ret;
+}
+function get_polar_coordinate(radius, coef) {
+	if(radius > 32) 
+	{
+		radius = 32;
+	}
+		
+	return((radius * coef) / 1000);		
+}
+function max(a, b) {
+	if(a >= b)
+	{
+		return a;
+	}
+		
+	return b;		
+}
+function min(a, b) {
+	if(a <= b)
+	{
+		return a;
+	}
+		
+	return b;		
+}
+function clamp(x, a, b) {
+	if(x < a)
+	{
+		return a;
+	}
+		
+	if(x > b)
+	{
+		return b;
+	}	
+	
+	return x;
+}
+function double_click(button) {
+    if (double__tap[button] >= 0) {
+        double__tap[button] += get_rtime();
+        if (double__tap[button] > 450)
+            double__tap[button] = -1;
+    }
+    if (event_release(button) && get_ptime(button) <= 200) {
+        if (double__tap[button] < 0) {
+            double__tap[button] = 0;
+        } else {
+            double__tap[button] = -1;
+            return 1; }
+    }
+    return 0;
+}
+function LED_CM(Colour) {            
+    set_led(LED_1,dbyte(( Colour * 4)- 3     )); 
+    set_led(LED_2,dbyte(((Colour * 4)- 3) + 1)); 
+    set_led(LED_3,dbyte(((Colour * 4)- 3) + 2)); 
+    set_led(LED_4,dbyte(((Colour * 4)- 3) + 3)); 
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | D | | | | | | | | | |S | S| _ | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

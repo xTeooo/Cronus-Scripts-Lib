@@ -1,0 +1,101 @@
+// GPC Online Library
+// auxzifys_cronusmax_aimbot_script_leak.gpc
+
+//Auxzify's Aimbot Script
+//Version 1
+
+//-----------------------------------------------------
+
+int SensitiveAbuse = TRUE; // TAP "LEFT" to Enable/Disable
+ 
+//-----------------------------------------------------
+// BUTTON LAYOUT: BUILDER PRO / COMBAT PRO
+
+define FIRE_BTN = 4; //XB1_RB //PS4_R2
+define ADS_BTN = 7; //XB1_LB //PS4_L2
+define SPRINT_BTN = 8; //XB1_LS //PS4_L3
+define R_X = 9; //XB1_RX //PS4_RX
+define R_Y = 10; //XB1_RY //PS4_RY
+define L_X = 11; //XB1_X //PS4_LX
+define L_Y = 12; //XB1_LY //PS4_LY
+define UP = 13; //XB1_UP //PS4_UP
+define DOWN = 14; //XB1_DOWN //PS4_DOWN
+define LEFT = 15; //XB1_LEFT //PS4_LEFT
+define RIGHT = 16; //XB1_RIGHT //PS4_RIGHT
+
+//-----------------------------------------------------
+
+//SILENT AIM ABUSE - MODE 1
+int aa_p  = 22; 
+int aa_n = -22; 
+int aa_delay  = 20;
+int release = 25; 
+
+//AIMBOT - MODE 2
+int aimabuse_hold;
+int aimabuse_wait;
+
+//-----------------------------------------------------
+ 
+main {
+//CHANGE "LEFT" TO CHANGE YOUR TOGGLE (USE LAYOUT ABOVE) 
+
+if (event_press (LEFT)) {
+if (event_press(LEFT)) {
+SensitiveAbuse  =!SensitiveAbuse ;
+}
+set_val(LEFT, 0);
+}
+                                          
+if (SensitiveAbuse) {
+if (get_val(ADS_BTN) > 95) {
+aimabuse_hold = 320; // HOW LONG IS L2 HELD FOR
+aimabuse_wait = 30; // HOW LONG IS L2 NOT HELD FOR
+combo_run(AIM_ABUSE); //AIM ABUSE
+}
+else {
+combo_stop(AIM_ABUSE);
+}
+}
+    
+if(get_val(7)  && !get_val(16)) combo_run(AA_XY);
+else combo_stop(AA_XY);             
+
+if (abs(get_val(XB1_LY)) < 0 && abs(get_val(XB1_LX)) < 0 ){ 
+set_val(XB1_LY,0); 
+set_val(XB1_LX,0); 
+} 
+if (abs(get_val(XB1_RY)) < 0 && abs(get_val(XB1_RX)) < 0 ){ 
+set_val(XB1_RY,0); 
+set_val(XB1_RX,0); 
+}}
+
+//-----------------------------------------------------
+
+// COMBO BLOCKS 
+ 
+ 
+combo AIM_ABUSE { // RAPID AIM
+set_val(ADS_BTN, 100);
+wait(aimabuse_hold);
+set_val(ADS_BTN, 0);
+wait(aimabuse_wait);
+}
+
+combo AA_XY {
+set_val(10,xy_val(10,aa_p));
+wait(aa_delay)
+set_val(9,xy_val(9,aa_p));
+set_val(11,xy_val(11,aa_p));
+wait(aa_delay)
+set_val(10,xy_val(10,aa_n));
+wait(aa_delay)
+set_val(9,xy_val(9,aa_n));
+set_val(11,xy_val(11,aa_n));
+wait(aa_delay)
+}
+
+function xy_val(f_axis,f_val) {
+if(abs(get_val(f_axis)) < release)
+return f_val;
+return get_val(f_axis); }

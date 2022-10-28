@@ -1,0 +1,955 @@
+
+/*
+###################################*++=++*****+++=++*#%%%*%%%%%%%%%#%#%%%#################
+%#%#############################*+++++++=========++++++*%%%%%%#%%%%%%#%%%%%#%##########%%#
+%%%%%#########################*=+*====---::..    ...:=**=*%%%%%%%%%#%%%%%%%%%%%%%%%%%%%%%%
+%%%#%########################+=*=====-:.             .::=+=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%##########################+=*====-.    .-------------. .*=*%**%%%%%%%%%%%%%%%%%%%%%%%%%#
+###%##%#################*++**#====:.  :=-===+*####**+----::+=*##%%%%%%%%%%%%%%%%#%%%%#####
+%##%%%##%%%###########*=**+-+*===:- :==+####**+=-...:-=*#*+**=#%%%%%%%%%%%%%%%%%%%%%%#####
+%%%%%%%%%%%#%%%%%###*=+#:==*#+==-  -+*############*.     :+##++%%%%%%%%%%%%%%%%%%%########
+%%%%%%%%%%%%%%%%%%%#=**.=*##%#++=: #################.      :#*=%%%%%%%%%%%%%%%%%########= 
+%%%%%%%%%%%%%%%%%%%++*:=*#%%#*= -+:%#################*=-=+###*=%%%%%%%%%%%%##%%%#######-  
+%%%%%%%%%%%%%%%%%%%=*-.=##%%##*- +:##########################++%%%%%%%%%%%*  *%#***###*   
+%%%%%%%%%%%%%%%%%%%++=-#######*--*++#########################++%%%%#%%%%%%%*##=+*+*+=+=   
+%%%%%%%%%%%%%%%%%#=++++=+#####*#*=+=+-=######################=*%%%%%%%%%%%%*++*:   .-+*+-.
+%%%%%%%%%%%%%%%%%++***===#####*=**++==- .-+*#%###########*=++=*##%%%%%%%%%++=-+.+:     :*=
+%%%%%%%%%%%%%%%%++*+**=--=++*=+#+===++++--::...:------:--+#*++=+++**%%###*=*. =-:-=----:=+
+%%%%%%%%%%%%%%%++*+#+        -: +*++=::=+++=====----=++-+*-.:----+#*=+=**+*=: ::==:::::*=+
+%%%%%%%%%%%%%#+=***=  ..    :+.  +::-+**++===++++====---: +  :     .-**=. =  ::::=:::::*=*
+%%%%%%%%%%%%++**++*:=+++++++==*  +=:    ...::::----*-     -.        :-.-    :-:::-::::+++#
+%%@%%%%%%%%=+**=*++=======-=++.:+*=-   =+=:::::::::--:-::::=---:    ....:+:-+==::::-=*=+#+
+%%@%%%%%%%#=#+==+++========++==**+=:  :+=+*===--=---====-:-*:::--::...::::-=-*===+*++*##- 
+@@@@%%%%%%#=*++=+**++====+*++++===-   *===+::::===-::=-::::#=-::::::::-==+:=+-=##*=*###-  
+@@@@%%%%%%%*=*#++*+++**######=+==-   .#====:::::--=:-=-:::-#++++++====-=#*#++**++*####+   
+@@@@@@@%%@%%%+=+############***=-    =****-::::==-:::--:::+*++###*++=====++**#########-   
+@@@@@@@@@@@%%@%#=*###**#*###+***.    *=:*#:::::=-::::--:::*+#++%%%%%%%%%%%%%%%%%######-   
+@@@@@@@@@@@@%%%@++###***=:+**+#+*+-=+-=*##==--:----:-===+##*-*=#%%%%%%%%%%%%%%%%######-   
+@@@@@@@@@@@@%%%%%*=*#####*+-+:----===*-.-+*#%%%%%%###*+-:.#+++=#%%%%%%%%%%%%%%%%######-   
+@@@@@@@@@@@@%%%%@%*=####**###*#*##***------:.... :-+  .:=#+++*%%%%%%%%%%%%%%%%%%%###*#-   
+@@@@@@@@@@@@@%@%*++++*#**=-. .-:+==  :=+=--:----:*:*:-=++*=*%%%%%%%%%%%%%%%%%%%#:*####-   
+@@@@@@@@@@@@@%*=***+*#=+-.       ==:    .:-=+++++**+=-..+=*%%%%%%%%%%%%%%%%%%%%%%#####-   
+@@@@@@@@@@@@@*=**+=*#==-          =+.          :==.   :*=*%%%%%%%%%%%%%%%%%%%%%%######*+==
+@@@@@@@@@@@@#=**==+**=:           -*=-.     --=+=   :=#=*%%%%%%%%%%%%%%%%%%%%%%%##########
+@@@@@@@@@@@@++*+==+=+:            +*+=====++=--:----:-#=*%%%%%%%%%%%%%%%%%%%%%%%%#########
+@@@@@@@@@@@%=**======:=======.  .*===+##**+=====-:::::*=%%%%%%-+%*%%%%%%%%%%%%%%%%%%##%%##
+@@@@@@@@@@@%=**====+=**======*..*=*%+=*====:::::.    *=*%%%%%%%%%=*%%%%%%%%%%%%%%%%%%%%%%%
+@@@@@@@@@@@@=**+==-++*=======**++#@@=*====:         :*=%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+@@@@@@@@@@@@#=*#+====****++**+*#@@%*+#+===.  .::.  .#=#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+@@@@@@@@@@@@@#++#***+=*#####%@@@%*=*+++==:-+*++=++-*=*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#
+@@@@@@@@@@@@@@@#*++*#%@@@@@@@%%*+***==+-.++======+*++%@@%%%%%%%%%%%%%%@%%%%%%%%%%%%%%%%%%%
+@@@@@%%@@@@@@@@@@@@@@@@@@@@@@%++#*=++==. *======**=*@@@@%%%%%%%%%@@@@@@%%%%%%%%%%%%%%%%%%%
+@@@@@%@@@@@@@@@@@@@@@@@@@@@@@#=**=+-++:   -===+*++%@@@@@@@@@@%%@@@@@@@@%%%%%%%%%%%%%%%%%%%
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*=*+-   :=:   .=*++#@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@#=*+-     -*#*++*#@@@@@@@@@@@@@@@%%%@@@@%@@@@@%%%%%%%%%%%%%%%
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%=*++.      +=*%@@@@@@@%#@@@%@@@%%@@@@@@%@@@@@@@@@@@@@@@@@@%%
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@++*+=      *=%@@@@@@@@@@@@@@@@@%%@@@@@@@@@@@@@@@@@@@@%%@@@@%
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%=*+*:    =++@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%@@@@@@@*/
+
+
+
+
+define ProfileResync	    = PS4_DOWN;
+define dash_board            = 0;
+define Polar_Aim_Menu        = 1;
+define Crescens_Menu         = 2;
+define Slide_Menu            = 3;
+define ButtonLayout          = 4;
+define StickLayout           = 5;    
+define AntiRecoilMenu        = 6;
+define BlockRumbleMenu       = 7;
+define ProfileMenu           = 8;
+
+
+define cycle_limit  = 8;
+define cycle_return = 1;
+int Build = 2,screen_saver = 1, clear,menu;
+int EditMenu;
+int refresh_edit;
+int edit_idx;
+
+const string submenu_idx[] = {
+	"DASH BOARD",   // 0. 
+	"POLAR AIM",    // 1.
+	"CRESCENS",     // 2.
+	"SLIDE CANCEL", // 3.
+	"BUTTON LAYOUT",// 4.
+	"STICK LAYOUT", // 5.
+	"ANTI RECOIL",  // 6.
+	"BLOCK RUMBLE", // 7.
+	"PROFILES"      // 8.
+};
+const uint8 ModNames_char_count [] ={
+
+	0, // "DASH BOARD"
+	9, // "POLAR AIM " 
+	8, // "CRESCENS"
+	12,// "SLIDE CANCEL"
+	13,// "BUTTON LAYOUT"
+	11,// "STICK LAYOUT"
+	11,// "ANTI RECOIL"
+	12,// "BLOCK RUMBLE"  
+	8  // "PROFILES"
+	
+}
+const uint8 Edit_ind []={
+	0,//0.
+	1,//1.
+	1,//2.
+	0,//3.
+	0,//4.
+	0,//5.
+	1,//6.
+	0,//7.
+	0 //8.
+	}
+
+const string option_idx[] = {
+	"OFF", "ON" }
+
+//=========================================
+// EDIT VALUES STRINGS
+//=========================================
+const string EditValuesNames [] ={
+	"RADIUS",    //0
+	"STEPS" ,    //1 
+	"CORRECTION",//2 
+	"VERTICAL",  //3
+	"HORIZONTAL" //4
+}
+
+//=========================================
+// Characters Count for  VALUES STRINGS
+//=========================================
+const uint8 CharCount [] ={
+	6, //RADIUS
+	5, //STEPS
+	10,//CORRECTION	
+	8, //VERTICAL
+	10 //HORI
+}
+const uint8 Min_Max [][] = {
+	{0, 0 },// DASH BOARD   
+	{0, 1 },// RAPID FIRE   
+	{2, 2 },// CRESCENS
+	{0, 0 },// SC
+	{0, 0 },// BUTTON LAYOUT
+	{0, 0 },// STICK LAYOUT
+	{3, 4 },// RECOIL
+	{0, 0 },// RUMBLE
+	{0, 0 } // PROFILES
+} 
+
+const string ScriptName[] = { "DemonTime V1.0"};
+
+init{
+LOAD_PVARS()
+   
+led(6);
+	
+    }
+//==============================================================
+//       MAIN BLOCK
+//==============================================================
+main	
+{
+
+	Run_Button_Configs()
+
+
+	set_val(TRACE_1,menu);
+	if( Build  ) { 
+		cls_oled( 1 );
+		
+		if( menu == dash_board ) { 
+			
+			draw_picture(0, 0)
+			clear = 0; screen_saver = 1;
+		}
+		
+		else if( menu ) { 
+			rect_oled( 1, 1, 126, 17, 1, 0 );
+			print( center_x( 15, ofsw ),52, 0, 0, ScriptName[ 0 ] );
+			//print( center_x( 4, ofsw ),50, 0, 0, ScriptName[ 1 ] );
+			
+			
+			 //POLAR
+		   
+		   if( menu ==Polar_Aim_Menu ) { 
+				print_mod_name();
+				if( TogglePolar[Indexer] == 0 ) { print( center_x( 3, ofmw), 20, 1, 0, option_idx[ 0 ] ); led( Red  ); }
+				if( TogglePolar[Indexer] == 1 ) { print( center_x( 2, ofmw), 20, 1, 0, option_idx[ 1 ] ); led(Purple );}	
+			}
+			 
+		   if( menu ==Crescens_Menu) {
+				print_mod_name();
+				if( ToggleCrescens == 0 ) { print( center_x( 3, ofmw), 20, 1, 0, option_idx[ 0 ]  ); led( Red );}
+				if( ToggleCrescens == 1 ) { print( center_x( 2, ofmw), 20, 1, 0, option_idx[ 1 ]  ); led( SkyBlue); }
+		   }
+		   if( menu == Slide_Menu ) { 
+				print_mod_name();
+				if( ToggleSlideCancel == 0 ) { print( center_x(3, ofmw), 20, 1, 0, option_idx[ 0 ] );led( Red )}
+				if( ToggleSlideCancel == 1 ) { print( center_x(2, ofmw), 20, 1, 0, option_idx[ 1 ] ); led( SkyBlue); }
+
+			}
+			if( menu == AntiRecoilMenu ) { 
+				print_mod_name();
+				if( Toggle_AntiRecoil[Indexer] == 0 ) { print( center_x(3, ofmw), 20, 1, 0, option_idx[ 0 ] );led( Red )}
+				if( Toggle_AntiRecoil[Indexer] == 1 ) { print( center_x(2, ofmw), 20, 1, 0, option_idx[ 1 ] ); led( SkyBlue); }
+
+			}
+			if( menu == BlockRumbleMenu ) { 
+				print_mod_name();
+				if( ToggleVibration  == 0 ) { print( center_x(3, ofmw), 20, 1, 0, option_idx[ 0 ] );led( Red )}
+				if( ToggleVibration  == 1 ) { print( center_x(2, ofmw), 20, 1, 0, option_idx[ 1 ] ); led( SkyBlue); }
+
+			}
+			if( menu == ProfileMenu ) { 
+				print_mod_name();
+				if( ToggleProfiles   == 0 ) { print( center_x(3, ofmw), 20, 1, 0, option_idx[ 0 ] );led( Red )}
+				if( ToggleProfiles   == 1 ) { print( center_x(2, ofmw), 20, 1, 0, option_idx[ 1 ] ); led( SkyBlue); }
+
+			}
+			
+			if( menu == ButtonLayout ) { 
+				print_mod_name();
+				if( BUTTON_LAYOUT >= 0 && BUTTON_LAYOUT < 19) OptionMenu_BL ( Opt_BL [ BUTTON_LAYOUT ], BUTTON_LAYOUT ) led( SkyBlue );
+			}
+			
+			if( menu == StickLayout ) { 
+				print_mod_name();
+				if(STICK_LAYLOUT == 0) {print( center_x( 7, ofsw ), 20, ofs, 0, SL_str[ 0 ] ); led( SkyBlue );  STICK_LAYLOUT = 0; }// DEFAULT
+				if(STICK_LAYLOUT == 1) {print( center_x( 8, ofsw ), 20, ofs, 0, SL_str[ 1 ] ); led( SkyBlue );  STICK_LAYLOUT = 1; }// SOUTHPAW
+				if(STICK_LAYLOUT == 2) {print( center_x( 6, ofsw ), 20, ofs, 0, SL_str[ 2 ] ); led( SkyBlue );  STICK_LAYLOUT = 2; }// LEGACY
+				if(STICK_LAYLOUT == 3) {print( center_x(15, ofsw ), 20, ofs, 0, SL_str[ 3 ] ); led( SkyBlue );  STICK_LAYLOUT = 3; }// LEGACY SOUTHPAW
+				
+				if(STICK_LAYLOUT == 4) {print( center_x( 8, ofsw ), 20, ofs, 0, SL_str[ 4 ] ); led( SkyBlue );  STICK_LAYLOUT = 4; }// SOUTHPAW (SOUTHPAW NO CLICK SWAP)
+				if(STICK_LAYLOUT == 5) {print( center_x(13, ofsw ), 30, ofs, 0, SL_str[ 5 ] ); led( SkyBlue );  STICK_LAYLOUT = 4; }// NO CLICK SWAP (SOUTHPAW NO CLICK SWAP)
+				
+				if(STICK_LAYLOUT == 6) {print( center_x(15, ofsw ), 20, ofs, 0, SL_str[ 6 ] ); led( SkyBlue );  STICK_LAYLOUT = 5; }// LEGACY SOUTHPAW (LEGACY SOUTHPAW NO CLICK SWAP)
+				if(STICK_LAYLOUT == 7) {print( center_x(12, ofsw ), 30, ofs, 0, SL_str[ 7 ] ); led( SkyBlue  );  STICK_LAYLOUT = 5; }// NO CLIC SWAP (LEGACY SOUTHPAW NO CLICK SWAP)
+			}
+			
+			screen_saver = 0;
+		}
+		
+		Build = 0;
+	}
+	
+	//=================================
+	//   ALL CODE FOR MODS ARE HERE
+	//=================================
+
+	vm_tctrl(-6);
+	
+		if( menu == dash_board && !EditMenu ) { 
+			//--- OPEN MENU 
+			if( get_val( XB1_LT )){
+				if(event_press( XB1_MENU ) ) { 
+					menu = AntiRecoilMenu; 
+					Build = 1; 
+					EditMenu  = FALSE;
+					
+					}
+				}
+			}
+if (ToggleProfiles)
+			{
+			if(get_val(ADS) && event_press(ProfileResync))
+			Indexer =!Indexer;if( !screen_saver) 
+			if(Indexer) led( Yellow );
+			else led(SkyBlue);
+			{
+				print_profile_text(Indexer, 0);
+				
+			}
+			
+			if(event_release(SWITCH) && get_ptime(SWITCH) <= 496)
+			{
+				Indexer =!Indexer;
+				if(Indexer) led( Yellow );
+				else led(SkyBlue);
+				if( !screen_saver) {
+					print_profile_text(Indexer, 0);
+					combo_run(WAIT_MESSAGE);
+				}
+			}
+		}
+		if(ToggleVibration )
+			{
+				block_rumble();	
+			}
+			
+			 if(ToggleSlideCancel)
+			{
+				if( abs(get_val(PS4_LY)) > 80 || abs(get_val(PS4_LX)) > 80 )
+				{
+					if(event_release(CROUCH))
+					{
+						 combo_run(SlideCancel);
+						
+					
+					} 
+				}
+			}
+	       
+	  
+	       stick_input = (isqrt(pow(get_ival(PS4_RX),2) + pow(get_ival(PS4_RY),2)));	       
+
+       if(TogglePolar[Indexer])
+			{
+	      	if (PolarBooster && get_ival(FIRE)) {
+				Radius = PolarRadius[Indexer] + PR_Boost;
+				}
+				else 
+				{
+				Radius = PolarRadius[Indexer];
+				}
+				if (get_ival(ADS) || (get_ival(FIRE)))
+				{
+	        	if (stick_input <= Radius)
+	        	{ 
+	        	rnd = random(mn, mx);
+	        	RS_gr = (RS_gr + PolarSteps[Indexer]) % 360;
+				set_polar(RS, RS_gr, (Radius * rnd));
+	        	}
+	      	    
+	    if(ToggleCrescens )	
+			{
+	          ads_grenade_sens=100-(CorrectionSense); ads_fire_sens=96-(CorrectionSense); 
+	          if (get_val (PS4_L2))
+	            {
+	          if(get_val(PS4_R2) && get_val(PS4_L2))                              
+	            { 
+	             Sens = ads_fire_sens;                                              
+	            }
+	          if(!get_val(PS4_R2) && !get_val(PS4_L2) || get_val (PS4_R2) &&!get_val(PS4_L2)) 
+	            {
+	             Sens = 100; 
+	            }   
+	             if(!get_val(PS4_R2) && get_val(PS4_L2))
+	            {
+	             Sens = ads_grenade_sens;
+	            }
+	             if (stick_input > Radius)
+				{
+				if(Sens > 100) Sens = 100;  
+				sensitivity(PS4_RX, NOT_USE, Sens);
+				sensitivity(PS4_RY, NOT_USE, Sens);
+			  }
+	        }  
+	      }
+        }
+      }
+      if(Toggle_AntiRecoil[Indexer] )
+			{ 
+			if( get_val(ADS) && get_val(FIRE )) {  
+				
+				combo_run(AntiRecoil);  
+
+			if( abs(get_val(AIMY)) > RecoilV[Indexer] + 2 || abs(get_val(AIMX)) > RecoilV[Indexer] + 2) {
+				
+				combo_stop (AntiRecoil);               
+			}                                
+		} 
+	}
+ 
+ 
+	if( menu && !EditMenu) { 
+
+		
+		//--- EXIT from OLED MENU
+		if( event_press( PS4_CIRCLE )) { Save_Exit()}
+		//--- ENTER in EDIT MENU
+		if( event_press( PS4_CROSS  )) { EditMenu = TRUE;refresh_edit = TRUE; edit_idx = Min_Max [menu][0]; Build = 0;  }
+		//--- BLOCK ALL INPUTS when we in OLED MENU
+		block_all_inputs();
+		
+			
+		if( event_press( PS4_RIGHT ) ) { 
+			menu++; 
+			if( menu > cycle_limit )  menu = cycle_return;  
+			Build = 1;
+		}
+		if( event_press( PS4_LEFT  ) ){ 
+			menu--; 
+			if( menu < cycle_return )  menu = cycle_limit ; 
+			Build = 1;
+			
+		}
+			if( menu == Polar_Aim_Menu ) {
+			TogglePolar[Indexer] = change_options ( TogglePolar[Indexer], 1,0 );
+		}
+		 
+		if( menu == Crescens_Menu ) {
+			ToggleCrescens = change_options ( ToggleCrescens, 1,0 );
+		}
+		
+		if( menu == Slide_Menu ) {
+			ToggleSlideCancel = change_options ( ToggleSlideCancel, 1,0 );
+		}
+		if( menu == ButtonLayout ) {
+			BUTTON_LAYOUT = change_options(BUTTON_LAYOUT,18,0) ; 
+		}
+		
+		if( menu == StickLayout ) {
+			STICK_LAYLOUT = change_options(STICK_LAYLOUT,5,0) ; 
+		}
+		if( menu == AntiRecoilMenu) {		
+			Toggle_AntiRecoil[Indexer]  = change_options(Toggle_AntiRecoil[Indexer] ,1,0 ); 		
+		}
+		if( menu == BlockRumbleMenu) {		
+			ToggleVibration  = change_options(ToggleVibration ,1,0 ); 		
+		}	
+		
+		if( menu == ProfileMenu) {		
+			ToggleProfiles   = change_options(ToggleProfiles  ,1,0 ); 		
+		}	
+	}
+	
+	if( menu &&  EditMenu){
+		
+		//--- Exit Edit Menu --> back to OLED MENU
+		if(event_press(PS4_CIRCLE)){  Build = 1; EditMenu = FALSE; }
+		
+		block_all_inputs();
+		if(event_press(PS4_RIGHT)) {
+			edit_idx++;
+			if(edit_idx > Min_Max [menu][1]) edit_idx = Min_Max [menu][0];
+			if(edit_idx < Min_Max [menu][0]) edit_idx = Min_Max [menu][0];
+			
+			refresh_edit = TRUE;
+		}
+		//--- GO LEFT
+		block_all_inputs();
+		if(event_press(PS4_LEFT)) {
+			edit_idx--;
+			if(edit_idx < Min_Max [menu][0]) edit_idx = Min_Max [menu][1] ;
+			
+			refresh_edit = TRUE;
+		}
+		//--- REFRESH EDIT MENU
+		if(refresh_edit){
+			cls_oled( 1 );
+			rect_oled( 1, 1, 126, 14, 1, 0 );
+		
+			//--- There is no Edit variables for this MOD
+			if(Edit_ind[ menu ] == 0 ){
+				print_mod_name();
+				//--- print label 
+				line_oled(1,45,127,45,1,0);
+				print( center_x( 17, ofsw ), 20, ofs, 0, NO_EDIT_VAR1[0] );  
+				print( center_x( 12, ofsw ), 33, ofs, 0, NO_EDIT_VAR2[0] ); 
+			}
+			//display_edit(f_val, max, min);
+			
+			//---- POLAR
+			if( menu ==Polar_Aim_Menu ) {
+				print_mod_name();//                      var,      min, max, 
+				if(edit_idx == 0) {display_edit(PolarRadius[Indexer],      0, 30, 0); }
+				if(edit_idx == 1) {display_edit(PolarSteps[Indexer] ,      0, 30, 1); }
+			}
+			
+			//---  SENSES
+			else if( menu == Crescens_Menu ) {
+				print_mod_name();//                      var,    min, max, 
+				if(edit_idx == 2) {display_edit(CorrectionSense ,       0 , 20, 2); }
+			}
+			else if( menu == AntiRecoilMenu ) {
+				print_mod_name();//                   val,                       min,  max, indx   
+				if(edit_idx == 3) {display_edit(RecoilV[Indexer],    -99 , 99, 3); }
+				if(edit_idx == 4) {display_edit(RecoilH[Indexer],    -99 , 99, 4); }
+		
+			}
+			
+			refresh_edit = FALSE;
+			
+		}
+		
+		if( menu ==Polar_Aim_Menu ) { 
+			print_mod_name();//                              val,         min,  max, step     
+			if(edit_idx == 0) { PolarRadius[Indexer]  = edit_val( PolarRadius[Indexer],       0,   30,  1  ) ;}
+			if(edit_idx == 1) { PolarSteps[Indexer]  = edit_val( PolarSteps[Indexer] ,        0,   30,  1  ) ;}	
+		}
+		
+		else if( menu == Crescens_Menu ) {
+			print_mod_name();//                              var,         min,  max, step
+			if(edit_idx == 2) {CorrectionSense       = edit_val(CorrectionSense,      0,   20,  1  ) ;}
+		}
+		else if( menu == AntiRecoilMenu) {
+			print_mod_name();	//                     var,                           ,min,  max, step                                                  
+			if(edit_idx == 3) {RecoilV[Indexer]      = edit_val( RecoilV[Indexer]    ,  -99, 99, 1  ) ;}
+			if(edit_idx == 4) {RecoilH[Indexer]      = edit_val( RecoilH[Indexer]    ,  -99, 99, 1  ) ;}
+        }
+	}
+	//--- SCREEN SAVER
+	if( screen_saver ) {
+		if( menu == dash_board ) 
+		clear += get_rtime();
+		if( clear >= 12000 ) { cls_oled( 0 ); clear = 0; screen_saver = 0; }
+	}
+}
+
+//--- END OF MAIN BLOCK
+//==================================================
+
+
+//==========COMBOS============================
+combo SlideCancel{
+	set_val(CROUCH, 100);
+	wait(80); 
+	set_val(CROUCH, 0);
+	wait(60);
+	set_val(CROUCH, 100);
+	wait(50);
+	set_val(CROUCH, 100);
+	set_val(JUMP, 100);
+	wait(60);
+	set_val(CROUCH, 0);
+	set_val(JUMP, 100);
+	wait(10);
+	set_val(JUMP, 0);
+}
+int anti_recoil,anti_recoil_H;
+combo AntiRecoil {  
+	anti_recoil = get_val(AIMY) + RecoilV[Indexer]   
+	if(anti_recoil > 100) anti_recoil = 100;      
+	set_val(AIMY, anti_recoil);                     
+	anti_recoil_H = get_val(AIMX) + RecoilH[Indexer] 
+	if(anti_recoil_H > 100) anti_recoil_H = 100;  
+	set_val(AIMX, anti_recoil_H);   
+} 
+
+combo WAIT_MESSAGE {
+
+	wait(30000);
+	cls_oled(0);
+	wait(100);
+}
+
+
+
+
+
+	const string SAVE  = "SAVED";
+combo SAVE { 
+	cls_oled(0);						
+	print(center_x(sizeof(SAVE) - 1,OLED_FONT_LARGE_WIDTH),center_y(OLED_FONT_LARGE_HEIGHT),OLED_FONT_LARGE,OLED_WHITE,SAVE[0]); 	
+	wait(10)
+	
+	wait(300);
+	cls_oled(0);
+	wait(100);
+	menu = dash_board; 
+	Build = 1; 
+	
+	
+}
+function Save_Exit () {
+	//POLAR SAVES 
+	set_pvar(SPVAR_1,   TogglePolar[0]);
+	set_pvar(SPVAR_2,   TogglePolar[1]);
+	set_pvar(SPVAR_3,   PolarRadius[0]);
+	set_pvar(SPVAR_4,   PolarRadius[1]);
+	set_pvar(SPVAR_5,   PolarSteps[0]);
+	set_pvar(SPVAR_6,   PolarSteps[1]);
+	//ANTI RECOIL SAVES 
+	set_pvar(SPVAR_7,   Toggle_AntiRecoil[0]);
+	set_pvar(SPVAR_8,   Toggle_AntiRecoil[1]);
+	set_pvar(SPVAR_9,   RecoilV[0]);
+	set_pvar(SPVAR_10,  RecoilV[1]);
+	set_pvar(SPVAR_11,  RecoilH[0]);
+	set_pvar(SPVAR_12,  RecoilH[1]);
+	//TOGGLE SAVES 
+	set_pvar(SPVAR_13,  BUTTON_LAYOUT);
+	set_pvar(SPVAR_14,  STICK_LAYLOUT);
+	set_pvar(SPVAR_15,  ToggleSlideCancel);
+	set_pvar(SPVAR_16,  ToggleVibration);
+	set_pvar(SPVAR_17,  ToggleProfiles);
+	set_pvar(SPVAR_18,  ToggleCrescens);
+	set_pvar(SPVAR_19,  CorrectionSense);
+	
+	
+	
+	combo_run(SAVE);
+
+}
+function  LOAD_PVARS(){
+    TogglePolar[0] = get_pvar(SPVAR_1,    1, 1,0);
+	TogglePolar[1] = get_pvar(SPVAR_2,    1, 1,0);
+	
+	PolarRadius[0] = get_pvar(SPVAR_3,    1, 30,0);
+	PolarRadius[1] = get_pvar(SPVAR_4,    1, 30,0);
+	
+	PolarSteps[0]  = get_pvar(SPVAR_5,    1, 30,0);
+	PolarSteps[1]  = get_pvar(SPVAR_6,    1, 30,0);
+	
+	Toggle_AntiRecoil[0] = get_pvar(SPVAR_7,    1, 1,0);
+	Toggle_AntiRecoil[1]  = get_pvar(SPVAR_8,    1, 1,0);
+	
+	RecoilV[0] = get_pvar(SPVAR_9,     1, 99,0);
+	RecoilV[1] = get_pvar(SPVAR_10,    1, 99,0);
+	RecoilH[0] = get_pvar(SPVAR_11,    1, -99,0);
+	RecoilH[1] = get_pvar(SPVAR_12,    1, -99,0);
+
+	BUTTON_LAYOUT     = get_pvar(SPVAR_13,   0,   18,     0); 
+    STICK_LAYLOUT     = get_pvar(SPVAR_14,   0,    5,     0);
+    
+    ToggleSlideCancel = get_pvar(SPVAR_15,    1, 1,0);
+	ToggleVibration   = get_pvar(SPVAR_16,    1, 1,0);
+	ToggleProfiles    = get_pvar(SPVAR_17,    1, 1,0);
+	ToggleCrescens    = get_pvar(SPVAR_18,    1, 1,0);
+	CorrectionSense   = get_pvar(SPVAR_19,    1, 20,0);
+	}
+
+//===========================================DO NOT CHANGE ANYTHING BELOW=======================================
+function display_edit(f_val,f_min ,f_max , f_ind){	
+	
+	// on the left: min value
+	number_to_string(f_min ,find_digits(f_min) ,4 , 18 , OLED_FONT_SMALL);
+	// on the right: max value
+	number_to_string(f_max ,find_digits(f_max) ,97 , 18 , OLED_FONT_SMALL);
+	
+	// print edit value on oled                                                           
+	if( ((find_digits(f_val)/ 2) * OLED_FONT_MEDIUM_WIDTH == 0 )) horiz_X_center_sufix = 54;
+	else horiz_X_center_sufix = 57 - ((find_digits(f_val)/ 2) * OLED_FONT_MEDIUM_WIDTH);     
+	// number_to_string(f_val,f_digits ,print_s_x , print_s_y , f_font)                          
+	number_to_string(f_val ,find_digits(f_val) ,horiz_X_center_sufix , EDIT_VAL_PRINT_Y , OLED_FONT_MEDIUM);// 45 
+	
+	//--- print label 
+	line_oled(1,45,127,45,1,1);
+		
+	print( center_x( CharCount[f_ind], ofsw ), 50, ofs, 0, EditValuesNames[f_ind] );   
+}
+define EDIT_VAL_PRINT_Y = 18; // Y coordinate for print Edit Value
+function press_hold(f_btn) { 
+    //  return TRUE - event_press()   
+    //  - every 250 ms when button is held
+
+    return event_press(f_btn) || (get_ival(f_btn) && get_ptime(f_btn) >= 500);
+    //&& get_ptime(f_btn) % (get_rtime() * 8) == 0;
+}
+data(1,// begin of data segment--------              
+2,0,0,0, //1. Blue                                 
+0,2,0,0, //2. Red                                  
+0,0,2,0, //3. Green                                
+0,0,0,2, //4. Pink                                 
+2,0,2,0, //5. SkyBlue                              
+0,2,2,0, //6. Yellow                               
+2,2,2,2, //7. White 
+0,0,0,0  //8. OFF
+); // end of data
+
+define Purple        =  1;                           
+define Red           =  2;                           
+define Blue          =  3;                           
+define Pink          =  4;                           
+define SkyBlue       =  5;                           
+define Yellow        =  6;                           
+define White         =  7;                           
+define OFF_Color     =  8; 
+
+define ofmw = OLED_FONT_MEDIUM_WIDTH;
+define ofsw = OLED_FONT_SMALL_WIDTH;
+define ofs  = OLED_FONT_SMALL;
+define ofm  = OLED_FONT_MEDIUM;
+define ofl  = OLED_FONT_LARGE;
+
+
+int ToggleSlideCancel; 
+int TogglePolar[2];
+int	ToggleVibration;        
+int Toggle_AntiRecoil[2];
+int PolarSteps[2];
+int PolarRadius[2];
+int stick_input;
+int PolarBooster = TRUE;									 
+int PR_Boost = 6;
+int RecoilV[2]; 
+int RecoilH[2]; 
+int RS_gr;
+int mn=326, mx=328; 
+define RS=POLAR_RS; 
+int Radius;
+int rnd;
+int Indexer; 
+int ToggleProfiles;
+int ToggleCrescens;
+int CorrectionSense;
+int ads_grenade_sens;
+int ads_fire_sens;
+int Sens;
+int i;
+
+function edit_val( f_val, f_min, f_max, f_inc1) {  // 
+	
+	f_val    = value_change( f_val ,XB1_DOWN , inv(f_inc1), f_min, f_max ); // inv(f_inc1)
+	f_val    = value_change( f_val ,XB1_UP   , f_inc1     , f_min, f_max ); // f_inc1
+	
+	Stop_Input()
+	return f_val;                        
+}  
+
+function value_change(f_val,f_btn,f_inc, f_rng_min, f_rng_max) { 
+
+	if(press_hold(f_btn)) 
+	{
+		f_val += f_inc;
+		
+		if (f_val > f_rng_max) f_val = f_rng_max;
+		else if(f_val < f_rng_min) f_val = f_rng_min;
+		
+		refresh_edit  = TRUE;
+	}
+	Stop_Input()
+	return f_val; 
+} 
+const uint8 Opt_BL [] = {
+	7 , 8, 5, 13, 17, 17,13, 17, 17, 14, 7, 5, 15, 14, 17, 17,16 ,11,15
+};
+function OptionMenu_BL ( str_char , f_indx ) {
+
+	print( center_x( str_char, ofsw ), 20, ofs, 0, BL_str[ f_indx ] );   
+
+}
+
+
+
+function print_mod_name (){
+	print( center_x( ModNames_char_count[menu], ofsw ), 4, 0, 1, submenu_idx[ menu  ] )
+}
+
+function change_options (f_var, max_val, min_val) {
+
+	if( event_press( XB1_DOWN ) )   { 
+		f_var++;
+		Build = 1;
+		if( f_var > max_val ) f_var =  min_val; 
+		return f_var;
+	}
+	else if( event_press( XB1_UP ) )   { 
+		f_var--; 
+		Build = 1;
+		if( f_var < min_val ) f_var =  max_val; 
+		return f_var;
+	}
+	return f_var;
+}
+function center_x( menu_chars, menu_font ) {
+	return( OLED_WIDTH / 2 ) - ( ( menu_chars * menu_font ) / 2 );
+}
+
+function led( f_color ) {
+	for( i = 0; i <= 3; i++ ) {
+		set_led( i, duint8( ( (f_color * 4) - 3 ) + i ) );
+	}
+}
+const string PROFILES[] = {"PRIMARY","SECONDARY"}
+const string ERASE_SPACE = "         ";     
+function print_profile_text ( indx,print_color ){
+	print(30, 40, 0, !print_color, ERASE_SPACE[0])                                           
+	if(indx){// Secondary
+		//rect_oled(2,50,110,20,1,print_color);
+		print(30, 40, 0,1, PROFILES[1])
+		led( Yellow );
+	}else{   // Primary
+		//rect_oled( <x> , <y>, <width>, <height>, <fill>, <color> );
+		//rect_oled(2,50,110,20,1,print_color);
+		print(40, 40, 0,1, PROFILES[0]);
+		led(SkyBlue)
+	}
+	
+}
+
+
+//========MENU EDITS ================================
+const string NO_EDIT_VAR1  = "No Edit Variables";  //
+const string NO_EDIT_VAR2  = "for this MOD";       //
+//===================================================
+const string SL_str [] = {
+	"DEFAULT",          // 0
+	"SOUTHPAW",         // 1
+	"LEGACY",           // 2
+	"LEGACY SOUTHPAW",  // 3
+	
+	"SOUTHPAW",         // 4
+	"NO CLICK SWAP",    // 5
+	
+	"LEGACY SOUTHPAW",  // 6
+	"NO CLIC SWAP"      // 7
+}; 
+const string BL_str [] = {
+	"DEFAULT",          // 0
+	"TACTICAL",         // 1
+	"LEFTY",            // 2
+	"N0M4D/CHARLIE",    // 3
+	"NOM4D/CH TACTICAL",// 4
+	"NOM4D/CHARL L3F7Y",// 5
+	"BUMPER JUMPER",    // 6
+	"BUMP/JUM TACTICAL",// 7
+	"ONE-HAND GUNSLING",// 8
+	"STICK AND MOVE",   // 9
+	"BRAWLER",          // 10
+	"BEAST",            // 11
+	"DEFAULT SWAPPED",  // 12
+	"BUMP/J SWAPPED",   // 13 
+	"BUMP/J TACT SWAPP",// 14
+	"STICK & MOVE SWAP",// 15
+	"TACTICAL SWAPPED" ,// 16
+	"BUMPER PING",      // 17
+	"BUMP/ PING TACT"   // 18    
+	
+};
+function Stop_Input() { 
+	set_val(JUMP,0);set_val(CROUCH,0);  
+	set_val(TACTICAL,0);set_val(LETHAL,0);  
+	set_val(RELOAD,0); set_val(SWITCH,0);
+	set_val(PING,0)set_val(STRAFE,0)
+	
+	set_val(SPRINT,0);set_val(WALK,0);  
+	set_val(AIMY,0);set_val(AIMX,0);  
+	set_val(MELEE,0);
+	
+	
+	
+	set_val(PS4_OPTIONS,0);set_val(PS4_SHARE,0); 
+	set_val(PS4_LEFT,0); set_val(PS4_TRIANGLE,0); 
+	set_val(PS4_CROSS,0);set_val(PS4_CIRCLE,0); 
+	set_val(PS4_SQUARE,0);set_val(PS4_UP,0);   
+	set_val(PS4_DOWN,0);set_val(PS4_RIGHT,0);
+} 
+
+function center_y(f_size) { 
+	return (OLED_HEIGHT  / 2) - (f_size / 2);
+}          
+                                                          
+// Variables for function number_to_string()  
+int n_str_;                            
+int c,c_val; 
+int horiz_X_center_sufix;
+// f_val:value  | f_digits: 1 to 5 | print_s_x: X | print_s_y  | f_font  
+function number_to_string(f_val,f_digits ,print_s_x , print_s_y , f_font) {                  
+
+	n_str_ = 1;  c_val = 10000;                            
+	
+	if(f_val < 0)                     
+	{                                                 
+		putc_oled(n_str_,45);     
+		n_str_ += 1;                                      
+		f_val = abs(f_val);  
+		
+	}                                                 
+	
+	for(c = 5; c >= 1; c--)                           
+	{                                                 
+		if(f_digits >= c)                             
+		{                                             
+			putc_oled(n_str_,ASCII_NUM[f_val / c_val]);    
+			f_val = f_val % c_val;                    
+			n_str_ +=  1;                                  
+			
+		}                                             
+		c_val /= 10;                                  
+	}                                                
+	puts_oled(print_s_x,print_s_y,f_font,n_str_ - 1,OLED_BLACK); // adjustable value centered in X 
+}     
+const uint8 ASCII_NUM[] =                          
+//      0  1  2  3  4  5  6  7  8  9  (column numbers)
+{48,49,50,51,52,53,54,55,56,57};  
+function find_digits(f_num) {                         
+	//  find_digits(value)                                
+	//        return Number of Digits in Value Passed     
+	
+	f_num = abs(f_num);                               
+	if(f_num / 10000 > 0) return 5;                   
+	if(f_num /  1000 > 0) return 4;                   
+	if(f_num /   100 > 0) return 3;                   
+	if(f_num /    10 > 0) return 2;                   
+	return 1;                  
+} 
+int BUTTON_LAYOUT,STICK_LAYLOUT;
+const int16 BL[][] = {            
+	 //FIRE    ADS        LETHAL        TACTICAL          JUMP    SWITCH        RELOAD    CROUCH    MELEE   Sprint   PING
+	{XB1_RT,   XB1_LT,    XB1_RB,        XB1_LB,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,   XB1_RS, XB1_LS,  XB1_UP  },     // DEFAULT
+	{XB1_RT,   XB1_LT,    XB1_RB,        XB1_LB,        XB1_A,    XB1_Y,        XB1_X,     XB1_RS,  XB1_B,  XB1_LS,  XB1_UP  },     // TACTICAL
+	{XB1_LT,   XB1_RT,    XB1_LB,        XB1_RB,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_LS, XB1_RS ,  XB1_UP },     // LEFTY
+	{XB1_RT,   XB1_RB,    XB1_LT,        XB1_LB,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_UP },     // N0M4D/CHARLIE
+	{XB1_RT,   XB1_RB,    XB1_LT,        XB1_LB,        XB1_A,    XB1_Y,        XB1_X,     XB1_RS, XB1_B,  XB1_LS ,  XB1_UP },     // N0M4D/CHARLIE TACTIVAL
+	{XB1_LT,   XB1_LB,    XB1_RT,        XB1_RB,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_LS, XB1_RS ,  XB1_UP },     // N0M4D/CHARLIE L3F7Y
+	{XB1_RT,   XB1_LT,    XB1_RB,        XB1_A,        XB1_LB,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_UP },     // BUMPER JUMPER
+	{XB1_RT,   XB1_LT,    XB1_RB,        XB1_A,        XB1_LB,    XB1_Y,        XB1_X,     XB1_RS, XB1_B,  XB1_LS ,  XB1_UP },     // BUMPER JUMPER TACTICAL
+	{XB1_LB,   XB1_LT,    XB1_RT,        XB1_RB,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_UP },     // ONE-HAND GUNSLINGER
+	{XB1_RT,   XB1_LT,    XB1_RB,        XB1_LB,       XB1_RS,    XB1_Y,        XB1_X,     XB1_B,  XB1_A,  XB1_LS ,  XB1_UP },     // STICK AND MOVE
+	{XB1_RT,   XB1_LT,    XB1_RB,        XB1_LB,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_UP },     // BRAWLER
+	{XB1_RT,   XB1_LT,    XB1_RS,        XB1_A,        XB1_LB,    XB1_Y,        XB1_X,     XB1_B,  XB1_RB, XB1_LS ,  XB1_UP },     // BEAST
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_LT,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_UP },     // DEFAULT SWITCHED
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_A,        XB1_LB,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_UP },     // BUMPER JUMPER SWITCHED 
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_A,        XB1_LB,    XB1_Y,        XB1_X,     XB1_RS, XB1_B,  XB1_LS ,  XB1_UP },     // BUMPER JUMPER TACTICAL SWITCHED 
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_LT,       XB1_RS,    XB1_Y,        XB1_X,     XB1_B,  XB1_A,  XB1_LS ,  XB1_UP },     // STICK AND MOVE SWITCHED
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_LT,        XB1_A,    XB1_Y,        XB1_X,     XB1_RS, XB1_B,  XB1_LS ,  XB1_UP },     // TACTICAL SWITCHED
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_RT,        XB1_A,    XB1_Y,        XB1_X,     XB1_B,  XB1_RS, XB1_LS ,  XB1_LT },     // BUMPER PING = 18
+	{XB1_RB,   XB1_LB,    XB1_RT,        XB1_RT,        XB1_A,    XB1_Y,        XB1_X,     XB1_RS, XB1_B,  XB1_LS ,  XB1_LT }};    // BUMPER PING TACTICAL = 19		
+	
+		
+int FIRE,ADS,LETHAL,TACTICAL,JUMP,SWITCH,RELOAD,CROUCH,MELEE,SPRINT,PING,WALK,STRAFE,AIMY,AIMX
+
+function Run_Button_Configs(){
+
+	FIRE        = BL[BUTTON_LAYOUT][0];
+	ADS         = BL[BUTTON_LAYOUT][1];
+
+	LETHAL      = BL[BUTTON_LAYOUT][2];
+	TACTICAL    = BL[BUTTON_LAYOUT][3];
+
+	JUMP        = BL[BUTTON_LAYOUT][4];
+	SWITCH      = BL[BUTTON_LAYOUT][5];
+	RELOAD      = BL[BUTTON_LAYOUT][6];
+	CROUCH      = BL[BUTTON_LAYOUT][7];
+	MELEE       = BL[BUTTON_LAYOUT][8];
+	SPRINT      = BL[BUTTON_LAYOUT][9];
+	PING        = BL[BUTTON_LAYOUT][10];
+	
+	WALK        = SL[STICK_LAYLOUT][0];
+	STRAFE      = SL[STICK_LAYLOUT][1];
+	AIMY       = SL[STICK_LAYLOUT][2];
+	AIMX      = SL[STICK_LAYLOUT][3];}
+
+const int16 SL[][] = {            
+	//Walk,     Strafe, AimY,    AimX    
+	{ XB1_LY,     XB1_LX, XB1_RY, XB1_RX },    // DEFAULT
+	{ XB1_RY,     XB1_RX, XB1_LY, XB1_LX },    // SOUTHPAW
+	{ XB1_LY,     XB1_RX, XB1_RY, XB1_LX },    // LEGACY
+	{ XB1_RY,     XB1_LX, XB1_LY, XB1_RX },    // LEGACY SOUTHPAW
+	{ XB1_RY,     XB1_RX, XB1_LY, XB1_LX },    // SOUTHPAW NO CLICK SWAP
+	{ XB1_RY,     XB1_LX, XB1_LY, XB1_RX }};   // LEGACY SOUTHPAW NO CLICK SWAP
+	
+	int __pictureWidth, __pictureX, __pictureHeight, __pictureY, __pictureBit, __pictureOffset, __pictureData;
+int __pictureX2, __pictureY2;
+function draw_picture(x, y) {
+	__pictureOffset = 1; // Reset the starting point
+	__pictureBit = 0; // Reset bit flag
+	__pictureWidth = picture[0]; // Fetch the width of what to draw
+	__pictureHeight = picture[1]; // Fetch the height of what to draw
+	for (__pictureY = 0; __pictureY < __pictureHeight; __pictureY++) { // Loop the Y axis
+		__pictureY2 = y + __pictureY;
+		if (__pictureY2 < 0 || __pictureY2 >= 64) {
+			__pictureY2 -= 64;
+		}
+		for (__pictureX = 0; __pictureX < __pictureWidth; __pictureX++) { // Loop the X axis
+			if (!__pictureBit) { // Check if we've already handled the last bit
+				__pictureBit = 16; // Reset the bit flag
+				__pictureOffset++; // Move to the next value
+				__pictureData = picture[__pictureOffset]; // Fetch the value
+			}
+			__pictureBit--; // Decrement the bit flag, we're moving to the next bit
+			__pictureX2 = x + __pictureX;
+			if (__pictureX2 < 0 || __pictureX2 >= 128) {
+				__pictureX2 -= 128;
+			}
+			pixel_oled(__pictureX2, __pictureY2, test_bit(__pictureData, __pictureBit));
+		}
+	}
+}
+ const int16 picture[] = {86, 60, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x0007, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFFF, 0x81FF, 0xC07F, 0xFFFF, 0xFFFF, 0xFFFF, 0xF0FF, 0xFFFC, 0x7FFF, 0xFFFF, 0xFFFF, 0xFF1F, 0xFFFF, 0xFC3F, 0xFFFF, 0xFFFF, 0xFFF1, 0xFFFF, 0xFFFE, 0x7FFF, 0xFFFF, 0xFFFF, 0x9FFE, 0x001F, 0xFC7F, 0xFFFF, 0xFFFF, 0xFCFC, 0x0000, 0x007D, 0xFFFF, 0xFFFF, 0xFFF7, 0xC380, 0x0000, 0x73FF, 0xFFFF, 0xFFFF, 0x9E3C, 0x0000, 0x00E7, 0xFFFF, 0xFFFF, 0xFEF1, 0xE000, 0x0001, 0xDFFF, 0xFFFF, 0xFFFB, 0x8F00, 0x0000, 0x077F, 0xFFFF, 0xFFFF, 0xEE78, 0x000E, 0x001D, 0xFFFF, 0xFFFF, 0xFFB9, 0xC0F8, 0x7800, 0x37FF, 0xFFFF, 0xFFFE, 0xE603, 0xE160, 0x00DF, 0xFFFF, 0xFFFF, 0xFB90, 0x018D, 0x8003, 0x7FFF, 0xFFFF, 0xFFEE, 0x0006, 0x3600, 0x0DFF, 0xFFFF, 0xFFFF, 0xB800, 0x1818, 0x0037, 0xFFFF, 0xFFFF, 0xFEE0, 0x0060, 0x6000, 0xDFFF, 0xFFFF, 0xFFFB, 0x800F, 0x8180, 0x067F, 0xFFFF, 0xFFFF, 0xE600, 0x3E06, 0x0063, 0xFFFF, 0xFFFF, 0xFFCC, 0x00C0, 0x1801, 0x1FFF, 0xFFFF, 0xFFFF, 0x9C03, 0x0060, 0x0CFF, 0xFFFF, 0xFFFF, 0xFF08, 0x0C01, 0x8067, 0xFFFF, 0xFFFF, 0xFFFF, 0x9F3F, 0x9F9F, 0x3FFF, 0xFFFF, 0xFFFF, 0xFE02, 0xFE7E, 0x81FF, 0xFFFF, 0xFFFF, 0xFFF3, 0xE400, 0x05F3, 0xFFFF, 0xFFFF, 0xFFFF, 0x9FCF, 0xFFE7, 0xE7FF, 0xFFFF, 0xFFFF, 0xFCFF, 0x8000, 0x7FCF, 0xFFFF, 0xFFFF, 0xFFF7, 0xFFFF, 0xFFFF, 0xBFFF, 0xFFFF, 0xFFFF, 0x9FC8, 0x000E, 0x7E7F, 0xFFFF, 0xFFFF, 0xFEFE, 0x6FFF, 0xDCFD, 0xFFFF, 0xFFFF, 0xFFF0, 0x01B8, 0x1F70, 0x03FF, 0xFFFF, 0xFFFF, 0xDF86, 0xEF7D, 0x93EF, 0xFFFF, 0xFFFF, 0xFF7E, 0x43BD, 0xF0EF, 0xBFFF, 0xFFFF, 0xFFF9, 0xFA4E, 0x07C1, 0xBE7F, 0xFFFF, 0xFFFF, 0xE7E9, 0xFFFF, 0xC6FD, 0xFFFF, 0xFFFF, 0xFFBF, 0xA7E0, 0x779B, 0xF7FF, 0xFFFF, 0xFFFC, 0xDE97, 0xA5E7, 0x6ECF, 0xFFFF, 0xFFFF, 0xF7B2, 0xDE07, 0xBD37, 0xBFFF, 0xFFFF, 0xFFDE, 0x5AFF, 0xFF35, 0x9EFF, 0xFFFF, 0xFFFF, 0x7D60, 0x0000, 0x16FB, 0xFFFF, 0xFFFF, 0xFDF1, 0xBFFF, 0xFF43, 0xEFFF, 0xFFFF, 0xFFF0, 0x0EFF, 0xFFFD, 0xC03F, 0xFFFF, 0xFFFF, 0xFFFB, 0xFFFF, 0xF3FF, 0xFFFF, 0xFFFF, 0xFFFF, 0xEFFF, 0xFFEF, 0xFFFF, 0xFFFF, 0xFFFF, 0xFF00, 0x7B80, 0x3FFF, 0xFFFF, 0xFFFF, 0xFFF8, 0x8000, 0x00FF, 0xFFFF, 0xFFFF, 0xFFFF, 0xEFE0, 0x01FD, 0xFFFF, 0xFFFF, 0xFFFF, 0xFFBF, 0xF33F, 0xF7FF, 0xFFFF, 0xFFFF, 0xFFFC, 0xFFDE, 0xFFCF, 0xFFFF, 0xFFFF, 0xFFFF, 0xF7FE, 0x79FF, 0xBFFF, 0xFFFF, 0xFFFF, 0xFFDF, 0xFBF7, 0xFEFF, 0xFFFF, 0xFFFF, 0xFFFE, 0x000F, 0xC001, 0xFFFF, 0xFFFF, 0xFFFF, 0xF3FF, 0x3F3F, 0xF3FF, 0xFFFF, 0xFFFF, 0xFFDF, 0xFEFD, 0xFFEF, 0xFFFF, 0xFFFF, 0xFFFF, 0x0003, 0xF000, 0x3F00};
+
+ ˙ªèªåºäºä∏äÃ˙œ˛Ω

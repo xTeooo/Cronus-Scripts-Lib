@@ -1,0 +1,492 @@
+/* 
+
+                       ***MadeBy: Gamer Services#3020 with the help of Batts#1542***
+                       
+                       
+                                    ▼▼▼▼▼▼▼▼▼▼▼▼▼
+                                 MUST BE ON THE CAVS 
+                       
+
+             you can donate to me at https://www.paypal.me/ColdKid ! I appreciate all donations! :)
+             
+             
+             ******UPDATE LOG******	
+             1. Added Vibration after games to go even faster
+             2. Reworked almost Entire Script
+             3. Explained what most lines do/mean
+             4. Doesnt matter how long games last
+             5. Fixes alot of other bugs
+
+										******HOW IT WORKS******	
+				Replays Career games until Allstar games then deletes the player and remakes it
+				Select Mycareer -> Hover over play next game -> Click down on dpad to start and stop <-
+											SETTINGS:
+                5 minute quarters HOF or PRO diffuclty 
+                Vibration on
+                **Make a new player**
+                If you dont make a new player it could get coruppted 
+                You're ready to go. Highlight Play next game and start the Script
+                
+                
+*/
+
+int on;  //If the script is On/Off
+int gamesplayed = 0; 	//How many games are played (if the build has games played count and add here)
+int runCombo = 4000;     // Run the Press and hold X(PS4) (value) times
+int startGame,inGame,restartGame,SkipAllStar,rumbling; //DONT TOUCH
+
+//Rumble
+int rumble_type = RUMBLE_A; // Rumble for on/Off
+ 
+//LED
+int a,b; // LEDS for if the script is On/Off
+
+///////////////////////////////////////////////////////
+					/*MAIN SECTION*/
+///////////////////////////////////////////////////////
+main {
+	if(event_press(PS4_DOWN)) {  //If Down on the dpad is clicked then {
+   		on = !on; // Sets On to the opposite of what it is right now (defualt is off so when u click it is On)
+   		if(on){ // If the script is ON then {
+   		    a = 0; // RED LED IS OFF
+   		    b = 2; // GREEN LED IS ON
+   		    startGame = TRUE; // Sets Int startGame = TRUE so it starts game when Down is clicked on the dpad
+   		}else{  // If the script is off then {
+   		    a = 2; //RED LED IS ON
+   		    b = 0; //GREEN LED IS OFF
+   		    combo_stop(START_GAME); // IF THE SCRIPT IS OFF STOP THESE COMBOS
+		   // combo_stop(DELETE_CREATE_PLAYER);
+		    combo_stop(RESTART_GAME);
+		    combo_stop(IN_GAME);
+   		}
+   		combo_run(NOTIFY) // Runs the notify combo
+   }
+	if(on) { // if the script is on then {
+	    if(startGame) { // If int startGame = true; then {
+	        combo_run(START_GAME); // Runs combo to start game
+	    }
+	    if(inGame) { // After StartGame this is auto started this will make sure it Presses and holds X(PS4)
+			if(runCombo) { // If it the value of (int runCombo = 1 or higher) then {
+           		combo_run(IN_GAME); //Presses and holds X
+	        }//else{
+	           //	inGame = FALSE;
+	           //	restartGame = TRUE;
+	       	//}
+	    }
+	    if(restartGame) { // If the restart Int gets set to True then {
+	        combo_run(RESTART_GAME);  // Run combo
+	    }
+	       if(get_rumble(RUMBLE_A) || get_rumble(RUMBLE_B)) { // If a rumble is received 
+       if(!rumbling) { // If its the variable is set False then {
+        rumbling = TRUE // Sets True
+        inGame = FALSE;  // Sets press and hold X to false so it doesnt interfere with restarting the game
+        restartGame = TRUE; // Restarts game
+        gamesplayed += 1; //Adds +1 to how many games you have played to so it knows when to skip all star
+     }
+}else{
+     rumbling = FALSE; // If rumbling is True then set it False
+}
+
+	    if(gamesplayed == 56) { // if gamesplayed = 60 then Set everything False other then SkipAllStar
+	    inGame = FALSE;
+	    restartGame = FALSE;
+	    startGame = FALSE;
+	    combo_stop(START_GAME);
+		//combo_stop(DELETE_CREATE_PLAYER);
+		combo_stop(RESTART_GAME);
+        combo_stop(IN_GAME);
+        SkipAllStar = TRUE;
+	    
+	    }
+	    if(SkipAllStar) { // If SkipAllStar is set True then {
+	    combo_run(AllStar); // Run skip allstar combo
+	    }
+	   
+	    
+	}
+}
+ // End of main, Start of Combo
+
+///////////////////////////////////////////////////////
+			  /*START GAME (STARTS THE GAME)*/ 
+///////////////////////////////////////////////////////
+
+    combo START_GAME {
+    set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100); 	
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100);
+ 	set_val(PS4_CROSS,100); 
+ 	wait(500)
+ 	set_val(PS4_CROSS,0); 
+ 	wait(1000)
+ 	set_val(PS4_DOWN,100);
+ 	wait(500)
+ 	set_val(PS4_DOWN,0);
+ 	wait(1000);
+ 	set_val(PS4_CROSS,100); 
+ 	wait(500)
+ 	set_val(PS4_CROSS,0); 
+ 	wait(2000);
+ 	startGame = FALSE; // Sets StartGame to False
+ 	inGame = TRUE; // Sets inGame to True
+ 	runCombo = 4000; // Sets runCombo to (Value)
+}
+
+///////////////////////////////////////////////////////
+                    /*PLAYS THE GAME*/
+///////////////////////////////////////////////////////
+combo IN_GAME {
+    set_val(PS4_CROSS, 50);
+    wait(100);
+    set_val(PS4_CROSS, 100);
+    wait(2000);
+    set_val(PS4_CROSS, 0);
+    wait(100);
+    set_val(PS4_CIRCLE, 100);
+    wait(100);
+    set_val(PS4_R1, 75);
+    wait(100);
+	runCombo -= 1; // After the combo is run Minus 1
+}
+
+///////////////////////////////////////////////////////
+			  /*RESTART GAME - Restarts the game */
+///////////////////////////////////////////////////////
+
+
+combo RESTART_GAME {
+    wait(7000)
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100); 	
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_RIGHT, 100);
+	wait(100);
+	set_val(PS4_RIGHT, 0);
+	wait(100);
+	set_val(PS4_CROSS, 100);
+	wait(110);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_DOWN, 100);
+	wait(130);
+	set_val(PS4_DOWN, 0);
+	wait(100);
+	set_val(PS4_CROSS, 100);
+	wait(130);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_DOWN, 100);
+	wait(80);
+	set_val(PS4_DOWN, 0);
+	wait(380);
+	set_val(PS4_CROSS, 100);
+	wait(110);
+	set_val(PS4_CROSS, 0);
+    wait(2000)
+	restartGame= FALSE; // Sets restartgame to false after combo is rna
+	inGame = TRUE; // Sets inGame to true so it presses and holds X
+ 	runCombo = 4000; // Sets runCombo to value)
+ 	//gamesplayed += 1; //Adds +1 to how many games you have played to so it knows when to skip all star
+
+
+}
+
+///////////////////////////////////////////////////////////
+ /*Skip AllStar Break - Skips all star break (UNTESTED) */
+///////////////////////////////////////////////////////////
+
+
+combo AllStar {
+     	//set_val(TRACE_1,3);
+    set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100); 	
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100);
+    set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100); 	
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	set_val(PS4_RIGHT, 0);
+	wait(100);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	set_val(PS4_RIGHT, 0);
+	wait(100);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	set_val(PS4_RIGHT, 0);
+	wait(100);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	set_val(PS4_RIGHT, 0);
+	wait(100);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	set_val(PS4_RIGHT, 0);
+	wait(150);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(5000);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(2000);
+	SkipAllStar = FALSE; //Sets skipallstar to False after the combo is ran
+	startGame = TRUE; // Starts the game
+ 	runCombo = 4000; // Sets runCombo to (value)
+ 	gamesplayed = 0; //Resets gamesplayed
+}
+
+
+///////////////////////////////////////////////////////
+     /*Deletes top player and creates new one*/
+///////////////////////////////////////////////////////
+/*
+combo DELETE_CREATE_PLAYER { 
+	set_val(PS4_CIRCLE, 0);
+	wait(240);
+	set_val(PS4_CIRCLE, 100);
+	wait(120);
+	set_val(PS4_CIRCLE, 0);
+	wait(220);
+	set_val(PS4_CIRCLE, 100);
+	wait(100);
+	set_val(PS4_CIRCLE, 0);
+	wait(230);
+	set_val(PS4_CIRCLE, 100);
+	wait(120);
+	set_val(PS4_CIRCLE, 0);
+	wait(180);
+	set_val(PS4_CIRCLE, 100);
+	wait(130);
+	set_val(PS4_CIRCLE, 0);
+	wait(180);
+	set_val(PS4_CIRCLE, 100);
+	wait(130);
+	set_val(PS4_CIRCLE, 0);
+	wait(180);
+	set_val(PS4_CIRCLE, 100);
+	wait(120);
+	set_val(PS4_CIRCLE, 0);
+	wait(690);
+	set_val(PS4_RIGHT, 100);
+	wait(110);
+	set_val(PS4_RIGHT, 0);
+	wait(240);
+	set_val(PS4_RIGHT, 100);
+	wait(110);
+	set_val(PS4_RIGHT, 0);
+	wait(260);
+	set_val(PS4_RIGHT, 100);
+	wait(120);
+	set_val(PS4_RIGHT, 0);
+	wait(270);
+	set_val(PS4_RIGHT, 100);
+	wait(110);
+	set_val(PS4_RIGHT, 0);
+	wait(330);
+	set_val(PS4_RIGHT, 100);
+	wait(130);
+	set_val(PS4_RIGHT, 0);
+	wait(310);
+	set_val(PS4_RIGHT, 100);
+	wait(120);
+	set_val(PS4_RIGHT, 0);
+	wait(310);
+	set_val(PS4_RIGHT, 100);
+	wait(100);
+	set_val(PS4_RIGHT, 0);
+	wait(310);
+	set_val(PS4_RIGHT, 100);
+	wait(80);
+	set_val(PS4_RIGHT, 0);
+	wait(130);
+	set_val(PS4_RIGHT, 100);
+	wait(110);
+	set_val(PS4_RIGHT, 0);
+	wait(350);
+	set_val(PS4_CROSS, 100);
+	wait(110);
+	set_val(PS4_CROSS, 0);
+	wait(850);
+	set_val(PS4_CROSS, 100);
+	wait(100);
+	set_val(PS4_CROSS, 0);
+	wait(1020);
+	set_val(PS4_DOWN, 100);
+	wait(140);
+	set_val(PS4_DOWN, 0);
+	wait(680);
+	set_val(PS4_CROSS, 100);
+	wait(130);
+	set_val(PS4_CROSS, 0);
+	wait(4000);
+	wait(4000);
+	wait(4000);
+	wait(4000);
+	set_val(PS4_RIGHT, 100);
+	wait(80);
+	set_val(PS4_RIGHT, 0);
+	wait(240);
+	set_val(PS4_RIGHT, 100);
+	wait(90);
+	set_val(PS4_RIGHT, 0);
+	wait(450);
+	set_val(PS4_CROSS, 100);
+	wait(190);
+	set_val(PS4_CROSS, 0);
+	wait(1140);
+	set_val(PS4_LEFT, 100);
+	wait(110);
+	set_val(PS4_LEFT, 0);
+	wait(540);
+	set_val(PS4_SQUARE, 100);
+	wait(130);
+	set_val(PS4_SQUARE, 0);
+	wait(760);
+	set_val(PS4_DOWN, 100);
+	wait(100);
+	set_val(PS4_DOWN, 0);
+	wait(140);
+	set_val(PS4_CROSS, 100);
+	wait(140);
+	set_val(PS4_CROSS, 0);
+	wait(540);
+	set_val(PS4_DOWN, 100);
+	wait(80);
+	set_val(PS4_DOWN, 0);
+	wait(100);
+	set_val(PS4_DOWN, 100);
+	wait(90);
+	set_val(PS4_DOWN, 0);
+	wait(80);
+	set_val(PS4_DOWN, 100);
+	wait(100);
+	set_val(PS4_DOWN, 0);
+	wait(90);
+	set_val(PS4_DOWN, 100);
+	wait(100);
+	set_val(PS4_DOWN, 0);
+	wait(90);
+	set_val(PS4_DOWN, 100);
+	wait(70);
+	set_val(PS4_DOWN, 0);
+	wait(80);
+	set_val(PS4_DOWN, 100);
+	wait(140);
+	set_val(PS4_DOWN, 0);
+	wait(310);
+	set_val(PS4_CROSS, 100);
+	wait(120);
+	set_val(PS4_CROSS, 0);
+	wait(450);
+	set_val(PS4_CROSS, 100);
+	wait(130);
+	set_val(PS4_CROSS, 0);
+	wait(4000);
+	wait(520);
+	set_val(PS4_DOWN, 100);
+	wait(110);
+	set_val(PS4_DOWN, 0);
+	wait(240);
+	set_val(PS4_CROSS, 100);
+	wait(140);
+	set_val(PS4_CROSS, 0);
+	wait(4000);
+	wait(4000);
+	wait(3980);
+	set_val(PS4_CROSS, 100);
+	wait(130);
+	set_val(PS4_CROSS, 0);
+	wait(800);
+	set_val(PS4_CROSS, 100);
+	wait(100);
+	set_val(PS4_CROSS, 0);
+	wait(960);
+	set_val(PS4_CROSS, 100);
+	wait(120);
+	set_val(PS4_CROSS, 0);
+	startGame = TRUE;
+	gamesplayed = 0;
+	runCombo = 400;
+	deletecreate = FALSE;
+}
+
+///////////////////////////////////////////////////////
+         /*NOTIFY - If script is on or off*/
+/////////////////////////////////////////////////////// 
+combo NOTIFY {
+	set_rumble(RUMBLE_B,65); 
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(550);
+	reset_rumble();
+	set_led(LED_1, 0);
+	set_led(LED_2, 0);
+	set_led(LED_3, 0);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, 0);
+	set_led(LED_3, 0);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(250);
+	reset_leds();
+}
+
+// End of combo section, Start of Functions
+
+
+///////////////////////////////////////////////////////
+      /*Rumbles - If the script is on/off*/
+/////////////////////////////////////////////////////// 
+function rumble_A_if_true(var) {
+if (var) rumble_type = RUMBLE_A;
+else rumble_type = RUMBLE_B;
+}
+

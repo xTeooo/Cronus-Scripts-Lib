@@ -1,0 +1,225 @@
+// GPC Online Library
+// I_sell_to_suckers.gpc
+
+/*==============================================================
+  __   _  _  _  _  ____  ___  ____  __  ____  ____ 
+ / _\ / )( \( \/ )(__  )/ __)(  _ \(  )(  _ \(_  _)
+/    \) \/ ( )  (  / _/( (__  )   / )(  ) __/  )(  
+\_/\_/\____/(_/\_)(____)\___)(__\_)(__)(__)   (__) 
+   _  _  __   ____  __  _  _   __  ____  ____      
+  / )( \(  ) (_  _)(  )( \/ ) / _\(_  _)(  __)     
+  ) \/ (/ (_/\ )(   )( / \/ \/    \ )(   ) _)      
+  \____/\____/(__) (__)\_)(_/\_/\_/(__) (____)   Leaked by telatious, pretty shit for a fn script. 
+ 
+ Version: 2
+
+//==============================================================*/
+//--SECTION 1 - Initialisations
+
+//Aim Abuse
+int ScopeAbuse = TRUE;     //-- Hold your ADS button half way down to use Scoped Weapons.
+int AimAbuse_In;	
+int AimAbuse_Out;
+
+//Aim Assist
+int AimAssist = TRUE;
+int Shake = 23;            //-- The lower the value, the less shake.
+
+//Anti-Recoil
+int AntiRecoil = 3;        //-- The higher the value, the more downforce.
+int AntiRecoil_Adjuster; 
+
+//Dropshot
+int Dropshot = FALSE;
+int Dropshot_Down = 80;    //-- Time crouched when Dropshotting.
+int Dropshot_Up = 40;      //-- Time standing when Dropshotting.
+
+//Ghost Peek
+int GhostPeek = TRUE;
+int gpreset = 111;         //-- Time it takes to complete one full Ghost Peek.
+
+//Insta Edit
+int EDIT_BUTTON = BUILD_BTN; //Your in game edit button                      
+int EDIT_BUTTON_HOLD  = TRUE;  //If you dont have hold time make this "FALSE"  
+int HOLD_TIME         = 150;   //Your in game edit hold time (0.200 = 200)     
+int EDIT_RESET_BUTTON = CROUCH_BTN;//Your in game edit reset button   
+//==============================================================
+//--SECTION 2 - Keybinds
+
+define FIRE_BTN = XB1_RT; 
+define ADS_BTN = XB1_LT; 
+define CROUCH_BTN = XB1_RS; 
+define SPRINT_BTN = XB1_LS; 
+define JUMP_BTN = XB1_A; 
+define RIGHT_BUMP = XB1_RB; 
+define LEFT_BUMP = XB1_LB; 
+define SWAP_BTN = XB1_Y; 
+define BUILD_BTN = XB1_B; 
+define RELOAD_BTN = XB1_X;
+define LX = XB1_LX;
+define RX = XB1_RX;
+define RY = XB1_RY;
+define LY = XB1_LY;
+define UP = XB1_UP;
+define DOWN = XB1_DOWN;
+define LEFT = XB1_LEFT;
+define RIGHT = XB1_RIGHT;
+define HOME = XB1_XBOX;
+define VIEW = XB1_VIEW;
+define WALL_BTN = XB1_RT; 
+define STAIRS_BTN = XB1_LT; 
+define FLOOR_BTN = XB1_RB; 
+define ROOF_BTN = XB1_LB; 
+
+//==============================================================
+//--SECTION 3 - Main Block
+
+main {
+
+//Aim Abuse
+if (ScopeAbuse) {
+if (get_val(ADS_BTN) > 95) {
+AimAbuse_In = 160; 
+AimAbuse_Out = 22; 
+combo_run(AimAbuse); 
+} else if (combo_running(AimAbuse)) {
+combo_stop(AimAbuse);
+}}
+
+//Aim Assist
+if (AimAssist) {
+if (get_val(ADS_BTN) > 95) {
+combo_run(AimAssist);
+} else {
+combo_stop(AimAssist);
+}
+if (get_val(ADS_BTN)) {
+if (abs(get_val(9)) > 15 || abs(get_val(10)) > 15) {
+combo_stop(AimAssist);
+}}
+
+//Anti-Recoil
+if (get_val(ADS_BTN) && get_val(FIRE_BTN)) {
+combo_run(AntiRecoil);
+}
+
+//Dropshot
+if(get_val(ADS_BTN) && event_press(LEFT)){
+Dropshot =! Dropshot;
+}
+if(Dropshot){
+if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);}
+if (event_press(18)){ Dropshot = FALSE; }}
+
+//Ghost Peek
+if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+GhostPeek =! GhostPeek;
+combo_run(GhostPeek);
+set_val(RIGHT_BUMP, 0);
+} else {
+combo_stop(GhostPeek);
+}
+
+//Insta Edit
+if (a) {                                                                             
+if (i < num) {                                                                     
+if (!combo_running(master)) {                                                     
+combo_run(master);                                                                
+}                                                                            
+} else if (i > num) {                                                           
+a = FALSE; }}                                                                                                                                                                                                      																																																																																																																																													                                                                                                                                                                                                                                                                                                                                                                                  	                                                                                                                     
+if(EDIT_BUTTON_HOLD)                                                                     
+{                                                                            
+if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME)                     
+{                                                                               
+edit = TRUE;                                                                      
+}                                                                                
+}                                                                                  
+else if(!EDIT_BUTTON_HOLD)                                                        
+{                                                                                
+if(get_val(EDIT_BUTTON))                                                         
+{                                                                               
+edit = TRUE;                                                                      
+}                                                                               
+}                                                                                  
+if (edit == TRUE) {                                                                 
+if (get_val(BUILD_BTN)) {                                                       
+}                                                                                
+if (event_release(FIRE_BTN) || get_val(EDIT_RESET_BUTTON) || get_val(SWAP_BTN)) {  
+set_click(BUILD_BTN, 1, 0);                                                 
+edit = FALSE;}}
+
+//Hair Trigger
+if (get_val(FIRE_BTN)) set_val(FIRE_BTN,100); 
+
+//Dead Zone
+if (abs(get_val(XB1_LY)) < 0 && abs(get_val(XB1_LX)) < 0 ){ 
+set_val(XB1_LY,0); 
+set_val(XB1_LX,0); 
+} 
+if (abs(get_val(XB1_RY)) < 0 && abs(get_val(XB1_RX)) < 0 ){ 
+set_val(XB1_RY,0); 
+set_val(XB1_RX,0); 
+}}}
+
+//==============================================================
+//--SECTION 4 - Combos
+
+combo AimAbuse { 
+set_val(ADS_BTN, 100);
+wait(AimAbuse_In);
+set_val(ADS_BTN, 0);
+wait(AimAbuse_Out);
+}
+
+combo AimAssist { 
+set_val(RY, Shake * -1); //1 
+wait(20)
+set_val(RX, Shake); //1 
+wait(20)
+set_val(RY, Shake); //1 
+wait(20)
+set_val(RX, Shake * -1); //1 
+wait(20)
+}
+
+combo AntiRecoil {
+AntiRecoil_Adjuster = get_val(RY) + AntiRecoil;
+if (AntiRecoil_Adjuster > 100) AntiRecoil_Adjuster = 100;
+set_val(RY, AntiRecoil_Adjuster);
+}
+
+combo Dropshot {
+set_val(5,100);
+wait(Dropshot_Down);
+wait(Dropshot_Up);
+set_val(5,100);}
+
+combo GhostPeek {
+set_val(5, 100);
+wait(15); wait(15);
+set_val(4, 100);
+wait(15); wait(10);
+set_val(5, 100);
+wait(15); wait(gpreset);}
+
+combo master {                                                                               
+wait(WAIT);                                                                                  
+set_val(button, 100);                                                                        
+wait(28);                                                                                    
+set_val(button, 0);                                                                          
+wait(28);                                                                                    
+i = i + 1;}           
+			
+function set_click(B, Num, Wait) {                                                           
+WAIT = Wait;                                                                                 
+i = 0;                                                                                       
+button = B;                                                                                  
+num = Num;                                                                                   
+a = TRUE; }  
+			
+int edit = FALSE;                                                                        
+int pressedIt[6];                                                                       
+int WAIT;                                                                               
+int num, i, a;                                                                           
+int button;

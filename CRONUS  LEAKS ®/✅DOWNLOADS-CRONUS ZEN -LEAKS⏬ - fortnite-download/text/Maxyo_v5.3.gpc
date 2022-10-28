@@ -1,0 +1,436 @@
+    define ADS = 7; 					define FIRE = 4;
+	define Sampling_Time = 10;			define Aim_Correction = 12;
+	define Aim_Boost = 7;				define Aim_Perfection_Limit = 30;
+	define POS_Aim_Limit = 70;			define POS_Micro_MVT_Limit = 25;
+	define NEG_Aim_Limit = -70;			define NEG_Micro_MVT_Limit = -25;
+	
+	int X_Last_Value     = 0;			int X_Current_Value  = 0;
+	int Y_Last_Value     = 0;			int Y_Current_Value  = 0;
+	int spiroide_pulse = 0;				int RX_Axis_Joystick_calibrate = 0;
+	int fine_pulse = 0;					int RY_Axis_Joystick_calibrate = 0;
+	int Sampling_Done = FALSE;			int Joystick_calibration = FALSE;
+
+ 	int rstickdz = 22;					int ADS_SENS = 100, GEN_SENS = 105, HIP_SENS = 85; 
+ 	int X_SENS   = 7; 					int ADS_FIRE_SENS, Use_sens, ZOOM_SENS; 
+ 	int V_SENS   = 7; 					int temp_a;
+	int F_SENS   = 7;					int temp_b:
+	int AimAbuse_HOLD   = 308;		    int AbHO = 305;
+	int AimAbuse_RELEASE = 18;		    int AbRO =  15;
+	
+	int AIM__CORRECT = TRUE;            int AimAbuse     = TRUE;
+    int dzf          = TRUE;            int AimAbuse1    = TRUE;                     	
+	int AimAssist    = TRUE;                                      
+	                        
+	int v_aa = 24;int delay = 10; int release = 10; int Hl_Value;
+	int b_ar = 15; int y_t = 10; int y_i[25]; int a,b,x,b__ar,a__r,c_ar,c,c_aa; int sample,idx,avg_y,x_now,y_now;                                                  
+	
+
+
+   	
+   	
+   	
+main {
+ 
+	 deadzone(9,10,X_SENS,V_SENS);
+ 	 
+	 x_now = dz   (9,0);
+	 y_now = dz  (10,0);
+	 block_rumble    ();
+//Vibration Detection Module╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    if (x) {
+      if(!a) a = get_rumble(RUMBLE_A);
+      if(!b) b = get_rumble(RUMBLE_B);
+      if(a||b) save_rumble();
+    } else {a = 0; b = 0; 
+    }
+	 
+   if (Joystick_calibration == FALSE){
+       RX_Axis_Joystick_calibrate = get_val(PS4_RX); 
+       RY_Axis_Joystick_calibrate = get_val(PS4_RY); 
+       Joystick_calibration = TRUE;}     
+       X_Last_Value = X_Current_Value;
+       Y_Last_Value = Y_Current_Value;
+       X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+       Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate;
+   if(get_val(PS4_L2)){ 
+   if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit){    
+   if(abs(X_Last_Value - X_Current_Value) < 15){
+       combo_stop(Aim_Assist_Perfection);
+       Sampling_Done = FALSE;
+   if(get_val(PS4_R2) > 95){ 
+        combo_stop(Fine_Tune_Aim);
+        fine_pulse = 0;
+        combo_run(spiroide_Aim_Assit);}
+   else{
+        combo_stop(spiroide_Aim_Assit);
+        spiroide_pulse = 0;
+        combo_run(Fine_Tune_Aim);}}}
+   else if(abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit){ 
+        combo_stop(Fine_Tune_Aim);
+        combo_stop(spiroide_Aim_Assit);
+        spiroide_pulse = 0;
+        fine_pulse = 0;
+        combo_run(Aim_Assist_Perfection);}}
+    else {
+        combo_stop(Fine_Tune_Aim);
+        combo_stop(spiroide_Aim_Assit);
+        combo_stop(Aim_Assist_Perfection);
+        spiroide_pulse = 0;
+        fine_pulse = 0;
+        Sampling_Done = FALSE;}    
+
+//HeadLock╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	if (Hl_Value) {
+		Hl_Value =-66;
+	}
+	else {
+		Hl_Value = 0;
+	}
+//DeadZoneFix╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	
+	if (dzf) {
+		if (abs(get_val(9) > 0) && abs(get_val(9) < rstickdz)) {
+			sensitivity(9, 45, 100 - X_SENS);
+		}
+		if (abs(get_val(9) > rstickdz) && abs(get_val(9) < 50)) {
+			sensitivity(9, 47, 100 - X_SENS);
+		}
+		if (abs(get_val(9) > 50) && abs(get_val(9) < 75)) {
+			sensitivity(9, 48, 100 - X_SENS);
+		}
+		if (abs(get_val(9) > 75)) {
+			sensitivity(9, 49, 100 - X_SENS);
+		}
+		if (abs(get_val(10) > 0) && abs(get_val(10) < rstickdz)) {
+			sensitivity(10, 45, 100 - V_SENS);
+		}
+		if (abs(get_val(10) > rstickdz) && abs(get_val(10) < 50)) {
+			sensitivity(10, 47, 100 - V_SENS);
+		}
+		if (abs(get_val(10) > 50) && abs(get_val(10) < 75)) {
+			sensitivity(10, 48, 100 - V_SENS);
+		}
+		if (abs(get_val(10) > 75)) {
+			sensitivity(10, 49, 100 - V_SENS);
+		}
+	}
+	if (get_val(ADS)) {
+		if (!combo_running(Aim_Abuse_combo)) {
+			sensitivity(9, 50, 100 - F_SENS);
+		}
+		sensitivity(10, 50, 100 - F_SENS);
+	}
+//Aim Correction╚═══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗	
+	
+	if (!dzf) {
+		if (AIM__CORRECT) {
+		if (get_val(FIRE) && get_val(ADS)) {
+				Use_sens = ADS_FIRE_SENS;
+			}
+			if (get_val(FIRE) && !get_val(ADS)) {
+				Use_sens = HIP_SENS;
+			}
+			if (!get_val(FIRE) && !get_val(ADS)) {
+				Use_sens = GEN_SENS;
+			}
+			if (!get_val(FIRE) && get_val(ADS)) {
+				Use_sens = ADS_SENS;
+			}
+			if (!get_val(FIRE) && get_val(ADS)) {
+				Use_sens = ZOOM_SENS
+			}
+				else 
+			{
+				Use_sens = GEN_SENS;
+			}
+			}
+			if (Use_sens > 100) Use_sens = 100;
+			
+			sensitivity(9, PS4_RX == NOT_USE, 100 - X_SENS);
+			sensitivity(10, PS4_RY == NOT_USE, 100 - V_SENS);
+			sensitivity(26, PS4_GYROZ == NOT_USE, 100 - F_SENS);
+		}
+//ANTI RECOIL╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    if(!get_val(4)) b__ar = b_ar;
+    if(get_val(7) && get_val(4)) {  if(b__ar) b__ar -= 1;   a__r = b__ar;
+    if(abs(y_now) >= y_t) {y_i[idx] =  y_now; idx += 1;
+    if(idx == 25) sample = TRUE;  
+    }
+    if(get_rumble(temp_b)) { a__r += get_rumble(temp_b) * 10;
+    if(a__r < 50) a__r += c_ar;
+     else a__r = c_ar;
+    }else a__r = 0;
+    }else a__r = 0;
+    if(sample) { for(idx = 0;idx <= 24;idx++) {avg_y += y_i[idx];
+    }
+    avg_y /= 25;c_ar += avg_y / 10;sample = FALSE; avg_y = 0; idx = 0;
+    }
+//AIM ASSIST╚══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	if (AimAssist) {
+		
+		if (get_val(ADS) > 98) {
+        c = isqrt(abs(x_now) * abs(x_now) + abs(y_now) * abs(y_now));
+        if(c > 100) c = 100;
+       
+        c_aa = v_aa - ((v_aa * (c  / 10)) / 10); 
+      
+        combo_run(cAimAssist);
+    }else combo_stop(cAimAssist);
+    }
+//Dynamic (ADS) Aim Abuse╚═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+	if (AimAbuse) {
+		AB_CNG(AimAbuse);
+		if (get_val(ADS) > 95 && !get_val(FIRE)){
+			combo_run(Aim_Abuse_combo);
+		}
+		else if (!combo_running(Aim_Abuse_combo)) {
+			dzf = FALSE;
+			combo_stop(Aim_Abuse_combo);
+		}
+	}
+//Vibration(FIRE)Aim Abuse╚════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗
+    if (AimAbuse1) 
+	if (AimAbuse1) {
+	if(get_val(ADS) && get_val(FIRE) && get_rumble(temp_a) < 50){
+        combo_stop(Aim_Abuse_combo);
+        combo_run(Aim_Abuse1_combo);
+    }
+		else if (!combo_running(Aim_Abuse1_combo)) {
+			dzf = FALSE;
+	}
+	}
+	}
+
+combo Aim_Assist_Perfection{ 
+    X_Last_Value = X_Current_Value
+    Y_Last_Value = Y_Current_Value
+    wait(Sampling_Time);
+    X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+    Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE ){
+    Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+    Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 );} 
+    X_Last_Value = X_Current_Value;
+    Y_Last_Value = Y_Current_Value;
+    wait(Sampling_Time);
+    X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+    Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE ){
+    Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+	Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 );}
+    Sampling_Done = TRUE; 
+    wait(Sampling_Time);
+}        
+combo Fine_Tune_Aim {
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_LX,(-15 + fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time); 
+    set_val(PS4_RY,(10 - fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_LX,(15 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RY,(-10 + fine_pulse)); 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    fine_pulse = fine_pulse + 2;
+    if ( fine_pulse >10){
+    fine_pulse = 0;}   
+}
+combo spiroide_Aim_Assit {
+    set_val(PS4_RX,(4 + spiroide_pulse));
+    set_val(PS4_LX,(-15+ spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-4 - spiroide_pulse));
+    set_val(PS4_LX,15 - spiroide_pulse );
+    wait(Sampling_Time);
+    wait(Sampling_Time)
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+	spiroide_pulse = spiroide_pulse + 2;
+	if ( spiroide_pulse >10){
+	spiroide_pulse = 0;}
+}  
+combo cAimAssist  {
+    set_val(10,y_now + Hl_Value);
+    wait(delay);
+    set_val(9,x_now + c_aa);
+    set_val(10,y_now + a__r);
+    wait(delay);
+    set_val(9,x_now - c_aa);
+    set_val(10,y_now + a__r);
+    wait(delay);
+    set_val(9,x_now + c_aa);
+    set_val(10,y_now + a__r);
+    wait(delay);
+    set_val(9,x_now - c_aa);
+    set_val(10,y_now + a__r);
+    wait(delay);
+    set_val(10,y_now - c_aa + a__r);
+    wait(delay);
+    set_val(9,x_now + c_aa);
+    set_val(10,y_now + a__r);
+    wait(delay);
+    set_val(10,y_now + c_aa + a__r);
+    wait(delay);
+    set_val(9,x_now - c_aa);
+    set_val(10,y_now + a__r);
+    wait(delay);
+    set_val(10,y_now - c_aa + a__r);
+    wait(delay);
+    set_val(10,y_now + c_aa + a__r);
+    wait(delay);
+}
+combo Aim_Abuse_combo {
+	dzf = TRUE;
+	set_val(ADS, 100);
+	wait(AimAbuse_HOLD);
+	set_val(ADS, 0);
+	wait(AimAbuse_RELEASE);
+}
+combo Aim_Abuse1_combo {
+	dzf = TRUE;
+    set_click(ADS, 1,100/2);
+    wait(50);
+}
+
+function AB_CNG(reduce1) {
+	if (reduce1) {
+			if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+			AimAbuse_HOLD = AbHO;
+			AimAbuse_RELEASE = AbRO;
+			ADS_SENS = 100 - (V_SENS * 2);
+			ADS_FIRE_SENS = 100 - (X_SENS * 2);
+			ZOOM_SENS  =  90-(F_SENS * 2);
+		}
+		if (abs(get_val(9)) > 20 < 40 || (abs(get_val(10)) > 20 < 40)) {
+			AimAbuse_HOLD = AbHO - 3;
+			AimAbuse_RELEASE = AbRO - 1;
+			ADS_SENS = 97 - (V_SENS * 2);
+			ADS_FIRE_SENS = 99 - (X_SENS * 2);
+			ZOOM_SENS  =  89-(F_SENS * 2);
+		}
+		if (abs(get_val(9)) > 40 < 60 || (abs(get_val(10)) > 40 < 60)) {
+			AimAbuse_HOLD = AbHO - 6;
+			AimAbuse_RELEASE = AbRO - 2;
+			ADS_SENS = 94 - (V_SENS * 2);
+			ADS_FIRE_SENS = 98 - (X_SENS * 2);
+			ZOOM_SENS  =  86-(F_SENS * 2);
+		}
+		if (abs(get_val(9)) > 60 < 80 || (abs(get_val(10)) > 60 < 80)) {
+			AimAbuse_HOLD = AbHO - 9;
+			AimAbuse_RELEASE = AbRO - 3;
+			ADS_SENS = 91 - (V_SENS * 2);
+			ADS_FIRE_SENS = 97 - (X_SENS * 2);
+			ZOOM_SENS  =  83-(F_SENS * 2);
+		}
+		if (abs(get_val(9)) > 80 || (abs(get_val(10)) > 80)) {
+			AimAbuse_HOLD = AbHO - 12;
+			AimAbuse_RELEASE = AbRO - 4;
+			ADS_SENS = 88 - (V_SENS * 2);
+			ADS_FIRE_SENS = 96 - (X_SENS * 2);
+			ZOOM_SENS  =  80-(F_SENS * 2);
+		}
+		if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+			AimAbuse_HOLD = AbHO;
+			AimAbuse_RELEASE = AbRO;
+			ADS_SENS = 100 - (V_SENS * 2);
+			ADS_FIRE_SENS = 100 - (X_SENS * 2);
+			ZOOM_SENS  =  90-(F_SENS * 2);
+		}
+	}
+}
+
+function set_click(B, Num, Wait) {
+	a = TRUE;
+	x = TRUE;
+}
+function dz(f_axis,f_val) {
+    f_val = get_val(f_axis);
+    if(abs(f_val) < release) {
+        set_val(f_axis,0); 
+        return 0;
+    }
+    return f_val;
+}
+function save_rumble() {
+  if(a){
+    if(a != temp_a){
+      temp_a = a;
+      set_val(TRACE_1, a);
+    }
+  }
+  if(b){
+    if(b != temp_b){
+      temp_b = b;
+      set_val(TRACE_2, b);
+    }
+  }
+}
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) {
+	if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit){ 
+	if(Last_Value < Current_Value){
+	if (Boost){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value + Aim_Boost));}
+	else if(Correction){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value - Aim_Correction));}}            
+	else{
+	if (Boost){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value - Aim_Boost));}
+	else if(Correction){                         
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value + Aim_Correction));}}
+}}
+       

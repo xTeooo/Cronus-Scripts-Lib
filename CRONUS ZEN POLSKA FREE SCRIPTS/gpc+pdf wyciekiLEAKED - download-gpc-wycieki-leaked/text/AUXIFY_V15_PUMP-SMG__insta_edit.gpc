@@ -1,0 +1,560 @@
+//Posted by hacker1990, a member of the community in the CronusMAX Forums - http://cronusmax.com/forums
+ 
+//Posted : Monday 14th of January, 2019 16:26 UTC  
+ 
+ 
+//Aim Assist: *Always On* | No way to disable. Cracker xxpoligoneraxx v15                                 |
+/*_____________________________________________________________________________________________________
+| Please Read:                                                                                         |
+|              Current Version: V15                                                                    |
+|------------------------------------------------------------------------------------------------------|
+|              Description:                                                                            |
+|                          I created this script for the community. I enjoyed using community scripts  |
+|                          however I thought I'd have a go and create my own and it came out so much   |
+|                          better than I expected! The Aim Abuse is basically a flawless lock on and   |
+|                          it has even locked onto people through walls for me. I say all this whilst  |
+|                          being humble, this is the best script I have ever used. I appreciate all of |
+|                          the script makers in the community and I appreciate what they have done for |
+|                          us. If anyone has a problem with my script, please contact my discord.      |
+|------------------------------------------------------------------------------------------------------|
+|              Copyright Act 1978:                                                                     |
+|                                                                                                      |
+|                        The "Fair Use" doctrine allows limited copying of copyrighted works for       |
+|                        educational and research purposes. The copyright law provides that            |
+|                        reproduction "for purposes such as criticism, news reporting, teaching        |
+|                        (including multiple copies for classroom use), scholarship, or research" is   |
+|                        not an infringement of copyright. = If your code was used, I will credit      |
+|                        where ever needed.                                                            |
+_______________________________________________________________________________________________________
+|------------------------------------------------------------------------------------------------------|
+|              Controls:                                                                               |
+|                        -Aim Assist: *Always On* | No way to disable.                                 |
+|                                                                                                      |
+|                        -Aim Abuse: *Hold ADS all the way* | If you don't press the ADS Trigger all   |             
+|                                    the way down, you are not enabling Aim Abuse, so when using a     |                                                      
+|                                    scoped weapon, you can see the scope perfectly without it being   |
+|                                    being spammed.                                                    |
+|                                                                                                      |
+|                        -100% Accuracy: *ADS + RB/R1* No way to disable. You may tap or hold RB/R1.   |
+|                                                                                                      |
+|                        -Ghost Peek: *ADS + LB/L1* | No way to disable.                               |
+|                                                                                                      |
+|                        -Dropshot: *ADS + RELOAD_BTN*                                                 |
+|                                                                                                      |
+|                        -Auto Run: *Always On* | Moving the left stick upwards will automatically run |
+|                                   without you having to press it.                                    |
+|                                                                                                      |
+|                        -Anti-Recoil: *Always On* | No way to disable.                                |
+|                                                                                                      |
+|                        -Fast Farming: *ADS + Y/Triangle to enable, switch weapon to disable*         |
+|                                                                                                      |
+|                        -Rapid Fire: *ADS + Dpad Right*                                               |
+|                                                                                                      |
+|                        -Hair Trigger: *Always On* | If you lightly tap the shoot button, it will     |
+|                                       always shoot, allowing you to get the first shot off on        |
+|                                       your opponents. This also allows super fast building.          |
+|                                                                                                      |
+|                        -Jitter: *ADS + Down = Enable / RB/R1, LB/L1 or Y/Triangle = Disable* | The   |
+|                                 jitter is set to the Burst AR by default as it works the best,       |
+|                                 however you can change the timings to fit any guns needs.            |
+|                                                                                                      |
+|                                                                                                      |
+|                        -Auto Bhop: *Hold A or Circle* | This spams the jump button, allowing you to  |
+|                                    bunny hop better or equal to PC players.
+__________________________________________________________________________________________
+| TRUE = ON | FALSE = OFF                                                                 |
+|                                                                                         |
+| This only effects if the modification is enabled or disabled at the start of the script |
+__________________________________________________________________________________________
+*/
+ 
+ //INSTA EDIT & INSTA RESET\\                                                             ////
+int EDIT_BUTTON       = BUILD_BTN; //Your in game edit button                            ////
+int EDIT_BUTTON_HOLD  = TRUE;      //If you dont have hold time make this "FALSE"        ////
+int HOLD_TIME         = 250;       //Your in game edit hold time (add a 0 to the end)    ////
+int EDIT_RESET_BUTTON = CROUCH_BTN //Your in game edit reset button                      ////
+
+//PUMP SMG - L2/LT + LEFT
+int PUMP_SMG = FALSE;
+//JItter
+int tap; //ADVANCED JITTER
+int R2_block; //ADVANCED JITTER
+
+//Dropshot
+int Dropshot       = FALSE;
+int DefenseMode=FALSE;
+int AttackMode=TRUE
+
+//Hair Trigger
+int HairTrigger    = TRUE;
+ 
+ 
+//Rapid Fire
+int RapidFire      = FALSE;       
+ 
+ 
+//Anti Recoil
+int AntiRecoil     = FALSE;
+int antirecoil
+int antirecoilA      = 24;
+int antirecoilB      = 31;
+int delayA           = 14;                               
+ 
+ 
+//Ghost Peek
+int GHOST_PEEK_NOABUSE
+ 
+ 
+//Aim Assist -- Always on
+int AimAssist = TRUE;
+int aav  = 19;// AIM ASSIST VALUES
+int aav2 = -19;//AIM ASSIST VALUES
+ 
+ 
+int value  = 19;
+int value2 =-19;
+int delay  = 20;
+ 
+ 
+//Aim Abuse
+int  AimAbuse = TRUE;
+int AimAbuse_HOLD =230; //How long you HOLD ADS Button
+int AimAbuse_RELEASE = 20;//How long you release ADS Button
+ 
+ 
+//100% Accuracy
+int PerfectAccuracy  = TRUE;
+ 
+//Rumble
+int rumble_type = RUMBLE_A;
+int Notify = TRUE
+ 
+ 
+//Jitter
+int Jitter = FALSE;
+ 
+ 
+//Rapid Fire [Settings]
+int shoot_rate         = 1;
+  int rapidfire;
+ 
+//LED
+int edit = FALSE;                                                                        ////
+int pressedIt[6];                                                                        ////
+int WAIT;                                                                                ////
+int num, i, a;                                                                           ////
+int button;                                                                              ////   
+int b;
+ 
+ 
+//Layout
+define FIRE_BTN = 4; //XB1_RB //PS4_R2
+define ADS_BTN = 7; //XB1_LB //PS4_L2
+define CROUCH_BTN = 5; //XB1_RS //PS4_R3
+define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE
+define SPRINT_BTN = 8; //XB1_LS //PS4_L3
+define JUMP_BTN = 19; //XB1_A  //PS4_CROSS
+define NEXT_PIECE = 3; //XB1_RT //PS4_R1
+define RIGHT_BUMP = 3; // XB1_RB //PS4_R1
+define LEFT_BUMP = 6; //ADS_BTN //PS4_L1
+define SWAP_BTN = 17; //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18; //XB1_B  //PS4_CIRCLE
+define R_X = 9; //XB1_R_X //PS4_R_X
+define R_Y = 10; //XB1_R_Y //PS4_R_Y
+define L_X = 11; //XB1_L_X //PS4_L_X
+define L_Y = 12; //XB1_L_Y //PS4_L_Y
+define UP = 13; //XB1_UP //PS4_UP
+define DOWN = 14; //XB1_DOWN //PS4_DOWN
+define LEFT = 15; //XB1_LEFT //PS4_LEFT
+define RIGHT = 16; //XB1_RIGHT //PS4_RIGHT
+
+ //COLOR IDENTIFICATION              
+define Blue = 1;
+define Red = 2;
+define Green = 3;
+define Pink = 4;
+define SkyBlue = 5;
+define Yellow = 6;
+define White = 7;
+data(1,
+    2, 0, 0, 0, //1. Blue                                 
+    0, 2, 0, 0, //2. Red                                  
+    0, 0, 2, 0, //3. Green                                
+    0, 0, 0, 2, //4. Pink                                 
+    2, 0, 2, 0, //5. SkyBlue                              
+    0, 2, 2, 0, //6. Yellow                               
+    2, 2, 2, 2 //7. White 
+);
+int Col_ind; 
+
+ main {
+
+///////////////////////////////InstaEdit & InstaReset////////////////////////////////////////
+   if (a) {                                                                              ////
+	  if (i < num) {                                                                     ////
+	  if (!combo_running(master)) {                                                      ////
+	  combo_run(master);                                                                 ////
+			}                                                                            ////
+		} else if (i > num) {                                                            ////
+			a = FALSE;                                                                   ////
+		}                                                                                ////
+	}                                                                                    ////
+if(EDIT_BUTTON_HOLD)                                                                     ////
+			{                                                                            ////
+      if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME)                     ////
+        {                                                                                ////
+      edit = TRUE;                                                                       ////
+        }                                                                                ////
+      }                                                                                  ////
+      else if(!EDIT_BUTTON_HOLD)                                                         ////
+        {                                                                                ////
+      if(get_val(EDIT_BUTTON))                                                           ////
+        {                                                                                ////
+      edit = TRUE;                                                                       ////
+        }                                                                                ////
+      }                                                                                  ////
+	if (edit == TRUE) {                                                                  ////
+		resetPress(0,1,0,0,0,0);                                                         ////
+		if (get_val(BUILD_BTN)) {                                                        ////
+		AimAssist = TRUE;                                                                ////
+		}                                                                                ////
+	if (event_release(FIRE_BTN) || get_val(EDIT_RESET_BUTTON) || get_val(SWAP_BTN)) {   ////
+			set_click(BUILD_BTN, 1, 0);                                                  ////
+			edit = FALSE;                                                                ////
+		}                                                                                ////
+	}                                                                                    ////
+
+// PUMP=SMG     
+ if (get_val(ADS_BTN)) {
+   if (event_press(LEFT)) {
+      PUMP_SMG = !PUMP_SMG;
+      tap = FALSE;
+
+      rumble_A_if_true(PUMP_SMG);
+
+     }
+      set_val(LEFT, 0);
+      
+ } 
+    if (!PUMP_SMG) colourled(Blue); // pump-smg = off
+    if (PUMP_SMG && tap) colourled(Red);// pump-smg = on but needs reactivating 
+    if (PUMP_SMG && !tap) colourled(Green);// on and ready to use
+    
+if (PUMP_SMG) {
+   if (R2_block) {
+      set_val(ADS_BTN, 0);
+      set_val(FIRE_BTN, 0);
+     }
+ //------------------------------------------------
+     if (get_val(ADS_BTN) && event_press(FIRE_BTN)) {
+       if (!tap) { 
+       tap = TRUE; 
+       
+       combo_run(Double_Tact_R1); //TAP R1
+       set_val(FIRE_BTN, 0);
+       }
+      }
+       if (event_press(LEFT_BUMP)) {
+         tap = FALSE;
+     } 
+  }    
+  
+//AIM ASSIST
+if (AimAssist) {
+   if (get_val(ADS_BTN)) {
+   combo_run(AimAssist);}}
+   if (get_val(R_X)<value2||get_val(R_X)>value||get_val(R_Y)<value2||get_val(R_Y)>value||get_val(R_X)<value2||get_val(R_X)>value||get_val(R_Y)<value2||get_val(R_Y)>value){
+         combo_stop(AimAssist);}
+ 
+ 
+ 
+//HAIR TRIGGER
+if(HairTrigger){ 
+   if(get_val(FIRE_BTN))
+   set_val(FIRE_BTN, 100);
+   }
+ 
+//RAPID FIRE
+   if(get_val(ADS_BTN) && event_press(RIGHT)){
+   RapidFire =! RapidFire;
+   if(RapidFire == TRUE){combo_run(Notify);a=0;b=2;}
+   if(RapidFire == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(RapidFire){
+     if(get_val(FIRE_BTN)){
+        combo_run(Rapidfire);                                          
+       } 
+     } 
+ 
+//ANTI-RECOIL      
+if(AntiRecoil){
+  if(get_val(FIRE_BTN)){combo_run(Antirecoil);}
+  if(get_rumble(RUMBLE_A) <= 50){antirecoil = antirecoilA;}
+  if(get_rumble(RUMBLE_A) > 50){antirecoil = antirecoilB;}
+  if(abs(get_val(R_Y)) >= antirecoil+ 10){combo_stop(Antirecoil);}}
+ 
+//100% ACCURACY
+if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+  combo_run(PerfectAccuracy);
+  combo_run(Notify);a=4;b=2;
+set_val(RIGHT_BUMP, 0);
+      } else {
+  combo_stop(PerfectAccuracy);
+}
+ 
+//AIM ABUSE
+if(get_val(ADS_BTN) && event_press(LEFT)){
+   AimAbuse =! AimAbuse; 
+   if(AimAbuse == TRUE){combo_run(Notify);a=0;b=2;} 
+   if(AimAbuse == FALSE){combo_run(Notify);a=2;b=0;}
+    rumble_A_if_true(AimAbuse);
+}
+ 
+ 
+if(AimAbuse){
+   if(get_val(ADS_BTN)> 95){
+      combo_run(AimAbuse);}
+   if(event_release(ADS_BTN)){ combo_stop(AimAbuse);
+}
+ 
+ 
+//Ghost Peek
+if (get_val(ADS_BTN)) {
+         if (event_press(LEFT_BUMP)) {
+                combo_run( GhostPeek);
+                combo_run(Notify);a=0;b=2;
+       }
+         set_val(LEFT_BUMP, 0);
+         }
+ 
+ 
+//Jitter
+if (get_val(ADS_BTN) && event_press(DOWN)) {
+        Jitter = !Jitter;
+    }
+ 
+    if (event_press(NEXT_PIECE) || event_press(LEFT_BUMP) || event_press(ADS_BTN)) {
+        Jitter = FALSE;
+    }
+ 
+if (Jitter) {
+        if(get_val(FIRE_BTN)){
+            set_val(FIRE_BTN, 0);
+            combo_run(Jitter);
+        } else {
+            combo_stop(Jitter);
+        }
+       }    
+ 
+//Dropshot
+if(get_val(ADS_BTN) && event_press(RELOAD_BTN)){
+   Dropshot =! Dropshot;
+   if(Dropshot == TRUE){combo_run(Notify);a=0;b=2;}
+   if(Dropshot == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(Dropshot){
+      if(DefenseMode){if(get_val(FIRE_BTN)==0&&get_rumble(RUMBLE_A)||get_rumble(RUMBLE_B)){combo_run(Dropshot);}}
+      if(AttackMode){if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);}}
+      }
+   }}
+
+ 
+ 
+ 
+ 
+//LEDs.
+// If the LED flashes Green, you have enabled a modification.
+// If the LED flashes Red, you have disabled a modification.
+// If the LED flashes Yellow, you are using an un-togglable modification.
+ 
+ 
+combo Notify {
+if(Notify){set_rumble(RUMBLE_B,65);}
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+}
+ 
+ 
+combo TurboCross {               
+wait(Speed);
+set_val(XB1_X, 0);
+wait(Speed);
+set_val(XB1_X, 0);
+}
+ 
+ 
+combo Dropshot{
+set_val(CROUCH_BTN,100);
+wait(40);
+wait(200);
+set_val(CROUCH_BTN,100);
+}
+
+combo Double_Tact_R1 { //ADVANCED JITTER
+    R2_block = TRUE;
+    set_val(4, 100);
+    wait(15);
+    wait(5);
+    set_val(7, 100);
+    set_val(8, 100);
+    set_val(3, 100);
+    wait(15);
+    R2_block = FALSE;
+} //end
+ 
+combo AimAssist {
+set_val(R_Y, (aav));
+wait(delay)
+set_val(R_X, (aav));
+wait(delay)
+set_val(R_Y, (aav2));
+wait(delay)
+set_val(R_X, (aav2));
+wait(delay)
+set_val(R_Y, (aav));
+wait(delay)
+set_val(R_X, (aav));
+wait(delay)
+set_val(R_Y, (aav2));
+wait(delay)
+set_val(R_X, (aav2));
+wait(delay)
+ 
+ 
+}
+combo PerfectAccuracy {
+set_val(FIRE_BTN,100);
+wait(100);
+wait(250);
+set_val(FIRE_BTN,100);
+}
+ 
+ 
+combo AimAbuse {
+set_val(ADS_BTN, 100);
+wait(AimAbuse_HOLD);
+set_val(ADS_BTN, 0);
+wait(AimAbuse_RELEASE);
+}
+ 
+combo Rapidfire {
+      set_val(FIRE_BTN, 100); 
+      wait(rapidfire);
+      set_val(FIRE_BTN, 0); 
+}
+ 
+ 
+combo Bhop {               
+wait(Speed);
+set_val(JUMP_BTN, 0);
+wait(Speed);
+set_val(JUMP_BTN, 0);
+}
+ 
+ 
+combo Jitter {                    
+    set_val(FIRE_BTN,  100);     
+    wait(200);     
+    set_val(RIGHT_BUMP,100);     
+    wait(320);     
+    set_val(FIRE_BTN,100);    
+    wait(200);
+    set_val(LEFT_BUMP,100)
+    wait(320)
+}
+ 
+ 
+combo GhostPeek {
+set_val(CROUCH_BTN, 100);
+wait(15);
+set_val(CROUCH_BTN, 0);
+wait(15);
+set_val(FIRE_BTN, 100);
+wait(15);
+set_val(FIRE_BTN, 0);
+wait(50);
+set_val(CROUCH_BTN, 100);
+wait(15);
+set_val(CROUCH_BTN, 0);
+}
+ 
+combo master {                                                                           ////
+wait(WAIT);                                                                              ////
+set_val(button, 100);                                                                    ////
+wait(28);                                                                                ////
+set_val(button, 0);                                                                      ////
+wait(28);                                                                                ////
+i = i + 1;                                                                               ////
+}                                                                                        ////
+function resetPress(P0,P1,P2,P3,T,S) {                                                   ////
+if(!P0){pressedIt[0] = FALSE;}	else if(P0) {pressedIt[0] = TRUE;}                       ////
+if(!P1){pressedIt[1] = FALSE;}	else if(P1) {pressedIt[1] = TRUE;}	                     ////
+if(!P2){pressedIt[2] = FALSE;}	else if(P2) {pressedIt[2] = TRUE;}	                     ////
+if(!P3){pressedIt[3] = FALSE;}	else if(P3) {pressedIt[3] = TRUE;}                       ////
+}                                                                                        ////
+function set_click(B, Num, Wait) {                                                       ////
+WAIT = Wait;                                                                             ////
+i = 0;                                                                                   ////
+button = B;                                                                              ////
+num = Num;                                                                               ////
+a = TRUE;                                                                                ////
+}             
+ 
+ 
+combo Vibrate {
+set_rumble(rumble_type, 100);
+wait(300);
+reset_rumble();
+}
+ 
+ 
+combo Antirecoil {
+set_val(R_Y, antirecoil);
+wait(delayA);
+set_val(R_Y, antirecoil);
+wait(delayA);
+}
+ 
+ 
+function rumble_A_if_true(var) {
+if (var) rumble_type = RUMBLE_A;
+else rumble_type = RUMBLE_B;
+combo_run(Vibrate);
+}
+
+function colourled(Colour) {
+    Col_ind = (Colour * 4) - 3;
+    set_led(LED_1, dbyte(Col_ind));
+    set_led(LED_2, dbyte(Col_ind + 1));
+    set_led(LED_3, dbyte(Col_ind + 2));
+    set_led(LED_4, dbyte(Col_ind + 3));
+}
+
+ 
+// Credits:
+             //xxpoligoneraxx - Main development
+             //Everyone who purchases <img src="images/smilies/animated/smile_20_anim.gif" border="0" alt="" title="Smile" class="inlineimg" />

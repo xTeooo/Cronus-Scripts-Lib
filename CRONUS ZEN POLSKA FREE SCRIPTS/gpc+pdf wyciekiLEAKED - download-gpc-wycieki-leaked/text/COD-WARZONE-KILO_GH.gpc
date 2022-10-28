@@ -1,0 +1,144 @@
+ //GRAU/MP7//
+ 
+    define RT   = XB1_RT;
+    define LT   = XB1_LT;
+    define RX   = XB1_RX;                              
+    define RY   = XB1_RY;
+    
+   
+    
+    int value   = 18;
+    int value2  = -18;
+    int delay   = 11;
+    
+    int AIM_Assist_ON = TRUE; // Set TRUE to enable AIM Assist by default
+    int aimAssist_size    = 35; 
+    int aimAssist_time    = 35; 
+    int aimassist_steps   = 20;
+    main {
+ 
+ 
+        if(get_val(LT)) {
+            combo_run(LT_C);
+        }
+ 
+        if(get_val(RT) && get_val(LT)) {
+            combo_stop(LT_C);
+            combo_run(RT_C);
+        }
+ 
+        if(get_val(RX) < value2 || get_val(RX) > value || get_val(RY) < value2 || get_val(RY) > value || get_val(RX) < value2 || get_val(RX) > value || get_val(RY) < value2 || get_val(RY) > value) {
+            combo_stop(LT_C);
+            combo_stop(RT_C);
+        }
+        
+    
+ 
+
+ 
+    }
+ 
+   // DO NOT TOUCH THIS //
+ 
+   combo LT_C {
+       set_val(RY, -20);          
+       wait(delay)
+       set_val(RX, 20); 
+       set_val(RY, 10); 
+       wait(delay) 
+       set_val(RY, 10); 
+       wait(delay)                  
+       set_val(RX, -20);
+       set_val(RY, 10);
+       wait(delay)
+    }
+ 
+ 
+   combo RT_C {
+       set_val(RY, -30);              
+       wait(delay)
+       set_val(RX, 30);
+       set_val(RY, 20);
+       wait(delay) 
+       set_val(RY, 20);
+       wait(delay)                  
+       set_val(RX, -30);
+       set_val(RY, 20);
+       wait(delay)
+    }
+    
+    int hold_breath;
+ 
+main { 
+    if(event_press(XB1_LT)) {
+        hold_breath = TRUE;
+    }
+    if(event_press(XB1_LS) || event_release(XB1_LT)) {
+        hold_breath = FALSE;
+        combo_run(Zoom);
+    }
+    if(hold_breath) combo_run(LT);
+    else combo_stop(LT);
+}
+ 
+combo LT {
+    wait(10); 
+    set_val(XB1_LS, 100);
+    wait(3000);
+}
+ 
+combo Zoom {
+    set_val(XB1_LS, 100);
+    wait(60);
+    set_val(XB1_LS, 0);
+    wait(60);
+}
+
+
+   //ANTIRECOIL// ADJUST THE RECOIL AS YOU NEED IT
+    
+    define ONLY_WITH_SCOPE = TRUE;// Use Anti-recoil only when scoping
+    define ANTI_RECOIL = 4;       //change "0" to compensate vertical recoil (0 - 100)
+    define ANTI_RECOIL_LEFT = 1;  //change this value to compensate to the left (0 - 100)
+    define ANTI_RECOIL_RIGHT = 3; //change this value to compensate to the right (0 - 100)
+
+    //  VARIABLES
+    // ---------------------------------------------------------
+    int fire_button, scope_button;
+    int anti_recoil;
+    int anti_recoil_left;
+    int anti_recoil_right;
+
+    //  INITIALIZATION
+    // ---------------------------------------------------------
+    init {
+        if(get_console() == PIO_PS3) { // PS3 Trigger & Bumper
+            fire_button = 3;
+            scope_button = 6;
+        } else {                       // Natural Trigger & Bumper
+            fire_button = 4;
+            scope_button = 7;
+        }
+    }
+    //  MAIN PROCEDURE
+    // ---------------------------------------------------------
+    main {
+        if(!ONLY_WITH_SCOPE || get_val(scope_button)) {
+            combo_run(AntiRecoil);
+        }
+    }
+    //  COMBOS
+    // ---------------------------------------------------------
+    combo AntiRecoil { // This combo must be the last one
+        if(get_val(fire_button)) {
+        anti_recoil = get_val(10) + ANTI_RECOIL;
+        if(anti_recoil > 100) anti_recoil = 100;
+        set_val(10, anti_recoil);
+        anti_recoil_left = get_val(9) -ANTI_RECOIL_LEFT;
+        if(anti_recoil_left > 100) anti_recoil_left = 100;
+        set_val(9, anti_recoil_left);
+        anti_recoil_right = get_val(9) +ANTI_RECOIL_RIGHT;
+        if(anti_recoil_right > 100) anti_recoil_right = 100;
+        set_val(9, anti_recoil_right);
+        }
+    }

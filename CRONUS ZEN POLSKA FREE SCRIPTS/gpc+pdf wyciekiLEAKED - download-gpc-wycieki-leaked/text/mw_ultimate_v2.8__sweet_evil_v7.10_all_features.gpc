@@ -1,0 +1,584 @@
+// GPC Online Library
+// mw_ultimate_v2.8_+_sweet_evil_v7.10_all_features.gpc
+
+/* Thank you Sweet_Evil for providing such a great aim assist script 
+   Thank you Crescens for such an amazing sticky aim assist  
+   Thank you ItzSnack for Modern Warfare Ultimate 
+                                                                 ~SS_Nikolai 
+ =====================
+ === Reset Toggles ===
+ ==================================================
+ === OPTIONS/MENU + SHARE/VIEW To Reset Toggles ===
+ ==================================================
+ ===================
+ === Toggle Menu ===
+ =============================================================================================================
+ === Before being able to turn ON/OFF Toggles you will have to open the Toggle Menu by doing the following ===
+ === OPTIONS/MENU + D-PAD UP                                                                               ===
+ === When ON your LED will flash Rainbow now you able to turn on any features you want                     ===
+ === After you done make sure to disable the Toggle Menu                                                   ===
+ === Your LED will be Black when your out of the Toggle Menu                                               ===
+ ============================================================================================================= 
+ ===============================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                       ===
+ ===============================================================================
+ === Hold L2/LT And Press SQUARE/X For Akimbo Rapid Fire                     ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press R3/RS For Rapid Fire                               ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press L1/LB For Burst Fire                               ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press UP For Jump On Shot                                ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press DOWN For Drop Shot                                 ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press RIGHT For Drop On Shot                             ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ ===============================================================================
+ === Hold L2/LT And Press LEFT For Prone On Shot                             ===
+ === 1 Rumble = ON 2 = OFF                                                   ===
+ =============================================================================*/
+    //Layout
+    define ON = TRUE;
+    define OFF = FALSE;
+    define PS = PS4_PS; //XBOX
+    define SHARE = PS4_SHARE; //VIEW
+    define OPTIONS = PS4_OPTIONS; //MENU
+    define R1 = PS4_R1; //RB
+    define R2 = PS4_R2; //RT
+    define R3 = PS4_R3; //RS
+    define L1 = PS4_L1; //LB
+    define L2 = PS4_L2; //LT
+    define L3 = PS4_L3; //LS
+    define RX = PS4_RX;
+    define RY = PS4_RY;
+    define LX = PS4_LX;
+    define LY = PS4_LY;
+    define UP = PS4_UP;
+    define DOWN = PS4_DOWN;
+    define LEFT = PS4_LEFT;
+    define RIGHT = PS4_RIGHT;
+    define TRIANGLE = PS4_TRIANGLE; //Y
+    define CIRCLE = PS4_CIRCLE; //B
+    define CROSS = PS4_CROSS; //A
+    define SQUARE = PS4_SQUARE //X
+    define TOUCHPAD = PS4_TOUCH;
+    //Sweet_Evil 7.10 
+	int Current_State          = 0;
+	int Aim_Abuse_State      = 2;
+	define Get_Last_Value     = 0;
+	define Get_Current_Value = 1;
+	define Aim_Correction      = 2;
+	define Aim_Boost          = 3;
+	define Aim_Perfection_Limit = 60;
+	int X_Last_Value     = 0;
+	int Y_Last_Value     = 0;
+	int X_Current_Value  = 0;
+	int Y_Current_Value  = 0;
+	int mvt = 0;
+	int Aim_Boost_Val = 0; 
+	int Aim_Correction_Val = 0;
+    //Sticky Aim
+	define sticky_aim_assist = 1;//[0 = OFF / 1 = ON] strongest aim assist for COD 
+    define _v = 21;//If your screen shakes whilst using aim assist - lower this value (try 22, 20)
+    define AIM_H = PS4_RX;//AIM HORIZONTAL                  
+    define AIM_V = PS4_RY;//AIM VERTICAL                      
+    define STRAFE = PS4_LX;                    
+    //Customize
+    int Flipped = OFF; //Change OFF TO ON If you play with Flipped Triggers
+    int AS = ON; //Change ON TO OFF If you don't want Aim Assist
+    int RUN = OFF; //Change ON TO OFF If you don't want Auto Run
+    int HT = ON; //Change ON TO OFF If you don't want Hair Trigger
+    int CS = OFF; //Change ON TO OFF If you don't want Custom Sensitivity
+    int HB = OFF; //Change ON TO OFF If you don't want Hold Breath
+    int SS = OFF; //Change OFF TO ON If you want Super Sprint - Auto Run Must be ON
+    int ARF_Toggle = OFF; //Change OFF TO ON If you want Akimbo Rapid Fire ON By Default
+    int RF_Toggle = OFF; //Change OFF TO ON If you want Rapid Fire ON By Default
+    int BF_Toggle = OFF; //Change OFF TO ON If you want Burst Fire ON By Default
+    int DS_Toggle = OFF; //Change OFF TO ON If you want Drop Shot ON By Default
+    int JOS_Toggle = OFF; //Change OFF TO ON If you want Jump On Shot ON By Default
+    int COS_Toggle = OFF; //Change OFF TO ON If you want Crouch On Shot ON By Default
+    int PS_Toggle = OFF; //Change OFF TO ON If you want Prone On Shot ON By Default
+    
+	//Speed Of Features
+    int ARF_Speed = 30; //Akimbo Rapid Fire
+    int RF_Speed = 30; //Rapid Fire
+    int BF_Speed = 340; //Burst Fire
+    int DS_Speed = 60; //Drop Shot
+    int Prone_Speed = 80; //Prone On Shot - How long before you prone
+    
+	/*NOTE:
+    Higher values = Slower
+    Lower values = Faster*/
+    
+	//Custom Sensitivity
+    int GEN_SENS = 100;
+    int ADS_SENS = 100;
+    int FIRE_SENS = 100;
+    int ADS_FIRE_SENS = 100;
+    int GRENADE_SENS = 100;
+    
+	/*NOTE:
+    Default = 100
+    Ranges from 0 to 327*/
+    
+	//Aim Assist
+    int AP = 19; //Decrease if shake
+    int AM = -19; //Decrease if shake
+    int Delay = 20 //Aim Assist speed
+    int Release = 20; //Recommended to be 1 higher than AP & AM
+    
+	//Anti Recoil
+	int AR_Toggle = ON
+	int AR = 21; //Start Value of Vertical Recoil
+	int AR_H = 0; //Start Value of Horizontal Recoil
+	int AR_I = 1; //Change 1 to -1 If you play with Inverted
+
+    //Toggles
+    int SP = ON;
+    int ARS;
+    int AR_ONOFF;
+	int ARH_ONOFF;
+    int USE_SENS;
+    int Remove_Block;
+    int Toggle_Menu;
+    int Toggle_Rumble;
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/   	
+main
+{
+ //update main every 8ms --> only for PS4
+   // vm_tctrl(-2); 
+ 
+    //--L2 pulled 
+ 
+        if(get_val(PS4_L2)) 
+        {        
+            if (Current_State == Get_Last_Value)
+            {
+                X_Last_Value = get_lval(PS4_RX);
+                Y_Last_Value = get_lval(PS4_RY);
+ 
+                Current_State = Get_Current_Value;
+ 
+            }
+            else if (Current_State == Get_Current_Value)
+            {
+                X_Current_Value = get_val(PS4_RX);
+                Y_Current_Value = get_val(PS4_RY);
+ 
+                if(Aim_Abuse_State == Aim_Correction)
+                {    
+                    Current_State = Aim_Boost;
+                }
+                else
+                {
+                    Current_State = Aim_Correction;
+                }    
+            }
+            if (Current_State == Aim_Boost)
+            {
+                //Applying BOOST
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Boost;  
+            }
+            else if (Current_State == Aim_Correction)
+            {
+                //Applying CORRECTION
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Correction; 
+            } 
+        }
+        else //--L2 not pulled
+        {
+            Current_State = Get_Last_Value;
+            Aim_Abuse_State = Aim_Correction; 
+        }
+    if(get_val(OPTIONS) && event_press(SHARE)) {
+    ARF_Toggle = OFF;
+    RF_Toggle = OFF;
+    BF_Toggle = OFF;
+    JOS_Toggle = OFF;
+    DS_Toggle = OFF;
+    COS_Toggle = OFF;
+    PS_Toggle = OFF;
+    Toggle_Menu = OFF;
+    combo_run(Menu_Rumble);}
+    
+    if(CS)
+    if(!get_val(L2) && !get_val(R2)) { 
+    USE_SENS=GEN_SENS;}
+    else if(get_val(L2) && !get_val(R2)) { 
+    USE_SENS=ADS_SENS;}    
+    else if(!get_val(L2) && get_val(R2)) { 
+    USE_SENS=FIRE_SENS;}
+    else if(get_val(L2) && get_val(R2)) { 
+    USE_SENS=ADS_FIRE_SENS;}
+    else if(get_val(R1)) { 
+    USE_SENS=GRENADE_SENS;}
+    sensitivity(RY,NOT_USE,USE_SENS);
+    sensitivity(RX,NOT_USE,USE_SENS);
+    
+    LED(0,0,0,0);
+    
+    if(Flipped) {
+    swap(R1,R2);
+    swap(L1,L2);}
+    
+    if (sticky_aim_assist) {
+    if(get_val(L2)) combo_run(STICKY_AIM);
+    else combo_stop(STICKY_AIM);}
+
+    if(HT)
+    deadzone(L2,R2,100,100);
+    if(HB)
+    if(get_val(L2)) set_val(L3,100);
+    if(HB)
+    if(get_val(LY) <-90 && get_val(L2) && get_ptime(L2) > 200) combo_stop(CH);
+    if(HB)
+    if(event_press(L2)) combo_run(CH);
+    if(HB)
+    if(get_val(L2) && get_lval(L3)) set_val(L3,0);    
+    if(RUN)
+    if(get_val(LY)<-90 && !get_val(L2)) set_val(L3,100);
+    if(SS == ON && get_val(L2)) combo_stop(SS);
+    if(SS)
+    if(SP && get_val(LY)<-90) combo_run(SS);
+    if(get_val(LY)>-90) SP = ON;
+    
+    if(AS)
+    if(get_val(L2)) combo_run(AS);
+    
+	if(RF_Toggle && get_val(R2))
+    combo_run(RF);
+    
+    if(ARF_Toggle && get_val(R2))
+    combo_run(ARF);
+    
+    if(BF_Toggle && get_val(R2))
+    combo_run(BF);
+    
+    if(COS_Toggle && event_press(R2))
+    combo_run(COS);
+    
+    if(JOS_Toggle && event_press(R2))
+    combo_run(JOS);
+    
+    if(DS_Toggle && get_val(R2))
+    combo_run(DS);
+    
+    if(PS_Toggle && get_val(R2) && get_ptime(R2) > Prone_Speed)
+    set_val(CIRCLE,100);
+    
+    if(get_val(OPTIONS) && event_press(UP)) {
+    Toggle_Menu=!Toggle_Menu;
+    Toggle_Rumble=!Toggle_Rumble;}
+    if(Toggle_Rumble) 
+    combo_run(Menu_Rumble);
+    
+    if(Toggle_Menu) {
+    combo_run(Rainbow_Flash);
+    
+    if(get_val(L2) && event_press(SQUARE)) {
+    ARF_Toggle=!ARF_Toggle;
+    if(RF_Toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(R3)) {
+    RF_Toggle=!RF_Toggle;
+    if(RF_Toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(L1)) {
+    BF_Toggle=!BF_Toggle;
+    if(BF_Toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+
+    if(get_val(L2) && event_press(UP)) {
+    JOS_Toggle=!JOS_Toggle;
+    if(JOS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(DOWN)) {
+    DS_Toggle=!DS_Toggle;
+    if(DS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(RIGHT)) {
+    COS_Toggle=!COS_Toggle;
+    if(COS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(LEFT)) {
+    PS_Toggle=!PS_Toggle;
+    if(PS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}}
+	    if(get_val(L2) && get_val(R2))
+    combo_run(AR);
+ 
+    if(get_val(L2) && event_press(UP)) { AR_ONOFF=!AR_ONOFF; ARH_ONOFF = OFF; LED(0,0,3,0);}
+    if(AR_ONOFF) {
+    if(event_press(R1)) {
+    AR = AR + 1;
+    combo_run(Increase);}
+    if(event_press(L1)) {
+    AR = AR - 1;
+    combo_run(Decrease);}
+    set_val(R1,0); set_val(L1,0);}
+ 
+    if(get_val(L1) && event_press(DOWN)) { ARH_ONOFF=!ARH_ONOFF; AR_ONOFF = OFF; LED(0,0,0,3);}
+    if(ARH_ONOFF) {
+    if(event_press(R1)) {
+    AR_H = AR_H + 1;
+    combo_run(Increase);}
+    if(event_press(L1)) {
+    AR_H = AR_H - 1;
+    combo_run(Decrease);}
+    set_val(R1,0); set_val(L1,0);}
+ 
+    if(!AR_ONOFF && !ARH_ONOFF) {
+    LED(0,0,0,0);}
+ 
+    if(abs(get_val(RY)) > AR + 2 || abs(get_val(RX)) > AR + 2) {
+    combo_stop(AR);}
+	}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+    combo AR {
+    ARS = get_val(RY) + AR;
+    if(ARS > 100) ARS = 100;
+    set_val(RY,ARS * AR_I);
+    ARS = get_val(RX) + AR_H;
+    if(ARS > 100) ARS = 100;
+    set_val(RX,ARS);}
+
+    combo AS { 
+    set_val(RY,a_f(RY,AP));
+    wait(Delay)
+    set_val(RX,a_f(RX,AP));
+    wait(Delay)
+    set_val(RY,a_f(RY,AM));
+    wait(Delay)
+    set_val(RX,a_f(RX,AM));
+    wait(Delay)}
+        
+	combo DS {
+    set_val(CIRCLE,100);
+    wait(40);
+    set_val(CIRCLE,0);
+    wait(DS_Speed);}
+    
+    combo CH {
+	set_val(L3,0);
+	wait(60);
+	set_val(L3,100);
+	wait(110);
+	set_val(L3,0);
+	wait(110);}
+    
+    combo STICKY_AIM {
+    set_val(AIM_V,xy_val(AIM_V, _v));
+    wait(20);
+    set_val(AIM_H,xy_val(AIM_H, _v));
+    set_val(STRAFE,xy_val(STRAFE, _v));
+    wait(20);
+    set_val(AIM_V,xy_val(AIM_V, _v * -1));
+    wait(20);
+    set_val(AIM_H,xy_val(AIM_H, _v * -1));
+    set_val(STRAFE,xy_val(STRAFE, _v * -1));
+    wait(20);}
+	
+    combo COS {
+    set_val(CIRCLE,100);
+    wait(100);}
+    
+    combo JOS {
+    set_val(CROSS,100);
+    wait(100);}
+    
+    combo SS {
+    wait(20);
+    set_val(L3,100);
+    wait(40);
+    set_val(L3,0);
+    wait(40);
+    SP = OFF;}
+    
+    combo RF {
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(RF_Speed);}
+    
+    combo ARF {
+    set_val(R2,100);
+    set_val(L2,100);
+    wait(40);
+    set_val(R2,0);
+    set_val(L2,0);
+    wait(ARF_Speed);}
+    
+    combo BF {
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(100);
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(100);
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(BF_Speed);}
+     
+    combo Increase {
+    set_rumble(RUMBLE_A,100);
+    wait(100);
+    reset_rumble();}
+ 
+    combo Decrease {
+    set_rumble(RUMBLE_B,100);
+    wait(50);
+    reset_rumble();}
+    
+    combo Menu_Rumble {
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    Toggle_Rumble = OFF;}
+    
+    combo Rainbow_Flash {
+    LED(2,0,2,0);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);
+    LED(0,0,0,2);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);
+    LED(0,2,2,0);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);}
+    
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();
+    reset_leds();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();
+    reset_leds();}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+ 
+function 
+Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) 
+    { 
+       mvt = abs(Last_Value) + abs(Current_Value);
+       Aim_Boost_Val = ( mvt + 1 )/2; //Rounding integer division (instead of truncating)
+       Aim_Correction_Val = Aim_Boost_Val + 4;
+ 
+       if(Aim_Boost_Val >= 10)
+       {
+           Aim_Boost_Val = 10;
+           Aim_Correction_Val = 14;
+       }
+       else if(Aim_Boost_Val == 0)
+       {
+            Aim_Boost_Val = 2
+            Aim_Correction_Val = 4;
+       }
+ 
+ 
+       if(mvt < Aim_Perfection_Limit) 
+       {
+            //--moving right
+            if(Last_Value < Current_Value)
+            {           
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Correction_Val));            
+                }
+            }
+            else //--moving left
+            {
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Correction_Val));            
+                }
+            }
+        }
+    } 
+    
+	function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+ 
+	function a_f(p,m) {
+    if(abs(get_val(p)) < Release)
+    return m;
+    return get_val(p);}
+
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < (_v + 1))  
+    return f_val;    
+    return get_val(f_axis);     
+} 
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | | D | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

@@ -1,0 +1,352 @@
+
+/* 
+ ____  _____  ______        _         _____   ___  ____                               
+|_   \|_   _||_   _ \      / \       / ___ `.|_  ||_  _|                             
+  |   \ | |    | |_) |    / _ \     |_/___) |  | |_/ /                            
+  | |\ \| |    |  __'.   / ___ \     .'____.'  |  __'.                            
+ _| |_\   |_  _| |__) |_/ /   \ \_  / /_____  _| |  \ \_                            
+|_____|\____||_______/|____| |____| |_______||____||____|                            
+
+╠════════════════════════╩═══════════════════════╩═════════════════╩════════╩════════════════════════════════════════════════════════════════════════════╣ 
+╠════════════════════════╬═══════════════════════╬═════════════════╬════════╬════════════════════════════════════════════════════════════════════════════╣ 
+║ POSTHOOKING 7'3 Meta   ║     L2 + L3/R3        ║    LT +  LS/RS  ║  ON    ║HOLDING L2/LT & CLICKING L3/R3 (PS) LS/RS (XBOX) WILL DO LEFT/RIGHT HOOK    ║
+╠════════════════════════╩═══════════════════════╩═════════════════╩════════╩════════════════════════════════════════════════════════════════════════════╣ 
+╠════════════════════════╬═══════════════════════╬═════════════════╬════════╬════════════════════════════════════════════════════════════════════════════╣ 
+
+THE BUILD VIDEO IS RIGHT HERE FOR BEST RESULTS PLEASE WATCH IT BEFORE MAKING ANY BUILDS! 
+----------------------> https://youtu.be/G6VaB0rrC4s
+
+these here are my offline values for Joel Embiid Post Hook. 
+Left Hand Post Hook     825 
+Right Hand Post Hook      825
+& PLEASE MAKE SURE YOUR SHOT TIMING RELEASE TIME IS EALRY IN CONTROLLER SETTINGS FOR BEST RESULTS!
+
+Enable/Disable Advanced Defense = X(Playstation)/A(Xbox) + UP D-PAD | L2/LT TO ACTIVATE
+
+if the light on this end is green that means you're online  
+to switch from online and offline modes you hold options and press down 
+
+if the light is off that means you're offline
+to go online press options and press up your shots will be saved just like the previous versions 
+
+if you want to adjust 
+your Left Hand Post Hook timing hold L2/LT and then d-pad  
+to adjust your Right Hand Post Hook R1/RB and then the d-pad 
+
+left and right d-pad are by 1 millisecond 
+up and down are by 5 milliseconds 
+
+DISCORD @richy#5520
+PAYPAL @julianlong
+CASHAPP $babyjewels32
+
+
+
+
+you can even go test in the mycourt/gatorade or if you find a dead Park just do it with some friends but if not just join the 
+Discord and you'll be able to find somebody to help test this with shouldn't be hard ---------> https://discord.gg/richyproductions
+*/
+int Dribbles;int DribbleSet = TRUE;int Block_Output;int Screen_Saver;const string REGULAR = "Left Hook";const string FADE = "Right Hook";const string LINE1 = "NBA 2K23";const string LINE2 = "POSTHOOKING";const string LINE3 = "Made By";const string LINE4 = "R1CHY PRODUCTIONS";const string DRIBBLE1 = "Advanced Defense";
+int TIMER = 300;define FONT_LENGTH = 2;define SMALL_FONT = 0;define MEDIUM_FONT = 1;define FONT_WIDTH = 0;define FONT_HEIGHT = 1;define BLACK_COLOR = 0;define WHITE_COLOR = 1;
+//┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+int				
+						 
+						 		
+						 /*--*/Jumper_Timing 		= 825,///Must be a higher value than Catch and Shoot		
+						 
+						 		
+						 /*--*/Fade_Shot_Timing 	= 825,///Must be a higher value than Pullup												
+//└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+	Index = 1,Online_Toggle;
+	define green = 17,off = 0;	
+init{
+	cls_oled(0);//--/Clears Oled
+    print(center_x(sizeof(LINE1) - 1, OLED_FONT_MEDIUM_WIDTH),5,OLED_FONT_MEDIUM,OLED_WHITE,LINE1[0]);//-- Display Script Title          
+    print(center_x(sizeof(LINE2) - 1, OLED_FONT_MEDIUM_WIDTH),25,OLED_FONT_MEDIUM,OLED_WHITE,LINE2[0]);//-- Display Script Title          
+    print(center_x(sizeof(LINE3) - 1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,LINE3[0]);//-- Display Script Title          
+    print(center_x(sizeof(LINE4) - 1, OLED_FONT_SMALL_WIDTH),55,OLED_FONT_SMALL,OLED_WHITE,LINE4[0]);//-- Display Script Title
+    Jumper_Timing		= 	get_pvar(SPVAR_1,Jumper_Timing 		,4000, Jumper_Timing);
+	Fade_Shot_Timing    = 	get_pvar(SPVAR_2,Fade_Shot_Timing 	,4000, Fade_Shot_Timing);
+	Online_Toggle		= 	get_pvar(SPVAR_3,0,2   , Online_Toggle);
+}
+
+main{
+	   Screen_Saver = TRUE;//--ScreenSaver Always Running
+		{
+			if(get_val(PS4_L2))
+			{
+ 			    if(event_press(PS4_L3))
+				{
+					combo_run(Left_Post_Hook);
+				}
+			}
+		}
+		{
+			if(get_val(PS4_L2))
+			{ 
+				if(event_press(PS4_R3))
+				{
+					combo_run(Right_Post_Hook);
+				}
+			}
+		}
+	if(!Online_Toggle){
+					Led_Status(off);
+		if(get_val(PS4_OPTIONS))
+		{	
+			if(event_press(PS4_DOWN))
+			{
+				Online_Toggle 			= TRUE;
+				Jumper_Timing 			= Jumper_Timing 	  		+ 150;
+				Fade_Shot_Timing 		= Fade_Shot_Timing 		  	+ 150;
+				combo_run(SAVE);
+			}
+		}
+	}		
+	if(Online_Toggle){
+						Led_Status(green);
+	if(get_val(PS4_OPTIONS))
+			{	
+				if(event_press(PS4_UP))
+				{
+					Online_Toggle 			= FALSE;
+					Jumper_Timing 			= Jumper_Timing 	  		- 150;
+					Fade_Shot_Timing 		= Fade_Shot_Timing 		  	- 150;
+					combo_run(SAVE);
+				}
+			}
+	}
+		//--Toggle Dribbles On Off
+	    if(get_val(PS4_CROSS)){
+      		    if(event_press(PS4_UP)){Block_Output = PS4_UP;
+				    EXIT();
+				    Dribbles = !Dribbles;
+			    }
+	    	    if(event_press(PS4_RIGHT)){Block_Output = PS4_RIGHT;
+				    EXIT();
+				    DribbleSet ++;	
+				    if (DribbleSet >1)
+					DribbleSet = 1;
+			    }
+			    if(event_press(PS4_LEFT)){Block_Output = PS4_LEFT;
+				    EXIT();
+				    DribbleSet --;	
+				    if (DribbleSet <1)
+				    DribbleSet = 1;
+			    }
+        }
+        if(Block_Output){ //----block output
+		    if(event_release(Block_Output)){
+			    Block_Output = 0;
+		    }else{
+		        set_val(Block_Output,0);
+			}
+	    }
+	    if(Dribbles){ 
+  		    if(DribbleSet == 1){	
+	    	    print(center_x(sizeof(DRIBBLE1) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE1[0]);//-- Display Script Title          
+	    		    {
+		            if((get_val(PS4_LX))<0 && event_press(PS4_L2))
+		            if((get_val(PS4_LX))>0 && event_press(PS4_L2)){
+			        combo_run(ALTERNATE_STEP);
+			        combo_run (RUMBLE);
+		            }
+                  }
+		}
+	}
+		if(get_val(PS4_L2))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+		}
+		if(get_val(PS4_R1))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		print(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+       }
+       if(Screen_Saver) {     //-- Screen saver (OLED off)                         
+            TIMER += get_rtime();
+			    if(TIMER >= 4500) {                        
+				    cls_oled(0);         
+				    TIMER = 0;      
+				    Screen_Saver = FALSE; 
+			    }                         
+        }
+         if(event_press(XB1_B)) {     
+   		    EXIT();           
+          }
+set_val(TRACE_1,Jumper_Timing);//----
+set_val(TRACE_2,Fade_Shot_Timing);//----
+set_val(TRACE_3,Online_Toggle);//----
+}
+combo Left_Post_Hook {	
+	set_val(PS4_RY,-100);
+	set_val(PS4_RX, -20);
+	wait(Jumper_Timing);
+	set_val(PS4_RY,0);
+	wait(10);
+}
+combo Right_Post_Hook {	
+	set_val(PS4_RY,-100);
+	set_val(PS4_RX, 20);
+	wait(Fade_Shot_Timing);
+	set_val(PS4_RY,0);
+	wait(10);
+}
+combo ALTERNATE_STEP{
+	set_val(PS4_R2,0);
+    set_val(PS4_L2,100);
+    wait(100);
+    set_val(PS4_R2,100);
+    set_val(PS4_L2,0);
+}
+combo RUMBLE{
+	set_rumble(RUMBLE_A, 100);
+	set_rumble(RUMBLE_B, 100);
+	wait(100);
+	reset_rumble();
+}
+combo SAVE{
+	set_rumble(RUMBLE_A,100);
+	wait(200);
+	reset_rumble();
+	set_pvar(SPVAR_1, Jumper_Timing);
+	set_pvar(SPVAR_2, Fade_Shot_Timing);
+	set_pvar(SPVAR_3, Online_Toggle);
+}		  	
+function Display_Values(f_val,f_dgts) {
+    if(f_dgts >= 5)
+    {
+        putc_oled(Index,(f_val / 10000) + 48);
+        f_val %= 10000;
+        Index++;
+    }
+    if(f_dgts >= 4)
+    {
+        putc_oled(Index,(f_val / 1000) + 48);
+        f_val %= 1000;
+        Index++;
+    }
+    if(f_dgts >= 3)
+    {
+        putc_oled(Index,(f_val / 100) + 48);
+        f_val %= 100;
+        Index++;
+    }
+    if(f_dgts >= 2)
+    {
+        putc_oled(Index,(f_val / 10) + 48);
+        f_val %= 10;
+        Index++;
+    }
+    putc_oled(Index,f_val + 48);
+    puts_oled(1,1,2,Index,1);    
+    Index = 1;
+} 
+function FindDigits(f_num) {
+    f_num = abs(f_num);
+    	if(f_num /  10000 > 0) return 5;
+    	if(f_num /  1000 > 0) return 4;
+    	if(f_num /  100 > 0) return 3;
+    	if(f_num /   10 > 0) return 2;
+    	return 1;
+}
+function center_x(f_chars,f_font){  //--  center_x(number of chars,font size);                                                 
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); //-- return X for Centering String Horizontally
+}
+function Led_Status(colour) {
+    set_led(LED_1, duint8(colour * 4));
+    set_led(LED_2, duint8((colour * 4) + 1));
+    set_led(LED_3, duint8((colour * 4) + 2));
+    set_led(LED_4, duint8((colour * 4) + 3));
+}
+function EXIT(){               
+	cls_oled(0);             
+}
+data 					  
+(0,0,0,0,//-- Off	    
+1,0,0,0, //-- Dim Blue	  
+0,1,0,0, //-- Dim Red		  
+0,0,1,0, //-- Dim Green	
+0,0,0,1, //-- Dim Pink	
+1,0,1,0, //-- Dim SkyBlue	
+0,1,1,0, //-- Dim Yellow	
+1,1,1,0, //-- Dim White	
+2,0,0,0, //-- Blue		
+0,2,0,0, //-- Red			
+0,0,2,0, //-- Green		
+0,0,0,2, //-- Pink		
+2,0,2,0, //-- SkyBlue		
+0,2,2,0, //-- Yellow		
+2,2,2,0, //-- White		
+3,0,0,0, //-- Bright Blue	
+0,3,0,0, //-- Bright Red	
+0,0,3,0, //-- Bright Green
+0,0,0,3, //-- Bright Pink	
+3,0,3,0, //-- Bright SkyBlue
+0,3,3,0, //-- Bright Yellow
+3,3,3,0  //-- Bright white
+);		
+ ����������������

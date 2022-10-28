@@ -1,0 +1,82 @@
+////////////////////////////////////////
+//                                    //
+//          KICKOFF-SPEEDFLIP         //
+//              BY CULAN              //
+define//////////////////////////////////
+
+// TURN SCRIPT ON/OFF
+
+// >>  OFF <<		= 	HOLD TURN_ON_OFF_BUTTON_1 + TURN_ON_OFF_BUTTON_2 >>LONGER<< THAN A SECOND		-> RED LED 				
+//  >> ON << 		= 	HOLD TURN_ON_OFF_BUTTON_1 + TURN_ON_OFF_BUTTON_2 >>SHORTER<< THAN A SECOND	 	-> BLINKS GREEN LED		
+                                                                                                            							
+TURN_ON_OFF_BUTTON_1 				= PS4_OPTIONS, // you can change this if you want
+TURN_ON_OFF_BUTTON_2              	= PS4_DOWN, // you can change this if you want
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CONTROLLER LAYOUT // ADD YOUR CONTROLLER LAYOUT! 
+
+DRIVE_FORWARDS_BUTTON 	= PS4_R2,
+DRIVE_BACKWARDS_BUTTON 	= PS4_L2,
+JUMP_BUTTON				= PS4_CIRCLE,
+BOOST_BUTTON 			= PS4_CROSS,
+POWERDRIFT_BUTTON		= PS4_L1,
+AIRROLL_BUTTON		    = PS4_L2,
+BALLCAM_BUTTON 			= PS4_SQUARE,
+AIRROLL_RIGHT_BUTTON	= PS4_RIGHT,
+AIRROLL_LEFT_BUTTON 	= PS4_LEFT, 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+MUSTY_FLICK_MOD = TRUE, // MOD ON/OFF // ON = TRUE // OFF = FALSE
+
+MUSTY_FLICK = PS4_TRIANGLE // activates the MUSTY FLICK by tap
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int TURN_SCRIPT_ON_OFF = TRUE // Dont change this!
+main {
+	if((TURN_SCRIPT_ON_OFF) && get_val(TURN_ON_OFF_BUTTON_1) && get_ptime(TURN_ON_OFF_BUTTON_1)> 500 && get_val(TURN_ON_OFF_BUTTON_2) && get_ptime(TURN_ON_OFF_BUTTON_2) > 500){
+	TURN_SCRIPT_ON_OFF = FALSE;
+	set_led(LED_2, 3);
+  } 
+    if((!TURN_SCRIPT_ON_OFF) && get_val(TURN_ON_OFF_BUTTON_1) && get_ptime(TURN_ON_OFF_BUTTON_1)< 500 && get_val(TURN_ON_OFF_BUTTON_2) && get_ptime(TURN_ON_OFF_BUTTON_2) < 500){
+    TURN_SCRIPT_ON_OFF = TRUE;
+	set_ledx(LED_3, 3);
+  }
+   if(!get_ledx() && TURN_SCRIPT_ON_OFF) {
+   reset_leds();
+  }
+	if((TURN_SCRIPT_ON_OFF) && (MUSTY_FLICK_MOD) && get_val(MUSTY_FLICK)){
+		combo_run(MUSTY_FLICK);
+		set_val(PS4_LY, 0);
+		set_val(MUSTY_FLICK, 0)
+
+}
+
+}
+combo MUSTY_FLICK {
+	set_val(JUMP_BUTTON, 100);
+	set_val(BOOST_BUTTON, 0);
+	set_val(PS4_LY, -100);
+	wait(50)
+	set_val(AIRROLL_BUTTON, 100);
+	set_val(PS4_LY, -100);
+	set_val(PS4_LX, 0)
+	set_val(AIRROLL_BUTTON, 100);
+	set_val(JUMP_BUTTON, 0);
+	set_val(BOOST_BUTTON, 0);
+	wait(520)
+	set_val(JUMP_BUTTON, 100);
+	set_val(PS4_LY, 100);
+	set_val(PS4_LX, 0);
+	set_val(AIRROLL_BUTTON, 100);
+	wait(100)
+	set_val(JUMP_BUTTON, 100);
+	set_val(PS4_LY, 100);
+	set_val(PS4_LX, 0);
+	set_val(AIRROLL_BUTTON, 100);
+	wait(250)// wait(200) for FRONTLANDING
+	set_val(AIRROLL_BUTTON, 100);
+	set_val(PS4_LY, -100);
+	set_val(AIRROLL_LEFT_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	wait(100);// wait(200) for FRONTLANDING
+	set_val(PS4_LY, -100);
+	wait(1000);
+	wait(200);
+	}
