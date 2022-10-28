@@ -1,0 +1,250 @@
+/* 
+Headshot range selection:
+	Tap Right on D-Pad to change distance:
+		1. Blue   = Close
+		2. Red    = Medium
+		3. Green  = Long
+		4. Off    = No Selection
+		
+Quick Swap Weapon
+	Hold L1/LB and press:
+		TRIANGLE/Y for pistol
+		SQUARE/X for 9 o'clock weapon
+		CROSS/A for 6 o'clock weapon
+		CIRCLE/B for knife
+		DOWN for lasso
+*/
+//--------------------------------------------------------------
+define WAIT_CLOSE   = 160; // Change this value for close range
+define WAIT_MEDIUM  = 140; // Change this value for medium range
+define WAIT_LONG    = 120; // Change this value for long range
+
+define AimAssist_Toggle = TRUE; // turn AimAssist ON, set TRUE -- turn OFF, set FALSE
+int aimAssist_size	= 20; // Decrease if screen shake
+int aimAssist_time	= 40; // Increase if game lag
+
+int timing = 100; // 1000 = 1 second
+
+int rounds_per_second = 12; // Range: 1 to 25 RPS (Round/s)
+//--------------------------------------------------------------
+
+define CLOSE   = 1;
+define MEDIUM  = 2;
+define LONG    = 3;
+
+int time;
+int headshot_Y_val;
+
+define Off      =  0;
+define Blue     =  1;
+define Red      =  2;
+define Green    =  3;
+define Pink     =  4;
+define SkyBlue  =  5;
+define Yellow   =  6;
+define White    =  7; 
+ 
+data(
+ 0,0,0,0, // Off
+ 2,0,0,0, // 1. Blue
+ 0,2,0,0, // 2. Red
+ 0,0,2,0, // 3. Green
+ 0,0,0,2, // 4. Pink
+ 2,0,2,0, // 5. SkyBlue
+ 0,2,2,0, // 6. Yellow
+ 2,2,2,2  // 7. White
+);
+ 
+int Col_ind;
+int count; 
+int head;
+ 
+int wx_v;
+int wy_v;
+
+int rapidfire_hold;
+int rapidfire_release;
+ 
+main {
+//--------------------------------------------------------------
+    rapidfire_hold = 500 / rounds_per_second;
+    rapidfire_release = rapidfire_hold - 10;
+    if(rapidfire_hold < 0)
+        rapidfire_hold = 0;
+//--------------------------------------------------------------
+  // Switch Weapons - Hold L1/LB and press:
+    if(get_val(PS4_L1))
+    {
+		// TRIANGLE/Y for pistol
+	    if(event_press(PS4_TRIANGLE))
+	    {
+	        wx_v = 0; 
+	       	wy_v = -100;
+	    }
+	 
+	    // SQUARE/X for 9 o'clock weapon
+	    if(event_press(PS4_SQUARE))
+	    {
+	        wx_v = -100; 
+	        wy_v =  0;
+	    }
+	 
+	    // CROSS/A for 6 o'clock weapon
+	    if(event_press(PS4_CROSS))
+	    {
+	        wx_v =  0; 
+	        wy_v = 100;
+	    }
+	 
+	    // CIRCLE/B for knife
+	    if(event_press(PS4_CIRCLE))
+	    {
+	        wx_v = 75; 
+	        wy_v = 75;
+	    }
+	 
+	    // DOWN for lasso
+	    if(event_press(PS4_DOWN))
+	    {
+	        wx_v = -75; 
+	        wy_v = 75;
+	    }
+	 
+	    if(wx_v || wy_v) 
+	    	combo_run(Quick_Swap);
+	 
+	    // BLOCK
+	    if(get_val(PS4_TRIANGLE) && (get_ptime(PS4_TRIANGLE) >= 500))
+	        set_val(PS4_TRIANGLE, 100);
+	    else
+	        set_val(PS4_TRIANGLE, 0);
+	 
+	    set_val(PS4_SQUARE, 0);
+	    set_val(PS4_CROSS, 0);
+	    set_val(PS4_CIRCLE, 0);
+	    set_val(PS4_DOWN, 0);
+    }
+//--------------------------------------------------------------
+	if(AimAssist_Toggle && (get_val(PS4_L2) && !get_val(PS4_R2))) 
+		combo_run(AIM_ASSIST);
+	else 
+		combo_stop(AIM_ASSIST); 
+//--------------------------------------------------------------	
+	if(event_press(PS4_RIGHT))
+		count++;   // Range selection
+
+	 if(count == 4)
+		count = 0;   // Reset
+ 
+ 	if(count) 
+ 	{
+		if(get_val(PS4_L2)) 
+		{
+			headshot_Y_val = -100;
+			
+			if(count == CLOSE)
+				time = WAIT_CLOSE;
+			if(count == MEDIUM)
+				time = WAIT_MEDIUM;
+			if(count == LONG)
+				time = WAIT_LONG;
+				
+			if(get_ptime(PS4_L2) > 300  && !head)
+			{
+				combo_run(HEADSHOT);
+				head = TRUE;
+			}
+		}
+ 
+  		if(event_release(PS4_L2))
+  		{
+   			headshot_Y_val = (3 * (headshot_Y_val / 5)) * -1;
+			combo_run(HEADSHOT);
+   			head = FALSE; 
+   		}
+   	}
+//--------------------------------------------------------------
+    if(get_val(PS4_CROSS))
+    {
+        if(event_press(PS4_UP))
+            timing += 10;
+        if(event_press(PS4_DOWN))
+            timing -= 10;
+    }
+//--------------------------------------------------------------
+    if(get_val(PS4_R2))
+        combo_run(RAPIDFIRE);
+ 
+    if(event_press(PS4_L2))
+    {
+        combo_run(CANCEL);
+        combo_run(DEADEYE);
+    }
+//--------------------------------------------------------------
+    colour_led(count);   // Led colour
+}
+ 
+combo CANCEL {
+    wait(timing);
+    set_val(PS4_R2, 100);
+    wait(50);
+    wait(get_rtime());
+}
+ 
+combo RAPIDFIRE {
+    wait(rapidfire_hold);
+    set_val(PS4_R2, 0);
+    wait(rapidfire_release);
+}
+ 
+combo DEADEYE {
+    wait(200);
+    set_val(PS4_R3, 100);
+    wait(90);
+}
+
+combo Quick_Swap {
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX,wx_v);
+    set_val(PS4_RY,wy_v);
+    wait(200);
+    set_val(PS4_L1, 0);
+    set_val(PS4_RX,wx_v);
+    set_val(PS4_RY,wy_v);
+    wait(40);
+    set_val(PS4_L1, 0);
+    wait(200);
+    wx_v = 0;
+    wy_v = 0;
+}
+
+combo HEADSHOT {
+	set_val(PS4_RY, headshot_Y_val);
+	wait(time);   
+}
+
+combo AIM_ASSIST {
+    set_val(PS4_RY,aim_assist(PS4_RY,aimAssist_size));
+    wait(aimAssist_time);
+    set_val(PS4_RX,aim_assist(PS4_RX,aimAssist_size));
+    set_val(PS4_LX,aim_assist(PS4_LX,aimAssist_size));
+    wait(aimAssist_time);
+    set_val(PS4_RY,aim_assist(PS4_RY,inv(aimAssist_size))); 
+    wait(aimAssist_time);
+    set_val(PS4_RX,aim_assist(PS4_RX,inv(aimAssist_size)));
+    set_val(PS4_LX,aim_assist(PS4_LX,inv(aimAssist_size)));
+    wait(aimAssist_time);
+}
+
+function aim_assist(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < aimAssist_size + 1)
+        return f_val;
+    return get_val(f_axis); 
+} 
+
+function colour_led(Colour) {
+ Col_ind=(Colour*4);
+ set_led(LED_1,duint8(Col_ind  ));
+ set_led(LED_2,duint8(Col_ind+ 1));
+ set_led(LED_3,duint8(Col_ind+ 2)); 
+ }

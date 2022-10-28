@@ -1,0 +1,122 @@
+//Posted by noozbar, a member of the Cronus Community - https://cronusmax.com/forums
+ 
+//Posted : Thursday 29th of April, 2021 13:59 UTC  
+ 
+// Right D-Pad to change distance
+// 1. Blue   = Close
+// 2. Red    = Medium
+// 3. Green  = Long
+// 4. Off    = No Selection
+ 
+ 
+define CLOSE   = 1;
+define MEDIUM  = 2;
+define LONG    = 3;
+ 
+define WAIT_CLOSE   = 160; // Change this value for close range
+define WAIT_MEDIUM  = 140; // Change this value for medium range
+define WAIT_LONG    = 120; // Change this value for long range
+ 
+int time;
+int headshot_Y_val;
+ 
+define Off      =  0;
+define Blue     =  1;
+define Red      =  2;
+define Green    =  3;
+define Pink     =  4;
+define SkyBlue  =  5;
+define Yellow   =  6;
+define White    =  7;
+ 
+ 
+data(
+ 0,0,0,0, // Off
+ 2,0,0,0, // 1. Blue
+ 0,2,0,0, // 2. Red
+ 0,0,2,0, // 3. Green
+ 0,0,0,2, // 4. Pink
+ 2,0,2,0, // 5. SkyBlue
+ 0,2,2,0, // 6. Yellow
+ 2,2,2,2  // 7. White
+);
+ 
+ 
+int Col_ind;
+int count; 
+int head;
+int run; 
+ 
+main {
+
+	if((isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) >= 90) && get_ival(PS4_LY) < 20 && !get_val(PS4_L2) && !get_val(PS4_R2))
+	{
+	// walk -> run -> sprint -> walk
+		if(event_press(PS4_CROSS))
+			run += 1;
+		if(run > 2)
+			run = 0;
+	// run
+		if(run == 1) 
+			set_val(PS4_CROSS, 100);
+	// sprint
+		if(run == 2) 
+			combo_run(SPRINT);
+	}
+
+	// reset
+	if(get_val(PS4_LY) > -20)
+		run = 0;
+	
+    if(event_press(PS4_RIGHT))
+        count++;   // Range selection
+ 
+     if(count == 4)
+        count = 0;   // Reset
+ 
+     if(count) 
+     {
+        if(get_val(PS4_L2)) 
+        {
+            headshot_Y_val = -100;
+ 
+            if(count == CLOSE)
+                time = WAIT_CLOSE;
+            if(count == MEDIUM)
+                time = WAIT_MEDIUM;
+            if(count == LONG)
+                time = WAIT_LONG;
+ 
+            if(get_ptime(PS4_L2) > 300  && !head)
+            {
+                combo_run(HEADSHOT);
+                head = TRUE;
+            }
+        }
+ 
+          if(event_release(PS4_L2))
+          {
+               headshot_Y_val = (3 * (headshot_Y_val / 5)) * -1;
+            combo_run(HEADSHOT);
+               head = FALSE; 
+           }
+       }
+    colour_led(count);   // Led colour
+}
+ 
+combo HEADSHOT {
+    set_val(PS4_RY, headshot_Y_val);
+    wait(time);
+}
+
+combo SPRINT {
+	set_val(PS4_CROSS, 100);
+	wait(50);
+	wait(50);
+} 
+ 
+function colour_led(Colour) {
+ Col_ind=(Colour*4);
+ set_led(LED_1,duint8(Col_ind  ));
+ set_led(LED_2,duint8(Col_ind+ 1));
+ set_led(LED_3,duint8(Col_ind+ 2))set_led(LED_4,duint8(Col_ind+ 3)); }

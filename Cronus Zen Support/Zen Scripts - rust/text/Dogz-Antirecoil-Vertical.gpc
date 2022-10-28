@@ -1,0 +1,50 @@
+define Anti_Recoil    = TRUE;
+int Vertical_Recoil   =   34; // IF THE GUN GOES UP INCREASE THE NUMBER. IF THE GUN GOES DOWN INCREASE THE NUMBER
+int Horizontal_Recoil =   00;
+
+int a, b, a1, b1;
+
+define Deadzone = 7
+
+
+main {
+    
+       
+  if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) <= Deadzone) {
+    set_val(PS4_LX,0);
+    set_val(PS4_LY,0);
+  }
+
+  if(isqrt(pow(abs(get_ival(PS4_RX)),2) + pow(abs(get_ival(PS4_RY)),2)) <= Deadzone) {
+    set_val(PS4_RX,0);
+    set_val(PS4_RY,0);
+  }
+    
+    
+    if(Anti_Recoil) {
+        if (get_val(PS4_R2) && get_ptime(PS4_R2) >= 1)
+            if (get_val(PS4_L2) && get_val(PS4_R2)) {
+                AR_(PS4_RY, Vertical_Recoil);
+                AR_(PS4_RX, Horizontal_Recoil);
+        }
+    }
+}
+
+function AR_(Axis, Value) {
+        a = get_val(Axis) + Value;
+        b = (Value) / 100;
+        a1 = 1 + (b);
+        b1 = 1 - (b); 
+    if(a == (get_val(Axis) > 0)) { 
+        a = a * b1 + Value - sq(10) * (b1 * (a1 - 1));
+    }
+    else
+    {
+        a = a *  a1 - Value * (1 - b1);
+    }
+    set_val(Axis, clamp(a, -100, 100));  
+        return;
+}
+function sq(v) {
+    return v * v;
+}

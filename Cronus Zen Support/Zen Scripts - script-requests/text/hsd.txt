@@ -1,0 +1,76 @@
+int L1_PRESS;
+int R3_ACTIVATION;
+int SELECTOR_SECTION;
+int AUTO_HEADSHOT_RUNNING;
+int SELECTOR_RUNNING;
+int MIDDLE_RUNNING;      
+int LONG_RUNNING;
+int HEADSHOT_MODE;
+int WAIT;
+
+   
+   main{
+    
+    	if(get_lval(PS4_L2))
+    	{
+    		if(event_release(PS4_RIGHT)) HEADSHOT_MODE = HEADSHOT_MODE + 1;
+    		if(get_lval(PS4_RIGHT)&&get_ptime(PS4_RIGHT)>500) HEADSHOT_MODE = 0;
+    		
+    		AUTO_HEADSHOT_RUNNING=TRUE;
+    		
+    		set_val(PS4_L1,0);
+    		
+    		if(!HEADSHOT_MODE)
+    		{
+    			if(event_press(PS4_R3))R3_ACTIVATION = !R3_ACTIVATION;
+    			if(!LONG_RUNNING&&get_lval(PS4_L1)){ WAIT=100; combo_run(LONG_DISTANCE); if(!R3_ACTIVATION) combo_run(R3_PRESS); }
+    			
+    			if(LONG_RUNNING)
+    			{
+    			}
+    		}
+    		
+    		if(HEADSHOT_MODE&&!LONG_RUNNING&&!MIDDLE_RUNNING)
+    		{
+    			if(!LONG_RUNNING&&test_bit(HEADSHOT_MODE,0))   {  WAIT=200; combo_run(LONG_DISTANCE);   }  
+    			if(!MIDDLE_RUNNING&&!test_bit(HEADSHOT_MODE,0)){  WAIT=200; combo_run(MIDDLE_DISTANCE); }
+    			combo_run(R3_PRESS); 
+    		}
+    		
+    	}
+    	
+    	if(event_release(PS4_L2)){ combo_stop(R3_PRESS); combo_stop(LONG_DISTANCE); combo_stop(PLUS_DISTANCE); combo_stop(MIDDLE_DISTANCE); MIDDLE_RUNNING=FALSE; LONG_RUNNING=FALSE; R3_ACTIVATION=FALSE; AUTO_HEADSHOT_RUNNING=FALSE;  }
+    	
+    	
+    }
+    
+    combo R3_PRESS
+{
+	wait(WAIT); 
+	set_val(PS4_R3,100);
+	wait(100);
+	wait(60);
+}
+
+combo LONG_DISTANCE
+{
+	wait(WAIT);
+	set_val(PS4_RY, -100);
+	set_val(PS4_RX, 0);
+	wait(140);
+	LONG_RUNNING=TRUE;
+}
+
+combo PLUS_DISTANCE
+{
+	set_val(PS4_RY, -100);
+	set_val(PS4_RX, 0);
+	wait(40); 
+	MIDDLE_RUNNING=TRUE;
+}
+
+combo MIDDLE_DISTANCE
+{
+	call(LONG_DISTANCE);
+	call(PLUS_DISTANCE);
+}

@@ -1,0 +1,117 @@
+/*
+
+
+
+    = = = = = = = = = = =
+    = Anti-AFK Kick v1  =
+    = Created By Fadexz =
+    = = = = = = = = = = =
+
+
+
+*/
+
+
+
+int
+
+// Toggle
+is_AFK,
+// Timer
+milliseconds,
+seconds;
+
+
+
+main {
+
+
+  // Anti-AFK Kick
+
+  // If these buttons are not being pressed run the AFK timer
+  if(isqrt(pow(abs(get_ival(XB1_RX)),2) + pow(abs(get_ival(XB1_RY)),2)) < 20 && isqrt(pow(abs(get_ival(XB1_LX)),2) + pow(abs(get_ival(XB1_LY)),2)) < 20 && !event_press(XB1_A) && !event_press(XB1_X) && !event_press(XB1_LT) && !event_press(XB1_RT)) {
+    milliseconds += get_rtime();
+    if(milliseconds >= 1000) {
+      milliseconds -= 1000;
+      seconds ++;
+      // Seconds of AFK time to press buttons after
+      if(seconds >= 60)
+        is_AFK = TRUE;
+    }
+  }
+  else {
+    milliseconds = 0;
+    seconds = 0;
+    is_AFK = FALSE;
+  }
+
+  if(is_AFK) {
+    combo_run(Anti_AFK_Kick);
+    block_rumble();
+  }
+  else combo_stop(Anti_AFK_Kick);
+
+
+}
+
+
+
+// Anti-AFK Kick
+combo Anti_AFK_Kick {
+ set_val(XB1_LT,100);
+ wait(40);
+ wait(3400);
+ /*
+ set_val(XB1_LX,-100);
+ wait(40);
+ wait(3400);
+ */
+ set_val(XB1_LS,100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_RY,-100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_LT,100);
+ wait(40);
+ wait(3400);
+ /*
+ set_val(XB1_LY,-100);
+ wait(40);
+ wait(3400);
+ */
+ set_val(XB1_LS,100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_RX,-100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_LT,100);
+ wait(40);
+ wait(3400);
+ /*
+ set_val(XB1_LX,100);
+ wait(40);
+ wait(3400);
+ */
+ set_val(XB1_LS,100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_RY,100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_LT,100);
+ wait(40);
+ wait(3400);
+ /*
+ set_val(XB1_LY,100);
+ wait(40);
+ wait(3400);
+ */
+ set_val(XB1_LS,100);
+ wait(40);
+ wait(3400);
+ set_val(XB1_RX,100);
+ wait(40);
+ wait(3400 - get_rtime());
+}

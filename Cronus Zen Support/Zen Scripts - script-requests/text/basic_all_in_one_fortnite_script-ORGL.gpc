@@ -1,0 +1,297 @@
+// GPC Online Library
+// basic_all_in_one_fortnite_script.gpc
+
+// GPC Online Library
+// basic_all_in_one_fortnite_script.gpc
+
+// GPC Online Library
+// ALL CREDITS TO WALTER MARTINEZ!!! I ADDED NOTASGOOD&LEGITCLOUDS INSTA EDIT!! ADDED ITSNACKZ TRIGGER SWAP SETTUP
+
+
+/*                                         ______ ____  _____ _______ _   _ _____ _______ ______ 
+                                      // *|  ____/ __ \|  __ \__   __| \ | |_   _|__   __|  ____|* //
+ SCRIPT FEATURES                      // *| |__ | |  | | |__) | | |  |  \| | | |    | |  | |__   * //
+ - Aim Abuse                          // *|  __|| |  | |  _  /  | |  | . ` | | |    | |  |  __|  * //
+ - Aim Assist                         // *| |   | |__| | | \ \  | |  | |\  |_| |_   | |  | |____ * //
+ - Single Shot Accuracy               // *|_|    \____/|_|  \_\ |_|  |_| \_|_____|  |_|  |______|* //
+ - Drop Shot
+ - Anti recoil default = 0                                                                      
+ - Insta edit                                                                      
+ - Trigger Swap                         Credits: WalterHMartinez / LEGITCLOUDS & NOTASGOOD (INSTAEDIT) & ITSNACKZ (TRIGGER SWAPP SETUP) 
+                                                     Tested With Builder Pro Only! (XB1/PS4)
+                                          ------------------------------------------------- 
+                                                      NOTE INSTRUCTIONS ARE BELOW! 
+                                                             */ 
+
+
+int R1L1 = FALSE;// Change to True if you use L1 to aim & R1 to fire                                                                             
+int AutoDrop_onoff   = TRUE; 
+int SENASSIST_onoff = TRUE; //--AIM ABUSE 
+int aimabuse_hold;
+int aimabuse_rest;
+                                                                              
+int AimAssist_onoff = TRUE;
+int shake = 0;// ADJUST THIS LOWER IF SCREEN SHAKES TO MUCH
+                                                                              
+int ANTI_RECOIL; //--ANTI RECOIL 
+int anti_recoil; 
+define AR_Release = 25;
+define ONLY_WITH_SCOPE = TRUE;
+
+//insta edit
+int EDIT_BUTTON =  /**/BUILD/**/;  //Insta edit will allow you to confirm the edit quickly
+int EDIT_BUTTON_HOLD =  /**/TRUE/**///Does your edit button has a hold delay? True means Yes -- False mean No
+int HOLD_TIME =  /**/150/**/;  // Type the hold time which is shown in Fortnite settings, in hundereds because cronusmax already know its in MS. |0.10 = 100| |0.25 = 250|
+int RESET_EDIT_BUTTON = /**/RS/**///Insta Reset will allow you to confirm the edit reset quickly
+int smgTime;
+int edit = FALSE;
+int aimMod = TRUE;
+//Extra                                                                                                                                               
+int WAIT;                                                                                
+int num, i, a;
+int button;
+int pressedIt[6];
+int tap;                                                                              
+                                                                            
+                                                                              
+                                                                            
+                                                                               
+                                 /*=================================================================================
+                                 
+                                 INSTA EDIT : AUTO CONFIRMS EDIT
+                                 
+                                 DROPSHOT:L2 & R3 TURNS ON AND OFF
+                                
+                                 AIM ABUSE: Aim Abuse Is Always On, If Using Scoped Weapons Hold ADS Button Less Than 95% You'll Be Able 
+                                 To Use Scope.
+                                 
+                                 ===========================================================================================
+                                 ANTI RECOIL: This Is Always On, Just Shoot Away!
+                                
+                                 ===========================================================================================
+                                 AIM ASSIST: This Is Always On, Hold ADS And Abuse The Aim Assist.
+                                 
+                                 ===========================================================================================
+                                 SINGLE SHOT: Tap R1/Right Bump while aiming down scope for precise shots (great for Heavy AR and AR 100% accuracy)
+                                 					=================================================*/
+ 
+ 
+//--------------------------------------------> INITALIZATION
+   int rumble_type = RUMBLE_A; 
+ 
+    define VIEW  =  1;
+    define MENU  =  2;
+    define RB    =  3;
+    define RT    =  4;
+    define RS    =  5;
+    define LB    =  6;
+    define LT    =  7;
+    define LS    =  8;
+    define RX    =  9;
+    define RY    = 10;
+    define LX    = 11;
+    define LY    = 12;
+    define UP    = 13;
+    define DOWN  = 14;
+    define LEFT  = 15;
+    define RIGHT = 16;
+    define Y     = 17;
+    define BUILD = 18;
+    define A     = 19;
+    define X     = 20;
+ 
+ 
+ 
+//------------------| MAIN |-----------------------------
+ 
+ 
+main {
+  vm_tctrl(-2);
+      
+     //////Flipped Triggers/////----------<3
+    if(R1L1) {
+        swap(3, 4); 
+        swap(6, 7);}
+  
+        //////AIM ASSIST//////---------------<3
+    if (AimAssist_onoff) {
+    if (get_val(7) > 90) {
+        combo_run(Auto_Aimm);
+        } else {
+        combo_stop(Auto_Aimm);
+        }
+     if (get_val(7)) {
+     if (abs(get_val(9)) > 15 || abs(get_val(10)) > 15) {
+         combo_stop(Auto_Aimm);
+         }
+            }
+     
+        if(get_val(PS4_L2)){  
+        if(event_press(PS4_R3)) { 
+              AutoDrop_onoff = !AutoDrop_onoff;        
+              rumble_A_if_true(AutoDrop_onoff); 
+        }
+        set_val(PS4_R3, 0); 
+    }//-----------------------------------------------------------
+       
+    ///////////////////////////////////////////////////////////////////////////////// 
+    //Drop Shot                                           
+    if (AutoDrop_onoff) {                                
+        if (get_val(7) && get_val(4) ) {  
+            combo_run(DROP_SHOT);                    
+        }                                            
+    }                                                
+                        
+}
+    
+        //////ANTI RECOIL//////---------------<3
+    if (get_val(7) && get_val(4)) {
+        ANTI_RECOIL = 0;
+        combo_run(AntiRecoil);
+        }
+    
+        //////AIM ABUSE//////---------------<3
+    if (SENASSIST_onoff) {
+    if (get_val(7) > 90) {
+        aimabuse_hold = 160;
+        aimabuse_rest = 20; 
+        combo_run(AIM_ABUSE); 
+      } else if (combo_running(AIM_ABUSE)) {
+        combo_stop(AIM_ABUSE);
+        }
+           }
+           
+    	////SINGLE SHOT/////
+    if (get_val(7) && get_val(3)) {
+		combo_run(SINGLE_SHOT);
+		set_val(3, 0);
+  	  } else {
+    	combo_stop(SINGLE_SHOT);
+      	}
+   
+       //Insta Edit
+   if(EDIT_BUTTON_HOLD)
+   {
+    if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME)
+    {
+    edit = TRUE;
+    }
+   }
+   else if(!EDIT_BUTTON_HOLD)
+   {
+    if(get_val(EDIT_BUTTON))
+    {
+    edit = TRUE;
+    }
+   }
+	if (edit == TRUE) {
+  resetPress(0,1,0,0,0,0);
+  if (get_val(BUILD)) {
+   aimMod = TRUE;
+  }
+  if (event_release(RT) || get_val(RESET_EDIT_BUTTON) || get_val(Y)) {
+   set_click(BUILD, 1, 0);
+   edit = FALSE;
+  }
+	}
+	if (event_press(BUILD)) 
+	{
+  resetPress(0,1,0,0,0,0);
+  aimMod = !aimMod;
+  edit = FALSE;
+	}	
+	if (get_val(Y)) 
+	{
+  resetPress(0,1,0,0,0,0);
+  aimMod = TRUE;
+	}
+if (a) {
+	if (i < num) {
+  if (!combo_running(master)) {
+   combo_run(master);
+   }
+  } else if 
+  (i > num) {a = FALSE;
+  }
+	}      
+   
+     
+}//  MAIN BLOCK END    
+//---------------------------------------------| COMBO's
+ 
+ 
+combo AntiRecoil {
+    anti_recoil = get_val(RY) + ANTI_RECOIL;
+    if (anti_recoil > 100) anti_recoil = 100;
+    set_val(RY, anti_recoil);
+}
+combo DROP_SHOT {            
+set_val(5, 100);                        
+wait(80);                
+wait(60);
+set_val(5, 100); // how long to wait until next drop 
+} 
+
+
+
+combo Auto_Aimm { 
+  set_val(RY, shake * -1); //1  
+    wait(20)
+    set_val(RX, shake); //1  
+    wait(20)
+    set_val(RY, shake); //1  
+    wait(20)
+    set_val(RX, shake * -1); //1  
+    wait(20)
+}
+ 
+combo AIM_ABUSE { 
+    set_val(7, 100);
+    wait(aimabuse_hold);
+    set_val(7, 0);
+    wait(aimabuse_rest);
+}
+         
+combo VIBRATE {
+    set_rumble(rumble_type, 100);
+    wait(300);
+    reset_rumble();
+}
+combo wait1 {
+    wait(50);
+    wait(55);
+}
+combo master {
+	wait(WAIT);
+	set_val(button, 100);
+	wait(28);
+	set_val(button, 0);
+	wait(28);
+	i = i + 1;
+}
+function set_click(B, Num, Wait) {
+	WAIT = Wait;
+	i = 0;
+	button = B;
+	num = Num;
+	a = TRUE;
+}
+function resetPress(P0,P1,P2,P3,T,S) {
+ 
+	if(!P0){pressedIt[0] = FALSE;}	else if(P0) {pressedIt[0] = TRUE;}
+	if(!P1){pressedIt[1] = FALSE;}	else if(P1) {pressedIt[1] = TRUE;}	
+	if(!P2){pressedIt[2] = FALSE;}	else if(P2) {pressedIt[2] = TRUE;}	
+	if(!P3){pressedIt[3] = FALSE;}	else if(P3) {pressedIt[3] = TRUE;}
+	if(!T){tap = FALSE;}  else if (T){tap = TRUE;}
+}
+combo SINGLE_SHOT {
+    set_val(4,100);
+    wait(100);
+    wait(250);
+    set_val(4,100);
+} 
+function rumble_A_if_true(var) {
+    if (var) rumble_type = RUMBLE_A;
+    else rumble_type = RUMBLE_B;
+    combo_run(VIBRATE);
+}

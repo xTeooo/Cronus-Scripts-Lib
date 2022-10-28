@@ -1,0 +1,96 @@
+ 
+/*
+putc_oled(position (1-15),ascii);        - Puts a single char into display buffer @ position
+ 
+ 
+puts_oled(x, y, font, length, color);    - Prints display buffer - 
+                                           x/y is upper left position of text
+                                           font (0-2) 
+                                           length - number of character to print (max 18)
+                                           color - 0 = black, 1 = white
+*/
+    int displayValue = 45;
+    int displayNew = TRUE;
+ 
+ 
+main {
+    if(get_val(XB1_LT)) {
+        if(event_press(XB1_LEFT)) {
+            displayValue -= 100;
+            displayNew = TRUE;
+        }
+        if(event_press(XB1_RIGHT)) {
+            displayValue += 100;
+            displayNew = TRUE;
+        }
+    }
+ 
+    if(displayNew) {
+        cls_oled(0);
+        number_to_string(displayValue,find_digits(displayValue));
+        displayNew = FALSE;
+    }
+}
+ 
+////////////////////////////////////////
+//--Convert Number to String 
+//   
+////////////////////////////////////////
+
+int i, c, c_val;
+
+function number_to_string(f_val,f_digits) {
+
+    i = 1;  c_val = 10000;
+    
+	if(f_val < 0) //--neg numbers
+	{          
+         putc_oled(i,45);    //--add leading "-"
+         i += 1;
+         f_val = abs(f_val);
+	} 
+	
+	for(c = 5; c >= 1; c--) 
+	{
+	    if(f_digits >= c) 
+	    {
+            putc_oled(i,ASCII_NUM[f_val / c_val]);
+            f_val = f_val % c_val;
+            i +=  1; 
+            if(c == 4) 
+            {
+                putc_oled(i,44);   //--add ","
+                i += 1;
+            }
+        }
+        c_val /= 10;
+    }
+    puts_oled(center_x(i - 1,OLED_FONT_MEDIUM_WIDTH),center_y(OLED_FONT_MEDIUM_HEIGHT),OLED_FONT_MEDIUM,i - 1,OLED_WHITE); // adjustable value centered in X and Y - medium size
+}
+////////////////////////////////////////////////////////////////
+//  FindDigits(f_num)
+//
+//        return Number of Digits in Value Passed     
+//
+////////////////////////////////////////////////////////////////
+function find_digits(f_num) {
+
+    f_num = abs(f_num);
+    if(f_num / 10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /   100 > 0) return 3;
+    if(f_num /    10 > 0) return 2;
+                          return 1;
+} 
+
+// Constant bytes - Convert numbers array - ASCII_NUM[column number]
+	const uint8 ASCII_NUM[] = 
+//	  0  1  2  3  4  5  6  7  8  9  (column numbers)
+  	{48,49,50,51,52,53,54,55,56,57};
+  	
+function center_x(f_chars,f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+function center_y(f_size) {
+    return (OLED_HEIGHT  / 2) - (f_size / 2);
+} 

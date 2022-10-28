@@ -1,0 +1,395 @@
+// GPC Online Library
+// rust_console_ak_.gpc
+
+
+																																												/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    JB'S Rust AK Anti Recoil        )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+This is not any scammers crap combo script that does not work at all. You can configure this to any gun any setting any attachment. The timing will need to be changed per gun.
+
+This script allows you to have anti recoil with aiming. Each bullet has a value which can be changed. 
+
+The values are pretty decent at this point. You can fine tune them if need be.
+
+Currently I have it set up for an AK with a holo.
+
+READ ALL THE INSTRUCTIONS BELOW IN GREEN TEXT.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              In Game Values                        )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+ 
+ 70 - X
+ 70 - Y
+ 40 - ADS
+ 40 - 1 X Zoom
+ 10 - Dead Zone Left
+ 10 - Dead Zone Right
+ 90 - FOV under Graphics. Not sure if this has an effect or not.
+
+																																												*/   
+
+
+
+define Ads      = PS4_L2; // DO NOT TOUCH
+define Fire     = PS4_R2; // DO NOT TOUCH
+
+
+																																												/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Script Stick Drift              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+1)	DO NOT SET YOUR IN GAME VALUE TO THIS. 
+2)	THIS IS VERY IMPORTANT!!! This allows you to remove stick drift from the script. Move your right stick around and find the highest value in device manager.  
+3)	See what your MAX INPUT is for your left stick X and Y when you dont touch it.
+4)	I recomend moving it around a little bit and see where it falls.
+6)	Mine was 7. It does not matter if it is positive or negative. Thats why 7 is in the dead zone above
+7)  Your stick drift cannot exceed a value for the anti recoil below.
+8)  LEAVE YOUR IN GAME DEADZONE AT 10 DO NOT SET IT TO THE ONE BELOW
+					 																																							*/
+
+define Deadzone = 7; 
+
+																																												/* 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Anti Recoil Values              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+1)	Values below are for the recoil pattern. You can adjust each bullet. The values are pretty solid. You can fine tune them if you want.
+2)  I recommend changing values only by increasing or decreasing the value by 1 at a time. Max 2 at a time.
+3)  X is Horzontal
+4)  Y is Vertical 
+																																												*/
+
+int X1  =   0; 			//Bullet 1 Leave at 0
+int X2  = -12;			//Bullet 2
+int X3  =  10;			//Bullet 3
+int X4  =  12;			//Bullet 4
+int X5  =  20;			//Bullet 5
+int X6  =  17;			//Bullet 6
+int X7  =  17;			//Bullet 7
+int X8  =  13; 			//Bullet 8
+int X9  = -17;			//Bullet 9
+int X10 = -17;			//Bullet 10
+int X11 =  -5;			//Bullet 11
+int X12 =  -5;			//Bullet 12
+int X13 =  -5;			//Bullet 13
+int X14 = -14;			//Bullet 14
+int X15 = -14;			//Bullet 15
+int X16 =  13;			//Bullet 16
+int X17 =  13;			//Bullet 17
+int X18 =  13;			//Bullet 18
+int X19 =  15;			//Bullet 19
+int X20 =  -1;			//Bullet 20
+int X21 =  -7;			//Bullet 21
+int X22 =  -7;			//Bullet 22
+int X23 =  -7;			//Bullet 23
+int X24 =  12;			//Bullet 24
+int X25 =  12;			//Bullet 25
+int X26 =  -8;			//Bullet 26
+int X27 =  -8;			//Bullet 27
+int X28 =  -8;			//Bullet 28
+int X29 =  -8;			//Bullet 29
+int X30 =  -8;			//Bullet 30
+
+int Y1  =   0;			//Bullet 1 Leave at 0
+int Y2  =  43;			//Bullet 2
+int Y3  =  41;			//Bullet 3
+int Y4  =  36;			//Bullet 4
+int Y5  =  34;			//Bullet 5
+int Y6  =  38;			//Bullet 6
+int Y7  =   5;			//Bullet 7
+int Y8  =   3;			//Bullet 8 
+int Y9  =  15;			//Bullet 9
+int Y10 =  15;			//Bullet 10
+int Y11 =  33;			//Bullet 11
+int Y12 =  33;			//Bullet 12
+int Y13 =  33;			//Bullet 13
+int Y14 =  33;			//Bullet 14
+int Y15 = -26;			//Bullet 15
+int Y16 =  20;			//Bullet 16
+int Y17 =   8;			//Bullet 17
+int Y18 =   8;			//Bullet 18
+int Y19 =   6;			//Bullet 19
+int Y20 =   5;			//Bullet 20
+int Y21 =   7;			//Bullet 21
+int Y22 =   7;			//Bullet 22
+int Y23 =   7;			//Bullet 23
+int Y24 =   2;			//Bullet 24
+int Y25 =   1;			//Bullet 25
+int Y26 =  18;			//Bullet 26
+int Y27 =  18;			//Bullet 27
+int Y28 =  18;			//Bullet 28
+int Y29 =  15;			//Bullet 29
+int Y30 =  15;			//Bullet 30
+
+int AntiRecoil_Y; // DO NOT TOUCH
+int AntiRecoil_X; // DO NOT TOUCH
+
+
+
+  																																												/*
+ DO NOT CHANGE ANYTHING BELOW. Unless you are configuring for a different weapon. You will need to change the value after get_ptime.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+																																												*/
+
+
+
+main {
+ 
+  
+  if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) <= Deadzone) {
+    set_val(PS4_LX,0);
+    set_val(PS4_LY,0);
+  }
+
+  if(isqrt(pow(abs(get_ival(PS4_RX)),2) + pow(abs(get_ival(PS4_RY)),2)) <= Deadzone) {
+    set_val(PS4_RX,0);
+    set_val(PS4_RY,0);
+  }
+   
+   
+   if(get_val(Fire) && get_val(Ads))
+    {
+        AntiRecoil_Y = Y1; 
+        AntiRecoil_X = X1; 
+      
+        if(get_ptime(Fire) >= 100)   // Bullet 2 
+        {
+            AntiRecoil_Y = Y2; 
+            AntiRecoil_X = X2;
+         
+        }
+        
+        if(get_ptime(Fire) >= 200)  // Bullet 3
+        {
+            AntiRecoil_Y = Y3; 
+            AntiRecoil_X = X3; 
+        }
+        
+        if(get_ptime(Fire) >= 300)  // Bullet 4
+        
+        {
+            AntiRecoil_Y = Y4; 
+            AntiRecoil_X = X4; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 400)  // Bullet 5
+        {
+            AntiRecoil_Y = Y5; 
+            AntiRecoil_X = X5; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 500)  // Bullet 6
+        {
+            AntiRecoil_Y = Y6; 
+            AntiRecoil_X = X6; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 600)  // Bullet 7
+        {
+            AntiRecoil_Y = Y7; 
+            AntiRecoil_X = X7; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 700)  // Bullet 8
+        {
+            AntiRecoil_Y = Y8; 
+            AntiRecoil_X = X8; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 800)  // Bullet 9
+        {
+            AntiRecoil_Y = Y9; 
+            AntiRecoil_X = X9; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 900)  // Bullet 10
+        {     
+            AntiRecoil_Y = Y10; 
+            AntiRecoil_X = X10; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1000)  // Bullet 11
+        {
+            AntiRecoil_Y = Y11; 
+            AntiRecoil_X = X11; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1100)  // Bullet 12
+        {
+            AntiRecoil_Y = Y12; 
+            AntiRecoil_X = X12; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1200)  // Bullet 13
+        {
+            AntiRecoil_Y = Y13; 
+            AntiRecoil_X = X13; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1300)  // Bullet 14
+        {
+            AntiRecoil_Y = Y14; 
+            AntiRecoil_X = X14; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1400)  // Bullet 15
+        {
+            AntiRecoil_Y = Y15; 
+            AntiRecoil_X = X15; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1500)  // Bullet 16
+        {
+            AntiRecoil_Y = Y16; 
+            AntiRecoil_X = X16; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1600)  // Bullet 17
+        {
+            AntiRecoil_Y = Y17; 
+            AntiRecoil_X = X17; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1700)  // Bullet 18
+        {
+            AntiRecoil_Y = Y18; 
+            AntiRecoil_X = X18; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1800)  // Bullet 19
+        {
+            AntiRecoil_Y = Y19; 
+            AntiRecoil_X = X19; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1900)  // Bullet 20
+        {
+            AntiRecoil_Y = Y20; 
+            AntiRecoil_X = X20; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2000)  // Bullet 21
+        {
+            AntiRecoil_Y = Y21; 
+            AntiRecoil_X = X21; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2100)  // Bullet 22
+        {
+            AntiRecoil_Y = Y22; 
+            AntiRecoil_X = X22; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2200)  // Bullet 23
+        {
+            AntiRecoil_Y = Y23; 
+            AntiRecoil_X = X23; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2300)  // Bullet 24
+        {
+            AntiRecoil_Y = Y24; 
+            AntiRecoil_X = X24; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2400)  // Bullet 25
+        {
+            AntiRecoil_Y = Y25; 
+            AntiRecoil_X = X25; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2500)  // Bullet 26
+        {
+            AntiRecoil_Y = Y26; 
+            AntiRecoil_X = X26; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2600)  // Bullet 27
+        {
+            AntiRecoil_Y = Y27; 
+            AntiRecoil_X = X27; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2700)  // Bullet 28
+        {
+            AntiRecoil_Y = Y28; 
+            AntiRecoil_X = X28; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2800)  // Bullet 29
+        {
+            AntiRecoil_Y = Y29; 
+            AntiRecoil_X = X29; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2900)  // Bullet 30
+        {
+            AntiRecoil_Y = Y30; 
+            AntiRecoil_X = X30; 
+        }
+
+        if(get_ptime(Fire) >= 3000)  // Bullet 30
+        {
+            AntiRecoil_Y = 0; 
+            AntiRecoil_X = 0; 
+        }
+		 
+        
+          
+        
+        
+        set_val(PS4_RY, SmartSens(AntiRecoil_Y, PS4_RY));
+        set_val(PS4_RX, SmartSens(AntiRecoil_X, PS4_RX));
+    
+        
+    }
+    
+    
+}
+
+
+int SmartSens;
+
+function SmartSens(f_val, f_axis) { 
+
+    SmartSens = ( (f_val * ( 100 - abs( get_val(f_axis) ) ) ) / 100); 
+
+    return clamp(get_val(f_axis) + SmartSens, -100, 100);
+}
+

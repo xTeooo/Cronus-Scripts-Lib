@@ -1,0 +1,41 @@
+int AntiRecoil_Y; // vertical antirecoil
+int AntiRecoil_X; // horizontal antirecoil
+
+main {
+ 
+    if(get_val(PS4_R2))
+    {
+        AntiRecoil_Y = 20; 
+        AntiRecoil_X = 0; 
+      
+        if(get_ptime(PS4_R2) >= 500)   // If R2 is pressed more than 500ms
+        {
+            AntiRecoil_Y = 30; 
+            AntiRecoil_X = 3; 
+        }
+        
+        if(get_ptime(PS4_R2) >= 1000)  // If R2 is pressed more than 1000ms (1 second)
+        {
+            AntiRecoil_Y = 40; 
+            AntiRecoil_X = 5; 
+        }
+        
+        if(get_ptime(PS4_R2) >= 1500)  // If R2 is pressed more than 1500ms (1.5 second)
+        {
+            AntiRecoil_Y = 50; 
+            AntiRecoil_X = 7; 
+        }
+        // you can add as many "if" as you want
+        set_val(PS4_RY, SmartSens(AntiRecoil_Y, PS4_RY));
+        set_val(PS4_RX, SmartSens(AntiRecoil_X, PS4_RX));
+    }
+}
+
+int SmartSens;
+
+function SmartSens(f_val, f_axis) { 
+
+    SmartSens = ( (f_val * ( 100 - abs( get_val(f_axis) ) ) ) / 100); 
+
+    return clamp(get_val(f_axis) + SmartSens, -100, 100);
+}

@@ -1,0 +1,755 @@
+// This is not your ZEN MASTER Shitty combo script. You can configure this to any gun any setting any attachment. The timing will need to be changed per gun.
+
+//Use reset default function when you use the script for the first time so that you can get the default values
+//Press L2/LT + Share/View to save values
+//You can increase/decrease values by 10 by holding L2/LT and press up/down
+//You can go back to the last page in the menu by pressing Circle/B
+//Other instructions are in the menu
+
+/* 
+	Currently I have it set up for an AK with a holo with the following in Game Values  70x , 70y, 40ADS, 40 1x, 10 deadzone for left and right.
+    I have the ballpark values in it. It needs fine tuning . Read instructions below.
+*/   
+const uint8 Buttons [] = {
+ PS4_L2,PS4_OPTIONS,PS4_LEFT, PS4_RIGHT,PS4_UP,PS4_DOWN,PS4_CROSS,PS4_CIRCLE,PS4_SQUARE,PS4_TRIANGLE,PS4_L1,PS4_R1,PS4_R2};
+int Menu; 
+int ValuePage;
+int XValuePage = TRUE;
+int YValuePage = FALSE;
+int MainPage;
+int ResetPage;
+int HelpPage;
+int Title = TRUE;
+int blockButton;
+int i;
+int ValueNumber = 0;
+int i_val, c_val, chr_val; 
+int SmartSens;
+
+
+const string GunName = "AK";
+const string TitleMessage []= {"Press L2/LT +", "Options/Menu"};
+const string MainPageMessage1 [] = {"Press Cross/A", "to continue"};
+const string MainPageMessage2 [] = {"Press Triangle/Y", "to exit"};
+const string MainPageMessage3 [] = {"Press Share/View", "to reset default"};
+const string ValuePageMessage [] = {"Press Square/X", "for help"};
+const string HelpPageMessage [] = {"Press L1/R1 to", "adjust x/y values", "Press Left/Right", "to increase/decrease", "Press Up/Down to", "change value id"};
+const string ResetMessage [] = {"Are you sure to", "reset all values", "to default?", "YES : Cross/A", "NO : Triangle/Y"};
+const string XValueNum[] = {"x_value1","x_value2","x_value3","x_value4","x_value5","x_value6","x_value7","x_value8","x_value9","x_value10","x_value11","x_value12","x_value13","x_value14","x_value15","x_value16","x_value17","x_value18","x_value19","x_value20","x_value21","x_value22","x_value23","x_value24","x_value25","x_value26","x_value27","x_value28","x_value29","x_value30"};
+const string YValueNum[] = {"y_value1","y_value2","y_value3","y_value4","y_value5","y_value6","y_value7","y_value8","y_value9","y_value10","y_value11","y_value12","y_value13","y_value14","y_value15","y_value16","y_value17","y_value18","y_value19","y_value20","y_value21","y_value22","y_value23","y_value24","y_value25","y_value26","y_value27","y_value28","y_value29","y_value30"};
+
+
+define Ads      = PS4_L2; // DO NOT TOUCH
+define Fire     = PS4_R2; // DO NOT TOUCH
+
+
+
+
+define Deadzone = 7; /* DO NOT SET YOUR IN GAME VALUE TO THIS. 
+					    THIS IS VERY IMPORTANT!!! This allows you to remove stick drift from the script. Move your right stick around and find the highest value in device manager.  
+					    See what your MAX INPUT is for your left stick X and Y when you dont touch it.
+					    I recomend moving it around a little bit and see where it falls.
+					    Mine was 7. It does not matter if it is positive or negative.
+					    Your stick drift cannot exceed a value for the anti recoil below. 
+					 */
+
+/* Values below are for the recoil pattern. You can adjust each bullet. I have a ballpark number it it. You need to fine tune it.
+   I recommend changing values only by increasing or decreasing the value by 1 at a time. Max 2 at a time.
+   X is Horzontal
+   Y is Vertical 
+*/
+
+int X[30];
+int Y[30];
+
+init {
+ X[0] = get_pvar(SPVAR_1, -100, 100, 0); 			//Bullet 1 Leave at 0
+ X[1] = get_pvar(SPVAR_2, -100, 100, -20);			//Bullet 2
+ X[2] = get_pvar(SPVAR_3, -100, 100, -10);			//Bullet 3
+ X[3] = get_pvar(SPVAR_4, -100, 100, -25);			//Bullet 4
+ X[4] = get_pvar(SPVAR_5, -100, 100, -18);			//Bullet 5
+ X[5] = get_pvar(SPVAR_6, -100, 100, 8);			//Bullet 6
+ X[6] = get_pvar(SPVAR_7, -100, 100, 12);			//Bullet 7
+ X[7] = get_pvar(SPVAR_8, -100, 100, 32); 			//Bullet 8
+ X[8] = get_pvar(SPVAR_9, -100, 100, 23);			//Bullet 9
+ X[9] = get_pvar(SPVAR_10, -100, 100, 23);			//Bullet 10
+ X[10] = get_pvar(SPVAR_11, -100, 100, 23);			//Bullet 11
+ X[11] = get_pvar(SPVAR_12, -100, 100, 24);			//Bullet 12
+ X[12] = get_pvar(SPVAR_13, -100, 100, 23);			//Bullet 13
+ X[13] = get_pvar(SPVAR_14, -100, 100, -16);			//Bullet 14
+ X[14] = get_pvar(SPVAR_15, -100, 100, -16);			//Bullet 15
+ X[15] = get_pvar(SPVAR_16, -100, 100, -16);			//Bullet 16
+ X[16] = get_pvar(SPVAR_17, -100, 100, -16);			//Bullet 17
+ X[17] = get_pvar(SPVAR_18, -100, 100, -22);			//Bullet 18
+ X[18] = get_pvar(SPVAR_19, -100, 100, -22);			//Bullet 19
+ X[19] = get_pvar(SPVAR_20, -100, 100, -26);			//Bullet 20
+ X[20] = get_pvar(SPVAR_21, -100, 100, -26);			//Bullet 21
+ X[21] = get_pvar(SPVAR_22, -100, 100, -26);			//Bullet 22
+ X[22] = get_pvar(SPVAR_23, -100, 100, -26);			//Bullet 23
+ X[23] = get_pvar(SPVAR_24, -100, 100, 18);			//Bullet 24
+ X[24] = get_pvar(SPVAR_25, -100, 100, 18);			//Bullet 25
+ X[25] = get_pvar(SPVAR_26, -100, 100, 18);			//Bullet 26
+ X[26] = get_pvar(SPVAR_27, -100, 100, 18);			//Bullet 27
+ X[27] = get_pvar(SPVAR_28, -100, 100, 18);			//Bullet 28
+ X[28] = get_pvar(SPVAR_29, -100, 100, 18);			//Bullet 29
+ X[29] = get_pvar(SPVAR_30, -100, 100, 0);			//Bullet 30
+
+ Y[0] = get_pvar(SPVAR_31, -100, 100, 0);			//Bullet 1
+ Y[1] = get_pvar(SPVAR_32, -100, 100, 46);			//Bullet 2
+ Y[2] = get_pvar(SPVAR_33, -100, 100, 46);			//Bullet 3
+ Y[3] = get_pvar(SPVAR_34, -100, 100, 46);			//Bullet 4
+ Y[4] = get_pvar(SPVAR_35, -100, 100, 46);			//Bullet 5
+ Y[5] = get_pvar(SPVAR_36, -100, 100, 46);			//Bullet 6
+ Y[6] = get_pvar(SPVAR_37, -100, 100, 27);			//Bullet 7
+ Y[7] = get_pvar(SPVAR_38, -100, 100, 27);			//Bullet 8 
+ Y[8] = get_pvar(SPVAR_39, -100, 100, 27);			//Bullet 9
+ Y[9] = get_pvar(SPVAR_40, -100, 100, 27);			//Bullet 10
+ Y[10] = get_pvar(SPVAR_41, -100, 100, 27);			//Bullet 11
+ Y[11] = get_pvar(SPVAR_42, -100, 100, 27);			//Bullet 12
+ Y[12] = get_pvar(SPVAR_43, -100, 100, 27);			//Bullet 13
+ Y[13] = get_pvar(SPVAR_44, -100, 100, 36);			//Bullet 14
+ Y[14] = get_pvar(SPVAR_45, -100, 100, 36);			//Bullet 15
+ Y[15] = get_pvar(SPVAR_46, -100, 100, 36);			//Bullet 16
+ Y[16] = get_pvar(SPVAR_47, -100, 100, 36);			//Bullet 17
+ Y[17] = get_pvar(SPVAR_48, -100, 100, 36);			//Bullet 18
+ Y[18] = get_pvar(SPVAR_49, -100, 100, 36);			//Bullet 19
+ Y[19] = get_pvar(SPVAR_50, -100, 100, 36);			//Bullet 20
+ Y[20] = get_pvar(SPVAR_51, -100, 100, 36);			//Bullet 21
+ Y[21] = get_pvar(SPVAR_52, -100, 100, 36);			//Bullet 22
+ Y[22] = get_pvar(SPVAR_53, -100, 100, 36);			//Bullet 23
+ Y[23] = get_pvar(SPVAR_54, -100, 100, 36);			//Bullet 24
+ Y[24] = get_pvar(SPVAR_55, -100, 100, 34);			//Bullet 25
+ Y[25] = get_pvar(SPVAR_56, -100, 100, 34);			//Bullet 26
+ Y[26] = get_pvar(SPVAR_57, -100, 100, 34);			//Bullet 27
+ Y[27] = get_pvar(SPVAR_58, -100, 100, 34);			//Bullet 28
+ Y[28] = get_pvar(SPVAR_59, -100, 100, 34);			//Bullet 29
+ Y[29] = get_pvar(SPVAR_60, -100, 100, 0);			//Bullet 30
+}
+
+
+int AntiRecoil_Y; // vertical antirecoil
+int AntiRecoil_X; // horizontal antirecoil
+
+// DO NOT CHANGE ANYTHING BELOW. Unless you are configuring for a different weapon. You will need to change the value after get_ptime.
+
+main {
+    if(get_val(PS4_L2) && event_press(PS4_SHARE))
+    {
+        SaveValues();
+    }
+    if(Title)
+    {
+        cls_oled(OLED_BLACK);
+        printf(CenterText(sizeof(GunName) - 1, OLED_FONT_MEDIUM_WIDTH), 13, OLED_FONT_MEDIUM, OLED_WHITE, GunName[0]);
+        printf(23, 40, OLED_FONT_SMALL, OLED_WHITE, TitleMessage[0]);
+        printf(25, 53, OLED_FONT_SMALL, OLED_WHITE, TitleMessage[1]);
+    }
+    if(MainPage)
+    {
+        cls_oled(OLED_BLACK);
+        printf(20, 0, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage1[0]);
+        printf(30, 10, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage1[1]);
+        printf(10, 45, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage2[0]);
+        printf(43, 55, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage2[1]);
+        printf(10, 22, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage3[0]);
+        printf(10, 32, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage3[1]);
+        
+        if(event_press(PS4_CROSS))
+        {
+            ValuePage = TRUE; 
+            MainPage = FALSE; 
+        }
+        if(event_press(PS4_SHARE))
+        {
+            ResetPage = TRUE;
+            MainPage = FALSE;
+        }
+    }
+    if(ResetPage)
+    {
+        cls_oled(OLED_BLACK)
+        printf(10, 0, OLED_FONT_SMALL, OLED_WHITE, ResetMessage[0]);
+        printf(10, 10, OLED_FONT_SMALL, OLED_WHITE, ResetMessage[1]);
+        printf(10, 20, OLED_FONT_SMALL, OLED_WHITE, ResetMessage[2]);
+        printf(10, 45, OLED_FONT_SMALL, OLED_WHITE, ResetMessage[3]);
+        printf(10, 55, OLED_FONT_SMALL, OLED_WHITE, ResetMessage[4]);
+        if(event_press(PS4_CROSS))
+        {
+            ResetDefault();
+            combo_run(EXIT);
+        }
+    }
+    if(ValuePage)
+    {
+        cls_oled(OLED_BLACK);
+        printf(15, 40, OLED_FONT_SMALL, OLED_WHITE, ValuePageMessage[0]);
+        printf(35, 50, OLED_FONT_SMALL, OLED_WHITE, ValuePageMessage[1]);
+        if(event_press(PS4_SQUARE))
+        {
+            HelpPage = TRUE;
+            ValuePage = FALSE;
+        }
+        if(event_press(PS4_CIRCLE))
+        {
+            ValuePage = FALSE;
+            MainPage = TRUE;
+            ValueNumber = 0;
+            XValuePage = TRUE;
+            YValuePage = FALSE;
+        }
+        if(event_press(PS4_LEFT))
+        {
+                ValueNumber--;
+        }
+            if(event_press(PS4_RIGHT))
+        {
+                ValueNumber++;
+        }
+        if(ValueNumber < 0) ValueNumber = 29;
+        if(ValueNumber > 29) ValueNumber = 0;
+        if(event_press(PS4_L1))
+        {
+            YValuePage = FALSE;
+            XValuePage = TRUE;
+        }
+        if(event_press(PS4_R1))
+        {
+            XValuePage = FALSE;
+            YValuePage = TRUE;
+        }
+                
+        if(XValuePage)
+        {
+            printf(21 , 0 , OLED_FONT_MEDIUM, OLED_WHITE, XValueNum[ValueNumber]);
+            NumberToString(X[ValueNumber], FindDigits(X[ValueNumber]), CenterText(FindDigits(X[ValueNumber]), OLED_FONT_MEDIUM_WIDTH), 20);	
+            if(event_press(PS4_UP))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    X[ValueNumber] += 10;
+                }
+                else { X[ValueNumber] ++;
+                }
+            }
+            if(event_press(PS4_DOWN))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    X[ValueNumber] -= 10;
+                }
+                else { X[ValueNumber] --;
+                }
+            }
+            if(X[ValueNumber] > 100) X[ValueNumber] = 100;
+            if(X[ValueNumber] < -100) X[ValueNumber] = -100;
+        }
+        if(YValuePage)
+        {
+            printf(21 , 0 , OLED_FONT_MEDIUM, OLED_WHITE, YValueNum[ValueNumber]);
+            NumberToString(Y[ValueNumber], FindDigits(Y[ValueNumber]), CenterText(FindDigits(Y[ValueNumber]), OLED_FONT_MEDIUM_WIDTH), 20);	
+            if(event_press(PS4_UP))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    Y[ValueNumber] += 10;
+                }
+                else { Y[ValueNumber] ++;
+                }
+            }
+            if(event_press(PS4_DOWN))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    Y[ValueNumber] -= 10;
+                }
+                else { Y[ValueNumber] --;
+                }
+            }
+            if(Y[ValueNumber] > 100) Y[ValueNumber] = 100;
+            if(Y[ValueNumber] < -100) Y[ValueNumber] = -100;
+        }
+    }
+    
+    if(HelpPage)
+    {
+        cls_oled(OLED_BLACK);
+        printf(0, 0, OLED_FONT_SMALL, OLED_WHITE, HelpPageMessage[0]);
+        printf(0, 10, OLED_FONT_SMALL, OLED_WHITE, HelpPageMessage[1]);
+        printf(0, 20, OLED_FONT_SMALL, OLED_WHITE, HelpPageMessage[2]);
+        printf(0, 30, OLED_FONT_SMALL, OLED_WHITE, HelpPageMessage[3]);
+        printf(0, 40, OLED_FONT_SMALL, OLED_WHITE, HelpPageMessage[4]);
+        printf(0, 50, OLED_FONT_SMALL, OLED_WHITE, HelpPageMessage[5]);
+        if(event_press(PS4_CIRCLE))
+        {
+            HelpPage = FALSE;
+            ValuePage = TRUE;
+        }
+    }
+        
+    if(blockButton) 
+    {
+		if(event_release(blockButton)) 
+		{
+			blockButton = 0;
+		}
+		else
+		{
+	    	set_val(blockButton,0);
+	    }
+	}
+	
+    if(get_val(PS4_L2) && get_val(PS4_OPTIONS) && get_ptime(PS4_OPTIONS) > 1000)
+	    {
+        Menu = TRUE;
+        MainPage = TRUE;
+        Title = FALSE;
+        blockButton = PS4_OPTIONS;
+        }
+    if(Menu)
+    {
+        BlockButtonPress();
+        if(event_press(PS4_TRIANGLE)) 
+        {
+            combo_run(EXIT);
+        }
+    }
+
+    if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) <= Deadzone) 
+    {
+        set_val(PS4_LX,0);
+        set_val(PS4_LY,0);
+    }
+
+    if(isqrt(pow(abs(get_ival(PS4_RX)),2) + pow(abs(get_ival(PS4_RY)),2)) <= Deadzone) 
+    {
+        set_val(PS4_RX,0);
+        set_val(PS4_RY,0);
+    }
+   
+   
+   if(get_val(Fire) && get_val(Ads))
+    {
+        AntiRecoil_Y = Y[0]; 
+        AntiRecoil_X = X[0]; 
+      
+        if(get_ptime(Fire) >= 130)   // Bullet 2 
+        {
+            AntiRecoil_Y = Y[1]; 
+            AntiRecoil_X = X[1]; 
+        }
+        
+        if(get_ptime(Fire) >= 260)  // Bullet 3
+        {
+            AntiRecoil_Y = Y[2]; 
+            AntiRecoil_X = X[2]; 
+        }
+        
+        if(get_ptime(Fire) >= 390)  // Bullet 4
+        {
+            AntiRecoil_Y = Y[3]; 
+            AntiRecoil_X = X[3]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 520)  // Bullet 5
+        {
+            AntiRecoil_Y = Y[4]; 
+            AntiRecoil_X = X[4]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 650)  // Bullet 6
+        {
+            AntiRecoil_Y = Y[5]; 
+            AntiRecoil_X = X[5]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 780)  // Bullet 7
+        {
+            AntiRecoil_Y = Y[6]; 
+            AntiRecoil_X = X[6]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 910)  // Bullet 8
+        {
+            AntiRecoil_Y = Y[7]; 
+            AntiRecoil_X = X[7]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1040)  // Bullet 9
+        {
+            AntiRecoil_Y = Y[8]; 
+            AntiRecoil_X = X[8]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1170)  // Bullet 10
+        {
+            AntiRecoil_Y = Y[9]; 
+            AntiRecoil_X = X[9]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1300)  // Bullet 11
+        {
+            AntiRecoil_Y = Y[10]; 
+            AntiRecoil_X = X[10]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1430)  // Bullet 12
+        {
+            AntiRecoil_Y = Y[11]; 
+            AntiRecoil_X = X[11]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1560)  // Bullet 13
+        {
+            AntiRecoil_Y = Y[12]; 
+            AntiRecoil_X = X[12]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1690)  // Bullet 14
+        {
+            AntiRecoil_Y = Y[13]; 
+            AntiRecoil_X = X[13]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1820)  // Bullet 15
+        {
+            AntiRecoil_Y = Y[14]; 
+            AntiRecoil_X = X[14]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 1950)  // Bullet 16
+        {
+            AntiRecoil_Y = Y[15]; 
+            AntiRecoil_X = X[15]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2080)  // Bullet 17
+        {
+            AntiRecoil_Y = Y[16]; 
+            AntiRecoil_X = X[16]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2210)  // Bullet 18
+        {
+            AntiRecoil_Y = Y[17]; 
+            AntiRecoil_X = X[17]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2340)  // Bullet 19
+        {
+            AntiRecoil_Y = Y[18]; 
+            AntiRecoil_X = X[18]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2470)  // Bullet 20
+        {
+            AntiRecoil_Y = Y[19]; 
+            AntiRecoil_X = X[19]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2600)  // Bullet 21
+        {
+            AntiRecoil_Y = Y[20]; 
+            AntiRecoil_X = X[20]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2730)  // Bullet 22
+        {
+            AntiRecoil_Y = Y[21]; 
+            AntiRecoil_X = X[21]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2860)  // Bullet 23
+        {
+            AntiRecoil_Y = Y[22]; 
+            AntiRecoil_X = X[22]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 2990)  // Bullet 24
+        {
+            AntiRecoil_Y = Y[23]; 
+            AntiRecoil_X = X[23]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 3120)  // Bullet 25
+        {
+            AntiRecoil_Y = Y[24]; 
+            AntiRecoil_X = X[24]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 3250)  // Bullet 26
+        {
+            AntiRecoil_Y = Y[25]; 
+            AntiRecoil_X = X[25]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 3380)  // Bullet 27
+        {
+            AntiRecoil_Y = Y[26]; 
+            AntiRecoil_X = X[26]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 3510)  // Bullet 28
+        {
+            AntiRecoil_Y = Y[27]; 
+            AntiRecoil_X = X[27]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 3640)  // Bullet 29
+        {
+            AntiRecoil_Y = Y[28]; 
+            AntiRecoil_X = X[28]; 
+        }
+        
+        
+        if(get_ptime(Fire) >= 3770)  // Bullet 30
+        {
+            AntiRecoil_Y = Y[29]; 
+            AntiRecoil_X = X[29]; 
+        }
+
+        if(get_ptime(Fire) >= 4000)  // Bullet 30
+        {
+            AntiRecoil_Y = 0; 
+            AntiRecoil_X = 0; 
+        }
+		 
+        
+          
+        
+        
+        set_val(PS4_RY, SmartSens(AntiRecoil_Y, PS4_RY));
+        set_val(PS4_RX, SmartSens(AntiRecoil_X, PS4_RX));
+    
+        
+    }
+    
+    
+}
+
+combo EXIT 
+{
+    wait(100);
+    cls_oled(OLED_BLACK); 
+    Menu = FALSE;
+    MainPage = FALSE; 
+    ResetPage = FALSE;
+    ValuePage = FALSE; 
+    HelpPage = FALSE;
+    ValueNumber = 0;
+    XValuePage = TRUE;
+    YValuePage = FALSE;
+    Title = TRUE;
+}
+
+function SmartSens(f_val, f_axis) { 
+
+    SmartSens = ( (f_val * ( 100 - abs( get_val(f_axis) ) ) ) / 100); 
+
+    return clamp(get_val(f_axis) + SmartSens, -100, 100);
+}
+   
+function CenterText(f_chars,f_font)
+{
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); 
+}
+
+function BlockButtonPress ()
+{
+    for(i = 0; i < 13; i++)
+    {
+        if(get_ival(Buttons[i]) || event_press(Buttons[i]))
+        {
+            set_val(Buttons[i],0);
+        }
+    }
+}
+
+function NumberToString(f_val,f_dgts, x_val,y_val) {
+ 
+	i_val = 1;  chr_val = 10000;
+    
+	if(f_val < 0){          
+         putc_oled(i_val,45);    
+         i_val += 1;
+         f_val = abs(f_val);
+	} 
+	for(c_val = 5; c_val >= 1; c_val--){
+	    if(f_dgts >= c_val) {
+            putc_oled(i_val, (f_val / chr_val) + 48);
+            f_val = f_val % chr_val;
+            i_val +=  1; 
+            if(c_val == 4){
+                putc_oled(i_val,44);   
+                i_val += 1;
+            }
+        }
+        chr_val /= 10;
+    }  
+
+    puts_oled(x_val, y_val, 1,i_val - 1, 1);    
+} 
+
+function FindDigits(digits) {                         
+	//  FindDigits(value)                                
+	//        return Number of Digits in Value Passed     		                                                      
+    digits = abs(digits);                               
+    if(digits / 10000 > 0) return 5;                   
+    if(digits /  1000 > 0) return 4;                   
+    if(digits /   100 > 0) return 3;                   
+    if(digits /    10 > 0) return 2;                   
+                          return 1;                  
+}
+
+function SaveValues() {
+    set_pvar(SPVAR_1, X[0]);
+    set_pvar(SPVAR_2, X[1]);
+    set_pvar(SPVAR_3, X[2]);
+    set_pvar(SPVAR_4, X[3]);
+    set_pvar(SPVAR_5, X[4]);
+    set_pvar(SPVAR_6, X[5]);
+    set_pvar(SPVAR_7, X[6]);
+    set_pvar(SPVAR_8, X[7]);
+    set_pvar(SPVAR_9, X[8]);
+    set_pvar(SPVAR_10, X[9]);
+    set_pvar(SPVAR_11, X[10]);
+    set_pvar(SPVAR_12, X[11]);
+    set_pvar(SPVAR_13, X[12]);
+    set_pvar(SPVAR_14, X[13]);
+    set_pvar(SPVAR_15, X[14]);
+    set_pvar(SPVAR_16, X[15]);
+    set_pvar(SPVAR_17, X[16]);
+    set_pvar(SPVAR_18, X[17]);
+    set_pvar(SPVAR_19, X[18]);
+    set_pvar(SPVAR_20, X[19]);
+    set_pvar(SPVAR_21, X[20]);
+    set_pvar(SPVAR_22, X[21]);
+    set_pvar(SPVAR_23, X[22]);
+    set_pvar(SPVAR_24, X[23]);
+    set_pvar(SPVAR_25, X[24]);
+    set_pvar(SPVAR_26, X[25]);
+    set_pvar(SPVAR_27, X[26]);
+    set_pvar(SPVAR_28, X[27]);
+    set_pvar(SPVAR_29, X[28]);
+    set_pvar(SPVAR_30, X[29]);
+    set_pvar(SPVAR_31, Y[0]);
+    set_pvar(SPVAR_32, Y[1]);
+    set_pvar(SPVAR_33, Y[2]);
+    set_pvar(SPVAR_34, Y[3]);
+    set_pvar(SPVAR_35, Y[4]);
+    set_pvar(SPVAR_36, Y[5]);
+    set_pvar(SPVAR_37, Y[6]);
+    set_pvar(SPVAR_38, Y[7]);
+    set_pvar(SPVAR_39, Y[8]);
+    set_pvar(SPVAR_40, Y[9]);
+    set_pvar(SPVAR_41, Y[10]);
+    set_pvar(SPVAR_42, Y[11]);
+    set_pvar(SPVAR_43, Y[12]);
+    set_pvar(SPVAR_44, Y[13]);
+    set_pvar(SPVAR_45, Y[14]);
+    set_pvar(SPVAR_46, Y[15]);
+    set_pvar(SPVAR_47, Y[16]);
+    set_pvar(SPVAR_48, Y[17]);
+    set_pvar(SPVAR_49, Y[18]);
+    set_pvar(SPVAR_50, Y[19]);
+    set_pvar(SPVAR_51, Y[20]);
+    set_pvar(SPVAR_52, Y[21]);
+    set_pvar(SPVAR_53, Y[22]);
+    set_pvar(SPVAR_54, Y[23]);
+    set_pvar(SPVAR_55, Y[24]);
+    set_pvar(SPVAR_56, Y[25]);
+    set_pvar(SPVAR_57, Y[26]);
+    set_pvar(SPVAR_58, Y[27]);
+    set_pvar(SPVAR_59, Y[28]);
+    set_pvar(SPVAR_60, Y[29]);
+}
+
+function ResetDefault()
+{
+ X[0] =   0; 			
+ X[1] = -20;			
+ X[2] = -10;			
+ X[3] = -25;			
+ X[4] = -18;			
+ X[5] =   8;			
+ X[6] =  12;			
+ X[7] =  32; 			
+ X[8] =  23;			
+ X[9] =  23;			
+ X[10] =  23;			
+ X[11] =  24;			
+ X[12] =  23;			
+ X[13] = -16;			
+ X[14] = -16;			
+ X[15] = -16;			
+ X[16] = -16;			
+ X[17] = -22;			
+ X[18] = -22;			
+ X[19] = -26;			
+ X[20] = -26;			
+ X[21] = -26;			
+ X[22] = -26;			
+ X[23] =  18;			
+ X[24] =  18;			
+ X[25] =  18;			
+ X[26] =  18;			
+ X[27] =  18;			
+ X[28] =  18;			
+ X[29] =   0;			
+
+ Y[0] =   0;			
+ Y[1] =  46;			
+ Y[2] =  46;			
+ Y[3] =  46;			
+ Y[4] =  46;			
+ Y[5] =  46;			
+ Y[6] =  27;			
+ Y[7] =  27;			 
+ Y[8] =  27;			
+ Y[9] =  27;			
+ Y[10] =  27;			
+ Y[11] =  27;			
+ Y[12] =  27;			
+ Y[13] =  36;			
+ Y[14] =  36;			
+ Y[15] =  36;			
+ Y[16] =  36;			
+ Y[17] =  36;			
+ Y[18] =  36;			
+ Y[19] =  36;			
+ Y[20] =  36;			
+ Y[21] =  36;			
+ Y[22] =  36;			
+ Y[23] =  36;			
+ Y[24] =  34;			
+ Y[25] =  34;			
+ Y[26] =  34;			
+ Y[27] =  34;			
+ Y[28] =  34;			
+ Y[29] =   0;			
+ SaveValues();
+}

@@ -1,0 +1,32 @@
+int motiondz = 3;				// Set motion to ignore when controller is at  a rest position
+int stickdz = 10;				// Set your stick deadzone and match to your ingame setting
+int motion_to_use = 2;			// This controls how responsive the controller is to motion
+
+int currentX, currentY;
+
+main {
+    
+        currentX = get_val(PS4_ACCX);
+        currentY = get_val(PS4_ACCZ);
+        
+        if(get_ival(PS4_ACCZ) >= motiondz){
+        	offset(XB1_RY,(stickdz + ((motiondz + get_ival(PS4_ACCZ)) + (motion_to_use * get_ival(PS4_ACCZ)))) * -1);
+        }
+        
+        if(get_ival(PS4_ACCZ) <= motiondz * -1){
+        	offset(XB1_RY,((stickdz * -1) - (((motiondz * -1) - get_ival(PS4_ACCZ)) + ( -1 *motion_to_use * get_ival(PS4_ACCZ)))) * -1);
+        }
+        
+        if(get_ival(PS4_ACCX) >= motiondz){
+        	offset(XB1_RX,stickdz + ((motiondz + get_ival(PS4_ACCX)) + (motion_to_use * get_ival(PS4_ACCX))));
+        }
+        
+        if(get_ival(PS4_ACCX) <= motiondz * -1){
+        	offset(XB1_RX,(stickdz * -1) - (((motiondz * -1) - get_ival(PS4_ACCX)) + (-1 * motion_to_use * get_ival(PS4_ACCX))));
+        }
+}
+
+function offset(int axis, int offset_val) {
+  	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return 
+}

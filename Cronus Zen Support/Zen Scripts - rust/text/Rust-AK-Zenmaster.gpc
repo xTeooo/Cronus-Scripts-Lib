@@ -1,0 +1,657 @@
+																																												/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              In Game Values                        )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+ 
+ 95 - X
+ 95 - Y
+ 51 - ADS
+ 51 - 1 X Zoom
+ 10 - Dead Zone Left
+ 10 - Dead Zone Right
+ 70 - FOV under Graphics. Not sure if this has an effect or not.
+																																												*/  
+
+define Ads      = PS4_L2; // DO NOT TOUCH
+define Fire     = PS4_R2; // DO NOT TOUCH
+                                                                                                                                                                               /*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Script Stick Drift              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+1)	DO NOT SET YOUR IN GAME VALUE TO THIS. 
+2)	THIS IS VERY IMPORTANT!!! This allows you to remove stick drift from the script. Move your right stick around and find the highest value in device manager.  
+3)	See what your MAX INPUT is for your left stick X and Y when you dont touch it.
+4)	I recomend moving it around a little bit and see where it falls.
+6)	Mine was 7. It does not matter if it is positive or negative. Thats why 7 is in the dead zone above
+7)  Your stick drift cannot exceed a value for the anti recoil below.
+8)  LEAVE YOUR IN GAME DEADZONE AT 10 DO NOT SET IT TO THE ONE BELOW
+					 																																							*/
+
+define Deadzone = 5; 
+
+																																												/* 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Anti Recoil Values              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+                                                                                                                                                                                 */
+                                                                                                                                                                                 
+const int16 ARval[][] = {
+{-16,-6,-24,-18,5,10,30,20,20,20,20,20,10,-5,-12,-18,-24,-24,-24,-24,-24,-18,0,24,30,30,20,0,0,0,0}, 
+{50,50,50,50,50,20,38,38,38,38,38,38,38,25,45,55,40,40,40,40,40,35,20,5,25,35,60,30,50,50,50}
+};
+
+int Xval;
+int Yval;
+int t_val = 130;
+int n; 
+
+int AntiRecoil_Y_Use[31]; // DO NOT TOUCH
+int AntiRecoil_X_Use[31]; // DO NOT TOUCH
+
+init
+{
+    Xval = get_pvar(SPVAR_1, -99, 300, 0);
+    Yval = get_pvar(SPVAR_2, -99, 300, 0);
+}
+
+//Menu Instructions
+
+//Press L2/LT + Options/Menu to enter menu
+/*In the main page of menu, 
+Press CROSS/A to enter value adjustment page,*/
+/*In the value adjustment page, 
+You can increase/decrease values by 10 by holding L2/LT and pressing up/down, or only change values by 1 by only pressing up/down,
+Press L1/LB to adjust x values, press R1/RB to adjust y values*/
+//You can go back to the last page of the menu by pressing Circle/B
+//Press Triangle/Y in any page of the menu to exit menu
+//Press L2/LT + Triangle/Y inside or outside the menu to save values
+
+//Some other instructions are inside the menu
+
+const uint8 Buttons [] = {
+ PS4_L2,PS4_OPTIONS,PS4_LEFT, PS4_RIGHT,PS4_UP,PS4_DOWN,PS4_CROSS,PS4_CIRCLE,PS4_SQUARE,PS4_TRIANGLE,PS4_L1,PS4_R1,PS4_R2};
+int Menu; 
+int ValuePage;
+int XValuePage = TRUE;
+int YValuePage = FALSE;
+int MainPage;
+int HelpPage1;
+int HelpPage2;
+int Title = TRUE;
+int blockButton;
+int i;
+int i_val, c_val, chr_val; 
+
+
+const string GunName = "AK ZM %";   //You can change AK to whatever title you want <12 words
+const string TitleMessage []= {"Press L2/LT +", "Options/Menu"};
+const string MainPageMessage1 [] = {"Press Cross/A", "to continue"};
+const string MainPageMessage2 [] = {"Press Triangle/Y", "to exit"};
+const string ValuePageMessage [] = {"Press Square/X", "for help"};
+const string HelpPage1Message [] = {"Press L1/R1 to", "adjust x/y", "Cross/A:Next Page", "Circle/B:Last Page"};
+const string HelpPage2Message [] = {"Hold L2 and press", "Up/Down:", "Change value by 10", "Press Up/Down:", "Change value by 1"};
+const string XValue = "x_val";
+const string YValue = "y_val";
+
+  																																												/*
+ DO NOT CHANGE ANYTHING BELOW. Unless you are configuring for a different weapon. You will need to change the value after get_ptime.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+																																												*/
+
+main {
+    set_val(TRACE_1, AntiRecoil_Y_Use[0]);
+    set_val(TRACE_2, Yval);
+    
+    for(n=0; n<31; n++)
+    {
+        AntiRecoil_Y_Use[n] = (ARval[1][n] * (100 + Yval)) / 100;
+        AntiRecoil_X_Use[n] = (ARval[0][n] * (100 + Xval)) / 100;
+    }
+    
+    if(get_val(PS4_L2) && event_press(PS4_TRIANGLE))
+    {
+        SaveValues();
+    }
+    
+    
+    if(Title)
+    {
+        cls_oled(OLED_BLACK);
+        printf(CenterText(sizeof(GunName) - 1, OLED_FONT_MEDIUM_WIDTH), 13, OLED_FONT_MEDIUM, OLED_WHITE, GunName[0]);
+        printf(23, 40, OLED_FONT_SMALL, OLED_WHITE, TitleMessage[0]);
+        printf(25, 53, OLED_FONT_SMALL, OLED_WHITE, TitleMessage[1]);
+    }
+    if(MainPage)
+    {
+        cls_oled(OLED_BLACK);
+        printf(20, 0, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage1[0]);
+        printf(30, 10, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage1[1]);
+        printf(10, 45, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage2[0]);
+        printf(43, 55, OLED_FONT_SMALL, OLED_WHITE, MainPageMessage2[1]);
+        
+        if(event_press(PS4_CROSS))
+        {
+            ValuePage = TRUE; 
+            MainPage = FALSE; 
+        }
+    }
+
+    if(ValuePage)
+    {
+        cls_oled(OLED_BLACK);
+        printf(15, 40, OLED_FONT_SMALL, OLED_WHITE, ValuePageMessage[0]);
+        printf(35, 50, OLED_FONT_SMALL, OLED_WHITE, ValuePageMessage[1]);
+        if(event_press(PS4_SQUARE))
+        {
+            HelpPage1 = TRUE;
+            ValuePage = FALSE;
+        }
+        if(event_press(PS4_CIRCLE))
+        {
+            ValuePage = FALSE;
+            MainPage = TRUE;
+            XValuePage = TRUE;
+            YValuePage = FALSE;
+        }
+        if(event_press(PS4_L1))
+        {
+            XValuePage = TRUE;
+            YValuePage = FALSE;
+        }
+        if(event_press(PS4_R1))
+        {
+            XValuePage = FALSE;
+            YValuePage = TRUE;
+        }
+                
+        if(XValuePage)
+        {
+            printf(CenterText(sizeof(XValue) - 1, OLED_FONT_MEDIUM_WIDTH), 0, OLED_FONT_MEDIUM, OLED_WHITE, XValue[0]);
+            NumberToString(Xval, FindDigits(Xval), CenterText(FindDigits(Xval), OLED_FONT_MEDIUM_WIDTH), 20);	
+            if(event_press(PS4_UP))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    Xval += 10;
+                }
+                else { Xval ++;
+                }
+            }
+            if(event_press(PS4_DOWN))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    Xval -= 10;
+                }
+                else { Xval --;
+                }
+            }
+            if(Xval > 300) Xval = 300;
+            if(Xval < -99) Xval = -99;
+        }
+        if(YValuePage)
+        {
+            printf(CenterText(sizeof(YValue) - 1, OLED_FONT_MEDIUM_WIDTH), 0, OLED_FONT_MEDIUM, OLED_WHITE, YValue[0]);
+            NumberToString(Yval, FindDigits(Yval), CenterText(FindDigits(Yval), OLED_FONT_MEDIUM_WIDTH), 20);	
+            if(event_press(PS4_UP))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    Yval += 10;
+                }
+                else { Yval ++;
+                }
+            }
+            if(event_press(PS4_DOWN))
+            {
+                if(get_ival(PS4_L2))
+                {
+                    Yval -= 10;
+                }
+                else { Yval --;
+                }
+            }
+            if(Yval > 300) Yval = 300;
+            if(Yval < -99) Yval = -99;
+        }
+    }
+    
+    if(HelpPage1)
+    {
+        cls_oled(OLED_BLACK);
+        printf(0, 0, OLED_FONT_SMALL, OLED_WHITE, HelpPage1Message[0]);
+        printf(0, 10, OLED_FONT_SMALL, OLED_WHITE, HelpPage1Message[1]);
+        printf(0, 40, OLED_FONT_SMALL, OLED_WHITE, HelpPage1Message[2]);
+        printf(0, 50, OLED_FONT_SMALL, OLED_WHITE, HelpPage1Message[3]);
+        if(event_press(PS4_CIRCLE))
+        {
+            HelpPage1 = FALSE;
+            ValuePage = TRUE;
+        }
+        if(event_press(PS4_CROSS))
+        {
+            HelpPage2 = TRUE;
+            HelpPage1 = FALSE;
+        }
+    }
+    
+    if(HelpPage2)
+    {
+        cls_oled(OLED_BLACK);
+        printf(0, 0, OLED_FONT_SMALL, OLED_WHITE, HelpPage2Message[0]);
+        printf(0, 10, OLED_FONT_SMALL, OLED_WHITE, HelpPage2Message[1]);
+        printf(0, 20, OLED_FONT_SMALL, OLED_WHITE, HelpPage2Message[2]);
+        printf(0, 30, OLED_FONT_SMALL, OLED_WHITE, HelpPage2Message[3]);
+        printf(0, 40, OLED_FONT_SMALL, OLED_WHITE, HelpPage2Message[4]);
+        printf(0, 50, OLED_FONT_SMALL, OLED_WHITE, HelpPage1Message[3]);
+        if(event_press(PS4_CIRCLE))
+        {
+            HelpPage2 = FALSE;
+            HelpPage1 = TRUE;
+        }
+    }
+        
+    if(blockButton) 
+    {
+		if(event_release(blockButton)) 
+		{
+			blockButton = 0;
+		}
+		else
+		{
+	    	set_val(blockButton,0);
+	    }
+	}
+	
+    if(get_val(PS4_L2) && get_val(PS4_OPTIONS) && get_ptime(PS4_OPTIONS) > 1000)
+	    {
+        Menu = TRUE;
+        MainPage = TRUE;
+        Title = FALSE;
+        blockButton = PS4_OPTIONS;
+        }
+    if(Menu)
+    {
+        BlockButtonPress();
+        if(event_press(PS4_TRIANGLE)) 
+        {
+            combo_run(EXIT);
+        }
+    }
+
+    if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) <= Deadzone) 
+    {
+        set_val(PS4_LX,0);
+        set_val(PS4_LY,0);
+    }
+
+    if(isqrt(pow(abs(get_ival(PS4_RX)),2) + pow(abs(get_ival(PS4_RY)),2)) <= Deadzone) 
+    {
+        set_val(PS4_RX,0);
+        set_val(PS4_RY,0);
+    }
+   
+   
+   
+   if(get_val(Fire) && get_val(Ads))
+    {
+       combo_run(AK_RECOIL);
+    }
+    else 
+    {                    
+       combo_stop(AK_RECOIL);    
+    }
+    
+    
+}
+
+combo EXIT 
+{
+    wait(100);
+    cls_oled(OLED_BLACK); 
+    Menu = FALSE;
+    MainPage = FALSE; 
+    ValuePage = FALSE; 
+    HelpPage1 = FALSE;
+    HelpPage2 = FALSE;
+    XValuePage = TRUE;
+    YValuePage = FALSE;
+    Title = TRUE;
+}
+
+combo AK_RECOIL {
+
+
+//SHOOT BULLET 1
+
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[0]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[0]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 2
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[1]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[1]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 3
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[2]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[2]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 4
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[3]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[3]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 5
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[4]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[4]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 6
+
+
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[5]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[5]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 7
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[6]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[6]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 8
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[7]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[7]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 9
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[8]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[8]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 10
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[9]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[9]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 11
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[10]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[10]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 12
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[11]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[11]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 13
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[12]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[12]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 14
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[13]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[13]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 15
+
+
+
+
+
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[14]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[14]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 16
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[15]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[15]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 17
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[16]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[16]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 18
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[17]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[17]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 19
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[18]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[18]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 20
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[19]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[19]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 21
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[20]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[20]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 22
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[21]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[21]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 23
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[22]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[22]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 24
+
+
+
+
+
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[23]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[23]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 25
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[24]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[24]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 26
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[25]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[25]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 27
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[26]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[26]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 28
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[27]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[27]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT BULLET 29
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[28]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[28]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT EXTRA DELAYS
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[29]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[29]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+//SHOOT EXTRA DELAYS
+
+Set_Val(PS4_RX , AntiRecoil_X_Use[30]);
+Set_Val(PS4_RY , AntiRecoil_Y_Use[30]);
+wait(t_val/2);
+wait(t_val/2);
+Set_Val(PS4_RX , 0);
+Set_Val(PS4_RY , 0);
+
+wait(5000)
+}
+
+function Set_Val(Stick, Value) {
+set_val(Stick, clamp(Value * (100 - abs(get_val(Stick))) / 100 + get_val(Stick), -100, 100));
+return;
+}
+   
+function CenterText(f_chars,f_font)
+{
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); 
+}
+
+function BlockButtonPress ()
+{
+    for(i = 0; i < 13; i++)
+    {
+        if(get_ival(Buttons[i]) || event_press(Buttons[i]))
+        {
+            set_val(Buttons[i],0);
+        }
+    }
+}
+
+function NumberToString(f_val,f_dgts, x_val,y_val) {
+ 
+	i_val = 1;  chr_val = 10000;
+    
+	if(f_val < 0){          
+         putc_oled(i_val,45);    
+         i_val += 1;
+         f_val = abs(f_val);
+	} 
+	for(c_val = 5; c_val >= 1; c_val--){
+	    if(f_dgts >= c_val) {
+            putc_oled(i_val, (f_val / chr_val) + 48);
+            f_val = f_val % chr_val;
+            i_val +=  1; 
+            if(c_val == 4){
+                putc_oled(i_val,44);   
+                i_val += 1;
+            }
+        }
+        chr_val /= 10;
+    }  
+
+    puts_oled(x_val, y_val, 1,i_val - 1, 1);    
+} 
+
+function FindDigits(digits) {                         
+	//  FindDigits(value)                                
+	//        return Number of Digits in Value Passed     		                                                      
+    digits = abs(digits);                               
+    if(digits / 10000 > 0) return 5;                   
+    if(digits /  1000 > 0) return 4;                   
+    if(digits /   100 > 0) return 3;                   
+    if(digits /    10 > 0) return 2;                   
+                          return 1;                  
+}
+
+function SaveValues() {
+   set_pvar(SPVAR_1, Xval);
+   set_pvar(SPVAR_2, Yval);
+}
+
