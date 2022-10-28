@@ -1,0 +1,2338 @@
+/*
+ 											**** PUBG ITALIA ZEN EDITION   ****
+                               							
+                               							Ver 4.0
+                               							
+              										FATTO DA ANDRY 85
+              										
+              UN GRAZIE A NOOZBAR E TAYLORDRIFT21 PER LA BASE DELLO SCRIPT A BATTS PER IL RECOIL PROGRESSIVO
+             
+              SE VI PIACE LO SCRIPT POTETE FARE UNA DONAZIONE SU: IF YOU LIKE A SCRIPT CAN DONATE AT:
+
+  										https://www.paypal.com/paypalme/andry1985
+ 												
+ 												
+ 														PER ASSISTENZA:
+ 												
+ 												https://discord.gg/rR3nAWSpKQ
+  								https://www.facebook.com/groups/cronusmaxitaliaofficial
+ 					 https://cronusmax.com/forums/forumdisplay.php/262-CronusMAX-Supporto-Italiano
+ 
+          										  ***** FEATURES *****
+                  
+ Questo script contiene 3 profili di arma, per ogni profilo si può impostare il recoil standard o quello progressivo 3 step
+ Rapid fire e fuoco a raffica da 4 attivabile su tre profili - Strafe - Jumpshot - respiro automatico - 
+ Peekshot  - Autolean - Abbassarsi in mira - TBAG  questi 4 attivabili su singolo profilo- swap trigger con button - Asse y invertito
+ Cambio slot da menu
+ 
+ COLORI PROFILI
+		
+		PROFILO PRIMARIO VERDE 
+		PROFILO SECONDARIO ROSSO
+		PROFILO WARZONE CELESTEf
+							
+		ABILITAZIONI  VELOCI 
+		autolean	 = TIENI PREMUTO PS4_L2 e PREMI PER PIU DI 0.3s  PS4_UP					
+		rapidfire 	 = TIENI PREMUTO PS4_L2 e PREMI PER PIU DI 0.3s  PS4_LEFT  Lampeggio colore profilo
+	    strafe		 = TIENI PREMUTO PS4_L2 e PREMI PER PIU DI 0.3s  PS4_RIGHT lampeggio colore profilo + BLU
+		peekshot	 = TIENI PREMUTO PS4_L2 e PREMI PER PIU DI 0.3s  PS4_DOWN    
+		TBAG         = TIENI PREMUTO TASTO PER ABBASSARSI e PREMI PER PIU DI 0.3s  PS4_DOWN  lampeggio colore profilo + GIALLO
+		CROUCHON ADS = TIENI PREMUTO TASTO PER SALTARE e PREMI PER PIU DI 0.3s  PS4_RIGHT  lampeggio colore profilo + bIANCO
+		
+		
+		
+/*=============================================================================================================================                                          
+| Si prega di leggere le istruzioni prima di programmare lo script su zen. LEGGERE LE ISTRUZIONI - LEGGERE LE ISTRUZIONI       |
+| Nella sezione seguente puoi modificare alcuni pulsanti in base alle tue preferenze personali.                                |
+| VERO; significa ON FALSE significa OFF            																		   |                 
+|==============================================================================================================================   
+===============================================================================================================================
+| Scegli il tuo 1 pulsante per  cambiare profilo           		        |*/ define pulsante_cambio_arma = PS4_TRIANGLE;     /* |
+===============================================================================================================================
+|PULSANTI PER PANIC BUTTON   TIENI PREMUTO PS4 L2 E PREMI TRIANGOLO     |*/  define Primo_pulsante_panic = PS4_L2; /* |
+=======================================================================  ===================================================|
+|																		*/define secondo_pulsante_panic = PS4_TRIANGLE;/*|                                                                    
+|
+===============================================================================================================================
+|PUBG Loot è un profilo aggiuntivo( 3) qui sotto puoi scegliere i pulsanti per selezionarlo senza interferire con il gioco   
+| PER ENTRARE NEL PROFILO WARZONE IN GAME PREMERE R3 E FRECCIA GIU
+|NON USARE lo stesso tasto che usate per cambiare da arma primaria e secondaria |*/ define pubg_generico      = PS4_R3;/*  |
+| per uscire dalla modalità pubg loot  tenere premuto R3/RS per 1 secondo       |*/ define pubg_generico_2     = PS4_DOWN;/*|
+|==============================================================================================================================
+|  Se non usi i tasti di Default devi cambiare i tasti qui sotto                                         |
+|==============================================================================================================================
+|   ====> QUESTO E IL VOSTRO TASTO PER ABBASSARSI|*/  define tasto_abbassarsi = PS4_CIRCLE;               /* |
+|   ====> QUESTO E IL TASTO PER SALTARE          |*/   define tasto_salto  = PS4_CROSS;      /* 			  |
+===============================================================================================================================
+ */    
+                  /*  ELENCO DEGLI IDENTIFICATORI DEL PAD PER I PULSANTI UTILIZZABILI SOPRA VANNO BENE ANCHE PER xbox
+ 
+  PS4_L1 - PS4_L2 - PS4_L3 - PS4_R1 - PS4_R2 - PS4_R3 - PS4_CROSS /(XB1_A) - PS4_SQUARE /(XB1_X) - PS4_CIRCLE (XB1_B) - 
+  
+  									PS4_TRIANGLE /(XB1_Y) -  PS4_UP - PS4_DOWN - PS4_LEFT - PS4_RIGHT
+ 						
+ 						  Leggere le istruzioni sotto per come usare il menu della zen
+============================================================================================================================
+==== Entrare modalità menu                                  ===== Premere L2/LT e Premere OPTIONS/MENU                   ===
+============================================================================================================================
+==== Per modificare qualsiasi mod nel menu                  ===== Premi CROSS/A per modificare                           ===
+============================================================================================================================
+==== Navigare tra le mod nel menu della zen                 ===== premere destra o sinitra tramite le frecce del D-PAD   ===
+============================================================================================================================
+==== Abilitare o disabilitare le mod                        ===== Premi SU ATTIVA premi GIU DISATTIVA                    ===
+============================================================================================================================
+==== Cambiare arma primaria e secondaria nel menu           ===== Premere  Y/TRIANGLE                                    ===
+============================================================================================================================
+==== Cambiare arma primaria e secondaria nel gioco          ===== TASTO DEFINITO SOPRA                                   ===
+============================================================================================================================
+==== Modalità modifica delle mod nel menu della zen         ===== Premi CROSS/A oppure Premi CIRCLE/B per uscire         ===
+============================================================================================================================
+==== COME MODIFICARE I PARAMETRI                            ===== TIENI premuto L2/LT e CLICCA DESTRA per incrementare +1===
+                                                            =====              			CLICCA SINISTRA per diminuire -1 ===
+                                                            =====              			CLICCA SU per incrementare +10   ===
+                                                            =====             			CLICCA DOWN per diminuire -10    ===
+============================================================================================================================ 
+==== Navigare tra i valori modificabili nella modalità modifica ===== CLICCA DESTRA O SINSTRA                            ===
+============================================================================================================================
+==== PER SALVARE TUTTE LE MOD CHE SONO STATE MODIFICATE O ATTIVATE ===== PREMI XBOX/PS Button SUL DISPLAY VERRA SCRITTO  ===
+===  SALVATO 
+============================================================================================================================
+==== PER USCIRE DALLA MODALITà MENU UNA VOLTA AVER SALVATO    ===== TIENI PREMUTO L2/LT E PREMI OPTIONS/MENU             ===
+============================================================================================================================
+==== DISABILITARE TUTO QUELLO ATTIVATO CONTEMPORANEAMENTE      ===== TIENI PREMUTO LT/L2 & E DOPPIO CLIC SU SHARE/VIEW   ===
+														
+													FINE ISTRUZIONI
+													
+NON TOCCARE DA QUI IN GIU //NON TOCCARE DA QUI IN GIU // NON TOCCARE DA QUI IN GIU //  NON TOCCARE DA QUI IN GIU //	
+*/
+
+// Text to display 
+	const string TITLE = "x ANDRY85 x";
+	const string MW = "PUBG";
+	const string WARZONE = "ver 5.0 32 Bit";
+	const string PRESS_A_TO_CONTINUE = "Premi A per modif";
+	const string PRESS_A_TO_GO =       " A per cambiare";
+	const string TOGGLEONLY = "Solo on off ";
+	const string ALLPROFILES = "Tutti i profili"; 
+	const string NOT_AVAILABLE = "Non disponibile";
+	const string ARMAINUSO = "con arma attuale";
+	const string OFF = "OFF"; 
+	const string ON = "ON"; 
+	const string SAVE= "SALVATO";
+	const string GUIDAON= "GUIDA ON";
+	const string GUIDAOFF= "GuidaOff";
+	const string Weapons[]={ // Weapon Names Displayed On Title Screen \ Total 29;
+	//       0		  1		  2		  3		 4       5       6      7     8    9     10     11     12      13
+		"Generico","BERYL","SCAR-L","M416","AK47","GROOZA","AUG","G36C","QBZ","K2","UZI","VECTOR","MP5K","PP-19",
+	//    14	     15       16      17   18     19     20	
+		"THOMPSON","UMP45","DP-28","M249","MG3","M16A4","MK47",
+	//     21	   22     23     24   25    26    27     28	
+		"MINI14","MK12","MK14","QBU","SKS","SLR","VSS","SNIPER",
+	//	   29
+		"POMPA",""} ;
+		const string Optics[]={
+	//	  0   1		2	 3	  4	  5	 // Optics Names Displayed On Title Screen \ Total 5;
+		"X1","X2","X3","X4","X6","X8",""} ;
+   const string Cambiaslot[] =  {"Slot1", "slot2", "Slot3", "Slot4", "Slot5", "Slot6", "Slot7", "Slot8",""	};
+   const string PROFILE_1 = "Primaria": // Metti il nome dell'arma primaria
+   const string PROFILE_2 = "Secondaria":  // Metti il nome dell'arma secondaria
+   const string PROFILE_3 = "Generico"; // Arma terziaria
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+// Mod Name // Profile 1 
+	const string ARMI         = "ARMI";       	     // modName_idx = 0
+	const string ANTIRECOIL   = "Progressivo";		 // modName_idx = 1
+    const string OPTICS       = "Otticainuso";       // modName_idx - 2
+	const string OPTICSET     = "Settaottica";       // modName_idx - 3
+    const string RAPIDFIRE    = "RapidFire";         // modName_idx = 4 
+    const string BURSTFIRE    = "BurstFire";         // modName_idx = 5 
+    const string STRAFE       = "Strafe";            // modName_idx = 6
+    const string TBAG         = "TBAG"               // modName_idx = 7
+    const string JUMPSHOT     = "Jump Shot"          // modName_idx = 8
+ 	const string HOLD_BREATH  = "RESPIRO";      	 // modName_idx = 9
+ 	const string PEEK         = "peekshot";          // modName_idx = 10
+ 	const string AUTOLEAN     = "AutoLean";          // modName_idx = 11
+ 	const string AUTORUN      = "CrouchOnAds";       // modName_idx = 12
+ 	const string SWAP         = "Swap Tr/Bu";        // modName_idx - 13
+	const string INVERTED     = "Inverted Y";        // modName_idx = 14
+	const string CAMBIOSLOT   = "Cambio Slot";       // modName_idx - 15
+// Index to find Mod Name string - switchable in game with left/right in ModMenu 
+	int modName_idx;
+    
+// modName # of the last Mod Name string - Used for cycle modName_idx
+	define LAST_MODNAME_STRING = 15;
+
+// # of the last modName_idx that has a value that can be edited
+	define LAST_EDITABLE_STRING = 4;
+
+    
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+// Value Name
+	// modName_idx = 0 = ANTIRECOIL string
+	
+    const string X1                       = "X1";      			 // valName_idx = 0
+    const string X2                       = "X2";      			 // valName_idx = 1
+    const string X3                       = "X3";       		 // valName_idx = 2
+    const string X4                       = "X4";       		 // valName_idx = 3
+    const string X6                       = "X6";      			 // valName_idx = 4
+    const string X8                       = "X8";       		 // valName_idx = 5
+    const string COR_OPTIC                = "COR OPTICS";        // valName_idx = 6
+	const string ANTIRECOIL_START         = "ARV Start"; 		 // valName_idx = 7  
+	const string ANTIRECOIL_MID           = "ARV mid"; 		     // valName_idx = 8
+	const string ANTIRECOIL_END           = "ARV End";			 // valName_idx = 9
+	const string ANTIRECOIL_TIME          = "ARV Time";			 // valName_idx = 10
+	const string RATE_OF_FIRE             = "Rounds/sec";	     // valName_idx = 11
+    const string BURSTFIRE_HOLD           = "BF Hold";			 // valName_idx = 12
+	const string BURSTFIRE_RELEASE        = "BF Release";		 // valName_idx = 13
+    const string AMP_STRAFE               = "Amp strafe";        // valName_idx = 14
+    const string VELO_STRAFE              = "Vel strafe";        // valName_idx = 15
+   
+	
+// Index to find Value Name string - switchable in game with left/right in ModEdit 
+	int valName_idx;
+	
+	define AMOUNT_OF_VALNAME_IDX = 15;
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+// Values for [3] profiles/weapons
+	int antirecoil_start[30]; // antirecoil start value for 3 profiles: profile_idx = 0, 1 and 2 
+	int antirecoil_mid[30];
+	int antirecoil_end[30];
+	int antirecoil_time[30];
+	int rate_of_fire[30];
+	int nomearmi[30];
+	int correction_opticsweap[30]
+	//int quickscopedelay;
+/* Used to define Profiles and also define # of profile to find, edit, and display the right index */
+	int profile_idx; 
+	
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+// Multi toggles
+	int toggle_antirecoil[3];  // for 3 Profiles: profile_idx = 0, 1 and 2
+    int toggle_rapidfire[30]; 
+    int toggle_burstfire[3];
+    int toggle_holdbreath; // ItzSnack Hold Breath
+	int toggle_jumpshot[3];
+
+	 
+// Amount of profiles - Used for switch profiles cycle
+	define AMOUNT_OF_PROFILES = 3;  
+	
+// Amount of multi toggle - Used for display profiles
+	define AMOUNT_OF_MULTI_TOGGLE = 4;
+	 //define per_profile_idx = 4; 
+// Constant bytes - Convert numbers array - ASCII_NUM[column number]
+	const uint8 ASCII_NUM[] = 
+//	  0  1  2  3  4  5  6  7  8  9  (column numbers)
+  	{48,49,50,51,52,53,54,55,56,57};
+
+// Variables for function number_to_string() 
+	int i;
+	int c,c_val;
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+data(
+//    Green     Red    SkyBlue    Blue         
+    0,0,1,0,  0,1,0,0,  1,0,1,0,  1,0,0,0,
+//   Yellow    White      Pink       OFF        
+    0,3,3,0,  3,3,3,0,  0,0,0,1,  0,0,0,0 );     
+     
+// Refresh OLED
+	int display_title = TRUE;
+	int display_new; 
+	int display_black;
+	int warzone_loot_profile; // Special weapon
+// BurstFire
+	int burstfire_hold; // BurstFire have toggle for each profiles BUT the same values for each
+	int burstfire_release;    
+// ModMenu / ModEdit / KillSwitch
+	int ModMenu;	
+	int ModEdit;
+	int KillSwitch;
+    int count_black; // for screen saver
+    int profile_1or2;
+    
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+// Anti Recoil values   
+   
+	int p,inc,inc_2,pr,pr_2,vm,vm_2; 
+    int vm_count,vm_loops,p_count,v,ar_y;
+    int invert; // -1 for inverted, 1 for standard
+    int optic[6]
+   
+   int x1
+   int x2
+   int x3
+   int x4
+   int x6
+   int x8
+   int optic_recoil	
+	define movy = XB1_LY
+	define movx = XB1_LX
+	define adsy = XB1_RY
+	define adsx = XB1_RX
+// Variables Used for all mods 
+ 
+// DROPSHOT   
+   int TBAG_on[3];   
+   int peekshot_on[3];
+   int leanright_on;
+   int leanleft_on:
+   int autolean_on[3];
+   int autodown_onADS[3];
+// STRAFE 
+   int strafe_on[3];       
+   int Amp_strafe[3];
+   int Vel_strafe[3];
+   //CAMBIO ARMA 1 o 2 
+   define cambio_arma = TRUE;
+   define two_button_press = TRUE; 
+ 
+   //LOOT
+   int slot_on
+   int loot = TRUE;
+   int DriveMode;
+// Toggles
+   int autorun_on[3];
+   int swap_on;
+   int inverted_on;
+    
+   int hold_time;                                                    
+   int rest_time;
+   int led_on;
+   int led_off;
+   // rainbow led
+   int incled = 1, decled, colorledx[3];
+    int MAX_TIME_TO_CHECK = 5000;
+   int double_tap;
+   int q;											
+   int double__tap[30];
+   init {
+   while(q < 30) 
+   {double__tap[q] = -1;       
+   q++;}} 
+   
+	
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+ 
+
+
+							/*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+							|                                                     MAIN SECTION                                                      |
+							◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	
+init{
+ colorledx = 255;
+ Load();  
+ }
+
+main {
+
+ if(abs(get_val(movy)) < 8 && abs(get_val(movx)) < 8 ){        
+        set_val(movy,0);                                                
+        set_val(movx,0); }                                           
+ if(abs(get_val(adsy)) < 8 && abs(get_val(adsx)) < 8 ){         
+        set_val(adsy,0);                                                 
+        set_val(adsx,0); }
+
+if(event_press(XB1_MENU))
+ 
+ {  loot = !loot;}	
+   if (event_release(XB1_B)){loot = TRUE;}		
+		
+
+	set_val(TRACE_1, profile_idx);
+	set_val(TRACE_2, modName_idx);
+	
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜
+// Crossover
+    if(get_controller() != PIO_PS4) // If XBOX controller:
+    {
+        if(get_console() == PIO_PS4) // If PS4 console:
+        {
+            swap(PS4_SHARE,PS4_TOUCH); // View = TouchPad
+        
+                if(get_val(PS4_R3) && event_press(PS4_TOUCH)) //  RS + View = ScreenShot
+                {
+                    set_val(PS4_SHARE,100);
+                    set_val(PS4_TOUCH,0);
+                    set_val(PS4_R3,0);
+                }
+        }
+	}
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                     DISPLAY TITLE                                                     |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	 
+
+// Display Script Title    
+    if(display_title)
+    {
+    	cls_oled(0);	// clear OLED screen
+    	count_black = 0;// reset screen saver counter
+    	
+    	if(KillSwitch)
+    	{
+    		print(center_x(sizeof(OFF) - 1, OLED_FONT_LARGE_WIDTH),8,OLED_FONT_LARGE,OLED_WHITE,OFF[0]);	// display OFF centered in X 
+	
+    		}
+    	else
+    	{
+    	   print(5, 5, 1, 1, TITLE[0]);
+   
+              print(50, 27, 0, 1, MW[0]);
+
+                  print(20, 38, 0, 1, WARZONE[0]);
+           
+    		                      if(warzone_loot_profile){
+									 print(1, 47, 1, 1, Weapons[nomearmi[profile_idx]]);
+    		     					print(100, 47, 1, 1, Optics[optic[profile_idx]]);}
+        else
+        { 
+    		      if(profile_idx == 0)
+    		     print(1, 47, 1, 1, Weapons[nomearmi[profile_idx]]);
+    		     print(100, 47, 1, 1, Optics[optic[profile_idx]]);
+    		               
+    	     if(profile_idx == 1)
+    		 print(1, 47, 1, 1, Weapons[nomearmi[profile_idx]]);
+    		     print(100, 47, 1, 1, Optics[optic[profile_idx]]);
+    	  
+  }
+    		
+    		display_black = TRUE;	
+    		display_title = FALSE;
+    	}
+     
+   }
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜
+// Screen saver (OLED off)
+    if(display_black && !ModMenu && !KillSwitch && !DriveMode)
+    {
+    	count_black += get_rtime();
+    	if(count_black >= 5000)
+    	{
+    		cls_oled(0);
+    		count_black = 0;
+    		display_black = FALSE;
+    	}
+    }
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                      KILL SWITCH                                                      |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	 
+  
+	if(get_val(PS4_L2))
+	{
+	// Kill Switch	
+		if(event_release(PS4_SHARE))
+		{
+			KillSwitch = !KillSwitch;
+			
+			if(KillSwitch)        
+				combo_run(RUMBLE_OFF);	// rumble and LED blink
+			else
+				combo_run(RUMBLE_ON);	// rumble and LED blink
+			
+    		//display_black = FALSE;
+			display_title = TRUE;
+		}
+if(event_press(PS4_RIGHT) && get_brtime(PS4_RIGHT) <= 200 && !ModMenu && !ModEdit)
+	        {
+	        	DriveMode = TRUE;
+	        	combo_run(DriveModeOn);
+	        	
+	        }
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                       MOD MENU                                                        |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	 
+
+	// toggle ModMenu ON/OFF
+		if(event_release(PS4_OPTIONS) && !KillSwitch && !DriveMode)
+		{
+			ModMenu = !ModMenu;
+			loot = TRUE;
+			
+			if(!ModMenu)
+			{
+				ModEdit = FALSE; 		// close ModEdit too
+				//save ();				// save function
+				//combo_run(EXIT_SAVE);	// rumble, blink and display SAVED then display TITLE
+				combo_run(RUMBLE_OFF);  // rumble and LED blink
+				display_title = TRUE;   // display Title
+			}
+			
+			if(ModMenu)
+			{
+				modName_idx = 0;        // start to the first adjustable value
+				combo_run(RUMBLE_ON);	// rumble and LED blink
+				display_new = TRUE;		// display mod name, profile, ON/OFF and value
+			}
+		}
+		set_val(PS4_SHARE, 0);		    // block
+		set_val(PS4_OPTIONS, 0);		// block
+	} // L2 end
+if(DriveMode) 
+	{
+	       	if(event_release(XB1_B))
+	       		{
+	       		
+	       				DriveMode = FALSE;	       				
+	       				combo_stop(DriveModeOn);
+	       				combo_run(DriveModeOff);
+	       				}
+	       		combo_run(rgb);
+	       	}	
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+if(!KillSwitch)
+{
+if(!DriveMode)
+{
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+// ModMenu
+
+ 
+	if(ModMenu) 
+	{
+            /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+            |                                            MOD EDIT                                               |
+            ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	 
+
+	// toggle ModEdit ON/OFF - only for mods who have adjustable value(s)
+		if(modName_idx == 1 || modName_idx == 3 || modName_idx == 4 || modName_idx == 5 || modName_idx == 6 )	// if ANTIRECOIL (so modName_idx = 0) or AA or RAPIDFIRE or BURSTFIRE or StrafeShot is diplayed 
+		{
+			if(event_press(PS4_CROSS) && !ModEdit) // Turn ModEdit ON
+			{
+				valName_idx = AMOUNT_OF_VALNAME_IDX + 1; // always display first val names available when enter in edition mod
+				ModEdit = TRUE;
+				combo_run(RUMBLE_ON);
+				display_new = TRUE;
+			}
+			
+			if(event_press(PS4_CIRCLE) && ModEdit) // Turn ModEdit OFF
+			{
+				ModEdit = FALSE;
+				combo_run(RUMBLE_OFF);
+				display_new = TRUE;
+			}
+			}
+			 if (modName_idx == 14)
+	     		{ 
+	     			if(event_press(PS4_CROSS) && !ModEdit) // Turn ModEdit ON
+					{
+				 // always display first val names available when enter in edition mod
+				if(slot_on == 0)
+				{load_slot(1) }
+				if(slot_on == 1)
+				{load_slot(2)}
+				if(slot_on == 2)
+				{load_slot(3) }
+				if(slot_on == 3)
+				{load_slot(4)}
+				if(slot_on == 4)
+				{load_slot(5) }
+				if(slot_on == 5)
+				{load_slot(6)}
+				if(slot_on == 6)
+				{load_slot(7) }
+				if(slot_on == 7)
+				{load_slot(8)}
+			}
+		}
+	
+           /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+           |                                          EDIT VALUES                                              |
+            ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/
+            
+	// ModEdit ON
+		if(ModEdit)
+		{
+			if(get_val(PS4_L2)) // Edit value: hold L2 + UP (+1) or DOWN (-1) or RIGHT (+10) or LEFT (-10)
+			{
+			// Mods that can have different values depending the active Profile
+			
+    		  //val_I_want_to_edit[profile] = edit_val( corresponding valName_idx , val_I_want_to_edit[profile], abs(range min) , range max ); 	
+			   
+  				x1 											 = edit_val( 0 , x1     , 0 , 50  , 1  , 10   );
+   				x2  										 = edit_val( 1 , x2     , 0 , 50  , 1  , 10   );
+   				x3  										 = edit_val( 2 , x3     , 0 , 50  , 1  , 10   );
+   				x4  										 = edit_val( 3 , x4     , 0 , 50  , 1  , 10   );
+   				x6  										 = edit_val( 4 , x6     , 0 , 50  , 1  , 10   );
+ 				x8  							    		 = edit_val( 5 , x8     , 0 , 50  , 1  , 10   ); 
+ 				correction_opticsweap[nomearmi[profile_idx]] = edit_val( 6 , correction_opticsweap[nomearmi[profile_idx]]     , 20 , 20  , 1  , 10   ); 
+				antirecoil_start[nomearmi[profile_idx]]      = edit_val( 7 , antirecoil_start[nomearmi[profile_idx]]    , 0 , 99 , 1 , 10   );
+				antirecoil_mid[nomearmi[profile_idx]]        = edit_val( 8 , antirecoil_mid[nomearmi[profile_idx]]      , 0 , 99 , 1 , 10   );// the first 0 define valName_idx so in this case, AR Start
+				antirecoil_end[nomearmi[profile_idx]]        = edit_val( 9 , antirecoil_end[nomearmi[profile_idx]]       , 0 , 99 , 1 , 10   ); // the 2 last numbers are range min and range max
+				antirecoil_time[nomearmi[profile_idx]]       = edit_val( 10 , antirecoil_time[nomearmi[profile_idx]]      , 0 , 99 , 1 , 10   ); // only ar_t display value x100 (real time in ms) - so 99 display 9,900 so 9.9 seconds 
+			    rate_of_fire[nomearmi[profile_idx]]          = edit_val( 11 , rate_of_fire[nomearmi[profile_idx]]         ,  1 ,   25 , 1 , 10   );
+			    burstfire_hold        			  			 = edit_val( 12 , burstfire_hold         , 0 , 990  , 10 , 100 );
+				burstfire_release      		 	   			 = edit_val( 13 , burstfire_release      , 0 , 990  , 10 , 100 );
+			    Amp_strafe [profile_idx]                     = edit_val( 14 , Amp_strafe[profile_idx]             , 0 , 990   , 1  , 10   ); 
+                Vel_strafe  [profile_idx]                    = edit_val( 15 , Vel_strafe [profile_idx]            , 0 , 990   , 1  , 10   ); 
+			   
+			}
+
+            /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+            |                                        VALUES AVAILABLE                                           |
+            ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/
+
+			else // NOT L2 (if not editing value)
+			{
+			
+			// Navigate value name
+				if(event_press(PS4_RIGHT))
+				{
+					valName_idx += 1;
+					display_new = TRUE; // Display value name and value
+				}
+				if(event_press(PS4_LEFT))
+				{
+					valName_idx -= 1;
+					display_new = TRUE;
+				}
+			
+			// Adjustable values available for each of the mods (exemple: Anti-Recoil have 4 values per profile: 0 = antirecoil_start[<active profile>], 1 = antirecoil_end[], 2 = at_t, 3 = at_h  
+			 // if(modName_idx == 0) <so if I display Anti-Recoil>  vals_available( 0 , 3  ); <vals_available are valName_idx 0, 1, 2 or 3>
+				
+				if(modName_idx == 1) vals_available(7  , 10 ); 
+				if(modName_idx == 3) vals_available(0  , 6  );		
+				if(modName_idx == 4) vals_available(11 , 11 ); 
+				if(modName_idx == 5) vals_available(12 , 13 ); 
+				if(modName_idx == 6) vals_available(14 , 15 );
+				
+				
+			} // NOT SQUARE (if not editing value) end
+		} // ModEdit end
+
+            /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+            |                                            TOGGLES                                                |
+            ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/
+
+		else // if NOT ModEdit BUT if ModMenu
+		{
+	
+	// Navigate mods name
+	     	if(event_press(PS4_RIGHT))
+			{
+				modName_idx += 1;
+				display_new = TRUE;
+			}
+			if(event_press(PS4_LEFT))
+			{
+				modName_idx -= 1;
+				display_new = TRUE;
+			}
+			
+		// Cycle mods name
+			if(modName_idx > LAST_MODNAME_STRING) // max column for displaying mod name  
+				modName_idx = 0;
+			if(modName_idx < 0)
+				modName_idx = LAST_MODNAME_STRING;
+			
+			
+		// Switch profiles	
+			if(event_press(PS4_TRIANGLE))
+			{
+				profile_idx += 1;
+				display_new = TRUE;
+			}
+		// Cycle profiles	
+			if(profile_idx > (AMOUNT_OF_PROFILES - 1))
+				profile_idx = 0;
+			
+		// Toggles (UP to turn ON, DOWN to turn OFF)
+    		// Mods that can have different ON/OFF status depending the active Profile
+    		
+		  //toggle_I_want_to_edit[profile]  = toggle( corresponding modName_idx, toggle_I_want_to_edit[profile] );
+			nomearmi[profile_idx]		   = toggle( 0, nomearmi[profile_idx] );
+			toggle_antirecoil[profile_idx] = toggle( 1, toggle_antirecoil[profile_idx] );
+			optic[profile_idx]		       = toggle( 2, optic[profile_idx] );
+			toggle_rapidfire[nomearmi[profile_idx]]  = toggle( 4, toggle_rapidfire[nomearmi[profile_idx]] ); 
+			toggle_burstfire[profile_idx]  = toggle( 5, toggle_burstfire[profile_idx] );
+			strafe_on[profile_idx]         = toggle( 6, strafe_on[profile_idx]    );			
+			TBAG_on[profile_idx]           = toggle( 7, TBAG_on[profile_idx]   ); 
+			toggle_jumpshot[profile_idx]   = toggle( 8, toggle_jumpshot[profile_idx] );
+            toggle_holdbreath              = toggle( 9, toggle_holdbreath              );
+            peekshot_on[profile_idx]       = toggle( 10, peekshot_on[profile_idx] ); 
+            autolean_on [profile_idx]      = toggle( 11, autolean_on[profile_idx]);
+            autodown_onADS [profile_idx]   = toggle( 12 , autodown_onADS[profile_idx] );
+			swap_on                        = toggle( 13 , swap_on     );
+			inverted_on                    = toggle( 14, inverted_on );
+		    slot_on						   = Rtoggle(15, slot_on);
+			// Mods that have same ON/OFF status on every Profiles
+    		
+		  //toggle_I_want_to_edit = toggle( corresponding modName_idx, toggle_I_want_to_edit );
+		
+		} // if NOT ModEdit BUT if ModMenu end
+		
+	// If ModMenu AND ModEdit
+		if(event_press(PS4_PS))
+			Save ();
+			
+		//block_btn (); // block ALL btn (exept L2_R2_RX_RY_LX_LY to test antirecoil, rapidfire and burstfire against a wall without leaving ModEdit and ModMenu)
+		block_all_inputs();
+
+	} // ModMenu ON end
+
+
+							/*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+							|                                              NOT MOD MENU AND NOT MOD EDIT                                             |
+							◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — */	 
+	if(!ModMenu)
+	{
+	
+	 if(TBAG_on[profile_idx])
+	 {  
+	   if(get_val(PS4_L2) && get_ival(PS4_R2)) 
+	   { combo_run(TBAG);}
+	    
+	    led_on = 400;
+    	led_off = 400;
+    	combo_run(BLINKTBAG);
+	} 
+	
+
+		if(swap_on) // (6)
+		{
+			swap(PS4_R1, PS4_R2);
+			swap(PS4_L1, PS4_L2);
+		}
+		
+   
+         
+   
+            /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+            |                                        SPEED TOGGLES                                              |
+            ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/
+	// Speed Toggles
+
+	  //toggle_I_want_to_edit[profile]  = speed_toggle( hold BTN1, hold BTN2 300ms   , toggle_I_want_to_edit[profile] , corresponding modName_idx );
+		autolean_on	[profile_idx]	   = speed_toggle( PS4_L2, PS4_UP   , autolean_on[profile_idx], 11 );
+		toggle_rapidfire[nomearmi[profile_idx]]  = speed_toggle( PS4_L2, PS4_LEFT   , toggle_rapidfire[nomearmi[profile_idx]] , 4 );
+	    strafe_on [profile_idx]		   = speed_toggle( PS4_L2, PS4_RIGHT   ,  strafe_on[profile_idx] , 6 );
+		peekshot_on	[profile_idx]	   = speed_toggle( PS4_L2, PS4_DOWN   ,  peekshot_on[profile_idx] , 10 );
+		autodown_onADS[profile_idx]	   = speed_toggle( tasto_salto, PS4_RIGHT   ,  autodown_onADS[profile_idx]	 , 12 );
+		TBAG_on	[profile_idx]		   = speed_toggle( tasto_abbassarsi, PS4_DOWN  ,  TBAG_on[profile_idx] , 7 );
+		nomearmi[profile_idx]		   = speed_toggle_weapon( PS4_R1, nomearmi[profile_idx],0 );
+		optic[profile_idx]		       = speed_toggle_optic( PS4_R1, optic[profile_idx],2 );
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+	// Hair Trigger
+   	 	deadzone(PS4_L2,PS4_R2,99,99);
+   	 	
+   	  if(get_val(pubg_generico) && event_press(pubg_generico_2))
+    {
+        profile_idx = 2; 
+        warzone_loot_profile = TRUE; 
+        display_title = TRUE; 
+        }
+       
+      
+       if(warzone_loot_profile && get_val(pubg_generico) && get_ptime(pubg_generico) > 1000)     
+           warzone_loot_profile = FALSE;
+           display_title = TRUE;
+           
+           
+           
+           
+     if (strafe_on[profile_idx]) 
+     { 
+           if(get_val(PS4_R2)) {
+    				combo_run(strafe);
+    			} else {
+        			combo_stop(strafe);
+        		}
+        led_on = 200;
+    	led_off = 400;
+    	combo_run(BLINKSTRAFE);  
+    
+ 	 } 	 
+   	 	
+ 
+   if(toggle_holdbreath)
+   {
+          if(get_val(PS4_L2) && get_ptime(PS4_L2) > 500 && !get_val(PS4_R1))
+               set_val(PS4_L1,100);
+                      
+      
+  }
+        //autodown
+     
+  if (autodown_onADS[profile_idx]) {
+        
+        if(event_press(XB1_LT))
+          {combo_run(ABBASSA);}
+        if(event_release(XB1_LT))
+          {combo_run(ABBASSA);}  
+        }
+  
+  if(autolean_on[profile_idx])
+   {
+     	if(get_val(XB1_LT) && get_ival(XB1_LX)<= -65 || get_val(XB1_LB) && get_ival(XB1_LX)<= -65 ){
+     	set_val(XB1_LS, 100);}
+     	
+     	
+        if(get_val(XB1_LT) && get_ival(XB1_LX)>= +65 || get_val(XB1_LB) && get_ival(XB1_LX)>= +65){
+     	set_val(XB1_RS, 100);
+     }
+     }
+		
+  if(toggle_jumpshot[profile_idx])
+  {
+     if(get_val(PS4_R2)) {
+        	combo_run(Turbo_JUMP)
+	}
+  		led_on = 400;
+    	led_off = 600;
+    	combo_run(BLINKJUMP);
+ }	
+	
+  if(peekshot_on[profile_idx])  // (10)
+    {  
+    	if(get_ival(XB1_LT)){
+    	combo_run(PEEKSHOT);
+     }
+     
+    	if (get_val(XB1_RT)||get_val(XB1_LS)||get_val(XB1_RS)){
+    	combo_stop(PEEKSHOT);
+     }
+    	}
+	// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜
+		if(inverted_on) // (7)
+			invert = -1;
+		else
+			invert = 1;
+	
+  	/*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  	|                                                     SWITCH PROFILE                                                    |
+  	◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/
+  
+	// Switch Profiles - tap TRIANGLE/Y to switch profile 1 or 2 - double tap for profile 3 - hold R3/RS + tap for sync color
+		
+	if(loot)
+	{
+		if(cambio_arma) 
+			{ 
+				if(event_release(pulsante_cambio_arma)&& get_ptime(pulsante_cambio_arma)<250 || (event_release(XB1_RIGHT)&& !get_val(XB1_RB)))
+        		{
+        	    	profile_1or2=!profile_1or2; 
+        	    	
+     
+        			if(ModMenu)
+    					display_new = TRUE;
+    				else
+    					display_title = TRUE;
+    			}
+    			if(event_release(pulsante_cambio_arma) && get_ptime(pulsante_cambio_arma)>700 && get_ptime(pulsante_cambio_arma) < MAX_TIME_TO_CHECK ){
+    			profile_1or2=!profile_1or2;
+    				
+    				double_click(PS4_TRIANGLE)
+        	} 
+        	} 
+     
+           	  if(two_button_press) 
+           	  { 
+           		if(get_val(Primo_pulsante_panic) && (get_val(secondo_pulsante_panic)))
+        		{
+        	    	//profile_1or2=!profile_1or2;
+					 set_val(secondo_pulsante_panic,0);
+        	    
+        			if(ModMenu)
+    					display_new = TRUE;
+    				else
+    					display_title = TRUE;
+    				
+    			}
+        	} 
+    	
+            if(!warzone_loot_profile)
+             {
+               
+    				if(profile_1or2)
+	    				profile_idx = 1;
+	    		
+	    			// If Profile 1
+	    			else 	
+	    				profile_idx = 0; 
+         }      
+    
+	} // ModMenu OFF end
+}
+							/*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+						|                                   FEATURES THAT WORK EVERYTIME (MOD MENU/EDIT OR NOT)                                 |
+							◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	 
+
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                    ANTI RECOIL (0)                                                    |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/
+        if (optic[profile_idx] == 0){
+         optic_recoil = x1 +correction_opticsweap[nomearmi[profile_idx]]}
+        if (optic[profile_idx] == 1){
+        optic_recoil = x2 + correction_opticsweap[nomearmi[profile_idx]]}
+        if (optic[profile_idx] == 2){
+        optic_recoil = x3 + correction_opticsweap[nomearmi[profile_idx]]}
+        if (optic[profile_idx] == 3){
+         optic_recoil = x4 + correction_opticsweap[nomearmi[profile_idx]]}
+        if (optic[profile_idx] == 4){
+        optic_recoil = x6 + correction_opticsweap[nomearmi[profile_idx]]}
+        if (optic[profile_idx] == 5){
+        optic_recoil = x8 + correction_opticsweap[nomearmi[profile_idx]]}
+// If Anti-Recoil is enable for the active profile
+	if(toggle_antirecoil[profile_idx] == 1)
+	{
+	// Antirecoil by Batts	
+		
+		vm_loops = (antirecoil_time[nomearmi[profile_idx]] * 10) / 2;
+    if((antirecoil_start[nomearmi[profile_idx]] + optic_recoil) < (antirecoil_mid[nomearmi[profile_idx]] + optic_recoil))
+        inc = 1;
+    else
+        inc = -1;
+    if((antirecoil_mid[nomearmi[profile_idx]] + optic_recoil)<(antirecoil_end[nomearmi[profile_idx]] + optic_recoil))
+        inc_2 = 1;
+    else
+        inc_2 = -1;
+    pr = abs((antirecoil_start[nomearmi[profile_idx]]+optic_recoil) - (antirecoil_mid[nomearmi[profile_idx]]+optic_recoil));
+    pr_2 = abs((antirecoil_mid[nomearmi[profile_idx]]+optic_recoil) - (antirecoil_end[nomearmi[profile_idx]]+optic_recoil));
+    vm = vm_loops / pr;
+    vm_2 = vm_loops / pr_2;
+		
+
+    	if(!get_val(PS4_R2)) 
+   		{
+   			// Vertical
+   			p = 0;
+       		vm_count = 0;
+        	p_count = 0;
+        	ar_y = (antirecoil_start[nomearmi[profile_idx]] + optic_recoil);
+   			
+   		
+   		}   
+    	
+    	 if(get_val(PS4_L2) && get_val(PS4_R2)) 
+    	{
+   		    // Vertical
+   		     p = p_cycle();
+        if(p != -1)
+            ar_y = p_val();
+        else
+            ar_y = (antirecoil_end[nomearmi[profile_idx]]+ optic_recoil);
+         
+         OffsetAR(XB1_RY,ar_y);
+    	   		}		
+	}
+
+
+
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                    RAPID FIRE (1)                                                     |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/  
+  if(toggle_rapidfire[nomearmi[profile_idx]] == 1)
+	{
+	// Rate of Fire Calculation
+    	hold_time = 500 / rate_of_fire[nomearmi[profile_idx]]; 
+   		rest_time = hold_time - 20;
+    	if(rest_time < 0) rest_time = 0;
+    
+    // Run combo
+    	if(get_val(PS4_R2))
+    		combo_run(RAPIDFIRE);
+    	else
+    		combo_stop(RAPIDFIRE);
+    		
+    	led_on = 400;
+    	led_off = 400;
+    	combo_run(BLINKRAPID);
+	}
+
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                    AKIMBO (1)                                                     |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/ 
+
+if(toggle_burstfire[profile_idx] == 1) 
+		{
+    	// Hold and Release
+			hold_time = burstfire_hold;
+			rest_time = burstfire_release;
+			
+    	// Run combo
+    		if(get_val(PS4_R2))	
+    			combo_run(burstfire);
+
+    		led_on = 400;
+    		led_off = 400;
+    		combo_run(BLINKburstfire);
+		} 
+		if(event_release(PS4_R2))
+    		combo_stop(burstfire);
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+	 // MOT Special weapon end	
+   
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                    REFRESH DISPLAY                                                    |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	
+	if(display_new) 
+	{
+	// Clear OLED screen	
+		cls_oled(0);
+    	count_black = 0;// reset screen saver counter
+		
+		if(ModEdit)
+		{
+	    // Display Value Name and value
+    		// Mods that can have different values depending the active Profile
+    		
+		  //display_edit( corresponding valName_idx , center_x(sizeof(corresponding_string_to_display) - 1, OLED_FONT_MEDIUM_WIDTH) , corresponding_string_to_display[0] , val_I_want_to_be_displayed[profile] );
+            display_edit( 0 , center_x(sizeof(X1)    - 1, OLED_FONT_MEDIUM_WIDTH)   , X1[0]    , x1   );
+            display_edit( 1 , center_x(sizeof(X2)    - 1, OLED_FONT_MEDIUM_WIDTH)   , X2[0]    , x2   );
+            display_edit( 2 , center_x(sizeof(X3)    - 1, OLED_FONT_MEDIUM_WIDTH)   , X3[0]    , x3   );
+            display_edit( 3 , center_x(sizeof(X4)    - 1, OLED_FONT_MEDIUM_WIDTH)   , X4[0]    , x4   );
+            display_edit( 4 , center_x(sizeof(X6)    - 1, OLED_FONT_MEDIUM_WIDTH)   , X6[0]    , x6   );
+            display_edit( 5 , center_x(sizeof(X8)    - 1, OLED_FONT_MEDIUM_WIDTH)   , X8[0]    , x8   );
+            display_edit( 6 , center_x(sizeof(COR_OPTIC )    - 1, OLED_FONT_MEDIUM_WIDTH)   , COR_OPTIC[0]    ,  correction_opticsweap[nomearmi[profile_idx]]);
+			display_edit( 7 , center_x(sizeof(ANTIRECOIL_START) - 1, OLED_FONT_MEDIUM_WIDTH)      , ANTIRECOIL_START[0]      , antirecoil_start[nomearmi[profile_idx]]      );
+			display_edit( 8, center_x(sizeof(ANTIRECOIL_MID) - 1, OLED_FONT_MEDIUM_WIDTH)        , ANTIRECOIL_MID[0]        , antirecoil_mid[nomearmi[profile_idx]]     );
+			display_edit( 9 , center_x(sizeof(ANTIRECOIL_END) - 1, OLED_FONT_MEDIUM_WIDTH)        , ANTIRECOIL_END[0]        , antirecoil_end[nomearmi[profile_idx]]       );
+			display_edit( 10 , center_x(sizeof(ANTIRECOIL_TIME) - 1, OLED_FONT_MEDIUM_WIDTH)       , ANTIRECOIL_TIME[0]       , antirecoil_time[nomearmi[profile_idx]]       );
+			display_edit( 11, center_x(sizeof(RATE_OF_FIRE)      - 1, OLED_FONT_MEDIUM_WIDTH)     , RATE_OF_FIRE[0]      ,  rate_of_fire[nomearmi[profile_idx]] );
+		    display_edit( 12 , center_x(sizeof(BURSTFIRE_HOLD)      - 1, OLED_FONT_MEDIUM_WIDTH)  , BURSTFIRE_HOLD[0]      , burstfire_hold    );
+		    display_edit( 13 , center_x(sizeof(BURSTFIRE_RELEASE)   - 1, OLED_FONT_MEDIUM_WIDTH), BURSTFIRE_RELEASE[0]      , burstfire_release    );
+		    display_edit( 14 , center_x(sizeof(AMP_STRAFE)          - 1, OLED_FONT_MEDIUM_WIDTH)  , AMP_STRAFE[0]          , Amp_strafe[profile_idx]   );
+            display_edit( 15 , center_x(sizeof(VELO_STRAFE)        - 1, OLED_FONT_MEDIUM_WIDTH)    , VELO_STRAFE[0]        , Vel_strafe [profile_idx]   );
+           
+			// Mods that have same value on every Profile
+		}
+		else
+		{
+	    // Display Mod Name and ON/OFF
+    		// Mods that can have different ON/OFF status depending the active Profile
+    		
+		  //display_mod( corresponding modName_idx , center_x(sizeof(corresponding_string_to_display) - 1, OLED_FONT_MEDIUM_WIDTH) , corresponding_string_to_display[0] , toggle_I_want_to_be_displayed[profile]);
+		    display_mod3( 0 ,  center_x(sizeof(ARMI) - 1, OLED_FONT_MEDIUM_WIDTH)    , ARMI [0]   , nomearmi[profile_idx]);
+			display_mod( 1 ,   center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0] , toggle_antirecoil[profile_idx]);
+			display_mod6( 2 , center_x(sizeof(OPTICS)   - 1, OLED_FONT_MEDIUM_WIDTH)  , OPTICS[0]  , optic[profile_idx]);
+			display_mod7( 3 , center_x(sizeof(OPTICSET)   - 1, OLED_FONT_MEDIUM_WIDTH)  , OPTICSET[0]  );
+			display_mod5( 4 ,   center_x(sizeof(RAPIDFIRE)   - 1, OLED_FONT_MEDIUM_WIDTH)  , RAPIDFIRE[0] ,toggle_rapidfire[nomearmi[profile_idx]]);
+		    display_mod( 5 ,   center_x(sizeof(BURSTFIRE) - 1, OLED_FONT_MEDIUM_WIDTH), BURSTFIRE[0], toggle_burstfire[profile_idx]);
+		    display_mod( 6 ,   center_x(sizeof(STRAFE)   - 1, OLED_FONT_MEDIUM_WIDTH)  , STRAFE[0]     , strafe_on[profile_idx] );
+		    display_mod1( 7 ,  center_x(sizeof(TBAG)   - 1, OLED_FONT_MEDIUM_WIDTH)  , TBAG[0]     , TBAG_on[profile_idx] ); 
+		    display_mod1( 8 ,  center_x(sizeof(JUMPSHOT)   - 1, OLED_FONT_MEDIUM_WIDTH) , JUMPSHOT[0]     ,toggle_jumpshot[profile_idx]);
+            display_mod1( 9 ,  center_x(sizeof(HOLD_BREATH) - 1, OLED_FONT_MEDIUM_WIDTH)  , HOLD_BREATH[0]   , toggle_holdbreath);
+            display_mod1( 10 ,  center_x(sizeof(PEEK) - 1, OLED_FONT_MEDIUM_WIDTH) , PEEK[0]    , peekshot_on[profile_idx] ); 
+            display_mod1( 11,   center_x(sizeof(AUTOLEAN)  - 1, OLED_FONT_MEDIUM_WIDTH)  , AUTOLEAN[0]    , autolean_on[profile_idx]);
+		    display_mod1( 12 ,  center_x(sizeof(AUTORUN) - 1, OLED_FONT_MEDIUM_WIDTH) , AUTORUN[0] , autodown_onADS[profile_idx]);
+			display_mod1( 13 ,  center_x(sizeof(SWAP) - 1, OLED_FONT_MEDIUM_WIDTH)    , SWAP[0]    , swap_on);
+			display_mod1( 14 ,  center_x(sizeof(INVERTED) - 1, OLED_FONT_MEDIUM_WIDTH), INVERTED[0], inverted_on);
+			display_mod4( 15 ,  center_x(sizeof(CAMBIOSLOT) - 1, OLED_FONT_MEDIUM_WIDTH)    , CAMBIOSLOT[0]    , slot_on);
+		
+	} 	
+	// Display Profile only on mods that may have a different value depending on the Profile
+
+		if(modName_idx == 0 || modName_idx == 1 ||modName_idx == 2 ||modName_idx == 4 ||modName_idx == 5 ||modName_idx == 6 || modName_idx == 7 || modName_idx == 8 || modName_idx == 9 || modName_idx == 10 || modName_idx == 11 ||modName_idx == 12 )  // idx from 0 to 4 are mods that can have different values depending the active Profile
+		{
+			    if(profile_idx == 0)
+			   // display_mod( 0 ,  center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0] , toggle_antirecoil[profile_idx]); // profile_idx = profile_idx = Profile
+    			print(center_x(sizeof(PROFILE_1) - 1,OLED_FONT_SMALL_WIDTH) ,23,OLED_FONT_SMALL,OLED_WHITE,PROFILE_1[0]); // print Profile 1
+    			//line_oled(0, 26, 39, 26, 5, 1); // print a line to the left to say profile 1
+    			
+    		else if(profile_idx == 1)
+    				print(center_x(sizeof(PROFILE_2) - 1,OLED_FONT_SMALL_WIDTH) ,23,OLED_FONT_SMALL,OLED_WHITE,PROFILE_2[0]); // print Profile 2
+    				
+    			//line_oled(44, 26, 83, 26, 5, 1); // print a line in the middle to say Profile 2
+    		      else if(profile_idx == 2)
+    				print(center_x(sizeof(PROFILE_3) - 1,OLED_FONT_SMALL_WIDTH) ,23,OLED_FONT_SMALL,OLED_WHITE,PROFILE_3[0]); // print Profile 3
+         }
+		else // Mods that work on every profiles print the 3 lines (disable this if you prefer display the text Profile X
+    	{
+    	    print(center_x(sizeof(ALLPROFILES) - 1,OLED_FONT_SMALL_WIDTH) ,23,OLED_FONT_SMALL,OLED_WHITE,ALLPROFILES[0]); // print All profiles
+    		//line_oled(0, 26, 39, 26, 5, 1);ANDRY85
+    		//line_oled(44, 26, 83, 26, 5, 1);ANDRY85
+    		//line_oled(88, 26, 127, 26, 5, 1);ANDRY85
+    	}
+    //	 if (valName_idx == 6)
+   // 	{    print(center_x(sizeof(ARMAINUSO) - 1, OLED_FONT_SMALL_WIDTH),23,OLED_FONT_SMALL,OLED_WHITE,ARMAINUSO[0]);
+    	   // print(center_x(sizeof(ALLPROFILES) - 1,OLED_FONT_SMALL_WIDTH) ,23,OLED_FONT_SMALL,OLED_WHITE,ALLPROFILES[0]); // print All profiles
+    		//line_oled(0, 26, 39, 26, 5, 1);ANDRY85
+    		//line_oled(44, 26, 83, 26, 5, 1);ANDRY85
+    		//line_oled(88, 26, 127, 26, 5, 1);ANDRY85
+    //	}
+    	
+    	
+    	
+		display_black = TRUE;
+        display_new = FALSE;
+    } // display_new end
+    
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+} // NOT KillSwitch end
+
+	led(profile_idx);
+
+} // main end
+} 
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                     COMBO SECTION                                                     |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	
+
+combo ABBASSA {
+            set_val(XB1_B,100); //pressione b
+            wait(150);
+            wait(150);
+            }
+
+combo strafe {
+        		set_val(11, 100);
+        		wait(Amp_strafe);    
+        		wait(Vel_strafe);
+        		set_val(11,-100);
+        		wait(Amp_strafe);
+        		wait(Vel_strafe);    
+    }
+ combo TBAG {
+            set_val(XB1_B,100); //pressione b
+            wait(150);
+            set_val(XB1_B,0); //pressione b
+            wait(150);
+                } 
+
+combo burstfire { 
+    wait(hold_time);
+	call(RAPIDFIRE);
+	call(RAPIDFIRE);
+	call(RAPIDFIRE);
+	call(RAPIDFIRE);
+    }
+        
+combo RAPIDFIRE { 
+    wait(hold_time);
+    set_val(PS4_R2, 0);
+    wait(rest_time);
+    }
+    
+
+combo PEEKSHOT {
+	set_val(XB1_LS,100);
+	set_led(LED_2, 1);
+	wait(50);
+	wait(50);
+	wait(200);
+	set_val(XB1_RS,100);
+	set_led(LED_2, 0);
+	wait(50);
+	wait(50);
+	wait(200);
+}                    
+
+
+combo Turbo_JUMP {
+    			set_val(PS4_CROSS, 100);
+    			wait(60);
+    			set_val(PS4_CROSS, 0);
+    			wait(40);
+    			set_val(PS4_CROSS, 0);
+}  
+   
+
+//ANDRY85ANDRY85
+
+ 
+        		
+
+   
+combo RUMBLE_ON {						// 2 high rumbles + green blink 2 times
+	set_ledx(2, 2);
+	set_rumble(RUMBLE_B, 50);
+	wait(150);
+	reset_rumble();
+	wait(100);
+	set_rumble(RUMBLE_B, 50);
+	wait(150);
+	reset_rumble();
+}
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+combo RUMBLE_OFF {						// 1 high rumble + red blink 1 time
+	set_ledx(1, 1);
+	set_rumble(RUMBLE_A, 50);
+	wait(300);
+	reset_rumble();
+	wait(400);
+}
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+combo SAVE { 
+	cls_oled(0);						// clear OLED screen 
+	print(center_x(sizeof(SAVE) - 1,OLED_FONT_LARGE_WIDTH),center_y(OLED_FONT_LARGE_HEIGHT),OLED_FONT_LARGE,OLED_WHITE,SAVE[0]); 	// display SAVED... centered in X Y 
+	wait(10)
+	call(RUMBLE_ON);					// 2 high rumbles + green blink 2 times								
+	wait(150);
+	call(RUMBLE_ON);					// 2 high rumbles + green blink 2 times	
+	wait(1000);
+	display_new = TRUE;				   // display mods
+}
+combo DriveModeOn { 
+	cls_oled(0);
+	print(center_x(sizeof(GUIDAON) - 1,OLED_FONT_LARGE_WIDTH),center_y(OLED_FONT_LARGE_HEIGHT),OLED_FONT_LARGE,OLED_WHITE,GUIDAON[0]); 	// display SAVED... centered in X Y
+	//call(rgb)
+}// display mods
+combo DriveModeOff { 
+	cls_oled(0);
+	print(center_x(sizeof(GUIDAOFF) - 1,OLED_FONT_LARGE_WIDTH),center_y(OLED_FONT_LARGE_HEIGHT),OLED_FONT_LARGE,OLED_WHITE,GUIDAOFF[0]); 				// 2 high rumbles + green blink 2 times	
+	wait(2000);
+	display_title = TRUE;
+	}// display mods
+
+combo rgb {
+	wait(5);
+  set_rgb(colorledx, colorledx[1], colorledx[2]);
+  colorledx[decled] -= 5; colorledx[incled] += 5;
+  if(!colorledx[decled]) { incled = (incled + 1) % 3; decled = (decled + 1) % 3; }
+  }
+  
+combo BLINKRAPID {
+	led(profile_idx);
+    wait(led_on);
+    led(7);
+    wait(led_off);
+}
+combo BLINKburstfire {
+	led(profile_idx);
+    wait(led_on);
+    led(6);
+    wait(led_off);
+}
+combo BLINKSTRAFE {
+	led(profile_idx);
+    wait(led_on);
+    led(3);
+    wait(led_off);
+} 
+combo BLINKTBAG {
+	led(profile_idx);
+    wait(led_on);
+    led(4);
+    wait(led_off);
+} 
+combo BLINKJUMP {
+	led(profile_idx);
+    wait(led_on);
+    led(5);
+    wait(led_off);
+} 
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+  /*— ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌
+  |                                                       FUNCTIONS                                                       |
+  ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ — ◌ —*/	
+
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function double_click(button) {        
+    if (double__tap[button] >= 0) {                    
+        double__tap[button] += get_rtime(); 
+        if (double__tap[button] > 450)
+            double__tap[button] = -1;                                                                                       
+    }           
+    if (event_release(button) && get_ptime(button) <= 200) { 
+        if (double__tap[button] < 0) {                    
+            double__tap[button] = 0;                        
+        } else {             
+            double__tap[button] = -1;                       
+            return 1;                                   
+        }                                                     
+    }                                                  
+    return 0;
+    }
+    
+function vals_available(f_min, f_max) { // Define adjustable values available for each of the mods
+
+	if(valName_idx < f_min)
+		valName_idx = f_max;
+	if(valName_idx > f_max)
+		valName_idx = f_min;	
+}
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function edit_val(f_idx, f_val, f_min, f_max, f_inc1, f_inc2) {  // antirecoil_start[profile_idx] = edit_val( 0 , antirecoil_start[profile_idx], 99  , 99  )
+					
+	if(valName_idx == f_idx)
+	{
+    // +1 or -1															 
+    	f_val    = value_change( f_val ,PS4_LEFT , inv(f_inc1), f_min, f_max ); // inv(f_inc1)
+    	f_val    = value_change( f_val ,PS4_RIGHT, f_inc1     , f_min, f_max ); // f_inc1
+   	 // +10 or -10
+   	   	f_val    = value_change( f_val ,PS4_DOWN , inv(f_inc2), f_min, f_max ); // inv(f_inc2)
+       	f_val    = value_change( f_val ,PS4_UP   , f_inc2     , f_min, f_max ); // f_inc2
+	
+	}
+
+	return f_val;
+}
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function speed_toggle(f_hold, f_press, f_val, f_string) {  // toggle_aimassist[profile_idx] = speed_toggle(PS4_R3, PS4_UP, toggle_aimassist[profile_idx], #cons_string for this toggle);
+	
+	if(get_val(f_hold))
+	{
+		if(get_val(f_press) && get_ptime(f_press) == 300)  // Hold second button 300ms or more	if(get_val(f_press) && get_ptime(f_press) == (get_rtime() * 30))  // Hold second button 300ms or more
+		{
+			modName_idx = f_string;
+			
+			if(f_val == 0)
+			{
+			f_val = 1;
+			combo_run(RUMBLE_ON);
+			}
+			else if(f_val == 1)
+			{f_val = 0;
+			combo_run(RUMBLE_OFF);
+			}
+ 			display_new = TRUE;
+		} 
+	set_val(f_press, 0)
+	}
+		
+	return f_val;
+}
+function speed_toggle_weapon(f_hold, f_val, f_string) {  // toggle_aimassist[profile_idx] = speed_toggle(PS4_R3, PS4_UP, toggle_aimassist[profile_idx], #cons_string for this toggle);
+	
+	if(get_val(f_hold))
+	{
+		if(event_press(PS4_UP))  // Hold second button 300ms or more	if(get_val(f_press) && get_ptime(f_press) == (get_rtime() * 30))  // Hold second button 300ms or more
+		{
+			modName_idx = f_string
+			
+			{f_val += 1;
+			// Limits
+				if(f_val > 29)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 29;} 
+ 			display_new = TRUE;
+		} 
+		if(event_press(PS4_DOWN))  // Hold second button 300ms or more	if(get_val(f_press) && get_ptime(f_press) == (get_rtime() * 30))  // Hold second button 300ms or more
+		{
+			modName_idx = f_string
+			
+			// Decrease
+				{f_val -= 1;
+			// Limits
+				if(f_val > 29)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 29;} 
+		display_new = TRUE;
+		} 
+		set_val(PS4_DOWN, 0)
+		set_val(PS4_UP, 0)
+	}
+	if (event_release(f_hold)){
+	display_title = TRUE;} 
+	return f_val;
+}
+function speed_toggle_optic(f_hold, f_val, f_string) {  // toggle_aimassist[profile_idx] = speed_toggle(PS4_R3, PS4_UP, toggle_aimassist[profile_idx], #cons_string for this toggle);
+	
+	if(get_val(f_hold))
+	{
+		if(event_press(PS4_RIGHT))  // Hold second button 300ms or more	if(get_val(f_press) && get_ptime(f_press) == (get_rtime() * 30))  // Hold second button 300ms or more
+		{
+			modName_idx = f_string
+			
+			{f_val += 1;
+			// Limits
+				if(f_val > 5)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 5;} 
+ 			display_new = TRUE;
+		} 
+		if(event_press(PS4_LEFT))  // Hold second button 300ms or more	if(get_val(f_press) && get_ptime(f_press) == (get_rtime() * 30))  // Hold second button 300ms or more
+		{
+			modName_idx = f_string
+			
+			// Decrease
+				{f_val -= 1;
+			// Limits
+				if(f_val > 5)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 5;} 
+		display_new = TRUE;
+		} 
+		set_val(PS4_LEFT, 0)
+		set_val(PS4_RIGHT, 0)
+	}
+	if (event_release(f_hold)){
+	display_title = TRUE;} 
+	return f_val;
+}
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function toggle(f_idx, f_val) { // toggle_antirecoil[profile_idx] = toggle(1, PS4_UP, toggle_antirecoil[profile_idx]);
+	
+	if(event_press(PS4_UP))
+	{
+		if(modName_idx == f_idx)
+		{
+			if(modName_idx == 0)
+			{
+			// Increase
+				f_val += 1;
+			// Limits
+				if(f_val > 29)
+					f_val = 0;
+				if(f_val < 0)
+					f_val =29;
+			}
+			 else if(modName_idx == 2)
+			{
+			// Increase
+				f_val += 1;
+			// Limits
+				if(f_val > 5)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 5;
+			}
+			else 	
+			f_val = 1;
+			combo_run(RUMBLE_ON);
+		}
+		
+		display_new = TRUE;
+	}
+			
+	if(event_press(PS4_DOWN))
+	{
+		if(modName_idx == f_idx)
+		{    if(modName_idx == 0)
+			{
+			// Decrease
+				f_val -= 1;
+			// Limits
+				if(f_val > 29)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 29;
+			}
+			else if(modName_idx == 2)
+			{
+			// Decrease
+				f_val -= 1;
+			// Limits
+				if(f_val > 5)
+					f_val = 0;
+				if(f_val < 0)
+					f_val = 5;
+			}	
+			else 	
+			f_val = 0;
+			combo_run(RUMBLE_OFF);
+		}		
+		display_new = TRUE;
+	}
+	return f_val;
+}
+function Rtoggle(f_idx, f_val) { // toggle_antirecoil[profile_idx] = toggle(1, toggle_antirecoil[profile_idx]);
+	
+	if(event_press(PS4_UP))
+	{
+		if(modName_idx == f_idx)
+		{
+		// Increase
+				f_val += 1;
+			// Limits
+				if(f_val > 7)
+					f_val = 0;
+				if(f_val < 0)
+					f_val =7;
+		
+			combo_run(RUMBLE_ON);
+		}
+		
+		display_new = TRUE;
+	}
+			
+	if(event_press(PS4_DOWN))
+	{
+		if(modName_idx == 14)
+		
+		{
+			// decrease
+				f_val -= 1;
+			// Limits
+				if(f_val > 7)
+					f_val = 0;
+				if(f_val < 0)
+					f_val =7;
+			
+			combo_run(RUMBLE_ON);	
+		}		
+		display_new = TRUE;
+	}
+	return f_val;
+}
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function display_edit(f_idx, f_string, f_print, f_val) { // display_edit(0, center_x(sizeof(ANTIRECOIL_START) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL_START[0], antirecoil_start[profile_idx]);
+
+    	if(valName_idx == f_idx)
+    	{
+		// Display value name and value
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+    		
+    	// Display AntiRecoil Time value x 100 so 1,000 (displayed) = 1 second - script value is 10
+    		if(f_idx == 10)
+    			number_to_string(f_val * 100, find_digits(f_val * 100) );
+    	
+    	// Display editable values 
+    		else 
+    			number_to_string(f_val, find_digits(f_val));
+    	}
+}
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function display_mod(f_idx, f_string, f_print, f_toggle) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{
+		// Display MOD_NAME
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+        		// Display ON OFF
+    			if(f_toggle == 1)
+    				print(center_x(sizeof(ON) + 10, OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,ON[0]);
+    			else if(f_toggle == 0)
+    				print(center_x(sizeof(OFF) - 13,OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL, OLED_WHITE, OFF[0]);		
+        	        print(center_x(sizeof(PRESS_A_TO_CONTINUE) - 1, OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,PRESS_A_TO_CONTINUE[0]);
+    	}
+}
+function display_mod1(f_idx, f_string, f_print, f_toggle) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{
+		// Display MOD_NAME
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+        		// Display ON OFF
+    			if(f_toggle == 1)
+    				print(center_x(sizeof(ON) + 10, OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,ON[0]);
+    			else if(f_toggle == 0)
+    				print(center_x(sizeof(OFF) - 13,OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL, OLED_WHITE, OFF[0]);		
+        	        print(center_x(sizeof(TOGGLEONLY) - 1, OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,TOGGLEONLY[0]);
+    	}
+}
+function display_mod3(f_idx, f_string, f_print, f_toggle) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{
+		// Display MOD_NAME
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+        		
+        	if(f_toggle)
+					print(center_x(get_weapon_chars(nomearmi[profile_idx]), OLED_FONT_MEDIUM_WIDTH),48,OLED_FONT_MEDIUM,OLED_WHITE,Weapons[nomearmi[profile_idx]]);
+			else if(f_toggle == 0)
+					print(center_x(get_weapon_chars(nomearmi[profile_idx]), OLED_FONT_MEDIUM_WIDTH),48,OLED_FONT_MEDIUM,OLED_WHITE,Weapons[nomearmi[profile_idx]]);
+		}
+}
+function display_mod4(f_idx, f_string, f_print, f_Rtoggle) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{
+		// Display MOD_NAME
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+        		// Display ON OFF
+    			if(f_Rtoggle)
+    				print(center_x(cambia_slot(slot_on), OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,Cambiaslot[slot_on]);
+    			else if(f_Rtoggle == 0)
+    				print(center_x(cambia_slot(slot_on),OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL, OLED_WHITE, Cambiaslot[slot_on]);		
+        	        print(center_x(sizeof(PRESS_A_TO_GO) - 1, OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,PRESS_A_TO_GO[0]);
+    	}
+}
+function display_mod7(f_idx, f_string, f_print ) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{
+		// Display MOD_NAME
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+        		// Display ON OFF
+    				
+        	        print(center_x(sizeof(PRESS_A_TO_CONTINUE) - 1, OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,PRESS_A_TO_CONTINUE[0]);
+    	}
+}
+function display_mod5(f_idx, f_string, f_print, f_toggle) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{ 
+    	print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);	     
+        if ((nomearmi[profile_idx]) <= 18 ||(nomearmi[profile_idx]) == 27 ||(nomearmi[profile_idx]) == 28 ||(nomearmi[profile_idx]) == 29)
+        { 
+        	         print(center_x(sizeof(NOT_AVAILABLE) - 1, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,NOT_AVAILABLE[0]);
+        	         print(center_x(sizeof(ARMAINUSO) - 1, OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,ARMAINUSO[0]);}
+        if ((nomearmi[profile_idx]) == 22 || (nomearmi[profile_idx]) == 23 || (nomearmi[profile_idx]) == 24 || (nomearmi[profile_idx]) == 25 ||(nomearmi[profile_idx]) == 26 ||(nomearmi[profile_idx]) == 21||(nomearmi[profile_idx]) == 19 ||(nomearmi[profile_idx]) == 20){	                	  
+		       if(f_toggle == 1)
+    				print(center_x(sizeof(ON) + 10, OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,ON[0]);
+    			else if(f_toggle == 0)
+    				print(center_x(sizeof(OFF) - 13,OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL, OLED_WHITE, OFF[0]);		
+        	        print(center_x(sizeof(PRESS_A_TO_CONTINUE) - 1, OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,PRESS_A_TO_CONTINUE[0]);}
+        	        }
+        	    
+        	
+}
+function display_mod6(f_idx, f_string, f_print, f_toggle) { // display_mod(1, center_x(sizeof(ANTIRECOIL) - 1, OLED_FONT_MEDIUM_WIDTH) , ANTIRECOIL[0], toggle_antirecoil[profile_idx]);
+    	if(modName_idx == f_idx)
+    	{
+		// Display MOD_NAME
+    		print(f_string, 0, OLED_FONT_MEDIUM, OLED_WHITE, f_print);
+        		
+        	if(f_toggle)
+					print(center_x(get_optic_chars(optic[profile_idx]), OLED_FONT_MEDIUM_WIDTH),48,OLED_FONT_MEDIUM,OLED_WHITE,Optics[optic[profile_idx]]);
+			else if(f_toggle == 0)
+					print(center_x(get_optic_chars(optic[profile_idx]), OLED_FONT_MEDIUM_WIDTH),48,OLED_FONT_MEDIUM,OLED_WHITE,Optics[optic[profile_idx]]);
+		}
+}
+function get_weapon_chars(f_idx){
+	if (Weapons[f_idx + 1] != -1) 
+		return Weapons[f_idx + 1] - Weapons[f_idx] - 1;
+	return sizeof(Weapons) - Weapons[f_idx];		
+}
+function cambia_slot(f_idx){
+	if (Cambiaslot[f_idx + 1] != -1) 
+		return Cambiaslot[f_idx + 1] - Cambiaslot[f_idx] - 1;
+	return sizeof(Cambiaslot) - Cambiaslot[f_idx];		
+}
+function get_optic_chars(f_idx){
+	if (Optics[f_idx + 1] != -1) 
+		return Optics[f_idx + 1] - Optics[f_idx] - 1;
+	return sizeof(Optics) - Optics[f_idx];		
+}
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function value_change(f_val,f_btn,f_inc, f_rng_min, f_rng_max) { 
+
+    if(press_hold(f_btn)) 
+    {
+        f_val += f_inc;
+      
+    // Substract    
+        if(f_val < inv(f_rng_min)) 
+        	f_val = inv(f_rng_min); 
+   	// Add   
+       	if(f_val > f_rng_max) 
+        	f_val = f_rng_max;
+
+        display_new = TRUE;
+    }
+    return f_val; 
+} 
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function p_val() {
+    p_count++;
+    if(p_count == vm[p]) {
+        p_count = 0;
+        ar_y += inc[p];
+    }
+    return ar_y;
+} 
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function p_cycle() { 
+    vm_count++;
+    if (vm_count > vm_loops) { 
+        if(!p) {
+            vm_count = 0;
+            return 1;
+        }
+        else{
+            vm_count = vm_loops; 
+            return -1;
+         } 
+     }
+     return p;
+}        
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+function OffsetAR( axis,  offset_val) {
+  set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+  return;
+}
+
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function number_to_string(f_val,f_digits) {
+/***********************************************************
+ *  number_to_string(value to convert, # of digits in value)
+ *
+ *  Display Up to Max 16-bit Signed Integer (-32,768 to 32,767)
+ *   
+ *      Convert digits to ASCII ANDRY85
+ *      Add ASCII character to print buffer
+ *      Print string centered X & Y on OLED
+ *  
+***********************************************************/
+    i = 1;  c_val = 10000;
+    
+	if(f_val < 0) //--neg numbers
+	{          
+         putc_oled(i,45);    //--add leading "-"
+         i += 1;
+         f_val = abs(f_val);
+	} 
+	
+	for(c = 5; c >= 1; c--) 
+	{
+	    if(f_digits >= c) 
+	    {
+            putc_oled(i,ASCII_NUM[f_val / c_val]);
+            f_val = f_val % c_val;
+            i +=  1; 
+            if(c == 4) 
+            {
+                putc_oled(i,44);   //--add ","
+                i += 1;
+            }
+        }
+        c_val /= 10;
+    }   
+    puts_oled(center_x(i - 1,OLED_FONT_LARGE_WIDTH),37,OLED_FONT_LARGE,i - 1,OLED_WHITE); // adjustable value centered in X
+}  
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function find_digits(f_num) {
+//  find_digits(value)  
+//	    return Number of Digits in Value Passed  
+
+    f_num = abs(f_num);
+    if(f_num / 10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /   100 > 0) return 3;
+    if(f_num /    10 > 0) return 2;
+                          return 1;
+}     
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function center_x(f_chars,f_font) {
+//  center_x(number of chars,font size);  
+//	    return X for Centering String Horizontally
+
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function center_y(f_size) {
+//  center_y(font size);  
+//	    return Y for Centering String Vertically
+
+    return (OLED_HEIGHT  / 2) - (f_size / 2);
+} 
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function press_hold(f_btn) { 
+//  return TRUE - event_press()   
+//			    - every 250ms when button is held
+
+	return event_press(f_btn) || get_val(f_btn) && get_ptime(f_btn) > 250 
+	       && get_ptime(f_btn) % (get_rtime() * 8) == 0;
+}
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+
+function led(f_color) {
+   for(i = 0; i <= 3; i++) 
+   {
+     set_led(i,duint8((f_color * 4) + i));
+   }
+}
+
+
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+	   // Use these for 32-bit SPVARs
+define MAX_BITS = 32;
+define MAX_FW_BITS = 32;
+
+function reset_spvar() {
+	spvar_current_slot = SPVAR_1; // Change this to say where it's safe to start storing data
+	spvar_current_bit = 0;
+	spvar_current_value = 0;
+}
+
+// ------ DO NOT TOUCH ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING! ------ 
+define FULL_BITMASK = -1;
+
+function get_bit_count(val) {
+/*	if (val == (1 << (MAX_FW_BITS - 1))) {
+		return MAX_FW_BITS;
+	}*/
+	if (val < 0) {
+		return get_bit_count(abs(val + 1));
+	}
+	spvar_tmp = 0;
+	do {
+		spvar_tmp++;
+		val = val >> 1; // Shift the value down 1 bit
+	} while (val);
+	return spvar_tmp;
+}
+function get_bit_count2(min, max) {	
+	spvar_tmp = max(get_bit_count(min), get_bit_count(max));
+	if (is_signed2(min, max)) {
+		spvar_tmp++;
+	}
+	return spvar_tmp;
+}
+function is_signed2(min, max) { return min < 0 || max < 0; }
+
+function make_full_mask(bits) {	
+	if (bits == MAX_FW_BITS) {
+		return FULL_BITMASK;
+	}
+	return (FULL_BITMASK & (~(1 << (MAX_FW_BITS - 1)))) >> (MAX_FW_BITS - bits - 1);
+}
+function make_sign(bits) { return 1 << clamp(bits - 1, 0, MAX_FW_BITS - 1); }
+function make_sign_mask(bits) { return ~make_sign(bits); }
+
+function pack_u(val, bits) { return val & make_full_mask(bits); }
+function pack_i(val, bits) {
+	if (val < 0) {
+		return (abs(val) & make_sign_mask(bits)) | make_sign(bits);	
+	}
+	return val & make_sign_mask(bits);
+}
+function unpack_i(val, bits) {
+	if (val & make_sign(bits)) {
+		return 0 - (val & make_sign_mask(bits));
+	}
+	return val & make_sign_mask(bits);
+}
+
+int spvar_current_bit;
+int spvar_current_slot;
+int spvar_current_value;
+int spvar_tmp;
+int spvar_bits;
+
+function read_spvar_slot(slot) { return get_pvar(slot, 0-(FULL_BITMASK & (1 << (MAX_BITS - 1))), 0-((0-(FULL_BITMASK & (1 << (MAX_BITS - 1)))) + 1), 0); }
+
+function save_spvar(val, min, max, save) {
+	spvar_bits = get_bit_count2(min, max); // Set min to be the bits we're going to need to store this value	
+	
+	if (is_signed2(min, max)) {
+		val = pack_i(val, spvar_bits); // Pack as signed value	
+	}
+	val = pack_u(val, spvar_bits); // Pack as unsigned value - because this is more inclusive than signed, we don't need an else here - just always do it (micro optimization)
+	
+	if (spvar_bits > MAX_BITS - spvar_current_bit) { // If we cannot fit the value here, we need to store what we can and move to the next slot
+		spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Add what we can to the current value
+		set_pvar(spvar_current_slot, spvar_current_value); // Force save, we're moving to the next value		
+		spvar_current_slot++; // Move to the next slot
+		spvar_bits -= (MAX_BITS - spvar_current_bit); // Update the required bits according to our needs for the next slot
+		val = val >> (MAX_BITS - spvar_current_bit); // Move the remaining bits to their new location
+		spvar_current_bit = 0; // We've hit the end, so we start over
+		spvar_current_value = 0; // Reset our value so we start clean
+	}
+	
+	spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Add the value to the current position
+	spvar_current_bit += spvar_bits; // Increment the bit position
+	if (spvar_current_bit >= MAX_BITS) {
+		spvar_current_bit -= MAX_BITS; // We went beyond the end here, this is too big apparently
+		set_pvar(spvar_current_slot, spvar_current_value);
+		spvar_current_slot++; // move to the next slot
+		if (!spvar_current_bit) {
+			spvar_current_value = 0; // Reset our value so we start clean
+		}
+	}
+	if (save) {
+		set_pvar(spvar_current_slot, spvar_current_value);
+	}	
+}
+
+function read_spvar(min, max, defaul) {
+	spvar_current_value = read_spvar_slot(spvar_current_slot); // Load the value so we always have it where we need it to be
+	spvar_bits = get_bit_count2(min, max); // Set min to be the bits we're going to need to store this value
+	spvar_current_value = pack_u(spvar_current_value >> spvar_current_bit, spvar_bits); // Shift our bits into position
+	
+	if (spvar_bits > MAX_BITS - spvar_current_bit) { // if the value doesn't fit in this variable, we need to fetch the next value aswell and merge them accordingly
+		spvar_current_slot++; // Move to the next slot
+		spvar_tmp = read_spvar_slot(spvar_current_slot); // load the new slot into a temporary variable
+		spvar_tmp = pack_u(spvar_tmp, spvar_bits - (MAX_BITS - spvar_current_bit)); // Get the bits we need
+		spvar_tmp = spvar_tmp << (MAX_BITS - spvar_current_bit); // Shift the bits into their correct position
+		spvar_current_value = pack_u(spvar_current_value, (spvar_bits - (MAX_BITS - spvar_current_bit)));
+		spvar_current_value = spvar_current_value | spvar_tmp; // put all bits together again
+		spvar_current_bit = spvar_current_bit - MAX_BITS; // Reset the bit position so we get the correct position next
+	}	
+	spvar_current_bit += spvar_bits; // move to the next variable position
+	if (spvar_current_bit >= MAX_BITS) {
+		spvar_current_bit -= MAX_BITS; // We went beyond the end here, this is too big apparently
+		spvar_current_slot++;
+	}	
+	spvar_current_value = pack_u(spvar_current_value, spvar_bits); // Extract all bits included for this value
+	if (is_signed2(min, max)) { // Check if we have a sign bit
+		spvar_current_value = unpack_i(spvar_current_value, spvar_bits); // Restore signed value
+	}
+	if (spvar_current_value < min || spvar_current_value > max) { // Check if the value is below our specified min or above our specified max, if so - return the default value instead
+		return defaul;
+	}
+	return spvar_current_value;
+}
+
+
+  //TaylorARVert    [0] = read_spvar(-99, 99, 20);		
+ function Load(){ 
+	reset_spvar();   
+   
+    antirecoil_start[0]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[0]        = read_spvar(-99, 99, 0);
+    antirecoil_end[0]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[0]       = read_spvar(-99, 99, 0);
+    antirecoil_start[1]      = read_spvar(-99, 99, 0); 
+   	antirecoil_mid[1]        = read_spvar(-99, 99, 0);
+	antirecoil_end[1]        = read_spvar(-99, 99, 0);         
+    antirecoil_time[1]       = read_spvar(-99, 99, 0);
+    antirecoil_start[2]      = read_spvar(-99, 99, 0);
+  	antirecoil_mid[2]        = read_spvar(-99, 99, 0);
+	antirecoil_end[2]        = read_spvar(-99, 99, 0);         
+    antirecoil_time[2]       = read_spvar(-99, 99, 0);
+	antirecoil_start[3]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[3]        = read_spvar(-99, 99, 0);
+    antirecoil_end[3]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[3]       = read_spvar(-99, 99, 0);
+    antirecoil_start[4]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[4]        = read_spvar(-99, 99, 0);
+    antirecoil_end[4]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[4]       = read_spvar(-99, 99, 0);
+    antirecoil_start[5]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[5]        = read_spvar(-99, 99, 0);
+    antirecoil_end[5]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[5]       = read_spvar(-99, 99, 0);
+    antirecoil_start[6]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[6]        = read_spvar(-99, 99, 0);
+    antirecoil_end[6]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[6]       = read_spvar(-99, 99, 0);
+    antirecoil_start[7]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[7]        = read_spvar(-99, 99, 0);
+    antirecoil_end[7]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[7]       = read_spvar(-99, 99, 0);
+    antirecoil_start[8]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[8]        = read_spvar(-99, 99, 0);
+    antirecoil_end[8]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[8]       = read_spvar(-99, 99, 0);
+    antirecoil_start[9]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[9]        = read_spvar(-99, 99, 0);
+    antirecoil_end[9]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[9]       = read_spvar(-99, 99, 0);
+    antirecoil_start[10]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[10]        = read_spvar(-99, 99, 0);
+    antirecoil_end[10]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[10]       = read_spvar(-99, 99, 0);
+    antirecoil_start[11]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[11]        = read_spvar(-99, 99, 0);
+    antirecoil_end[11]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[11]       = read_spvar(-99, 99, 0);
+    antirecoil_start[12]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[12]        = read_spvar(-99, 99, 0);
+    antirecoil_end[12]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[12]       = read_spvar(-99, 99, 0);
+    antirecoil_start[13]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[13]        = read_spvar(-99, 99, 0);
+    antirecoil_end[13]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[13]       = read_spvar(-99, 99, 0);
+    antirecoil_start[14]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[14]        = read_spvar(-99, 99, 0);
+    antirecoil_end[14]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[14]       = read_spvar(-99, 99, 0);
+    antirecoil_start[15]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[15]        = read_spvar(-99, 99, 0);
+    antirecoil_end[15]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[15]       = read_spvar(-99, 99, 0);
+    antirecoil_start[16]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[16]        = read_spvar(-99, 99, 0);
+    antirecoil_end[16]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[16]       = read_spvar(-99, 99, 0);
+    antirecoil_start[17]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[17]        = read_spvar(-99, 99, 0);
+    antirecoil_end[17]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[17]       = read_spvar(-99, 99, 0);
+    antirecoil_start[18]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[18]        = read_spvar(-99, 99, 0);
+    antirecoil_end[18]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[18]       = read_spvar(-99, 99, 0);
+    antirecoil_start[19]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[19]        = read_spvar(-99, 99, 0);
+    antirecoil_end[19]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[19]       = read_spvar(-99, 99, 0);
+    antirecoil_start[20]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[20]        = read_spvar(-99, 99, 0);
+    antirecoil_end[20]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[20]       = read_spvar(-99, 99, 0);
+    antirecoil_start[21]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[21]        = read_spvar(-99, 99, 0);
+    antirecoil_end[21]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[21]       = read_spvar(-99, 99, 0);
+    antirecoil_start[22]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[22]        = read_spvar(-99, 99, 0);
+    antirecoil_end[22]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[22]       = read_spvar(-99, 99, 0);
+    antirecoil_start[23]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[23]        = read_spvar(-99, 99, 0);
+    antirecoil_end[23]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[23]       = read_spvar(-99, 99, 0);
+    antirecoil_start[24]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[24]        = read_spvar(-99, 99, 0);
+    antirecoil_end[24]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[24]       = read_spvar(-99, 99, 0);
+    antirecoil_start[25]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[25]        = read_spvar(-99, 99, 0);
+    antirecoil_end[25]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[25]       = read_spvar(-99, 99, 0);
+    antirecoil_start[26]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[26]        = read_spvar(-99, 99, 0);
+    antirecoil_end[26]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[26]       = read_spvar(-99, 99, 0);
+    antirecoil_start[27]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[27]        = read_spvar(-99, 99, 0);
+    antirecoil_end[27]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[27]       = read_spvar(-99, 99, 0);
+    antirecoil_start[28]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[28]        = read_spvar(-99, 99, 0);
+    antirecoil_end[28]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[28]       = read_spvar(-99, 99, 0);
+    antirecoil_start[29]      = read_spvar(-99, 99, 0);
+    antirecoil_mid[29]        = read_spvar(-99, 99, 0);
+    antirecoil_end[29]        = read_spvar(-99, 99, 0);       
+    antirecoil_time[29]       = read_spvar(-99, 99, 0);
+    toggle_antirecoil[0]     = read_spvar(0, 1, 0);
+    toggle_antirecoil[1]     = read_spvar(0, 1, 0);
+    toggle_antirecoil[2]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[19]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[20]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[21]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[22]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[23]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[24]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[25]     = read_spvar(0, 1, 0);
+    toggle_rapidfire[26]     = read_spvar(0, 1, 0);
+    toggle_burstfire[0]      = read_spvar(0, 1, 0);
+    toggle_burstfire[1]      = read_spvar(0, 1, 0);
+    toggle_burstfire[2]      = read_spvar(0, 1, 0);
+    autolean_on[0]           = read_spvar(0, 1, 0);
+    peekshot_on[0]		     = read_spvar(0, 1, 0);
+    autolean_on[1]       	 = read_spvar(0, 1, 0);
+    autolean_on[2]       	 = read_spvar(0, 1, 0);
+    peekshot_on[1]           = read_spvar(0, 1, 0);
+    peekshot_on[2]           = read_spvar(0, 1, 0);
+    autodown_onADS[0]        = read_spvar(0, 1, 0);
+    autodown_onADS[1]        = read_spvar(0, 1, 0);
+    autodown_onADS[2]        = read_spvar(0, 1, 0);
+    TBAG_on[0]               = read_spvar(0, 1, 0);
+    TBAG_on[1]               = read_spvar(0, 1, 0);
+    TBAG_on[2]               = read_spvar(0, 1, 0);
+    toggle_jumpshot[0]       = read_spvar(0, 1, 0);
+    toggle_jumpshot[1]       = read_spvar(0, 1, 0);
+    toggle_jumpshot[2]       = read_spvar(0, 1, 0);
+    toggle_holdbreath        = read_spvar(0, 1, 0);                                                                                                          
+	strafe_on[0]             = read_spvar(0, 1, 0);
+	strafe_on[1]             = read_spvar(0, 1, 0);
+	strafe_on[2]             = read_spvar(0, 1, 0);
+	Amp_strafe[0]            = read_spvar(0, 999, 300);                                               
+    Vel_strafe[0]            = read_spvar(0, 999, 100);  
+    Amp_strafe[1]            = read_spvar(0, 999, 300);                                               
+    Vel_strafe[1]            = read_spvar(0, 999, 100); 
+    Amp_strafe[2]            = read_spvar(0, 999, 300);                                               
+    Vel_strafe[2]            = read_spvar(0, 999, 100); 
+    burstfire_hold           = read_spvar(0, 999, 120);  
+	burstfire_release        = read_spvar(0, 999, 120);   		    
+	swap_on             	 = read_spvar(0, 1, 0);	    
+	inverted_on        		 = read_spvar(0, 1, 0);           
+	nomearmi[0]    			 = read_spvar(0, 29, 0);                                
+    nomearmi[1]         	 = read_spvar(0, 29, 0);                                          
+	nomearmi[2]       		 = read_spvar(0, 29, 0);
+	optic[0]                 = read_spvar(0, 5, 0);
+	optic[1]                 = read_spvar(0, 5, 0);
+	optic[2]                 = read_spvar(0, 5, 0);
+    x1 						 = read_spvar(0, 50, 0);
+    x2 						 = read_spvar(0, 50, 0);
+    x3 						 = read_spvar(0, 50, 0);
+    x4 						 = read_spvar(0, 50, 0);
+    x6 			 			 = read_spvar(0, 50, 0);
+    x8 			 		     = read_spvar(0, 50, 0);
+    rate_of_fire[19]          = read_spvar(1, 25, 13);
+    rate_of_fire[20]          = read_spvar(1, 25, 13);
+    rate_of_fire[21]          = read_spvar(1, 25, 13);
+    rate_of_fire[22]          = read_spvar(1, 25, 13);
+    rate_of_fire[23]          = read_spvar(1, 25, 13);
+    rate_of_fire[24]          = read_spvar(1, 25, 13);
+    rate_of_fire[25]          = read_spvar(1, 25, 13);
+    rate_of_fire[26]          = read_spvar(1, 25, 13);
+    correction_opticsweap[0]  = read_spvar(-20, 20, 0);
+    correction_opticsweap[1]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[2]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[3]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[4]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[5]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[6]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[7]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[8]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[9]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[10]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[11]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[12]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[13]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[14]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[15]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[16]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[17]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[18]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[19]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[20]  = read_spvar(-20, 20, 0);
+    correction_opticsweap[21]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[22]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[23]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[24]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[25]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[26]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[27]  = read_spvar(-20, 20, 0); 
+    correction_opticsweap[28]  = read_spvar(-20, 20, 0);
+    correction_opticsweap[29]  = read_spvar(-20, 20, 0); 
+   
+    
+
+}  
+	                                                     
+ function Save(){ 
+    reset_spvar();
+    combo_run(SAVE);	
+
+	save_spvar(antirecoil_start[0]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[0]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[0]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[0]       ,-99, 99,FALSE);
+	save_spvar(antirecoil_start[1]      ,-99, 99,FALSE); 
+   	save_spvar(antirecoil_mid[1]        ,-99, 99,FALSE);
+	save_spvar(antirecoil_end[1]        ,-99, 99,FALSE);         
+    save_spvar(antirecoil_time[1]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[2]      ,-99, 99,FALSE);
+  	save_spvar(antirecoil_mid[2]        ,-99, 99,FALSE);
+	save_spvar(antirecoil_end[2]        ,-99, 99,FALSE);        
+    save_spvar(antirecoil_time[2]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[3]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[3]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[3]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[3]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[4]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[4]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[4]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[4]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[5]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[5]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[5]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[5]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[6]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[6]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[6]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[6]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[7]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[7]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[7]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[7]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[8]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[8]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[8]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[8]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[9]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[9]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[9]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[9]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[10]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[10]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[10]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[10]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[11]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[11]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[11]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[11]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[12]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[12]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[12]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[12]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[13]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[13]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[13]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[13]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[14]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[14]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[14]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[14]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[15]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[15]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[15]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[15]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[16]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[16]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[16]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[16]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[17]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[17]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[17]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[17]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[18]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[18]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[18]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[18]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[19]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[19]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[19]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[19]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[20]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[20]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[20]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[20]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[21]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[21]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[21]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[21]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[22]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[22]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[22]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[22]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[23]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[23]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[23]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[23]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[24]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[24]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[24]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[24]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[25]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[25]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[25]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[25]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[26]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[26]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[26]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[26]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[27]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[27]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[27]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[27]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[28]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[28]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[28]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[28]       ,-99, 99,FALSE);
+    save_spvar(antirecoil_start[29]      ,-99, 99,FALSE);
+    save_spvar(antirecoil_mid[29]        ,-99, 99,FALSE);
+    save_spvar(antirecoil_end[29]        ,-99, 99,FALSE);      
+    save_spvar(antirecoil_time[29]       ,-99, 99,FALSE);
+    save_spvar(toggle_antirecoil[0]      ,0, 1,FALSE);
+    save_spvar(toggle_antirecoil[1]      ,0, 1,FALSE);
+    save_spvar(toggle_antirecoil[2]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[19]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[20]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[21]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[22]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[23]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[24]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[25]      ,0, 1,FALSE);
+    save_spvar(toggle_rapidfire[26]      ,0, 1,FALSE);
+    save_spvar(toggle_burstfire[0]       ,0, 1,FALSE);
+    save_spvar(toggle_burstfire[1]       ,0, 1,FALSE);
+    save_spvar(toggle_burstfire[2]       ,0, 1,FALSE);
+    save_spvar(autolean_on[0]            ,0, 1,FALSE);
+    save_spvar(peekshot_on[0]		     ,0, 1,FALSE);
+    save_spvar(autolean_on[1]       	 ,0, 1,FALSE);
+    save_spvar(autolean_on[2]       	 ,0, 1,FALSE);
+    save_spvar(peekshot_on[1]            ,0, 1,FALSE);
+    save_spvar(peekshot_on[2]            ,0, 1,FALSE);
+    save_spvar(autodown_onADS[0]         ,0, 1,FALSE);
+    save_spvar(autodown_onADS[1]         ,0, 1,FALSE);
+    save_spvar(autodown_onADS[2]         ,0, 1,FALSE);
+    save_spvar(TBAG_on[0]                ,0, 1,FALSE);
+    save_spvar(TBAG_on[1]                ,0, 1,FALSE);
+    save_spvar(TBAG_on[2]                ,0, 1,FALSE);
+    save_spvar(toggle_jumpshot[0]        ,0, 1,FALSE);
+    save_spvar(toggle_jumpshot[1]        ,0, 1,FALSE);
+    save_spvar(toggle_jumpshot[2]        ,0, 1,FALSE);
+    save_spvar(toggle_holdbreath         ,0, 1,FALSE);                                                                                                          
+	save_spvar(strafe_on[0]              ,0, 1,FALSE);
+	save_spvar(strafe_on[1]              ,0, 1,FALSE);
+	save_spvar(strafe_on[2]              ,0, 1,FALSE);
+	save_spvar(Amp_strafe[0]             ,0, 999,FALSE);                                              
+    save_spvar(Vel_strafe[0]             ,0, 999,FALSE); 
+    save_spvar(Amp_strafe[1]             ,0, 999,FALSE);                                              
+    save_spvar(Vel_strafe[1]             ,0, 999,FALSE);  
+    save_spvar(Amp_strafe[2]             ,0, 999,FALSE);                                              
+    save_spvar(Vel_strafe[2]             ,0, 999,FALSE);  
+    save_spvar(burstfire_hold            ,0, 999,FALSE); 
+	save_spvar(burstfire_release         ,0, 999,FALSE);		    
+	save_spvar(swap_on                   ,0, 1,FALSE);	    
+	save_spvar(inverted_on               ,0, 1,FALSE);           
+	save_spvar(nomearmi[0]    		     ,0, 29,FALSE);                                
+    save_spvar(nomearmi[1]               ,0, 29,FALSE);                                          
+	save_spvar(nomearmi[2]       	     ,0, 29,FALSE);
+	save_spvar(optic[0]       	 		 ,0, 5,FALSE);
+	save_spvar(optic[1]       	 		 ,0, 5,FALSE);
+	save_spvar(optic[2]       	 		 ,0, 5,FALSE);
+    save_spvar(x1         				 ,0, 50,FALSE);
+    save_spvar(x2           			 ,0, 50,FALSE);
+    save_spvar(x3        				 ,0, 50,FALSE);
+    save_spvar(x4        				 ,0, 50,FALSE);
+    save_spvar(x6        				 ,0, 50,FALSE);
+    save_spvar(x8        				 ,0, 50,FALSE);
+	save_spvar(rate_of_fire[19]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[20]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[21]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[22]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[23]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[24]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[25]          ,1, 25,FALSE);
+	save_spvar(rate_of_fire[26]          ,1, 25,FALSE);
+	save_spvar(correction_opticsweap[0]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[1]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[2]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[3]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[4]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[5]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[6]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[7]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[8]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[9]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[10]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[11]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[12]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[13]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[14]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[15]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[16]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[17]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[18]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[19]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[20]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[21]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[22]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[23]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[24]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[25]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[26]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[27]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[28]  ,-20, 20,FALSE);
+    save_spvar(correction_opticsweap[29]  ,-20, 20,TRUE);
+   
+   
+ }
+
+// 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 〜 
+/*
+function block_btn() {
+
+set_val(PS4_UP     , 0 ); 	set_val(PS4_DOWN  , 0 ); 	set_val(PS4_LEFT  , 0 );	set_val(PS4_RIGHT   , 0);
+set_val(PS4_CROSS  , 0 ); 	set_val(PS4_CIRCLE, 0 ); 	set_val(PS4_SQUARE, 0 ); 	set_val(PS4_TRIANGLE, 0);
+set_val(PS4_L1     , 0 ); 	set_val(PS4_R1    , 0 ); 	set_val(PS4_L3    , 0 ); 	set_val(PS4_R3      , 0);
+set_val(PS4_OPTIONS, 0 ); 	set_val(PS4_SHARE , 0 );	set_val(PS4_TOUCH , 0 );	set_val(PS4_PS      , 0);
+set_val(XB1_PL1    , 0 ); 	set_val(XB1_PL2   , 0 );	set_val(XB1_PR1   , 0 );	set_val(XB1_PR2     , 0);
+//set_val(PS4_LX, 0); 		set_val(PS4_LY, 0); 		set_val(PS4_RX, 0); 		set_val(PS4_RY, 0);
+//set_val(PS4_L2, 0); 		set_val(PS4_R2, 0);  ANDRY85ANDRY85ANDRY85ANDRY85ANDRY85ANDRY85ANDRY85ANDRY85ANDRY85
+}   */ ����������������
