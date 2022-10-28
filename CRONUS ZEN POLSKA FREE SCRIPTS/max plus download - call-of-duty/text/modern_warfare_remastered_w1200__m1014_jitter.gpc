@@ -1,0 +1,91 @@
+// GPC Online Library
+// modern_warfare_remastered_w1200_&_m1014_jitter.gpc
+
+
+ /*
+ = = = = = = = = = = = = = = = = = = = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = /\/\/\  Made By ItzSnack  /\/\/\  = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = = = = = = = = = = = = = = = = = = =
+
+ =============================================
+ === Hold L2/LT And Press R3/RS For Jitter ===
+ === 1 Rumble = ON 2 = OFF                 ===
+ ============================================================
+ === You must have a stable connection to use this Jitter ===
+ ============================================================
+ */
+
+    int SNACK,ARS,AR = 30; //Anti Recoil
+    int Jam = 40; //Increase this value with 5+ if your shotgun switch to secondary
+    int RUN = TRUE; //Change TRUE TO FALSE If you dont Auto Run
+
+    main {
+    
+    if(RUN)
+    if(get_val(12) == -100)  
+    set_val(8,100);
+    
+    deadzone(4,7,100,100);
+    
+    if(get_val(7) && event_press(5)) {
+    SNACK=!SNACK;
+    if(SNACK) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}   
+    if(SNACK && get_val(4)) 
+    combo_run(Jitter);
+    
+    if(SNACK && event_release(4))
+    combo_run(Reload);
+    
+    if(SNACK && get_val(4)) {
+    combo_run(AR);}
+
+    if(abs(get_val(10)) > 15 || abs(get_val(9)) > 15) {
+    combo_stop (AR);}}
+    
+    combo AR {
+    ARS = get_val(10) + AR;
+    if(ARS > 100) ARS = 100;
+    set_val(10,ARS);}      
+    
+    combo Jitter {
+    set_val(20,100);
+    wait(11);
+    wait(Jam);
+    set_val(17,100);
+    wait(11);
+    wait(11);
+    set_val(17,100);
+    wait(11);
+    wait(11);}
+    
+    combo Reload {
+    wait(80);
+    set_val(20,100);
+    wait(20);}
+    
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();}
+ 
+    function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}

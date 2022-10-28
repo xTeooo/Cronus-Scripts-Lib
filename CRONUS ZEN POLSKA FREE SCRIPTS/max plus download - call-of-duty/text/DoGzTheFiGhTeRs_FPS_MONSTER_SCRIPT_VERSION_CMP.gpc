@@ -1,0 +1,571 @@
+// ******CMP/ZEN******   DoGzTheFiGhTeR's MODERN WARFARE SCRIPT **FPS MONSTER SCRIPT ******ZEN/CMP******VERSION CRONUSMAX 
+
+// 3 DIFFERENT AIM ASSISTS ( POLAR AIM ASSIST )( PROGRESSION AIM ASSIST ) ( DoGz METHOD AIM ASSIST (VM SPEED OPTION INCLUDED ENHANCE'S ASSIST SPEED DOWN TO -5 MIN) )
+// ALL THREE AIM ASSISTS CAN RUN TOGETHER ALONG WITH RECOIL WHICH CREATES NEW AIM ASSIST'S   *****( EXPERIMENT ) ***** 
+
+// AIM ASSIST'S X 3      = L2 (WHEN L2 & R2 ARE PRESSED IT PROVIDES A BOOST TO AIM ASSIST FOR POLAR & DoGz ONLY )( BOOST OR SHAKE CAN BE TURNED OFF FOR POLAR ) 
+// RAPID FIRE            = FIRE BUTTON ( WHEN ACTIVE )
+// DYNAMIC FIRE          = FIRE BUTTON ( WHEN ACTIVE ) (PRESSURE RAPID FIRE ( FIRE HELD IN FULLY = FASTEST )
+// JUMPSHOT              = FIRE BUTTON ( WHEN ACTIVE )
+// DROP SHOT             = FIRE BUTTON ( WHEN ACTIVE )
+// PRONE ON SHOT         = FIRE BUTTON ( WHEN ACTIVE )
+// ANTI RECOIL X 2       = L2 & R2 (VIBRATION MADE REQUIRES IT ENABLED IN GAME )
+//      ( YOU CAN CHOOSE RECOIL ON VIBRATE OR JUST L2 & R2 )       ( YOU CAN CHOOSE RECOIL INVERTED )
+ 
+
+// L2 && UP     = DON'T AT ME AIM ASSIST
+// L2 && LEFT   = PROGRESSION AIM ASSIST
+// L2 && RIGHT  = DoGz AIM ASSIST
+// DOWN && R2   = RAPID FIRE
+// DOWN && R1   = DYNAMIC FIRE
+// L2 && CIRCLE = DROP SHOT ON FIRE ( TURBO CROUCH ON FIRE )
+// L2 && CROSS  = JUMP SHOT ON FIRE ( JUMP ON FIRE )
+// L2 && TOUCH  = PRONE SHOT ON FIRE( DROP TO FLOOR ON FIRE SPRING BACK UP ON RELEASE )
+
+// RECOIL HOLD BUTTON = CROSS AND PRESS ( UP ) OR ( DOWN ) OR ( LEFT ) OR ( RIGHT ) TO ADJUST RECOIL **ADJUSTABLE RECOIL**
+
+// MENU SYSTEM GUIDE ( THE LED WILL ID WHAT MOD/CLASS YOU ARE IN AND IT WILL RUMBLE AT THE MAXIMUM VALUE IN THAT CLASS/MOD )
+
+// HOLD TRIANGLE FOR 950ms TO ENTER
+// CIRCLE TO EXIT MENU
+// CROSS TO CHANGE CLASS TO CHANGE
+// UP OR DOWN TO ADD OR SUBTRACT VALUE IN THAT CLASS
+// VIBRATES ON THE MAXIMUM VALUE OF THAT CLASS/MOD
+
+// MENU CLASS
+//____COLOUR ID_________________MOD/CLASS__________________
+// 1. RED                     = DOGZ ASSIST POSITIVE VALUE
+// 2. GREEN                   = DOGZ ASSIST NEGITIVE VALUE
+// 3. PINK/PURPLE             = VIRTUAL MACHINE RUN TIME WHILE HOLDING L2 (INTENDED FOR DOGZ ASSIST)
+// 4. YELLOW                  = PROGRESSION POSITIVE
+// 5. WHITE                   = PROGRESSION NEGITIVE
+// 6. BRIGHT BLUE             = PROGRESSION WAIT
+// 7. BRIGHT PURPLE (PULSING) = POLAR BOOST
+// 8. BRIGHT BLUE   (PULSING) = POLAR SHAKE
+
+const char Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,    
+80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7, 
+6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,  
+-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, 
+-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,   
+-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, 
+-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,
+9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,
+82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100}; 
+
+define PS         = PS4_PS;  
+define SHARE      = PS4_SHARE;  
+define OPTIONS    = PS4_OPTIONS;  
+define R1         = PS4_R1;  
+define R2         = PS4_R2;  
+define R3         = PS4_R3;  
+define L1         = PS4_L1;  
+define L2         = PS4_L2;  
+define RX         = PS4_RX;  
+define RY         = PS4_RY;  
+define LX         = PS4_LX;  
+define LY         = PS4_LY;     
+define L3         = PS4_L3;  
+define UP         = PS4_UP;  
+define DOWN       = PS4_DOWN;  
+define LEFT       = PS4_LEFT;  
+define RIGHT      = PS4_RIGHT; 
+define CROSS      = PS4_CROSS;  
+define CIRCLE     = PS4_CIRCLE;  
+define SQUARE     = PS4_SQUARE;  
+define TRIANGLE   = PS4_TRIANGLE;  
+define TOUCH      = PS4_TOUCH;
+define VIB_A      = RUMBLE_A;
+
+// PUT YOUR BUTTONS HERE BELOW IF DIFFERENT
+define AIM        = PS4_L2;//XB1_LT 
+define FIRE       = PS4_R2;//XB1_RT  
+define TACTICAL   = PS4_L1;//XB1_LB 
+define LEATHAL    = PS4_R1;//XB1_RB                                        
+define CROUCH     = PS4_CIRCLE;//XB1_B
+define MELEE      = PS4_R3;//XB1_RS  
+define SPRINT     = PS4_L3;//XB1_A  
+define SWAP       = PS4_TRIANGLE;//XB1_Y  
+define JUMP       = PS4_CROSS;//A
+define RELOAD     = PS4_SQUARE;//X
+
+define X   = RX;                                    
+define Y   = RY;
+define ON  = TRUE;
+define OFF = FALSE;
+
+//MENU HOLD THE BUTTON TIME TO ENTER MENU
+define MENU_HOLD_TIME          = 950;
+//MENU BUTTONS
+define MENU_HOLD_BUTTON        = SWAP;  //TRIANGLE ( HOLD TO ENTER MENU )
+define MENU_MOD_CHANGE_BUTTON  = JUMP;  //CROSS    ( PRESS TO CHANGE MOD/CLASS IN MENU )
+define MENU_EXIT_BUTTON        = CROUCH;//CIRCLE   ( PRESS TO EXIT MENU )
+
+// AIM ASSIST TOGGLES ON/OFF
+define PROGRESSION_HOLD_TOGGLE       = AIM,	    PROGRESSION_PRESS_TOGGLE  = LEFT;
+define DoGz_ASSIST_HOLD_TOGGLE       = AIM,	    DoGz_ASSIST_PRESS_TOGGLE  = RIGHT;
+define DONT_AT_ME_ASSIST_HOLD_TOGGLE = AIM,		DONT_AT_ME_PRESS_TOGGLE   = UP;
+// MOD TOGGLES
+define RAPID_FIRE_HOLD_TOGGLE        = DOWN,    RAPID_FIRE_PRESS_TOGGLE   = FIRE;
+define DYNAMIC_FIRE_HOLD_TOGGLE      = DOWN,    DYNAMIC_FIRE_PRESS_TOGGLE = LEATHAL;
+define JUMPSHOT_HOLD_TOGGLE          = AIM,     JUMPSHOT_PRESS_TOGGLE     = JUMP;
+define DROPSHOT_HOLD_TOGGLE          = AIM,     DROPSHOT_PRESS_TOGGLE     = CROUCH;
+define PRONESHOT_HOLD_TOGGLE         = AIM,     PRONESHOT_PRESS_TOGGLE    = TOUCH;
+define SNACKS_RECOIL_HOLD_BUTTON = JUMP;// **CROSS**   RECOIL HOLD BUTTON = CROSS AND PRESS ( UP ) OR ( DOWN ) OR ( LEFT ) OR ( RIGHT ) TO ADJUST RECOIL
+
+define VM_INTERVAL   =  0;
+define STEP_INTERVAL =  1;
+define STEPS2 = 0;
+int RADIUS1,RADIUS2 = 10,RADIUS3 = 100;
+int RADIUS4, RADIUS5;
+int STEPS1,FIRE_RATE;
+int time,angle,cos_angle,sin_angle,actual_X,actual_Y,actual_Magnitude,max_Magnitude,L;
+int SHUNT,MENU,RECOIL,IDX = 1;
+
+//MENU VALUES MIN/MAX THESE WILL BE ADDED/SUBTRACTED IN GAME VIA THE MENU
+int D___AS_MIN   =   0,   D___AS_MAX =  20;
+int D_AS1_MIN    = -20,   D_AS1_MAX  =   0;
+int VMC_MIN      =  -5,   VMC_MAX    =  10;
+int POS,POS_MIN  =   0,   POS_MAX    =  20;
+int NEG,NEG_MIN  = -20,   NEG_MAX    =   1;
+int WA,WA_MIN    =  -2,   WA_MAX     =  50;
+int BOOST_MIN    =   1,   BOOST_MAX  =  10;
+int SHAKE_MIN    =   2,   SHAKE_MAX  = 200;
+
+//PROGRESSION ASSIST SETTINGS
+define PROGRESSION_RELEASE = 15; 
+define VMCR   =  0;
+define AAMIN  = -6;//MINIMUM VALUE  
+define AAMAX  =  6;//MAXIMUM VALUE  
+define AAVAL  =  6;//STEPS   
+define AAWMIN =  1;//MIN WAIT   
+define AAWMAX =  2;//MAXIMUM WAIT   
+define AAWVAL =  1;//STEPS
+
+int AS = AAMIN;  
+int AW = AAWMIN;
+int PROG;
+int AAS = 1;   
+int AAD = 1;
+
+//POLAR ASSIST SETTINGS
+define RADIUS        =  8;// RADIUS/STRENGTH/VALUE    
+define STEPS         = 20;// STEP/SPEED        
+define POLAR_RELEASE = 20;// RELEASE VALUE                                   
+int    POLAR_BOOST   =  7;// BOOST VALUE MUST BE 1 TO 10   ( 1 = STRONGER SHAKE __ 10 = NO SHAKE )
+int    POLAR_SHAKE   = 20;// SHAKE VALUE (EXPERIMENT) 2 - 200 
+
+//DoGz ASSIST VALUES
+define DoGz_ASSIST_RELEASE = 50;
+int D_AS:
+int VMC    = 0;//DEFAULT VM SPEED
+int D__AS  = 0;//STARTING VALUE/RETURN VALUE
+int D__AS1 = 4;//INVERT DIRECTION VALUE
+int D___AS = 5;//( HIGHEST VALUE )( WILL BE DOUBLED WHEN FIRING )
+int D_AS1 = -5;//( LOWEST VALUE ) ( WILL BE DOUBLED WHEN FIRING )
+
+//SHOT MOD OPTIONS
+define JUMPSHOT_WAIT  = 550;//WAIT TIME OF CROUCH (TO JUMP ON FIRE)(COMBO WAIT)
+define DROP_SHOT_WAIT =  50;//HOLD TIME OF CROUCH (TO RAPID CROUCH ON FIRE)(COMBO WAIT)
+
+//RAPID FIRE AND DYNAMIC RAPID FIRE OPTIONS
+define RATE        = 2;
+define RAPID       = 60;
+define RAPID_GAIN  = 10;//ADD HERE IF REQUIRED ( ADD 10,20,30 ETC UNTIL BOTH FIRES ARE CORRECT ) ( MAKE RAPID/DYNAMIC FIRE SPEED ADJUSTMENT HERE ONLY )
+int FIRERATE       = 1000;
+
+//AUTORUN-TACTICAL SPRINT OPTIONS
+define RUN_TRIGGER          = 80;//VALUE TO PUSH UP BEFORE AUTORUN STARTS
+define TACTICAL_SPRINT_WAIT = 40;//TIME BETWEEN BUTTON PRESS
+
+// ANTI RECOIL STARTING VALUES AND CONDITIONS
+define INTVERTED_RECOIL  =   1;//ITzSNACK'S INVERTED RECOIL METHOD ( IF INVERTED SET TO    -1   INSTEAD OF   1 )
+int VERTICAL_RECOIL      =  21;//RECOIL VERTICAL   * STARTING VALUE * ( DEFAULT VALUE/STREGNTH )
+int HORIZONTAL_RECOIL    =   0;//RECOIL HORIZONTAL * STARTING VALUE * ( DEFAULT VALUE/STREGNTH )
+define SNACKS_ANTIRECOIL =  ON;//RECOIL MASTER CONTROL ( IF YOU DON'T WANT ANTI-RECOIL RUNNING AT ALL INPUT NO HERE )
+define VIBRATION_RECOIL  =  ON;//RECOIL ACTIVE ON VIBRATE OR JUST ON THE TRIGGERS ( L2 & R2 ) ( ON = VIBRATION  OR  OFF = TRIGGERS ) ( MASTER ABOVE MUST BE SET TO ON ) 
+//POLAR CONDITIONS
+define ACTIVE_WHEN_ADS    =  ON;//POLAR ASSSIT PRESSING AIM
+define ACTIVE_WHEN_FIRING =  ON;//POLAR ASSSIT ACTIVE BY ONLY PRESSING FIRE OR AIM & FIRE                    
+define POLAR_BOOST_FIRE   =  ON;//BOOST POLAR AIM ASSIST ON FIRE ( WHEN AIMING & SHOOTING )
+define POLAR_SHAKE_FIRE   =  ON;//SHAKE POLAR AIM ASSIST ON FIRE ( WHEN AIMING & SHOOTING )
+
+//AIM ASSIST MODS ON/OFF BY DEFAULT ( TOGGLE ON/OFF IN GAME )( CAN ALL RUN TOGETHER TO CREATE MORE AIM ASSISTS )( EXPERIMENT )
+int DoGz_ASSIST        = ON;//DoGz AIM ASSTIST
+int PROGRESSION_ASSIST = ON;//PROGRESSION AIM ASSIST
+int DONT_AT_ME_ASSIST  = ON;//DON'T AT ME POLAR AIM ASSIST ( CMP VERSION )
+int VM                 = ON;//VM SPEED CONTROL ( CHANGES PATTERN AND SPEED ) ( LEAVE ON ALTERED IN MENU SYSTEM )
+
+int DROP_SHOT       = OFF;//ON/OFF BY DEFAULT   ( RAPID CROUCH ON FIRE )      ( TOGGLE ON/OFF IN GAME )( ONLY CHOOSE ONE SHOT MOD BY DEFAULT )
+int JUMP_SHOT       = OFF;//ON/OFF BY DEFAULT   ( JUMP ON FIRE )              ( TOGGLE ON/OFF IN GAME )( ONLY CHOOSE ONE SHOT MOD BY DEFAULT )
+int PRONE_SHOT      = OFF;//ON/OFF BY DEFAULT   ( DROP TO THE FLOOR ON FIRE ) ( TOGGLE ON/OFF IN GAME )( ONLY CHOOSE ONE SHOT MOD BY DEFAULT )
+int RAPID_FIRE      = OFF;//ON/OFF BY DEFAULT ( ONLY CHOOSE ONE FIRE TYPE BY DEFAULT ) (RAPID FIRE)  OR  (DYNAMIC_FIRE) ) ( TOGGLE ON/OFF IN GAME )
+int DYNAMIC_FIRE    =  ON;//ON/OFF BY DEFAULT ( ONLY CHOOSE ONE FIRE TYPE BY DEFAULT ) (RAPID FIRE)  OR  (DYNAMIC_FIRE) ) ( TOGGLE ON/OFF IN GAME )
+int AUTORUN         =  ON;//ON/OFF BY DEFAULT AUTORUN  = ( PUSH FORWARD ON THE MOVEMENT STICK )
+int TACTICAL_SPRINT =  ON;//ON/OFF BY DEFAULT TACTICAL = ( RUN PRESS/HOLD SPRINT )
+
+
+main {
+
+if (AUTORUN && get_val(LY) < -RUN_TRIGGER) { 
+    combo_run(RUN);
+}
+if (TACTICAL_SPRINT && get_val(L3)) { 
+	BLOCK(L3);
+	combo_stop(RUN);
+	combo_run(TACTICAL);
+}
+if (get_val(MENU_HOLD_BUTTON) && get_ptime(MENU_HOLD_BUTTON) >  MENU_HOLD_TIME) {
+	MENU = ON;
+	IDX = 1;
+}
+if (MENU) {
+if (event_press(MENU_EXIT_BUTTON)) {
+    MENU = OFF;
+    }
+if (event_press(MENU_MOD_CHANGE_BUTTON)) {
+    IDX += 1;
+if (IDX > 8) IDX = 1; 
+    }
+if (IDX == 1) {
+    LED(0,2,0,0);//RED =  = DOGZ ASSIST POSITIVE VALUE
+    D___AS = ADJUST(D___AS,D___AS_MIN,D___AS_MAX,1);
+}
+if (IDX == 2) {
+    LED(0,0,2,0);//GREEN = DOGZ ASSIST NEGITIVE VALUE
+    D_AS1 = ADJUST(D_AS1,D_AS1_MIN,D_AS1_MAX,1); 
+}
+if (IDX == 3) {
+   	LED(0,0,0,2);//PINK/PURPLE =  VIRTUAL MACHINE RUN TIME WHILE HOLDING L2 (INTENDED FOR DOGZ ASSIST)
+	VMC = ADJUST(VMC,VMC_MIN,VMC_MAX,1);
+}
+if (IDX == 4) {
+    LED(0,2,2,0);//YELLOW = PROGRESSION POSITIVE
+	POS = ADJUST(POS,POS_MIN,POS_MAX,1);
+}
+if (IDX == 5) {
+    LED(2,2,2,2);//WHITE = PROGRESSION NEGITIVE
+	NEG = ADJUST(NEG,NEG_MIN,NEG_MAX,1);
+}
+if (IDX == 6) {
+    LED(3,0,0,0);//BRIGHT BLUE = PROGRESSION WAIT
+	WA = ADJUST(WA,WA_MIN,WA_MAX,1);
+}
+if (IDX == 7) {
+    LED(0,0,0,L/3);///BRIGHT PINK/PURPLE PULSING = POLAR SHAKE
+	POLAR_BOOST = ADJUST(POLAR_BOOST,BOOST_MIN,BOOST_MAX,1);
+	L++;
+if (L > 3) {
+	L = OFF;
+	}
+}
+if (IDX == 8) {
+    LED(L/3,0,0,0);//BRIGHT BLUE PULSING = POLAR SHAKE
+	POLAR_SHAKE = ADJUST(POLAR_SHAKE,SHAKE_MIN,SHAKE_MAX,1);
+	L++;
+if (L > 3) {
+	L = OFF;
+	}
+}
+	BLOCK(MENU_MOD_CHANGE_BUTTON); BLOCK(MENU_EXIT_BUTTON); BLOCK(UP); BLOCK(DOWN); 
+}
+else {
+reset_leds ();
+}
+if (get_val(DONT_AT_ME_ASSIST_HOLD_TOGGLE) && event_press(DONT_AT_ME_PRESS_TOGGLE)) {
+	SHUNT = DONT_AT_ME_PRESS_TOGGLE;
+	DONT_AT_ME_ASSIST = !DONT_AT_ME_ASSIST;
+}
+if (DONT_AT_ME_ASSIST) {
+	vm_tctrl(VM_INTERVAL); 
+    actual_X = get_val(X);   
+    actual_Y = get_val(Y);           
+    actual_Magnitude = isqrt(pow(actual_X, 2) + pow(actual_Y, 2));  
+    max_Magnitude = (actual_Magnitude < 100);                      
+if (POLAR_BOOST_FIRE) {
+if (get_val(FIRE)) {	
+   	RADIUS1 =  POLAR_BOOST * RADIUS2;
+   	}
+else if (!get_val(FIRE)) {
+    RADIUS1 =  RADIUS3;
+   		}
+   	}
+if (POLAR_SHAKE_FIRE) {
+if (POLAR_SHAKE_FIRE && get_val(FIRE)) {
+	STEPS1 = POLAR_SHAKE;
+	}
+else if (!get_val(FIRE)) { 
+	STEPS1 = STEPS2;
+	}
+}   			
+if (!(time++ % STEP_INTERVAL)){                                  
+	angle += STEPS + STEPS1;                                                 
+    }                                                               
+    angle = angle % 360;                                            
+    sin_angle = Polar_Array[angle % 360];                           
+    cos_angle = Polar_Array[(angle + 270) % 360];                  
+    cos_angle = (cos_angle * RADIUS) / RADIUS1;                         
+    sin_angle = (sin_angle * RADIUS) / RADIUS1;                          
+if ((ACTIVE_WHEN_ADS && get_val(AIM) && abs(get_val(RY)) < POLAR_RELEASE && abs(get_val(RX)) < POLAR_RELEASE) 
+   	|| (ACTIVE_WHEN_FIRING && get_val(FIRE) && abs(get_val(RY))< POLAR_RELEASE && abs(get_val(RX)) < POLAR_RELEASE)) { 
+if(actual_Magnitude <= RADIUS){                                                      
+    sin_angle -= actual_Y;                                                              
+    cos_angle -= actual_X;                                                                 
+    }
+else {                                                                                       
+    sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+    cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+	}                                                  
+    set_val(X, clamp(actual_X + cos_angle, -100, 100));
+    set_val(Y, clamp(actual_Y + sin_angle, -100, 100)); 
+    }
+}
+if (get_val(PROGRESSION_HOLD_TOGGLE) && event_press(PROGRESSION_PRESS_TOGGLE)) {
+	SHUNT = PROGRESSION_PRESS_TOGGLE;
+	PROGRESSION_ASSIST = !PROGRESSION_ASSIST;
+}
+if (PROGRESSION_ASSIST && get_val(AIM) >= 80) {
+if (!combo_running(AAS)) {
+	AS = PROGRESSION(AS,AAMIN + NEG,AAMAX + POS,AAVAL,AAS,1);
+    AW = PROGRESSION(AW,AAWMIN,AAWMAX + WA,AAWVAL,AAD,2);
+    combo_run(AAS);
+    	}
+if (abs(get_val(RY))> PROGRESSION_RELEASE || abs(get_val(RX)) > PROGRESSION_RELEASE) {
+	combo_stop(AAS);
+	}
+}
+if (get_val(DoGz_ASSIST_HOLD_TOGGLE) && event_press(DoGz_ASSIST_PRESS_TOGGLE)) {
+	SHUNT = DoGz_ASSIST_PRESS_TOGGLE;
+	DoGz_ASSIST = !DoGz_ASSIST;
+}
+if (DoGz_ASSIST && abs(get_val(RX)) < DoGz_ASSIST_RELEASE && abs(get_val(RY)) < DoGz_ASSIST_RELEASE) {
+if (get_val(AIM) > 80) {
+	D_AS = ON;
+	AIM();
+}
+if(event_release(AIM) || event_release(FIRE)){
+	D_AS = OFF;
+	vm_tctrl(VMCR); 
+	}
+}
+if (!MENU && get_val(RAPID_FIRE_HOLD_TOGGLE) && event_press(RAPID_FIRE_PRESS_TOGGLE)) {
+	SHUNT = RAPID_FIRE_PRESS_TOGGLE;
+	RAPID_FIRE   = !RAPID_FIRE;
+	DYNAMIC_FIRE = OFF;
+}                                                   
+if (RAPID_FIRE && get_val(FIRE)) { 
+	FIRE_RATE = FIRERATE / RAPID * RATE;
+	combo_run(RAPID_FIRE);
+}
+if (!MENU && get_val(DYNAMIC_FIRE_HOLD_TOGGLE) && event_press(DYNAMIC_FIRE_PRESS_TOGGLE)) {
+	SHUNT = DYNAMIC_FIRE_PRESS_TOGGLE;
+	DYNAMIC_FIRE   = !DYNAMIC_FIRE;
+	RAPID_FIRE     = OFF;
+}                                                      
+if (DYNAMIC_FIRE && get_val(FIRE)) {
+	deadzone(L2,R2,10,10);
+	FIRE_RATE = FIRERATE / get_val(FIRE) * RATE;
+	combo_run(RAPID_FIRE);
+}
+if (!MENU && get_val(DROPSHOT_HOLD_TOGGLE) && event_press(DROPSHOT_PRESS_TOGGLE)) {
+	DROP_SHOT  = !DROP_SHOT;
+	JUMP_SHOT  = OFF;
+	PRONE_SHOT = OFF;
+}
+if (DROP_SHOT && get_val(FIRE)) {
+	combo_run(DROPSHOT);
+}
+if (!MENU && get_val(JUMPSHOT_HOLD_TOGGLE) && event_press(JUMPSHOT_PRESS_TOGGLE)) {
+	JUMP_SHOT  = !JUMP_SHOT;
+	DROP_SHOT  = OFF;
+	PRONE_SHOT = OFF;
+}
+if (JUMP_SHOT && get_val(FIRE)) {
+    combo_run(JUMPSHOT); 
+}
+if (!MENU && get_val(PRONESHOT_HOLD_TOGGLE) && event_press(PRONESHOT_PRESS_TOGGLE)) {
+	PRONE_SHOT = !PRONE_SHOT;
+	SHUNT = PRONESHOT_PRESS_TOGGLE
+	JUMP_SHOT = OFF;
+	DROP_SHOT = OFF;
+}
+if (PRONE_SHOT && get_val(FIRE)) {
+	set_val(CROUCH,100);
+	}
+else if (PRONE_SHOT && event_release(FIRE)) {	
+	combo_run(PRONESHOT);
+}
+if (SNACKS_ANTIRECOIL) {
+if (VIBRATION_RECOIL) {
+if (get_val(AIM) && get_val(FIRE) && get_rumble(VIB_A)) {
+    combo_run(RECOIL);
+    }
+}
+else if (!VIBRATION_RECOIL) {
+if (get_val(AIM) && get_val(FIRE)) {
+    combo_run(RECOIL);
+    }
+}
+if (get_val(SNACKS_RECOIL_HOLD_BUTTON)) { 
+if (event_press(UP)) {
+    VERTICAL_RECOIL = VERTICAL_RECOIL + 1;
+    combo_run(VIBRATE);
+    }
+if (event_press(DOWN)) {
+    VERTICAL_RECOIL = VERTICAL_RECOIL - 1;
+    combo_run(VIBRATE);
+    }
+if (event_press(RIGHT)) {
+    HORIZONTAL_RECOIL = HORIZONTAL_RECOIL + 1;
+    combo_run(VIBRATE);
+    }
+if (event_press(LEFT)) {
+    HORIZONTAL_RECOIL = HORIZONTAL_RECOIL - 1;
+    combo_run(VIBRATE);
+    }
+    BLOCK(UP); BLOCK(DOWN); BLOCK(RIGHT); BLOCK(LEFT);
+}
+if (abs(get_val(RY)) > VERTICAL_RECOIL + 2 || abs(get_val(RX)) > VERTICAL_RECOIL + 2) {
+    combo_stop(RECOIL);
+	}  
+}
+if (SHUNT) {
+if (event_release(SHUNT)) {
+	SHUNT = OFF;
+	}
+else {
+	set_val (SHUNT,OFF);
+		}
+	}
+}
+
+combo RUN {
+  	set_val(SPRINT,100);
+}
+combo TACTICAL {
+  	wait(TACTICAL_SPRINT_WAIT); 
+  	set_val(SPRINT, 100);
+  	wait(TACTICAL_SPRINT_WAIT);         
+}
+combo AAS{
+	set_val(RY, 1 * - AS);
+	wait(AW);
+	set_val(RX, 1 * - AS);
+	wait(AW);
+	set_val(RY,AS);
+	wait(AW);
+	set_val(RX,AS);
+	wait(AW);
+}
+combo DROPSHOT {
+    wait(DROP_SHOT_WAIT)
+	set_val(CROUCH,100);		
+	wait(DROP_SHOT_WAIT);
+	set_val(CROUCH,OFF);
+}
+combo RAPID_FIRE {
+	set_val(FIRE,100);
+	wait(FIRE_RATE + RAPID_GAIN);
+	set_val(FIRE,0);
+	wait(FIRE_RATE + RAPID_GAIN);
+}
+combo JUMPSHOT {                   
+    set_val(JUMP,100); 
+    wait(50);  
+    wait(JUMPSHOT_WAIT); 
+}
+combo PRONESHOT {
+    wait(50);
+	set_val(CROUCH, 100);
+}
+combo RECOIL {
+    RECOIL = get_val(RY) + VERTICAL_RECOIL;
+if(RECOIL > 100) RECOIL = 100;
+    set_val(PS4_RY,RECOIL * INTVERTED_RECOIL);
+    RECOIL = get_val(RX) + HORIZONTAL_RECOIL;
+if(RECOIL > 100) RECOIL = 100;
+    set_val(PS4_RX,RECOIL);
+}
+combo VIBRATE {
+    set_rumble(VIB_A,40);
+    wait(150);
+	reset_rumble ();
+} 
+function AIM() {
+	if (D_AS) {
+	if (D_AS && VM) {
+		vm_tctrl(VMC);
+	}
+		D__AS ++;
+	if (D__AS >= D___AS)  D__AS = D__AS1;
+		D__AS1 --;
+	if (D__AS1 <= D_AS1)  D__AS1 = D__AS;
+		D__AS ++;
+	if(get_val(L2)) {	
+	set_val (RX,get_val(RX) + D__AS);
+	set_val (RY,get_val(RY) + D__AS);
+	}
+	if(get_val(R2)) {	
+	set_val (RX,get_val(RX) + D__AS);
+	set_val (RY,get_val(RY) + D__AS);
+		}
+	}
+}
+function PROGRESSION(VALUE,MIN,MAX,INCREMENT,FLOW,ID) {
+if(FLOW) {
+    VALUE += INCREMENT;
+if(VALUE <= MAX)  
+    return VALUE;
+if(VALUE > MAX) {
+        PROG[ID] = 0;
+    return VALUE - INCREMENT;}
+}
+else{
+    VALUE -= INCREMENT;    
+if(VALUE >= MIN)  
+    return VALUE;
+if(VALUE < MIN) {
+   	PROG[ID] = 1;
+    return VALUE + INCREMENT;}
+} 
+   		 return OFF;    
+}
+function ADJUST (VALUE,MIN,MAX,AMOUNT) {
+if (event_press(UP)) {
+	VALUE += AMOUNT;
+	return VALUE;
+    }
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(DOWN)) {
+	VALUE -= AMOUNT;
+	return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (VALUE == MAX) {
+	combo_run(VIBRATE);
+	}
+return VALUE;
+}
+function BLOCK (BUTTON) {
+if (!get_val(BUTTON)) 
+		return; 
+	set_val(BUTTON,OFF);
+}
+function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);
+}
+/*  Link out or delete this function below if using the Zen */
+function clamp(int v,int lo,int hi) { 
+if(v < lo) 
+  	return lo;               
+if(v > hi) 
+  	return hi;        
+  		return v;     
+} 

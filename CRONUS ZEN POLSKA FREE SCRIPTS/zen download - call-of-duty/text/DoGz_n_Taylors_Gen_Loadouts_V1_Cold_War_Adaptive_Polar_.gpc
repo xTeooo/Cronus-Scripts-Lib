@@ -1,0 +1,1638 @@
+/*
+     _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+    |       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+    | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+    | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+    | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+    | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+    | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+    | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+     \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+                                           ________          __      __ __                _______  __          
+                                          |        \        |  \    /  \  \              |       \|  \         
+                             _______       \▓▓▓▓▓▓▓▓ ______  \▓▓\  /  ▓▓ ▓▓       ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+                            |       \        | ▓▓   |      \  \▓▓\/  ▓▓| ▓▓      /      \| ▓▓__| ▓▓\▓ /       \
+                            | ▓▓▓▓▓▓▓\       | ▓▓    \▓▓▓▓▓▓\  \▓▓  ▓▓ | ▓▓     |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+                            | ▓▓  | ▓▓       | ▓▓   /      ▓▓   \▓▓▓▓  | ▓▓     | ▓▓  | ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+                            | ▓▓  | ▓▓       | ▓▓  |  ▓▓▓▓▓▓▓   | ▓▓   | ▓▓_____| ▓▓__/ ▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+                            | ▓▓  | ▓▓       | ▓▓   \▓▓    ▓▓   | ▓▓   | ▓▓     \\▓▓    ▓▓ ▓▓  | ▓▓  |       ▓▓
+                             \▓▓   \▓▓        \▓▓    \▓▓▓▓▓▓▓    \▓▓    \▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+                                   
+                            ______                                                 __                       
+                           /      \                                               |  \                      
+                          |  ▓▓▓▓▓▓\ ______  _______   ______   ______   ______  _| ▓▓_    ______   ______  
+                          | ▓▓ __\▓▓/      \|       \ /      \ /      \ |      \|   ▓▓ \  /      \ /      \ 
+                          | ▓▓|    \  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\ \▓▓▓▓▓▓\\▓▓▓▓▓▓ |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\
+                          | ▓▓ \▓▓▓▓ ▓▓    ▓▓ ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓   \▓▓/      ▓▓ | ▓▓ __| ▓▓  | ▓▓ ▓▓   \▓▓
+                          | ▓▓__| ▓▓ ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     |  ▓▓▓▓▓▓▓ | ▓▓|  \ ▓▓__/ ▓▓ ▓▓      
+                           \▓▓    ▓▓\▓▓     \ ▓▓  | ▓▓\▓▓     \ ▓▓      \▓▓    ▓▓  \▓▓  ▓▓\▓▓    ▓▓ ▓▓      
+                            \▓▓▓▓▓▓  \▓▓▓▓▓▓▓\▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓       \▓▓▓▓▓▓▓   \▓▓▓▓  \▓▓▓▓▓▓ \▓▓      
+                                                                                                            
+				 ________                     __           ______                    __            __     __          
+                |        \                   |  \         /      \                  |  \          |  \   |  \         
+                 \▓▓▓▓▓▓▓▓ ______   _______ _| ▓▓_       |  ▓▓▓▓▓▓\ _______  ______  \▓▓ ______  _| ▓▓_  | ▓▓ _______ 
+                   | ▓▓   /      \ /       \   ▓▓ \      | ▓▓___\▓▓/       \/      \|  \/      \|   ▓▓ \  \▓ /       \
+                   | ▓▓  |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓▓\▓▓▓▓▓▓       \▓▓    \|  ▓▓▓▓▓▓▓  ▓▓▓▓▓▓\ ▓▓  ▓▓▓▓▓▓\\▓▓▓▓▓▓    |  ▓▓▓▓▓▓▓
+                   | ▓▓  | ▓▓    ▓▓\▓▓    \  | ▓▓ __      _\▓▓▓▓▓▓\ ▓▓     | ▓▓   \▓▓ ▓▓ ▓▓  | ▓▓ | ▓▓ __    \▓▓    \ 
+                   | ▓▓  | ▓▓▓▓▓▓▓▓_\▓▓▓▓▓▓\ | ▓▓|  \    |  \__| ▓▓ ▓▓_____| ▓▓     | ▓▓ ▓▓__/ ▓▓ | ▓▓|  \   _\▓▓▓▓▓▓\
+                   | ▓▓   \▓▓     \       ▓▓  \▓▓  ▓▓     \▓▓    ▓▓\▓▓     \ ▓▓     | ▓▓ ▓▓    ▓▓  \▓▓  ▓▓  |       ▓▓
+                    \▓▓    \▓▓▓▓▓▓▓\▓▓▓▓▓▓▓    \▓▓▓▓       \▓▓▓▓▓▓  \▓▓▓▓▓▓▓\▓▓      \▓▓ ▓▓▓▓▓▓▓    \▓▓▓▓    \▓▓▓▓▓▓▓ 
+                                                                                       | ▓▓                           
+                                                                                       | ▓▓                           
+                                                                                        \▓▓                           
+            ______        __                     __     __                         _______           __                   
+           /      \      |  \                   |  \   |  \                       |       \         |  \                               
+          |  ▓▓▓▓▓▓\ ____| ▓▓ ______   ______  _| ▓▓_   \▓▓__     __  ______      | ▓▓▓▓▓▓▓\ ______ | ▓▓ ______   ______       __    
+          | ▓▓__| ▓▓/      ▓▓|      \ /      \|   ▓▓ \ |  \  \   /  \/      \     | ▓▓__/ ▓▓/      \| ▓▓|      \ /      \     |  \   
+          | ▓▓    ▓▓  ▓▓▓▓▓▓▓ \▓▓▓▓▓▓\  ▓▓▓▓▓▓\\▓▓▓▓▓▓ | ▓▓\▓▓\ /  ▓▓  ▓▓▓▓▓▓\    | ▓▓    ▓▓  ▓▓▓▓▓▓\ ▓▓ \▓▓▓▓▓▓\  ▓▓▓▓▓▓\  __| ▓▓__ 
+          | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓/      ▓▓ ▓▓  | ▓▓ | ▓▓ __| ▓▓ \▓▓\  ▓▓| ▓▓    ▓▓    | ▓▓▓▓▓▓▓| ▓▓  | ▓▓ ▓▓/      ▓▓ ▓▓   \▓▓ |    ▓▓  \
+          | ▓▓  | ▓▓ ▓▓__| ▓▓  ▓▓▓▓▓▓▓ ▓▓__/ ▓▓ | ▓▓|  \ ▓▓  \▓▓ ▓▓ | ▓▓▓▓▓▓▓▓    | ▓▓     | ▓▓__/ ▓▓ ▓▓  ▓▓▓▓▓▓▓ ▓▓        \▓▓▓▓▓▓▓▓
+          | ▓▓  | ▓▓\▓▓    ▓▓\▓▓    ▓▓ ▓▓    ▓▓  \▓▓  ▓▓ ▓▓   \▓▓▓   \▓▓     \    | ▓▓      \▓▓    ▓▓ ▓▓\▓▓    ▓▓ ▓▓          | ▓▓   
+           \▓▓   \▓▓ \▓▓▓▓▓▓▓ \▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓    \▓▓▓▓ \▓▓    \▓     \▓▓▓▓▓▓▓     \▓▓       \▓▓▓▓▓▓ \▓▓ \▓▓▓▓▓▓▓\▓▓           \▓▓   
+                                     | ▓▓                                                                                              
+          							 | ▓▓                                                                                 
+                                      \▓▓                                                                                
+                        __        ______   ______  _______   ______  __    __ ________  ______       __     __   __   
+                       |  \      /      \ /      \|       \ /      \|  \  |  \        \/      \     |  \   |  \_/  \  
+                       | ▓▓     |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  | ▓▓\▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓\    | ▓▓   | ▓▓   ▓▓  
+                       | ▓▓     | ▓▓  | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓___\▓▓    | ▓▓   | ▓▓\▓▓▓▓  
+                       | ▓▓     | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓    \      \▓▓\ /  ▓▓ | ▓▓  
+                       | ▓▓     | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓   _\▓▓▓▓▓▓\      \▓▓\  ▓▓  | ▓▓  
+                       | ▓▓_____| ▓▓__/ ▓▓ ▓▓  | ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓  | ▓▓  |  \__| ▓▓       \▓▓ ▓▓  _| ▓▓_ 
+                       | ▓▓     \\▓▓    ▓▓ ▓▓  | ▓▓ ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  | ▓▓   \▓▓    ▓▓        \▓▓▓  |   ▓▓ \
+                        \▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓\▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓    \▓▓    \▓▓▓▓▓▓          \▓    \▓▓▓▓▓▓                                                                                                                        
+                                  ______   ______  __       _______       __       __  ______  _______  
+                                 /      \ /      \|  \     |       \     |  \  _  |  \/      \|       \ 
+                                |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓     | ▓▓▓▓▓▓▓\    | ▓▓ / \ | ▓▓  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\
+                                | ▓▓   \▓▓ ▓▓  | ▓▓ ▓▓     | ▓▓  | ▓▓    | ▓▓/  ▓\| ▓▓ ▓▓__| ▓▓ ▓▓__| ▓▓
+                                | ▓▓     | ▓▓  | ▓▓ ▓▓     | ▓▓  | ▓▓    | ▓▓  ▓▓▓\ ▓▓ ▓▓    ▓▓ ▓▓    ▓▓
+                                | ▓▓   __| ▓▓  | ▓▓ ▓▓     | ▓▓  | ▓▓    | ▓▓ ▓▓\▓▓\▓▓ ▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓\
+                                | ▓▓__/  \ ▓▓__/ ▓▓ ▓▓_____| ▓▓__/ ▓▓    | ▓▓▓▓  \▓▓▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓
+                                 \▓▓    ▓▓\▓▓    ▓▓ ▓▓     \ ▓▓    ▓▓    | ▓▓▓    \▓▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓
+                                  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓\▓▓▓▓▓▓▓      \▓▓      \▓▓\▓▓   \▓▓\▓▓   \▓▓
+                                                                                                        
+¦¦ Special Thanks to Testers ¦¦
+
+* Noozbar 
+* ThePopPop
+* Ceorin
+* Crow
+* ZkUltra27
+* SilentStorm16
+* SacDunker
+* SouthernCalibronia
+* WayneO
+
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+  ¦¦¦¦ MOD MENU SYSTEM ¦¦¦¦
+
+* Enter Menu   = L2/LT + OPTIONS/MENU
+* Switch Menu  = CROSS/A
+* Exit Menu    = CIRCLE/B
+
+* Next Mod     = RIGHT
+* Previous Mod = LEFT
+
+* Adjust +     = UP
+* Adjust -     = DOWN
+* Toggle ON    = UP
+* Toggle OFF   = DOWN
+  
+  ¦¦¦¦ SHOW CURRENT SLOT IN USE ¦¦¦¦
+  
+* Show Slot    = R3/RS + LEFT
+
+	¦¦¦¦ KILL SWITCH TOGGLES ¦¦¦¦
+
+* Kill Switch  = L2/LT + SHARE
+
+	¦¦¦¦ SHOOTING MOD TOGGLES ¦¦¦¦
+
+* Rapid Fire  = L2/LT + UP
+* Strafe Shot = L2/LT + LEFT
+* Hold Breath = L2/LT + RIGHT
+* Sniper Mod  = L2/LT + R3/RS (Press L1/LB + Release Within 250ms to Run Mod)
+
+  ¦¦¦¦ MOD TRIGGERS ¦¦¦¦
+  
+* Quick Snipe  = L1/LB (Quick Tap 250ms)
+* Rapid Melee  = L3/LS (Hold For 250ms)
+* Grenade Cook = R1/RB (Quick Tap 150ms)  
+* Auto Heal    = RELEASE FIRE (After Holding For 150ms)
+
+* Recoil - See Loadouts Table Below
+
+* PLAYSTATION CONTROLLER WILL SWAP TOUCHPAD AND SHARE WHEN ON PC Or XBOX
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Menu Arrays                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+ */
+ 
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","DoGz n Taylor's","Loadouts ColdWar","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off","Load","Current:"};
+const string Mode [] = {"Secondary","Primary"};
+const string Mode1 [] = {"    Secondary","     Primary"};
+const string ModToggle [] = {"","DoGz DyNaPolar V6","DoGz Recoil Profiles","   Rapid Fire"," Slide Cancel MW"," Slide Cancel CW","    Fast Melee","   Strafe Shot","   Sniper Shot"  ," Hold Breath Mod","  Cook Grenade","    Auto Heal","  Block Rumble","LED Rainbow Flow"};
+const string ModValue  [] = {"","Polar Base Speed","Polar Zone Speed","Polar Fire Speed","Polar Base Power","Polar Zone Power","Polar Fire Power"," Deadzone Point","LoadoutSensModify"," Rapid Fire Hold"," Rapid Fire Wait","Strafe Wait Time","   Scope Time" ,"Genade Cook Time"," LED Brightness"};
+const int16 ModDigitMin [] = {  0 ,  5  ,  5  ,  5  ,  2  ,  2  ,  2  ,  5 , -20 ,  20 ,  20 ,  900 , 50  ,  100 , 1  };
+const int16 ModDigitMax [] = {  0 , 180 , 180 , 180 , 40  , 40  , 40  , 30 ,  20 , 500 , 500 , 3000 , 900 , 3000 , 50 };
+const int16 ModIncrement[] = {  0 ,  1  ,  1  ,  1  ,  1  ,  1  ,  1  ,  1 ,   1 ,  10 , 10  ,  10  , 10  ,  10  , 1  };
+const string Weapons [] = {"  XM4"," Krig6"," QBZ83"," AK47","  M16","  AUG"," AK74u"," MAC10","  MP5","Bullfrog","  M60","Stoner"," 1911","Diamatti","Magnum","Pelin703","Dragunov","Tundra","  M82","StSweeper"," Gallo"," Hauer"};
+																																																									 
+/*                                                                                                                                                                                                                                   
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.                                                                                                                                                                                
+(                   Toggle Strings                   )                                                                                                                                                                               
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*                                                                                                                                                                                
+*/
+
+const string FireModL    = " Master Fire Mod";
+const string StrafeModL  = " Strafe Shot Mod";
+const string SniperModL  = " Sniper Shot Mod";
+const string BreathModL  = "Sniper Breath Mod";
+const string KillSwitchL = " Kill Switch Mod";
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Jump     = PS4_CROSS;
+define Melee    = PS4_CIRCLE;
+define Crouch   = PS4_R3;
+define Sprint   = PS4_L3;
+define Lethal   = PS4_R1;
+define Tactical = PS4_L1; 
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define RY       = PS4_RY;
+define RX       = PS4_RX;
+define LY       = PS4_LY;
+define LX       = PS4_LX;
+define On       = TRUE;
+define Off      = FALSE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define FireModHold     = PS4_L2;
+define FireModPress    = PS4_UP;
+define StrafeModHold   = PS4_L2;
+define StrafeModPress  = PS4_LEFT;
+define SniperModHold   = PS4_L2;
+define SniperModPress  = PS4_R3;
+define BreathModHold   = PS4_L2;
+define BreathModPress  = PS4_RIGHT;
+define KillSwitchHold  = PS4_L2;
+define KillSwitchPress = PS4_SHARE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Triggers                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define SniperTrigger = PS4_L1;
+define MeleeTrigger  = PS4_L3;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Profile Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define ProfileSwap      = PS4_TRIANGLE; // Switch Profiles During game and quick menu (Quick Tap)
+
+define ProfileSyncHold  = PS4_L2;       // Resync Profile (Reset State Back To Primary) 
+define ProfileSyncPress = PS4_DOWN;     // Resync Profile (Reset State Back To Primary) 
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Menu Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define MenuEnterHold   = PS4_L2;
+define MenuEnterPress  = PS4_OPTIONS;
+define MenuExitPress   = PS4_CIRCLE;
+define ChangeMenuPress = PS4_CROSS;
+define FindSlotHold    = PS4_R3;
+define FindSlotPress   = PS4_LEFT;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define TimeoutLimitAR = 10000;
+define TimeoutLimit = 1;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches =  1;
+define IndexMaxSwitches = 13;
+define IndexMinValues   =  1;
+define IndexMaxValues   = 14;
+
+define WeaponMin = 0;
+define WeaponMax = 21;
+
+define ScreenSaver = On;
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear,Shunt;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar,ToggleT,ToggleTime,VibA,VibB;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int Saver,Ms,Sec,Min,ScreenTime,LedDec,Rgb,LedInc,Colour[3];
+int TimeL,TimerP,TimerE,Length,X_POS1,Y_POS1,X_POS2,Y_POS2,Steps1,Steps2,XorY1,XorY2,Dir1,Dir2,KillSwitch;
+int angle,cos_angle,sin_angle,actual_X,actual_Y,actual_Magnitude,max_Magnitude,Radius,Angle,Speed,ToggleName,Modled;
+
+int Weapon[49];
+int SensX,SensY,LoadC,Gun,ARL;
+int DoGzHorizontal,DoGzVertical,RecoilYTimer,RecoilXTimer,Vertical,Horizontal,RXC,RYC,RecoilValue,RecoilTime,RecoilValuex,RecoilTimex;
+int Primary = On;
+int Load = On;
+int Loadout;
+/*¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦                   
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦                                                                                                                              ¦¦
+¦¦    								 .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.                                       ¦¦
+¦¦                                  (      RECOIL LOADOUTS 1 To 4 WEAPON SELECTION       )                                      ¦¦
+¦¦                                   `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*                                       ¦¦
+¦¦  									                                                                                        ¦¦
+¦¦  *|0 ¦AR ¦XM4                                                                                        *|0 ¦AR ¦XM4            ¦¦
+¦¦  *|1 ¦AR ¦Krig6                                                                                      *|1 ¦AR ¦Krig6          ¦¦
+¦¦  *|2 ¦AR ¦QBZ83                                                                                      *|2 ¦AR ¦QBZ83          ¦¦
+¦¦  *|3 ¦AR ¦AK47                                                                                       *|3 ¦AR ¦AK47           ¦¦
+¦¦  *¦4 ¦TAR¦M16           * PRIMARY LOADOUT ONE */		int Load1P = 0; /* * PRIMARY LOADOUT ONE *      *¦4 ¦TAR¦M16            ¦¦
+¦¦  *¦5 ¦TAR¦AUG           * SECONDARY LOADOUT ONE */	int Load1S = 6; /* * SECONDARY LOADOUT ONE *    *¦5 ¦TAR¦AUG            ¦¦
+¦¦  *|6 ¦SMG¦AK_74u    	                                                                                *|6 ¦SMG¦AK_74u         ¦¦
+¦¦  *|7 ¦SMG¦MAC_10    	                                                                                *|7 ¦SMG¦MAC_10         ¦¦
+¦¦  *|8 ¦SMG¦MP5           * PRIMARY LOADOUT TWO */		int Load2P = 1; /* * PRIMARY LOADOUT TWO *      *|8 ¦SMG¦MP5            ¦¦
+¦¦  *|9 ¦SMG¦Bullfrog      * SECONDARY LOADOUT TWO */	int Load2S = 7; /* * SECONDARY LOADOUT TWO *    *|9 ¦SMG¦Bullfrog       ¦¦
+¦¦  *|10¦LMG¦M60           																	            *|10¦LMG¦M60            ¦¦
+¦¦  *|11¦LMG¦Stoner        																	            *|11¦LMG¦Stoner         ¦¦
+¦¦  *|12¦PSL¦1911_         * PRIMARY LOADOUT THREE */	int Load3P = 2; /* * PRIMARY LOADOUT THREE *    *|12¦PSL¦1911_          ¦¦
+¦¦  *|13¦PSL¦Diamatti      * SECONDARY LOADOUT THREE */	int Load3S = 8; /* * SECONDARY LOADOUT THREE *  *|13¦PSL¦Diamatti       ¦¦
+¦¦  *|14¦PSL¦Magnum                                                                                     *|14¦PSL¦Magnum         ¦¦
+¦¦  *|15¦SNP¦Pelington 703 * PRIMARY LOADOUT FOUR */ 	int Load4P = 5; /* * PRIMARY LOADOUT FOUR *     *|15¦SNP¦Pelington 703  ¦¦
+¦¦  *|16¦SNP¦Dragunov 	   * SECONDARY LOADOUT FOUR */	int Load4S = 9; /* * SECONDARY LOADOUT FOUR *   *|16¦SNP¦Dragunov 	    ¦¦
+¦¦  *|17¦SNP¦Tundra                                                                                     *|17¦SNP¦Tundra         ¦¦
+¦¦  *|18¦SNP¦M82                                                                                        *|18¦SNP¦M82            ¦¦
+¦¦  *|19¦STG¦StreetSweeper                                                                              *|19¦STG¦StreetSweeper  ¦¦
+¦¦  *|20¦STG¦Gallo SA12																					*|20¦STG¦Gallo SA12	    ¦¦
+¦¦  *|21¦STG¦Hauer 77                                                                                   *|21¦STG¦Hauer 77       ¦¦
+¦¦ 						                                                                                                        ¦¦
+¦¦           * Compiler Set Up * Input the ID number from the list of weapons (int Load1P = 0;) This sets it to XM4             ¦¦
+¦¦                                                                                                                              ¦¦
+¦¦     * In Game Setup * Hold Square + Press UP (Load 1) + Press RIGHT (Load 2) + Press DOWN (Load 3) + Press LEFT (Load 4)     ¦¦
+¦¦                     (The Current loadout is enabled when selecting one of the above(When Recoil Profiles ON))                ¦¦
+¦¦																																¦¦
+¦¦                         * While Loadouts screen is displayed on the ZEN after loadout has been selected *                    ¦¦
+¦¦                  (Press UP or DOWN to change Primary Weapon --- Press RIGHT or LEFT to change Secondary Weapon)              ¦¦
+¦¦                                * Press Triangle to swap your current state (PRIMARY or SECONDARY) *                          ¦¦
+¦¦						          * The SCREEN will clear once the timer counts down from inactivity *                          ¦¦
+¦¦                                                                                                                              ¦¦
+¦¦						                                                                                                        ¦¦
+¦¦					***	 HOLD BREATH + RAPID FIRE ARE BUILT INTO THE PROFILE FOR EACH WEAPON IF NEEDED  ***                     ¦¦
+¦¦                               ***  HOLD BREATH + RAPID FIRE CAN BE SWITCHED ON AS NORMAL  ***                                ¦¦
+¦¦                                                                                                                              ¦¦
+¦¦                                                                                                                              ¦¦
+¦¦                                    *** AIM ASSIST WILL PAUSE WHILE RECOIL IN PROGRESS ***                                    ¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦*/
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Master Mod Toggles                  ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+int ModSwitch;
+int DoGzPolarV6    =  On; // Aim Assist                   -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int RecoilProfile  =  On; // Recoil Preset Pattern        -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int RapidFire      = Off; // Rapid Fire                   -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int SlideCancelMW  = Off; // Slide Cancel(Modern Warfare) -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int SlideCancelCW  =  On; // Slide Cancel(Cold War)       -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int FastMelee      = Off; // Rapid Melee                  -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int StrafeShot     = Off; // Strafe Shot                  -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int SniperMod      = Off; // Quick Snipe                  -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int HoldBreath     = Off; // Hold Breath                  -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int AutoGrenade    = Off; // Auto Cook Grenade            -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int AutoHeal       = Off; // Auto Fire                    -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int BlockRumble    =  On; // Block Controller Vibration   -- On or Off 	-- Also Accessed Via Zen Menu In Game --
+int LEDRainbowFlow =  On; // LED Flow                     -- On or Off  -- Also Accessed Via Zen Menu In Game --
+
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Default State                   ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+int FireMod    = On; // Rapid Fire  -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off ) (MASTER TOGGLE ABOVE MUST BE ON)
+int StrafeMod  = On; // Strafe Shot -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off ) (MASTER TOGGLE ABOVE MUST BE ON)
+int BreathMod  = On; // Hold Breath -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off ) (MASTER TOGGLE ABOVE MUST BE ON)
+int SniperMode = On; // Quick Snipe -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off ) (MASTER TOGGLE ABOVE MUST BE ON)
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+int ModDigit;
+// Aim Assist
+int BaseSpeed = 10; // Real Polar (Zen) Under DeadZone on ADS		               5 - 180					-- Also Accessed Via Zen Menu In Game --
+int ZoneSpeed = 20; // DAM Polar After DeadZone On ADS				               5 - 180					-- Also Accessed Via Zen Menu In Game --
+int FireSpeed = 30; // Real Polar or DAM Polar Before Or After DeadZone On Fire	   5 - 180			    	-- Also Accessed Via Zen Menu In Game --
+			        
+int BasePower = 13; // Real Polar (Zen) Under DeadZone on ADS					   2 - 40					-- Also Accessed Via Zen Menu In Game --
+int ZonePower = 16; // DAM Polar After DeadZone									   2 - 40					-- Also Accessed Via Zen Menu In Game --
+int FirePower = 20; // Real Polar or DAM Polar Before Or After DeadZone or Fire	   2 - 40					-- Also Accessed Via Zen Menu In Game --
+int DeadZone  =  8;	// Aim Assist Dead Zone (Change Of Assist)												-- Also Accessed Via Zen Menu In Game --
+// Anti Recoil
+int Sens      =  0; // Profile Sensitvity Control (Increase or Decrease Sensitivity If Needed -20 To 20)  	-- Also Accessed Via Zen Menu In Game --
+
+int RapidFireHold = 30;   // Rapid Fire Hold Time															-- Also Accessed Via Zen Menu In Game --
+int RapidFireWait = 30;   // Rapid Fire Release Time														-- Also Accessed Via Zen Menu In Game --
+int StrafeWait    = 900;  // Strafe Change Direction Time													-- Also Accessed Via Zen Menu In Game --
+int ScopeTime     = 370;  // Quick Scope Shot																-- Also Accessed Via Zen Menu In Game --
+int CookTime      = 2600; // Cook Grenade Time																-- Also Accessed Via Zen Menu In Game --
+int LedBrightness = 10;   // Led Brightness (1 = Brightest 50 = Dimmest)									-- Also Accessed Via Zen Menu In Game --
+
+define SniperTriggerTime = 250; // Release Limit For Quick Snipe
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+init {
+    
+    combo_run(Boot);
+    LedInc = 1
+    Colour = 150;
+
+}
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+	
+	if (BlockRumble)
+		block_rumble();
+	
+	if (get_console() == PIO_XB360 && get_controller() == PIO_PS4)	
+		swap (PS4_TOUCH,PS4_SHARE);
+	
+	if (!KillSwitch) {
+	if (!MainMenu && !combo_running(Load)) {    
+	
+		if (RapidFire && get_ival(FireModHold) && event_press(FireModPress)) {
+	        Shunt = FireModPress;
+	        FireMod = !FireMod;
+	        ToggleName = On;
+	        Toggle(FireMod,FireModL[0]);
+	   	}
+	   	
+	   	if (SniperMod && get_ival(SniperModHold) && event_press(SniperModPress)) {
+	        Shunt = SniperModPress;
+	        SniperMode = !SniperMode;
+	        ToggleName = On;
+	        Toggle(SniperMode,SniperModL[0]);
+	   	}
+	   	
+	   	if (StrafeShot && get_ival(StrafeModHold) && event_press(StrafeModPress)) {
+	        Shunt = StrafeModPress;
+	        StrafeMod = !StrafeMod;
+	        ToggleName = On;
+	        Toggle(StrafeMod,StrafeModL[0]);
+	   	}
+	   	
+	   	if (HoldBreath && get_ival(BreathModHold) && event_press(BreathModPress)) {
+	        Shunt = BreathModPress;
+	        BreathMod = !BreathMod;
+	        ToggleName = On;
+	        Toggle(BreathMod,BreathModL[0]);
+	   	}
+	}
+	
+	if (RecoilProfile) {	
+			
+		if (event_release(ProfileSwap) && get_ptime(ProfileSwap)< 150) {
+	        
+	        Primary = !Primary;
+	    		
+	    	if (!combo_running(Load)) {    
+	        	
+	        	ToggleName = On;
+	        	Toggle(Off,Mode1[Primary]);
+	   		}
+	   	    	else {
+	   	    			
+	   	    			LoadC = On;
+						combo_restart(Load);
+	   			}
+	   	}
+		
+			if (get_ival(ProfileSyncHold) && event_press(ProfileSyncPress))  {
+	        	
+	        	Shunt = ProfileSyncPress;
+	        	Primary = On;
+	    
+	    		if (!combo_running(Load)) {    
+	        		
+	        		ToggleName = On;
+	        		Toggle(Off,Mode1[Primary]);
+	   			}
+	   	
+	    			else {
+	   	    			
+	   	    			LoadC = On;
+						combo_restart(Load);
+	   				}
+			}
+		
+			if (get_ival(PS4_SQUARE)) { 
+		
+				if (event_press(Up)) {
+				
+					Load = 1;
+					LoadC = On;
+ 	            	VibA = On;
+ 					combo_run(Rumble);
+ 	            	combo_run(Load);
+				}
+				
+				    if (event_press(Right)) {
+				    	
+				    	Load = 2;
+				    	LoadC = On;
+ 	                	VibA = On;
+ 						combo_run(Rumble);
+ 	                	combo_run(Load);
+				    }
+					
+					    if (event_press(Down)) {
+					    
+					    	Load = 3;
+					    	LoadC = On;
+ 	            	    	VibA = On;
+ 							combo_run(Rumble);
+ 	            	    	combo_run(Load);
+					    }
+				
+						    if (event_press(Left)) {
+						    
+						    	Load = 4;
+						    	LoadC = On;
+ 	            		    	VibA = On;
+ 								combo_run(Rumble);
+ 	            		    	combo_run(Load);
+						    }		
+					
+					set_val(Up,0); set_val(Down,0);set_val(Left,0);set_val(Right,0);
+				}
+	
+	
+	    if (combo_running(Load)) {
+	    	
+	    	if (event_press(Up)) {
+	    		
+	    		if (Load == 1) Load1P ++;
+	    		if (Load == 2) Load2P ++;
+	    		if (Load == 3) Load3P ++;
+	    		if (Load == 4) Load4P ++;
+	    		
+	    		    if (Load1P > WeaponMax) Load1P = WeaponMin;
+	    		    if (Load2P > WeaponMax) Load2P = WeaponMin;
+	    		    if (Load3P > WeaponMax) Load3P = WeaponMin;
+	    		    if (Load4P > WeaponMax) Load4P = WeaponMin;
+	    		
+	    		LoadC = On;
+	    		combo_restart(Load);
+	    	}
+	    
+	    	if (event_press(Down)) {
+	    		
+	    		if (Load == 1) Load1P --;
+	    		if (Load == 2) Load2P --;
+	    		if (Load == 3) Load3P --;
+	    		if (Load == 4) Load4P --;
+	    		
+	    		    if (Load1P < WeaponMin) Load1P = WeaponMax;
+	    		    if (Load2P < WeaponMin) Load2P = WeaponMax;
+	    		    if (Load3P < WeaponMin) Load3P = WeaponMax;
+	    		    if (Load4P < WeaponMin) Load4P = WeaponMax;
+	    		
+	    		LoadC = On;
+	    		combo_restart(Load);
+	    	}
+	    	
+	    	
+	    	if (event_press(Right)) {
+	    		
+	    		if (Load == 1) Load1S ++;
+	    		if (Load == 2) Load2S ++;
+	    		if (Load == 3) Load3S ++;
+	    		if (Load == 4) Load4S ++;
+	    		
+	    		    if (Load1S > WeaponMax) Load1S = WeaponMin;
+	    		    if (Load2S > WeaponMax) Load2S = WeaponMin;
+	    		    if (Load3S > WeaponMax) Load3S = WeaponMin;
+	    		    if (Load4S > WeaponMax) Load4S = WeaponMin;
+	    		
+	    		LoadC = On;
+	    		combo_restart(Load);
+	    	}
+	    
+	    	if (event_press(Left)) {
+	    		
+	    		if (Load == 1) Load1S --;
+	    		if (Load == 2) Load2S --;
+	    		if (Load == 3) Load3S --;
+	    		if (Load == 4) Load4S --;
+	    		
+	    		    if (Load1S < WeaponMin) Load1S = WeaponMax;
+	    		    if (Load2S < WeaponMin) Load2S = WeaponMax;
+	    		    if (Load3S < WeaponMin) Load3S = WeaponMax;
+	    		    if (Load4S < WeaponMin) Load4S = WeaponMax;
+	    		
+	    		LoadC = On;
+	    		combo_restart(Load);
+	    	}
+	    
+	    	set_val(Up,0); set_val(Down,0);set_val(Left,0);set_val(Right,0);
+		}
+	
+		if (Primary) {
+				
+			if (Load == 1)   Weapon[Gun] = Loadout[1];
+			if (Load == 2)   Weapon[Gun] = Loadout[3];
+			if (Load == 3)   Weapon[Gun] = Loadout[5];
+			if (Load == 4)   Weapon[Gun] = Loadout[7];
+		}	
+				
+				if (!Primary) {
+					
+					if (Load == 1)   Weapon[Gun] = Loadout[2];
+					if (Load == 2)   Weapon[Gun] = Loadout[4];
+					if (Load == 3)   Weapon[Gun] = Loadout[6];
+					if (Load == 4)   Weapon[Gun] = Loadout[8];
+				}
+		
+		
+		if (get_ival(Ads) && get_ival(Fire)){
+			
+			ARL = On;
+		    AntiRecoil();
+		}
+			
+			else if (event_release(Ads) || event_release(Fire)) { 
+			
+				ARL = Off;
+				Horizontal = Off;
+				Vertical = Off;
+			}	
+	}
+	
+	if (DoGzPolarV6 && !ARL) {
+	
+		if ((get_ival(Ads) || get_ival(Fire)) && abs(get_ival(RX)) <= DeadZone && abs(get_ival(RY)) <= DeadZone) {
+			
+			Speed += Angle;
+		
+		if (Speed >= 360) Speed = 0;
+
+			if (get_ival(Fire)) {
+                
+                Radius = FirePower;
+            	Angle  = FireSpeed;
+            }
+                
+                else {
+                    
+                    Radius = BasePower;
+                	Angle  = BaseSpeed;
+                }
+                
+			set_polar(POLAR_RS,Speed,(abs(get_ival(POLAR_RX)) + abs(get_ival(POLAR_RY))) / 3 + Radius * 327);
+	}
+	    
+		if ((get_ival(Ads) || get_ival(Fire)) && (abs(get_ival(RX)) > DeadZone || abs(get_ival(RY)) > DeadZone)) {
+            
+        	actual_X = get_ival(RX);
+        	actual_Y = get_ival(RY);
+        	actual_Magnitude = isqrt(pow(actual_X,2) + pow(actual_Y,2));
+        	max_Magnitude = (actual_Magnitude < 100);
+
+    		if (get_ival(Fire)) {
+                
+         		Radius = FirePower;
+            	Angle  = FireSpeed;
+        	}
+                
+        		else {
+                    
+            		Radius = ZonePower;
+                	Angle  = ZoneSpeed;
+            	}
+            
+			angle += Angle;
+        	angle = angle % 360;
+        	sin_angle = DamPolar[angle % 360];
+        	cos_angle = DamPolar[(angle + 270) % 360];
+        	cos_angle = (cos_angle * Radius) / 100;
+        	sin_angle = (sin_angle * Radius) / 100;
+
+        	if (actual_Magnitude <= 20) { 
+                
+        		sin_angle -= actual_Y; 
+            	cos_angle -= actual_X; 
+        	}
+            	else { 
+                    
+            		sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+                	cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+            	} 
+
+        		Set_Val(RX,cos_angle);
+        		Set_Val(RY,sin_angle); 
+    	}
+    }
+        
+    if ((BreathMod && HoldBreath) || (AntiRecoil[Weapon[Gun]][79] == 1)) {
+		if(get_ival(Ads))
+		   	set_val(Sprint,100);
+	                      
+			if(get_ival(LY) <-90 && get_ival(Ads) && get_ptime(Ads) > 200)
+	       		combo_stop(CH);       
+	                    
+	   			if(event_press(Ads)) 
+	       			combo_run(CH);
+	  
+	   				if(get_ival(Ads) && get_lval(Sprint)) 
+	       				set_val(Sprint,0);  
+	} 
+    
+    if ((FireMod && RapidFire) || (AntiRecoil[Weapon[Gun]][78] == 1)) {
+    
+        if (get_ival(Fire)) {
+            combo_run(RapidFire);
+        }    
+            else {
+                combo_stop(RapidFire);
+            }
+
+    }
+	
+	if (SlideCancelMW || SlideCancelCW) {
+				
+		if ((abs(get_ival(LY)) > 80) || (abs(get_val(LX)) > 80)) {
+					
+			if(event_release(Crouch)) {
+				if (SlideCancelMW) {
+				
+					combo_run(SlideCancelMW);
+				}
+					
+					else if (SlideCancelCW) {
+						
+						combo_run(SlideCancel);
+					}
+			}
+		}
+	}
+    
+    if (FastMelee) {
+    
+    	if (get_ival(MeleeTrigger) && get_ptime(MeleeTrigger) >= 250) 
+    	
+    		combo_run(FastMelee);
+    }
+    
+    if (SniperMode) {
+    
+    	if (SniperMod) {
+        	if (get_ival(SniperTrigger) && get_ptime(SniperTrigger) < SniperTriggerTime) {
+	
+				set_val(SniperTrigger,0);
+				}
+				
+				else if (event_release(SniperTrigger) && get_ptime(SniperTrigger) <= SniperTriggerTime) {
+					combo_run(SniperMod);
+				}
+		}    
+    }
+    
+    if (StrafeMod) {
+	
+		if (StrafeShot && get_ival(Fire) && abs(get_ival(LX)) <= 35 && abs(get_ival(LY)) <= 35) {
+			combo_run(StrafeShot);
+		}	
+			else {
+				combo_stop(StrafeShot);
+			}
+	}
+    
+    if (AutoGrenade) {
+    	
+    	if (!get_ival(Ads) && event_release(Lethal) && get_ptime(Lethal)< 150) {
+    	
+    		combo_run(Grenade);
+    	}
+    }
+    
+    if (AutoHeal) {
+    	
+    	if (event_release(Fire) && get_ptime(Fire) > 150) {
+    	
+    		combo_run(AutoHeal);
+    	}
+    }
+ 
+	if (!MainMenu && get_ival(MenuEnterHold) && event_press(MenuEnterPress)) {
+
+		MenuToggle(On,On,On,On,Off);
+		VibA = On;
+		combo_run(Rumble);
+	}
+
+	if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        combo_stop(Load);
+        MenuTimeout += get_rtime();
+
+		if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(MenuExitPress)) {
+
+			MenuTimeout = Off;
+		}
+
+			if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+
+				MenuToggle(Off,Off,Off,Off,Off);
+				VibB = On;
+				combo_run(Rumble);
+			}
+
+			if (event_press(ChangeMenuPress)) {
+
+				MenuValues = !MenuValues;
+				MenuSwitch = !MenuSwitch;
+				ModIndex = On;
+				Update = On;
+			}
+
+
+
+		if (MenuValues) {
+
+				ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModIncrement[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+			if (MenuSwitch) {
+
+				ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+			}
+					BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+		}
+ 	}
+    if (!MainMenu && Saver) { 
+        ScreenTime (); 
+     	Saver (); 
+	   } 
+
+    if (!MainMenu && LEDRainbowFlow) { 
+        LedFlow();
+    }
+    
+    if (ToggleTime) {
+        TimeToggle();
+    }
+    
+    if (!MainMenu && get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+        Saver = Off;
+        ScreenTime = Off;
+        Slot = On;
+        combo_run(Boot);
+    }
+	
+	if (get_ival(KillSwitchHold) && event_press(KillSwitchPress)) {
+	    Shunt = KillSwitchPress;
+	    KillSwitch = !KillSwitch;
+	    ToggleName = On;
+	    Toggle(KillSwitch,KillSwitchL[0]);
+	}
+	
+	if (Shunt) {
+        if (event_release(Shunt)) {
+            Shunt = Off;
+        }
+            else {
+                set_val (Shunt,Off);
+            }
+    }
+
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidFireHold);
+    set_val(Fire,0);
+    wait(RapidFireWait);
+}
+
+combo SlideCancelMW {           
+   
+    set_val(Crouch,100);
+    wait(120);
+    set_val(Crouch,0);
+    wait(60);
+    set_val(Crouch,100);
+    wait(50);
+    set_val(Crouch,100);
+    set_val(Jump,100);
+    wait(60);
+    set_val(Jump,100);
+    wait(30);
+}
+
+combo SlideCancel {
+    
+    set_val(Crouch,100);
+    wait(80);
+	set_val(Crouch,0);
+	wait(20);
+	set_val(Sprint,0);
+	set_val(Crouch,100);
+	set_val(Sprint,100);
+	wait(20);
+	set_val(Crouch,0);
+	set_val(Sprint,0);
+	wait(20);
+}
+
+combo FastMelee {
+    
+    set_val(Melee,100);
+    wait(30);
+    set_val(Melee,0);
+    wait(30);  
+}
+
+combo CH {
+	
+	set_val(Sprint,0);
+	wait(60);
+	set_val(Sprint,100);
+	wait(110);
+	set_val(Sprint,0);
+	wait(110);
+}
+
+combo SniperMod {
+	
+	set_val(Ads,100);
+    set_val(Sprint,100);
+    wait(ScopeTime);
+    set_val(Ads,100);
+    set_val(Sprint,100);
+    set_val(Fire,100);
+    wait(50);
+}
+
+combo StrafeShot {
+
+	set_val(LX,-100 + get_ival(LX));
+	wait(StrafeWait);
+	set_val(LX,100 + get_ival(LX));
+	wait(StrafeWait);
+}
+
+combo Grenade {
+
+	set_val(Lethal,100);
+	wait(CookTime);
+}
+
+combo AutoHeal {
+
+	set_val(Tactical,100);
+	wait(80);
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    }    
+        else {
+            set_rgb(255,0,0);
+            set_rumble(RUMBLE_B,15);
+        }
+     	
+     	wait(150);
+    	set_rgb(0,0,0);
+    	wait(150);
+    	reset_rumble();    
+    
+    if (Modled)
+        set_rgb(0,255,0);
+    
+        else
+            set_rgb(255,0,0);
+	
+		wait(150);
+		reset_leds();
+}
+
+combo Boot {
+        
+        wait(Slot);
+    if (Slot == 20000)    
+        cls_oled(0);
+        
+        if (Slot) {
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+combo Rumble {
+    
+    if (VibA)
+        set_rumble(RUMBLE_A,15);
+        
+        else if (VibB)
+            set_rumble(RUMBLE_B,15);
+    
+    	wait(250);
+    	VibA = Off;
+    	VibB = Off;
+    	reset_rumble();
+}
+
+combo Load {
+ 	
+ 		Saver = Off;
+ 		combo_stop(Boot);
+ 	
+ 	if (LoadC) {
+ 		
+ 		cls_oled(0);
+	    rect_oled(1,1,127,63,0,1);
+	    line_oled(126,23,2,23,1,1);
+	    line_oled(126,52,2,52,1,1);
+	    printf(3,41,0,1,Mode[1]);
+	    printf(36,5,1,1,MiscString[9]);
+	    printf(62,41,0,1,Mode[0]);
+	    printf(3,54,0,1,MiscString[10]);
+	    printf(60,54,0,1,Mode[Primary]);
+	    NumX = 26; NumY = -20; NumS = Off;
+	    FindDigit(Load,DigitValue(Load));
+	    
+	
+		if (Load == 1) {
+	
+			printf(3,26,0,1,Weapons[Load1P]);
+			printf(65,26,0,1,Weapons[Load1S]);
+		}
+	
+		if (Load == 2) {
+	
+			printf(3,26,0,1,Weapons[Load2P]);
+			printf(65,26,0,1,Weapons[Load2S]);
+		}
+	
+		if (Load == 3) {
+	
+			printf(3,26,0,1,Weapons[Load3P]);
+			printf(65,26,0,1,Weapons[Load3S]);
+		}	
+	
+		if (Load == 4) {
+	
+			printf(3,26,0,1,Weapons[Load4P]);
+			printf(65,26,0,1,Weapons[Load4S]);
+		}
+	
+		LoadC = Off;
+	
+	}
+	
+		wait(5000);
+		VibB = On;
+		combo_run(Rumble);
+ 		cls_oled(0);
+ 		Saver = On;
+ 	
+ }
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+function AntiRecoil() {
+		
+	if (!Vertical) {
+		
+		RecoilValue = 0;
+		RecoilTime = 1;
+		Vertical = On;
+	    RYC = AntiRecoil[Weapon[Gun]][38];
+	
+	}
+	
+		if (!Horizontal) {
+			
+			RecoilValuex = 39;
+			RecoilTimex = 40;
+			Horizontal = On;
+	    	RXC = AntiRecoil[Weapon[Gun]][77];
+		}
+		
+	if (RYC > Off) {
+	
+		if (Vertical > Off) {
+			
+			DoGzVertical = AntiRecoil[Weapon[Gun]][RecoilValue];
+		
+			if (RecoilYTimer > AntiRecoil[Weapon[Gun]][RecoilTime]) {
+				
+				RecoilYTimer = Off;
+				RYC -= 1;
+				RecoilValue += 2;
+				RecoilTime  += 2;
+			}
+		}
+	}
+	
+	if (RXC > Off) {
+	
+		if (Horizontal > Off) {
+	 
+			DoGzHorizontal = AntiRecoil[Weapon[Gun]][RecoilValuex];
+		
+			if (RecoilXTimer >= AntiRecoil[Weapon[Gun]][RecoilTimex]) {
+					
+				RecoilXTimer = Off;
+				RXC -= 1;
+				RecoilValuex += 2;
+				RecoilTimex  += 2;
+			}	
+		}
+	}
+	
+		if (RYC < 1) { 
+			
+			ARL = Off;
+			RecoilYTimer = Off;
+			DoGzVertical = Off; 
+		}
+			if (RXC < 1) {
+				
+				ARL = Off;
+				RecoilXTimer = Off;
+				DoGzHorizontal = Off;
+			}
+				
+		
+		if (DoGzVertical >= 0) 
+					
+			SensY = Sens;
+						
+			else 
+							
+				SensY = -Sens;
+				
+				if (DoGzHorizontal >= 0) 
+					
+					SensX = Sens;
+						
+						else 
+							
+							SensX = -Sens;
+							
+		if (RYC > Off)
+			
+			Set_Val(RY,DoGzVertical + SensY);
+		
+		if (RXC > Off)
+		
+			Set_Val(RX,DoGzHorizontal + SensX);
+			
+			RecoilYTimer += get_rtime();
+			RecoilXTimer += get_rtime();
+}
+
+function Set_Val(Input,Output) {
+
+      set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        return; 
+}
+
+function Toggle(ModT,ModP) {
+    
+    if (combo_running(Boot))    
+        combo_stop(Boot);
+       
+        Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+	    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        Saver = 0;
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[8]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            printf(41,38,0,1,MiscString[6]);    
+        }
+            else {
+                printf(36,38,0,1,MiscString[7]);
+            }
+                ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+        if (ToggleT >= 5000) {
+            cls_oled(0);
+            ToggleTime = Off;
+            ToggleT = 0;
+    }
+}
+
+function LedFlow () {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 120) {
+        set_rgb(Colour / LedBrightness,Colour[1] / LedBrightness,Colour[2] / LedBrightness);
+        Colour[LedDec] -= 2; 
+        Colour[LedInc] += 2;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+}
+
+function Saver () {
+    
+    if (Saver) { 
+
+		TimeL += get_rtime();
+	
+		if(TimeL == 30) {            
+  			pixel_oled(X_POS1,Y_POS1,1);
+        	pixel_oled(X_POS2,Y_POS2,1);
+             
+             	TimerP += 1;    Length -= 1;
+             	TimerE += 1;    Length -= 1;
+                
+            	if(XorY1)  X_POS1 +=Dir1;
+            	if(XorY2)  X_POS2 +=Dir2;
+            	if(!XorY1) Y_POS1 +=Dir1;
+            	if(!XorY2) Y_POS2 +=Dir2;
+ 
+            if(Y_POS1 < 1)   Y_POS1 = 63;
+            if(Y_POS2 < 1)   Y_POS2 = 63;
+            if(X_POS1 < 1)   X_POS1 = 127;
+            if(X_POS2 < 1)   X_POS2 = 127;
+            if(Y_POS1 > 63)  Y_POS1 = 1;
+            if(Y_POS2 > 63)  Y_POS2 = 1;
+            if(X_POS1 > 127) X_POS1 = 1;
+            if(X_POS2 > 127) X_POS2 = 1;
+    
+    	if(Length < 1) {
+        	cls_oled(0);
+        	Y_POS2 = random(1,64);
+        	Y_POS1 = random(1,64);
+        	X_POS1 = random(1,128);
+        	X_POS2 = random(1,128);
+        	Steps1 = random(5,25);
+        	Steps2 = random(5,25);
+        	Length = random(200,1000);
+    	}
+    
+        	if(TimerP > Steps1) { 
+            	TimerP = 0;
+            	Steps1 = random(5,25);
+            	XorY1 = !XorY1;
+            	Dir1 = random(1,3);
+    
+           	 		if(Dir1 == 2) Dir1 = -1;
+        	} 
+
+		if(TimerE > Steps2)    {
+			TimerE = 0;
+            Steps2 = random(5,25);
+            XorY2 = !XorY2;
+            Dir2 = random(1,3);
+    
+				if(Dir2 == 2) Dir2 = -1;
+		}                                    
+        	TimeL = 0;
+     	}
+ 	}   
+	
+		if (!Saver)
+			cls_oled(0);
+}
+
+function ScreenTime () { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+             Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+
+function BlockButton (Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+  
+function MenuToggle (Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod (ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			} 
+		Update = Off; 
+	} 
+
+	if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+		Update = On;
+		ModVal += ModValInc;
+		ModMonitor(ModValLbl);
+
+            if (ModVal >= ModValMax){ 
+                return ModValMax;
+            }
+	} 
+ 
+		if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+			Update = On;
+			ModVal -= ModValInc;
+			ModMonitor(ModValLbl);
+
+				if (ModVal <= ModValMin){
+					return ModValMin;
+				}
+		}
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+
+function ModMonitor (Mon) {
+    
+    if (Mon == ModToggle[4]) { 
+       
+		SlideCancelCW  = Off;
+ 	}
+ 	    if (Mon == ModToggle[5]) { 
+       
+			SlideCancelMW  =  Off;
+ 		}
+}
+
+function Grid () { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll () {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,   CIRCLE  ,   SPACE   ,     O     ,     r     ,   SPACE   ,     B     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   };
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(               Recoil Weapons Array                 ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+const int16 AntiRecoil [][] = {
+/*¦AR¦  XM4       */{  42,   410,  32,    70,  42,   160,   32,   400,  27,   360,  16,   820,   31,  1120,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  7, /**/   -1,   410,   22,   70,  15,   160,   0,   400,    0,  360, -19,   820,   -8,  1120,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  7,  0, 0},  // ¦AR¦  XM4 
+/*¦AR¦  Krig6     */{  30,   460,  26,   740,  30,   450,   30,   450,  25,   200,  34,   400,   35,   250,  25,   350,  32,  1000,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  9, /**/   11,   460,    0,  740,   0,   450, -23,   450,    0,  200,   0,   400,    0,   250, -14,   350,  -9,  1000,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  9,  0, 0},  // ¦AR¦  Krig6
+/*¦AR¦  QBZ83     */{  24,   170,  44,   160,  19,   620,   43,   450,  20,   300,  -4,   430,   24,  2120,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  7, /**/    6,   170,   12,  160,   0,   620,   5,   450,    0,  300,  25,   430,   17,  2120,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  7,  0, 0},  // ¦AR¦  QBZ83
+/*¦AR¦  AK47      */{  36,   500,   0,   290,  31,   520,   30,   480,  10,   500,   0,   410,   30,   410,  27,   370,  25,   410,  26,  1100,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0, 10, /**/   12,   500,    7,  290,  12,   520,   5,   480,  -27,  500,   7,   410,   -3,   410,  -7,   370,  -4,   410,  -7,  1100,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0, 10,  0, 0},  // ¦AR¦  AK47
+																																																																																																																													  
+/*¦TAR¦ M16       */{  19,  4900,  20,  3100,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  2, /**/    3,  4900,    3, 3100,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  2,  1, 1},  // ¦TAR¦ M16
+/*¦TAR¦ AUG       */{   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0, /**/    0,     0,    0,    0,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0,  1, 1},  // ¦TAR¦ AUG
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+/*¦SMG¦ AK_74u    */{  39,    70,  38,   380,  34,   590,   37,  1290,  38,   510,  36,   450,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  6, /**/  -16,    70,  -22,  380,  16,   380, -16,   210,  -14, 1290,  -7,   510,  -18,   450,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  7,  0, 0},  // ¦SMG¦ AK_74u
+/*¦SMG¦ MAC_10    */{  54,   640,  54,   420,  42,   280,   59,   240,  52,  1320,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  5, /**/  -13,   640,   -8,  420,  25,   280,   0,   240,    0, 1320,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  5,  0, 0},  // ¦SMG¦ MAC_10
+/*¦SMG¦ MP5       */{  42,   420,  38,  3600,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  2, /**/  -21,   420,    1, 3600,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  2,  0, 0},  // ¦SMG¦ MP5
+/*¦SMG¦ Bullfrog  */{ -28,    90,   2,   160,  28,   100,   19,   290,  34,    90,  20,   100,   39,   860,  17,   420,  40,   130,  40,   490,  25,   290,  43,   660,   20,   330,  40,   330,  26,   600,   39,   400,  40,   420,   26,   400,  41,   620, 19, /**/  -23,    90,   -7,  160, -20,   100,   5,   290,    0,   90,   5,   100,   10,   860,   5,   420,  11,   130,  12,   490,   7,   290,  11,   660,    5,   330,  11,   330,   7,   600,   10,   400,  11,   420,    7,   400,  11,   620, 19,  0, 0},  // ¦SMG¦ BullFrog
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+/*¦LMG¦ M60       */{  26,   150,  -3,   430,   0,   190,  -20,  1180,   0,  3100,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  5, /**/  -31,   150,   37,  430,   7,   190,  -5,  1180,    7, 3100,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  5,  0, 0},  // ¦LMG¦ M60
+/*¦LMG¦ Stoner    */{  31,   950,  27,   890,  26,   880,   28,   890,  30,   900,  28,   940,   28,   870,  31,   990,  30,   910,  28,   990,  30,  1220,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0, 11, /**/  -11,   950,    0,  890, -10,   880,  10,   890,    0,  900, -10,   940,    0,   870,  -6,   990,  -5,   910, -10,   990,   0,  1220,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0, 11,  0, 0},  // ¦LMG¦ Stoner
+				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+/*¦PSL¦ 1911_     */{  46,   180,  21,   300,   8,   450,  -23,   390,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  4, /**/   -6,   180,  -33,  300,  23,   450,  28,   390,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  4,  1, 0},  // ¦PSL¦ 1911_   
+/*¦PSL¦ Diamatti  */{  25,  1500,  14,  1450,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  2, /**/    0,  1500,   25, 1450,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  2,  1, 0},  // ¦PSL¦ Diamatti
+/*¦PSL¦ Magnum    */{  34,   330,  31,   310,  35,   950,   34,  2270,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  4, /**/  -15,   330,   12,  310,   1,   950,   9,  2270,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  4,  1, 0},  // ¦PSL¦ Magnum
+
+/*¦SNP¦ Pel703    */{   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0, /**/    0,     0,    0,    0,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0,  0, 1},  // ¦SNP¦ Pelington 703
+/*¦SNP¦ Dragunov  */{  65,  1650,  65,  3160,  64,  1640,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  3, /**/  -11,  1650,   -9, 3160,  -9,  1640,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  3,  1, 1},  // ¦SNP¦ Dragunov
+/*¦SNP¦ Tundra    */{   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0, /**/    0,     0,    0,    0,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0,  0, 1},  // ¦SNP¦ Tundra
+/*¦SNP¦ M82       */{  62,   340,  58,   310,  51,   370,  -14,   290,  26,  1680,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  5, /**/   -8,   340,    9,  310,   0,   370,  39,   290,    0, 1680,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  5,  1, 1},  // ¦SNP¦ M82
+																																																																																																																													  
+/*¦STG¦ StSweeper */{   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0, /**/    0,     0,    0,    0,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0,  1, 0},  // ¦STG¦ StreetSweeper
+/*¦STG¦ Gallo     */{   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0, /**/    0,     0,    0,    0,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0,  1, 0},  // ¦STG¦ Gallo SA12
+/*¦STG¦ Hauer     */{   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0, /**/    0,     0,    0,    0,   0,     0,   0,     0,    0,    0,   0,     0,    0,     0,   0,     0,   0,     0,   0,     0,   0,     0,   0,     0,    0,     0,   0,     0,   0,     0,    0,     0,   0,     0,    0,     0,   0,     0,  0,  1, 0}}; // ¦STG¦ Hauer 77
+
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(             Don't At Me's Polar Array              ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+const int8 DamPolar[]= {
+    100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,
+    71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,
+    -8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,
+    -65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,
+    -97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,
+    -94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,
+    -56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,
+    11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,
+    81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};

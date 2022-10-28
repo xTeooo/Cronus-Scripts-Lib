@@ -1,0 +1,241 @@
+// GPC Online Library
+// black_ops_4_mog12_jitter_(version_2_&_version_1_included)_and_ballistic_knives_jitter.gpc
+
+// WRITTEN BY R1CH516 on PSN a.k.a. iK1LLPEEPLE4FUN on XB       MUST USE RUIN OR
+//                           a.k.a. My_Eggplant_Got_Her         COMBAT AXE AND 
+//                           a.k.a. i<3HerSloppyTop           ALWAYS USE GUNG-H0
+//                                                          FOR JITTERS TO WORK!
+//                                       Once equipment is ready you can jitter.
+
+int BallisticKnife_ONoff    = FALSE; //Press and hold L1 /LB, then Dpad down to turn ballistic knife jitter on and off.   MOG12_version2 jitter on by default.
+int MOG12_ONoff    = FALSE;          //Press and hold L1 /LB, then Dpad up to turn MOG12 on and off.                      MOG12_version2 jitter on by default.
+int MOG12_version2_ONoff = TRUE;     //Press and hold L1 /LB, then Dpad left to turn MOG12_version2 off and on.           MOG12_version2 jitter on by default.
+
+main {
+//if(event_press(19)){combo_run(Stop_Auto_mantling);}//To stop Auto Mantling 100% disable auto mantling in-game & remove the 1st TWO forward slashes in front of 'IF'!
+if(get_val(12)<-40){combo_run(Sprint);set_val(12,-100);}if(get_val(11)<-47){set_val(11,-100);}if(get_val(11)>47){set_val(11,100);}if(get_val(12)>40){set_val(12,100);}
+if(get_val(12)<-30 && event_press(18)) {combo_run(prone);}
+if(get_val(12)<-30 && combo_running(prone) && event_press(18)){combo_stop(prone);combo_restart(prone);}
+if(get_val(8) && get_val(5)){combo_run(special);}
+
+if(get_val(6) && event_press(14)){ BallisticKnife_ONoff = !BallisticKnife_ONoff; MOG12_ONoff = FALSE; MOG12_version2_ONoff = FALSE;
+if(BallisticKnife_ONoff) {combo_run(RumbleNotifier);}else{combo_run(Rumble);}}
+if(BallisticKnife_ONoff && get_val(4)){vm_tctrl(-5);// VM COMMAND TO ADJUST INTERVALS FOR ACCURATE TIMINGS IN THIS COMBO
+combo_run(Ballistic);combo_run(Ballistic_Antirecoil);combo_run(sprint_out);} else {combo_stop(sprint_out);}
+                                       
+                                       
+if(get_val(6) && event_press(13)){ MOG12_ONoff = !MOG12_ONoff; BallisticKnife_ONoff = FALSE; MOG12_version2_ONoff = FALSE;
+if(MOG12_ONoff) {combo_run(RumbleNotifier);}else{combo_run(Rumble);}} 
+if(MOG12_ONoff && !get_val(7) && get_val(4)){vm_tctrl(-5);// VM COMMAND TO ADJUST INTERVALS FOR ACCURATE TIMINGS IN THIS COMBO
+combo_run(MOG12_recoil);combo_run(MOG12);combo_stop(Reload);}else{combo_stop(MOG12_recoil);} 
+if(MOG12_ONoff && !get_val(7) && event_release(4)){combo_run(Reload);}
+
+
+if(get_val(6) && event_press(15)){ MOG12_version2_ONoff = !MOG12_version2_ONoff; BallisticKnife_ONoff = FALSE; MOG12_ONoff = FALSE;
+if(MOG12_version2_ONoff) {combo_run(RumbleNotifier);}else{combo_run(Rumble);}} 
+if(MOG12_version2_ONoff && !get_val(7) && get_val(4)){vm_tctrl(-7);// VM COMMAND TO ADJUST INTERVALS FOR ACCURATE TIMINGS IN THIS COMBO
+combo_run(MOG12_version2_recoil);combo_run(MOG12_version2);combo_stop(Reload);}else{combo_stop(MOG12_version2_recoil);} 
+if(MOG12_version2_ONoff && !get_val(7) && event_release(4)){combo_run(Reload);}
+
+
+if(!BallisticKnife_ONoff && !MOG12_ONoff && !MOG12_version2_ONoff && event_press(4)){combo_run(sprint_out2);}
+if(!BallisticKnife_ONoff && !MOG12_ONoff && !MOG12_version2_ONoff && event_press(20)){combo_run(Reload);}
+if(!BallisticKnife_ONoff && !MOG12_ONoff && !MOG12_version2_ONoff && combo_running(Reload) && event_press(20)){combo_stop(Reload);combo_restart(Reload);}
+if(!BallisticKnife_ONoff && !MOG12_ONoff && !MOG12_version2_ONoff && combo_running(Reload) && event_press(4)){combo_stop(Reload);combo_run(Reload_cancel);}
+
+if(get_val(10)<=-30  || get_val(10)>=30){combo_stop(Ballistic_Antirecoil);combo_stop(MOG12_recoil);combo_stop(MOG12_version2_recoil);}
+if(get_val(9)<=-53   || get_val(9)>=53) {combo_stop(Ballistic_Antirecoil);combo_stop(MOG12_recoil);combo_stop(MOG12_version2_recoil);}
+if(get_val(11)>=-10 ||get_val(11)<=10){combo_run(Aim_assist);}//To stop Aim Assist put TWO forward slashes in front of 'IF' ONLY on this command line & save.
+if(get_val(11)<=-30 ||get_val(11)>=30){combo_stop(Aim_assist);}}  
+
+combo Stop_Auto_mantling {set_val(12,10);wait(130);}
+
+combo Aim_assist {//These movements only happen when you stand still. It's what    
+   set_val(11,-33);//keeps the aim assist active when you do not move at all.
+   wait(30) 
+   set_val(11,33);
+   wait(30)   
+   }
+
+combo Ballistic {
+set_val(8,100); 
+set_val(12,-93);
+set_val (3,100);
+wait(60);
+set_val (3,100);
+wait(45);
+set_val(3,100); 
+set_val(6,100); 
+wait(30);
+wait(30);
+	}
+    
+combo Ballistic_Antirecoil{
+    set_val(10,53);
+    wait(100);
+    wait(20);
+    set_val(10,48);
+    set_val(9,-33);
+    wait(40);
+    wait(3000);
+    }
+    
+combo MOG12 {
+    set_val(4,0);
+    set_val(20,0);//              \\
+    set_val(8,100);  //____________\\_ THESE MOVEMENT COMMANDS ARE NEEDED WITH 
+    set_val(12,-100);//------------//  GUNG-HO TO MAKE THE FIRE RATE EVEN AND
+    set_val(17,100);              //CONSISTENT IF YOU SHOOT WHILE STANDING STILL
+    wait(20);
+    set_val(4,100);
+    set_val(20,0);
+    set_val(8,100);
+    set_val(12,-100);
+    wait(20);
+    set_val(4,100);
+    set_val(20,0);
+    set_val(17,100);
+    wait(20);
+    set_val(4,100);
+    set_val(20,0);
+    wait(20);
+    set_val(4,100);
+    set_val(20,100);
+	wait(20);
+    set_val(4,100);
+    set_val(20,0);
+	wait(195);
+    set_val(4,100);
+    set_val(20,0);
+	set_val(3, 100);
+	wait(85);
+    set_val(4,100);
+    set_val(3,100);    
+	set_val(6,100);
+    set_val(20,0);
+	wait(20);
+	}
+    
+combo MOG12_recoil{
+    set_val(10,36);
+    wait(300);
+    set_val(10,30);
+    wait(200);
+    set_val(10,27);
+    wait(170);
+    set_val(10,16);    
+    set_val(9,23);
+    wait(230);
+    wait(3000);
+    }
+
+combo MOG12_version2 {// Faster version of MOG12 jitter mod
+    set_val(12,0);
+    set_val(4,100);
+    set_val(20,100);
+	wait(18);
+    set_val(4,100);
+    set_val(20,0);
+	wait(198);
+    set_val(4,100);
+    set_val(20,100);
+	set_val(3,100);
+	wait(60);
+    set_val(4,100);
+    set_val(20,0);
+	set_val(3,100);
+	wait(24);
+    set_val(4,100);
+    set_val(3,100);    
+	set_val(6,100);
+    set_val(20,0);
+    set_val(17,100);
+	wait(18);
+    set_val(4,100);
+    set_val(20,0);
+    wait(18);
+    set_val(4,100);
+    set_val(20,0);
+    set_val(17,100);
+    wait(18);
+    set_val(4,100);
+    set_val(20,0);
+    wait(18);
+	}
+    
+combo MOG12_version2_recoil{
+    set_val(10,37);
+    wait(249);
+    set_val(10,23);
+    wait(249);
+    set_val(10,19);
+    wait(201);
+    set_val(10,16);    
+    set_val(9,23);
+    wait(231);
+    wait(3000);
+    }
+        
+combo Reload_cancel {
+set_val(17,100);
+wait(20);
+wait(20);
+set_val(17,100);
+wait(20);
+}
+
+combo Reload {
+wait(40);
+set_val(20,100);
+wait(15);
+wait(60);
+set_val(20,100);
+wait(15);
+wait(60);
+set_val(20,100);
+wait(15);
+wait(60);
+set_val(20,100);
+wait(15);
+wait(60);
+set_val(20,100);
+wait(15);
+wait(60);
+set_val(20,100);
+wait(15);
+wait(60);
+set_val(20,100);
+wait(15);
+wait(2001);
+ }
+    
+combo Sprint {
+    set_val(8,100):
+    wait(30);
+    set_val(8,0);
+    wait(30);
+    }
+    
+combo sprint_out {
+set_val(12,0);wait(20);wait(4000);
+}
+
+combo sprint_out2 {
+set_val(12,0);wait(20);
+}
+
+combo special {
+set_val(3,100);set_val(6,100);combo_run(Rumble);wait(30);
+}
+
+combo prone {
+set_val(12,-100);set_val(18,100); wait(160);wait(1040);
+}
+
+combo Rumble {
+    set_rumble(RUMBLE_B, 100);
+    wait(130);reset_rumble();}
+
+combo RumbleNotifier {
+    set_rumble(RUMBLE_A, 100);
+    wait(300);reset_rumble();}

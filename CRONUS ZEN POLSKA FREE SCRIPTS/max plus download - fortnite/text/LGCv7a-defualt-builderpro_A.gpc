@@ -1,0 +1,438 @@
+//--Controls
+    define VIEW  =  1;
+    define MENU  =  2;
+    define RB    =  3;
+    define RT    =  4;
+    define RS    =  5;
+    define LB    =  6;
+    define LT    =  7;
+    define LS    =  8;
+    define RX    =  9;
+    define RY    = 10;
+    define LX    = 11;
+    define LY    = 12;
+    define UP    = 13;
+    define DOWN  = 14;
+    define LEFT  = 15;
+    define RIGHT = 16;
+    define Y     = 17;
+    define BUILD = 18;
+    define A     = 19;
+    define X     = 20;
+//Aim Abuse - Default/Staring Values
+int AimAbuse = TRUE;
+int AimAbuse_HOLD = 308;                 //How long you HOLD ADS Button
+int AimAbuse_RELEASE = 18;
+int AimAbuse_HOLD_ORIGINAL = 308;                 //How long you HOLD ADS Button
+int AimAbuse_RELEASE_ORIGINAL = 18;
+//DFZ
+int dzf = FALSE;
+//Controller Dead Zone (Right Stick)
+int rstickdz = 12;
+//Aim Assist - Default/Starting
+int AimAssist = TRUE;
+int aa4 = 1;
+int aa4o = 1;
+int AAshake;
+//Upshall Mod - L2 + RIGHT
+int upshall = FALSE;
+//RUMBLE
+int rumble_type = RUMBLE_A;
+//Dropshot - Hold LT/L2 + RB/R1
+int DropShot = TRUE;																				
+int dsdown = 17, dsup = 68;
+//TFue Combos - L2 + UP
+int tcombo = FALSE;
+//insta edit
+	int EDIT_BUTTON = 	/**/BUILD/**/; 	//Insta edit will allow you to confirm the edit quickly
+int EDIT_BUTTON_HOLD =  /**/TRUE/**///Does your edit button has a hold delay? True means Yes -- False mean No
+	int HOLD_TIME = 	/**/150/**/;  // Type the hold time which is shown in Fortnite settings, in hundereds because cronusmax already know its in MS. |0.10 = 100| |0.25 = 250|
+int RESET_EDIT_BUTTON = /**/RS/**///Insta Reset will allow you to confirm the edit reset quickly
+int smgTime;
+int edit = FALSE;
+int aimMod = TRUE;
+//--Rapidfire - LT/L2 + Down
+int RapidFire      = FALSE;
+//PUMP SMG - Reload + Jump
+int PUMP_SMG = FALSE;
+int tap;
+int R2_block; 
+//HAIR TRIGGER
+int HairTrigger    = TRUE;
+//Extra                                                                                                                                               
+int WAIT;                                                                                
+int num, i, a;
+int button;
+int pressedIt[6];
+//--------------------------------------------------------------------------------------------------------MAIN SECTION----------------------------------------------------------------------------------------------------//
+main {
+//vm_tctrl(17);
+
+//Rapidfire
+if(get_val(LT) && event_press(DOWN)){
+   rumble_A_if_true(RapidFire);
+   RapidFire =! RapidFire;
+   }
+   if(RapidFire){
+     if(get_val(RT)){
+        combo_run(Rapidfire);                                          
+       } 
+     } 
+     
+
+//--Hairtriggers
+if(HairTrigger){ 
+  
+   if(get_val(RT)){set_val(RT,100);}
+   }
+//AA Shake
+AAshake = rstickdz + aa4;
+
+if(dzf){if(abs(get_val(RX) > 0) && abs(get_val(RX) < 50)) {sensitivity(RX, 35, 100);}
+if(abs(get_val(RX) > 50) && abs(get_val(RX) < 75)) {sensitivity(RX, 41, 100);}
+if(abs(get_val(RX) > 75)) {sensitivity(RX, 44, 100);}
+if(abs(get_val(RY) > 0) && abs(get_val(RY) < 50)) {sensitivity(RY, 35, 100);}
+if(abs(get_val(RY) > 50) && abs(get_val(RY) < 75)) {sensitivity(RY, 41, 100);}
+if(abs(get_val(RY) > 75)) {sensitivity(RY, 44, 100);}}
+if(get_val(7)){if(!combo_running(cAimAbuse)) {sensitivity(RX, 50, 100);sensitivity(RY, 50, 100);}}
+
+	//Edit Section
+			if(EDIT_BUTTON_HOLD)
+			{
+				if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME)
+				{
+				edit = TRUE;
+				}
+			}
+			else if(!EDIT_BUTTON_HOLD)
+			{
+				if(get_val(EDIT_BUTTON))
+				{
+				edit = TRUE;
+				}
+			}
+	if (edit == TRUE) {
+		resetPress(0,1,0,0,0,0);
+		if (get_val(BUILD)) {
+			aimMod = TRUE;
+		}
+		if (event_release(RT) || get_val(RESET_EDIT_BUTTON) || get_val(Y)) {
+			set_click(BUILD, 1, 0);
+			edit = FALSE;
+		}
+	}
+	//End of Edit Section
+	
+
+	//----------------------------------------
+	//Mods Activation Section
+	if (event_press(BUILD)) 
+	{
+		resetPress(0,1,0,0,0,0);
+		aimMod = !aimMod;
+		edit = FALSE;
+	}	
+	if (get_val(Y)) 
+	{
+		resetPress(0,1,0,0,0,0);
+		aimMod = TRUE;
+	}
+if (a) {
+	if (i < num) {
+		if (!combo_running(master)) {
+			combo_run(master);
+			}
+		} else if 
+		(i > num) {a = FALSE;
+		}
+	}
+//Upshall Mod
+if (get_val(LT) && event_press(RIGHT)) {
+  rumble_A_if_true(upshall);
+  upshall = !upshall;
+  }
+if (upshall) {
+if (get_val(RB)) {
+  combo_run(cupshall);
+set_val(RB, 0);
+}if (event_press(BUILD)){ upshall = FALSE; }}else {
+  combo_stop(cupshall);
+}
+
+//AIM ASSIST
+if (AimAssist) {
+AA_CNG(AimAssist);
+if (get_val(LT)> 98){ combo_run(cAimAssist);}
+}
+if (abs(get_val(9)) > 30 || abs(get_val(10)) > 30){ 
+combo_stop(cAimAssist);}
+//AIM ABUSE
+if(AimAbuse){
+AB_CNG(AimAbuse);
+   if(get_val(LT)> 98){
+      combo_run(cAimAbuse);}
+  else if(!combo_running(cAimAbuse)){ dzf = FALSE; combo_stop(cAimAbuse);
+}
+}
+//DropShot
+if (get_val(LT) && get_val(RB)) {
+  DropShot = !DropShot;
+  combo_run(cDropShot);
+set_val(RB, 0);
+      } else {
+  combo_stop(cDropShot);
+}
+//PUMP SMG
+if (get_val(A)) {
+   if (event_press(X)) {
+      PUMP_SMG = !PUMP_SMG;
+      tap = FALSE;
+      rumble_A_if_true(PUMP_SMG);
+     }
+    }
+if (PUMP_SMG) {
+   if (R2_block) {
+      set_val(LT, 0);
+      set_val(RT, 0);
+     }
+ //------------------------------------------------
+     if (get_val(LT) && event_press(RT)) {
+       if (!tap) { 
+       tap = TRUE; 
+       combo_run(Double_Tact_R1);
+       set_val(RT, 0);
+       }
+      }
+       if (event_press(LB)) {
+         tap = FALSE;
+     }
+  } 
+//TFUE Combos
+if (get_val(LT) && event_press(UP)) {
+  	rumble_A_if_true(tcombo);
+  	DropShot = FALSE;
+	tcombo =! tcombo;
+}
+if(tcombo){
+    if (get_val(RB)) {
+ 	    combo_run(ctfuewall);
+	}  
+	if (get_val(RT)) {
+        combo_run(ctfueedit);
+    }
+    if (get_val(Y)) {
+        tcombo = FALSE;
+    }
+} 
+}
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------------------COMBO SECTION-----------------------------------------------------------------------------------------------------------------//
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+combo wait1 {
+    wait(50);
+    wait(55);
+}
+combo master {
+	wait(WAIT);
+	set_val(button, 100);
+	wait(28);
+	set_val(button, 0);
+	wait(28);
+	i = i + 1;
+}
+combo Double_Tact_R1 {
+    R2_block = TRUE;
+    set_val(LT, 100);
+wait(50);
+set_val(RT, 100);
+wait(50);
+set_val(RB, 100);
+wait(100);
+set_val(RB, 0);
+wait(300); //END
+set_val(LT, 100);
+wait(300);
+set_val(RT, 100);
+wait(50);
+set_val(LB, 100);
+wait(100);
+set_val(LB, 0);
+wait(500); //END
+
+    R2_block = FALSE;
+}
+combo Rapidfire {
+
+}
+combo cDropShot{
+set_val(RT,100);
+set_val(RS,100);
+wait(dsdown);
+wait(dsup);
+set_val(RT,100);
+set_val(RS,100);
+}
+combo cAimAbuse {
+dzf = TRUE;
+set_val(LT, 100);
+wait(AimAbuse_HOLD);
+set_val(LT, 0);
+wait(AimAbuse_RELEASE);
+}
+combo cAimAssist {
+    set_val(RX, AAshake);
+    set_val(RY, -0);
+    wait(20);
+    set_val(RX, 0);
+    set_val(RY, AAshake);
+    wait(20);
+    set_val(RX, (AAshake * -1));
+    set_val(RY, -0);
+    wait(20);
+    set_val(RX, 0);
+    set_val(RY, (AAshake *  -1));
+    wait(20);
+}
+combo cupshall {
+    set_val(RT,0);
+    set_val(LT,100);
+    wait(110);
+    set_val(LT, 100);
+    set_val(RT, 100);
+    wait(20);
+    set_val(RT, 0);
+    set_val(LT, 0);
+    wait(10);
+}
+combo ctfuewall {
+block(RT, 500);
+combo_run(cAimAbuse);
+wait((AimAbuse_HOLD + AimAbuse_RELEASE) / 2);
+set_val(RT, 100);
+wait(100);
+set_val(RT, 0);
+set_val(BUILD, 100);
+wait(20);
+set_val(RT, 100);
+wait(200);
+set_val(BUILD, 100);
+wait(50);
+}
+combo ctfueedit{
+    set_val(BUILD, 100);
+    wait(40);
+    set_val(BUILD, 0);
+    wait(580);
+    set_val(4, 100);
+    wait(40);
+    set_val(4, 0);
+    wait(40);
+    set_val(4, 100);
+    wait(40);
+    set_val(4, 0);
+    wait(80);
+    set_val(EDIT_BUTTON, 100);
+    wait(220);
+    set_val(4, 100);
+    set_val(EDIT_BUTTON, 0);
+    wait(50);
+    set_val(4, 0);
+    wait(50);
+    set_val(18, 100);
+    wait(50);
+    set_val(18, 0);
+    wait(50);
+    set_val(18, 100);
+    wait(50);
+    set_val(18, 0);
+    wait(50);
+    set_val(4, 100);
+    set_val(7, 100);
+    wait(700);
+    set_val(4, 0);
+    set_val(7, 0);
+    set_val(18, 100);
+    wait(40);
+    set_val(18, 0);
+    wait(50);
+    set_val(4, 100);
+    wait(40);
+    set_val(4, 0);
+    set_val(18, 100);
+    wait(220);
+    set_val(18, 0);
+    wait(40);
+    set_val(5, 100);
+    wait(40);
+    set_val(5, 0);
+    set_val(18, 100);
+    wait(40);
+    set_val(18, 0);
+    wait(700);
+}
+combo VIBRATE {
+    set_rumble(rumble_type, 100);
+    wait(300);
+    reset_rumble();
+}
+function rumble_A_if_true(var) {
+    if (var) rumble_type = RUMBLE_A;
+    else rumble_type = RUMBLE_B;
+    combo_run(VIBRATE);
+}
+function AB_CNG(reduce1) {
+	if (reduce1) { 
+	if (abs(get_val(9)) < 20 || abs(get_val(10)) <  20) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL;}
+	if (abs(get_val(9)) > 20 < 30 || (abs(get_val(10)) > 20 < 30)) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL - 3;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL - 1;}
+	if (abs(get_val(9)) > 30 < 40 || (abs(get_val(10)) > 30 < 40)) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL - 6;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL - 2;}
+	if (abs(get_val(9)) > 40 < 50 || (abs(get_val(10)) > 40 < 50)) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL - 9;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL - 3;}
+	if (abs(get_val(9)) > 50 < 75 || (abs(get_val(10)) > 50 < 75)) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL - 12;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL - 4;}
+	if (abs(get_val(9)) > 75 || (abs(get_val(10)) > 75)) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL - 15;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL - 5;}  
+	if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+	AimAbuse_HOLD = AimAbuse_HOLD_ORIGINAL;
+	AimAbuse_RELEASE = AimAbuse_RELEASE_ORIGINAL;}
+}}
+function AA_CNG(reduce) {
+	if (reduce) { 
+	if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+	aa4 = aa4o;}
+	if (abs(get_val(9)) > 20 < 22 || (abs(get_val(10)) > 20 < 22)) {
+	aa4 = aa4o - 1;}
+	if (abs(get_val(9)) > 22 < 24 || (abs(get_val(10)) > 22 < 24)) {
+	aa4 = aa4o - 2;}
+	if (abs(get_val(9)) > 24 < 26 || (abs(get_val(10)) > 24 < 26)) {
+	aa4 = aa4o - 3;}
+	if (abs(get_val(9)) > 26 < 28 || (abs(get_val(10)) > 26 < 28)) {
+	aa4 = aa4o - 4;}
+	if (abs(get_val(9)) > 30 || abs(get_val(10)) > 30) {
+	aa4 = aa4o - 5;}
+	if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+	aa4 = aa4o;}
+}}
+function set_click(B, Num, Wait) {
+	WAIT = Wait;
+	i = 0;
+	button = B;
+	num = Num;
+	a = TRUE;
+}
+function resetPress(P0,P1,P2,P3,T,S) {
+
+	if(!P0){pressedIt[0] = FALSE;}	else if(P0) {pressedIt[0] = TRUE;}
+	if(!P1){pressedIt[1] = FALSE;}	else if(P1) {pressedIt[1] = TRUE;}	
+	if(!P2){pressedIt[2] = FALSE;}	else if(P2) {pressedIt[2] = TRUE;}	
+	if(!P3){pressedIt[3] = FALSE;}	else if(P3) {pressedIt[3] = TRUE;}
+	if(!T){tap = FALSE;}	 else if (T){tap = TRUE;}
+}

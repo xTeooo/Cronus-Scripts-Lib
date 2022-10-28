@@ -1,0 +1,280 @@
+/* 
+Made by: @yewify on Twitter
+
+VERSION: Artifact Sticky
+
+Vouch me to your friends!
+*/
+
+define Fire = XB1_RT; define Pickaxe = XB1_LS; define N_Weapon = XB1_RB; define Ads = XB1_LT; define Reload = XB1_B; define P_Weapon = XB1_LB; define Jump = XB1_A; define Edit = XB1_Y; define Select = XB1_RT; define Crouch = XB1_RS; define Ping = XB1_LEFT; define Confirm = XB1_LT; define Reset = XB1_RB; define Wall = XB1_RT; define Ramp = XB1_LT; define Build = XB1_X; define Floor = XB1_RB; define Cone = XB1_LB define Roof = XB1_LB; define RumA = RUMBLE_A; define RumB = RUMBLE_B; define Up = PS4_UP; define Left = PS4_LEFT; define RX = PS4_RX; define Down = PS4_DOWN; define Right = PS4_RIGHT; define RY = PS4_RY; define aimY = PS4_RY; define LX = PS4_LX; define On = TRUE; define aimX = PS4_RX; define LY = PS4_LY; define Off = FALSE; int AA1 = On; int AimAssist_LINEAR = On; int Strength = 49.5; int Increment = 9; int ExploitAngle = 18; int ExploitRadius = 5; int ExploitRadiusMin = 5; int ExploitAngleBoost = 5; int PolarBoost =  22; int ExploitAssist = Helix; int ToggleRumbleBoost = On; define Circular = 29; define TallOval = 2; define WideOval = 3; define Spiral = 4; define Helix = 5; int AimStickLinear = On; define Ads_Assist = On; define Fire_Assist = On; define RADIUS = 8; define STEPS = 30;define STEP_INTERVAL = 1; int LessInputDelay = -9; int InstantTriggers = On; int BlockRumble = On; int BuildTracker = On; define BuildSyncTime = 1000; int TouchPad = Off; int AssistProfile = 32; int Strength1  = 24; int Increment1 = 8; int deadZone = 10; int ExpoAA = On; int AimAssist_Strength  = 49.5; int Shunt,BuildTrack,BuildCount,power,Ypower,Xpower,Power,CountPower,AxisXY,ModDigit,cos_angle, sin_angle,actual_X, actual_Y, actual_Magnitude, max_Magnitude,time,Reducer,angle,RumbleToUse,Axe,RXT,RYT,CosAngle,SinAngle,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,PolarStrength,Angle,PositionT; int AA2 = On; int aav  = 4; int delay  = 10;
+
+/*
+Change DZ_L to your LS deadzone, invDZ_L is the same number, just with a - before it.
+Change RZ_R to your RS deadzone, invDZ_R is the same number, just with a - before it.
+*/
+
+int JoyStick_Calibration = Off; int DeadZone = On;
+define DZ_L 	= 9; 
+define invDZ_L 	= -9;
+define DZ_R 	= 7;
+define invDZ_R 	= -7;
+
+main {
+vm_tctrl(LessInputDelay); if (BlockRumble) block_rumble(); if(TouchPad) {swap(PS4_SHARE, PS4_TOUCH); } if (BuildTracker) { if (event_press(Build)) { BuildTrack = !BuildTrack; } if (BuildTrack) { BuildCount += get_rtime(); if (event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = Off; } if (get_ival(Floor) || get_ival(Cone) || get_ival(Ramp) || get_ival(Wall) || get_ival(Build) || get_ival(Edit)) BuildCount = Off; } } if(DeadZone){if(abs(get_val(PS4_LY)) < DZ_L && abs(get_val(PS4_LX)) < DZ_L || abs(get_val(PS4_LY)) < invDZ_L && abs(get_val(PS4_LX)) < invDZ_L ){set_val(PS4_LY, 0);set_val(PS4_LX, 0);} if(abs(get_val(PS4_RY)) < DZ_R && abs(get_val(PS4_RX)) < DZ_R || abs(get_val(PS4_RY)) < invDZ_R && abs(get_val(PS4_RX)) < invDZ_R){set_val(PS4_RY,0); set_val(PS4_RX,0);}}
+if(!BuildTrack) {
+if (ExploitAssist) {     
+RXT = get_val(RX);                                
+RYT = get_val(RY); 
+ActualMagnitude = isqrt(pow(RXT,2) + pow(RYT,2));   
+MaxMagnitude = (ActualMagnitude < 100);             
+angle += ExploitAngle + Angle;                                    
+angle = angle % 360;  
+CosAngle = DamPolar[(angle + 270) % 360];  
+SinAngle = DamPolar[angle % 360];
+if (ToggleRumbleBoost) {
+if (get_ival(Fire)) {
+SmartRumble = get_rumble(RumbleToUse());
+Angle = ExploitAngleBoost;
+if (SmartRumble > 10 && SmartRumble < 90) {
+PolarStrength = (ExploitRadius + PolarBoost + ExploitAngleBoost + SmartRumble / 4); 
+SmartRumble   = Off;
+}
+} 
+}
+if (get_ival(Ads) || get_ival(Fire)) {
+if (ActualMagnitude < ExploitRadius) {
+SinAngle -= RYT;                                                              
+CosAngle -= RXT;
+}
+else {     
+SinAngle = (SinAngle * (200 - ((abs(RYT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;  
+CosAngle = (CosAngle * (200 - ((abs(RXT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;   
+}                                                  
+if (!get_rumble(RumbleToUse()))
+GetShapes(ExploitRadius); 
+else 
+GetShapes(PolarStrength); 
+}
+PolarStrength = Off; 
+SmartRumble   = Off;  
+ }
+if (AimAssist_LINEAR) {
+if (event_press(Ads)) { 
+Power = On;
+}
+else if (!get_ival(Ads) && event_press(Fire)) {
+Power = On;
+}
+if (get_ival(Ads) || get_ival(Fire)) {
+AxisXY = isqrt(abs(get_ival(aimX)) * abs(get_ival(aimX)) + abs(get_ival(aimY)) * abs(get_ival(aimY)));
+if (AssistProfile2 == 1)
+AimAssist2(Strength,Increment);
+} else {
+CountPower = 0;
+power = Off;
+}
+}
+if(AimStickLinear) {
+actual_X = get_val(RX);
+actual_Y = get_val(RY);
+actual_Magnitude = isqrt(pow(actual_X, 2) + pow(actual_Y, 2));                                                                                                                                                                                              
+max_Magnitude = (actual_Magnitude < 100);
+if(!(time++ % STEP_INTERVAL)){
+angle += STEPS;
+}
+angle = angle % 360;
+sin_angle = Polar_Array[angle % 360];
+cos_angle = Polar_Array[(angle + 270) % 360];                   
+cos_angle = (cos_angle * RADIUS) / 100;
+sin_angle = (sin_angle * RADIUS) / 100;
+if((Ads_Assist && get_val(Ads)) || (Fire_Assist && get_val(Fire))){
+if(actual_Magnitude <= RADIUS){
+sin_angle -= actual_Y;
+cos_angle -= actual_X;
+}else {
+sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;
+cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;
+}
+set_val(RX, clamp(actual_X + cos_angle, -100, 100));
+set_val(RY, clamp(actual_Y + sin_angle, -100, 100));
+}
+}
+if (AA1){if (event_press(Ads)) { Power = On;}else if (!get_ival(Ads) && event_press(Fire)) {Power = On;}if (get_ival(Ads) || get_ival(Fire)) {AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));if (AssistProfile == 1)AimAssist(Strength1,Increment1);	} else { CountPower = 0; power = Off;}}
+if (AA2) { if (get_val(Ads)> 4/1<1000) { combo_run(AimAssist2); } if (abs(get_val(RX)) > 19 || abs(get_val(RY)) > 19) { combo_stop(AimAssist2);}}
+if(ExpoAA) {   
+if(get_val(Ads)> 95){ combo_run(EXPOAAS );}
+if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) 
+combo_stop(EXPOAAS);
+}
+}
+}
+
+function AimAssist (Strength,Step) { if (Power) { Ypower = Strength; Xpower = Strength * -1; Increment = Step; Power = Off; } if (!power) { Xpower += Increment; Ypower -= Increment; } else { Xpower -= Increment; Ypower += Increment; } CountPower ++; if (CountPower >= (Strength / Increment)) { power = !power; CountPower = 0; } if (AxisXY > deadZone) { if (Reducer) { set_val(RY,(Ypower - Strength / 2)); set_val(RX,(Xpower - Strength / 2 * -1)); } else { set_val(RY,(Ypower - Strength / 2) + get_ival(RY)); set_val(RX,(Xpower - Strength / 2 * -1) + get_ival(RX)); } } else { if (Reducer) { set_val(RY,(Ypower - Strength / 2)); set_val(RX,(Xpower - Strength / 2 * -1)); } else { set_val(RY,(Ypower - Strength / 2)); set_val(RX,(Xpower - Strength / 2 * -1));}}}
+
+combo EXPOAAS { set_val(10, (AimAssist_Strength)); wait(10) set_val(9, (AimAssist_Strength)); wait(10) set_val(10, AimAssist_Strength * -1); wait(10) set_val(9, AimAssist_Strength * -1); wait(10); }
+
+combo AimAssist2 { set_val(RY, (aav)); wait(delay) set_val(RX, (aav)); wait(delay) set_val(RY, aav * -1); wait(delay) set_val(RX, aav * -1); wait(delay)}
+
+function _JoyStick_Calibration() {
+	if (get_console() == PIO_XB1 && get_controller() == PIO_PS4) {swap (PS4_TOUCH,PS4_SHARE);}
+    if (get_console() == PIO_XB360 && get_controller() == PIO_PS4) {swap (PS4_TOUCH,PS4_SHARE);}
+  do { o[i] = get_val(9 + i);
+  } while (i = (i + 1) % 4);
+  
+  do {
+    ValInY[i] = get_oval(STICK_Y[i]);
+    ValInX[i] = get_oval(STICK_X[i]); 
+    if (isqrt(pow(get_val(STICK_X[i]), 2) + pow(get_val(STICK_Y[i]), 2)) <  StickDZ[i]) {
+      if (ValInY[i] != ValPrevY[i] || ValInX[i] != ValPrevX[i]) {
+        ValPrevX[i] = ValInX[i];
+        ValPrevY[i] = ValInY[i];
+        XY[i]  = 100;
+      }
+      if (XY[i]) {
+        XY[i] -= get_rtime();
+        if (XY[i] <= 0) {
+          OffsetX[i] = inv(ValInX[i]);
+          OffsetY[i] = inv(ValInY[i]);
+          offset(STICK_X[i], OffsetX[i]);
+          offset(STICK_Y[i], OffsetY[i]);
+          ValOutX[i] = inv(get_val(STICK_X[i]));
+          ValOutY[i] = inv(get_val(STICK_Y[i]));
+        }
+      }
+    }
+    offset(STICK_X[i], OffsetX[i] + ValOutX[i]);
+    offset(STICK_Y[i], OffsetY[i] + ValOutY[i]);
+  } while(i = (i + 1) % 2);
+  
+  do {
+    temp = (i / 2) + XB1_RX;
+    i_val = get_val(temp);
+    
+     if(i_val >= RX_dk_max[i]) set_val(temp, 100);
+     if(i_val <= RX_dk_max[i + 1]) set_val(temp, -100);
+  
+  }while((i + 2) % 8 == i );
+}
+int StickDZ[2],
+	STICK_X[2],
+	STICK_Y[2],
+	OffsetX[2],
+	OffsetY[2],
+	ValOutX[2], 
+	ValOutY[2],
+	ValPrevX[2],
+	ValPrevY[2],
+	XY[2],
+	ValInY[2],
+	ValInX[2],
+	o[4],
+	i;
+
+init {
+  STICK_X = 9;  STICK_X[1] = 11; 
+  STICK_Y = 10; STICK_Y[1] = 12; 
+  StickDZ = dk_max(abs(get_val(9)), abs(get_val(10))) + 5;
+  StickDZ[1]  = dk_max(abs(get_val(11)), abs(get_val(12))) + 5;
+}
+int RX_dk_max=  100;
+int RX_dk_min= -100;
+int RY_dk_max=  100;
+int RY_dk_min= -100;
+int LX_dk_max=  100;
+int LX_dk_min= -100;
+int LY_dk_max=  100;
+int LY_dk_min= -100;
+
+int temp, i_val;
+
+function dk_min(a, b) { if(a<=b) return a; return b; }
+function dk_max(a, b) { if(a>=b) return a; return b; }
+function dk_clamp(v, lo, hi) { return dk_min(hi, dk_max(v, lo)); }
+function get_oval(io) { return o[io- 9]; }
+function offset(axis, offset_val) { 
+  set_val(axis, dk_clamp(offset_val * (100 - abs(get_oval(axis))) / 100 + get_oval(axis), -100, 100));
+  if(abs(get_val(axis)) < 18) set_val(axis, 0); 
+  return;
+}
+
+function RumbleToUse() {
+if (get_rumble(RumA) >= get_rumble(RumB)) 
+return RumA;
+if (get_rumble(RumA) < get_rumble(RumB)) 
+return RumB;
+return Off;
+}
+int AssistProfile2 = 1; 
+function AimAssist2 (Strength,Step) {
+if (Power) {
+Ypower = Strength;
+Xpower = Strength * -1;
+Increment = Step;
+Power = Off;
+	}
+if (!power) {
+Xpower += Increment;
+Ypower -= Increment;
+} else {
+Xpower -= Increment;
+Ypower += Increment;
+}
+CountPower ++;
+if (CountPower >= (Strength / Increment)) {
+power = !power;
+CountPower = 0;
+}	
+}
+function GetShapes(f_var) {
+if (!SpiralPosition1) {
+InnerSpiral -= 1;
+if (InnerSpiral < ExploitRadiusMin)
+SpiralPosition1 = On;
+}
+else {
+InnerSpiral += 1;
+if (InnerSpiral > f_var)
+SpiralPosition1 = Off;
+}
+if (!SpiralPosition2) {
+OuterSpiral -= 1;
+if (OuterSpiral < ExploitRadiusMin)
+SpiralPosition2 = On;
+}
+else {
+OuterSpiral += 1;
+if (OuterSpiral > f_var)
+SpiralPosition2 = Off;
+}
+if (ExploitAssist == Circular) {  
+RYT = (get_val(RY)) + ((SinAngle * f_var))/100;       
+RXT = (get_val(RX)) + ((CosAngle * f_var))/100;  
+}
+if (ExploitAssist == TallOval) {
+RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+RXT = (get_val(RX)) + ((CosAngle * ExploitRadiusMin))/100; 
+}
+if (ExploitAssist == WideOval) { 
+RXT = (get_val(RX)) + ((CosAngle * f_var))/100;  
+RYT = (get_val(RY)) + ((SinAngle * ExploitRadiusMin))/100;
+}
+if (ExploitAssist == Spiral) {
+RYT = (get_val(RY)) + ((SinAngle * InnerSpiral))/100;
+RXT = (get_val(RX)) + ((CosAngle * OuterSpiral))/100;  
+}
+if (ExploitAssist == Helix) {
+if (PositionT <= 1) {  
+RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+}
+if (PositionT > 1) {  
+RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+}
+PositionT++;        
+if (PositionT == 4) 
+PositionT = Off;
+} 
+set_val(RX,RXT);
+set_val(RY,RYT);
+}
+const int8 DamPolar[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+const char Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100}; ú¸‹¾Œ¸Ž·€¸‹¿‰½Š¾

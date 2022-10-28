@@ -1,0 +1,157 @@
+/*
+              _______            ______                 ______       ________ __                         
+             |       \          /      \               /      \     |        \  \                        
+             | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________     |  ▓▓▓▓▓▓\    | ▓▓▓▓▓▓▓▓ ▓▓ ______  __   __   __   
+             | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \     \▓▓__| ▓▓    | ▓▓__   | ▓▓/      \|  \ |  \ |  \  
+             | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓     /      ▓▓    | ▓▓  \  | ▓▓  ▓▓▓▓▓▓\ ▓▓ | ▓▓ | ▓▓  
+             | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓     |  ▓▓▓▓▓▓     | ▓▓▓▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓  
+             | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_     | ▓▓_____     | ▓▓     | ▓▓ ▓▓__/ ▓▓ ▓▓_/ ▓▓_/ ▓▓  
+             | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \    | ▓▓     \    | ▓▓     | ▓▓\▓▓    ▓▓\▓▓   ▓▓   ▓▓  
+              \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓     \▓▓▓▓▓▓▓▓     \▓▓      \▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓\▓▓▓▓   
+   _______                                                                 __                         ______  _______  
+  |       \                                                               |  \                       /      \|       \ 
+  | ▓▓▓▓▓▓▓\ ______   ______   ______   ______   ______   _______  _______ \▓▓ ______  _______      |  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\
+  | ▓▓__/ ▓▓/      \ /      \ /      \ /      \ /      \ /       \/       \  \/      \|       \     | ▓▓__| ▓▓ ▓▓__| ▓▓
+  | ▓▓    ▓▓  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\  ▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓ ▓▓  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\    | ▓▓    ▓▓ ▓▓    ▓▓
+  | ▓▓▓▓▓▓▓| ▓▓   \▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓   \▓▓ ▓▓    ▓▓\▓▓    \ \▓▓    \| ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓    | ▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓\
+  | ▓▓     | ▓▓     | ▓▓__/ ▓▓ ▓▓__| ▓▓ ▓▓     | ▓▓▓▓▓▓▓▓_\▓▓▓▓▓▓\_\▓▓▓▓▓▓\ ▓▓ ▓▓__/ ▓▓ ▓▓  | ▓▓    | ▓▓  | ▓▓ ▓▓  | ▓▓
+  | ▓▓     | ▓▓      \▓▓    ▓▓\▓▓    ▓▓ ▓▓      \▓▓     \       ▓▓       ▓▓ ▓▓\▓▓    ▓▓ ▓▓  | ▓▓    | ▓▓  | ▓▓ ▓▓  | ▓▓
+   \▓▓      \▓▓       \▓▓▓▓▓▓ _\▓▓▓▓▓▓▓\▓▓       \▓▓▓▓▓▓▓\▓▓▓▓▓▓▓ \▓▓▓▓▓▓▓ \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓     \▓▓   \▓▓\▓▓   \▓▓
+                             |  \__| ▓▓                                                                                
+                              \▓▓    ▓▓                                                                                
+                               \▓▓▓▓▓▓                                                                                                                                                                            
+ */                                                                                           
+define RY   = PS4_RY;
+define RX   = PS4_RX;
+define Ads  = PS4_L2;
+define Fire = PS4_R2;
+define On   =   TRUE;
+define Off  =  FALSE;
+
+
+define RecoilHold  = PS4_L2;   // Toggle Hold L2 + Tap Down (On/Off)
+define RecoilPress = PS4_DOWN;
+
+int fw,ar,vx,t,i,l,b;
+int m  =   1:
+int f  =   1;
+
+int antiRecoil = On;
+
+int yv =  30; // start value (vertical)
+int ym =  60; // max value   (vertical)
+int sd = 200; // time to adjust vertical power (10 = MINIMUM)
+
+int xv = -15; // start value (horizontal)
+int xm =  15; // high value  (horizontal)
+int xd =  50; // time to adjust horizontal power (10 = MINIMUM)
+
+init {
+	fw = yv;
+	vx = xv;
+}
+
+main {
+		
+	if (get_ival(RecoilHold)) {
+		
+		if (event_press(RecoilPress)) {
+			
+			antiRecoil = !antiRecoil;
+		}
+		
+		set_val(RecoilPress,0);
+	}
+	
+	if (antiRecoil) {
+	
+	    if (get_ival(Ads) && get_ival(Fire)) {
+	    	ar = On;
+	    	ar();
+	    }
+	    
+	    if (event_release(Ads) || event_release(Fire)) {
+	    	
+	    	ar = Off;	l  = Off;	b  = Off;	m  =  On;
+	    	f  =  On;	fw =  yv;	vx =  xv;
+	    }
+	}
+}
+	
+function ar() {
+		
+		t += get_rtime();
+		i += get_rtime();
+	
+	if (ar){
+	
+	    if (f == On) {
+	    	
+	    	if (i == xd) { 	
+	    		
+	    		xv ++;
+	    		i = Off;
+	    	}
+	    }
+	    
+	    else if (b == On) {
+	    	
+	    	if (i == xd) {	
+	    		
+	    		i = Off;
+	    		xv --;
+	    	}	
+	    }
+	    
+	    if (f && xv == xm) { 
+	    	
+	    	f = Off;
+	    	b = On;
+	    }
+	    		
+	    if (b && xv == vx) {
+	    	
+	    	f = On;
+	    	b = Off;
+	    }		
+	    
+	    if (m == On) {
+	    	
+	    	if (t == sd) { 	
+	    		
+	    		fw ++;
+	    		t = Off;
+	    	}
+	    }
+	    
+	    else if (l == On) {
+	    	
+	    	if (t == sd) {	
+	    		
+	    		t = Off;
+	    		fw --;
+	    	}	
+	    }
+	    
+	    if (m && fw == ym) { 
+	    	
+	    	m = Off;
+	    	l = On;
+	    }
+	    
+	    if (l && fw == yv) {
+	    	
+	    	m = On;
+	    	l = Off;
+	    }
+	    	set_Val(RY,fw);
+	    	set_Val(RX,xv);
+	}
+}
+
+function set_Val(Input,Output) {
+
+      set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+      return; 
+}

@@ -1,0 +1,767 @@
+/*  _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+   |       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+   | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+   | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+   | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+   | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+   | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+   | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+    \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+       ________ __                       ________       ______  __                    ______                    __            __     
+      |        \  \                     |        \     /      \|  \                  /      \                  |  \          |  \    
+       \▓▓▓▓▓▓▓▓\▓▓______ ____   ______  \▓▓▓▓▓▓▓▓    |  ▓▓▓▓▓▓\\▓▓______ ____      |  ▓▓▓▓▓▓\ _______  _______ \▓▓ _______ _| ▓▓_   
+         | ▓▓  |  \      \    \ /      \    /  ▓▓     | ▓▓__| ▓▓  \      \    \     | ▓▓__| ▓▓/       \/       \  \/       \   ▓▓ \  
+         | ▓▓  | ▓▓ ▓▓▓▓▓▓\▓▓▓▓\  ▓▓▓▓▓▓\  /  ▓▓      | ▓▓    ▓▓ ▓▓ ▓▓▓▓▓▓\▓▓▓▓\    | ▓▓    ▓▓  ▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓ ▓▓  ▓▓▓▓▓▓▓\▓▓▓▓▓▓  
+         | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓    ▓▓ /  ▓▓       | ▓▓▓▓▓▓▓▓ ▓▓ ▓▓ | ▓▓ | ▓▓    | ▓▓▓▓▓▓▓▓\▓▓    \ \▓▓    \| ▓▓\▓▓    \  | ▓▓ __ 
+         | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓▓▓▓▓▓▓/  ▓▓___     | ▓▓  | ▓▓ ▓▓ ▓▓ | ▓▓ | ▓▓    | ▓▓  | ▓▓_\▓▓▓▓▓▓\_\▓▓▓▓▓▓\ ▓▓_\▓▓▓▓▓▓\ | ▓▓|  \
+         | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓\▓▓     \  ▓▓    \    | ▓▓  | ▓▓ ▓▓ ▓▓ | ▓▓ | ▓▓    | ▓▓  | ▓▓       ▓▓       ▓▓ ▓▓       ▓▓  \▓▓  ▓▓
+          \▓▓   \▓▓\▓▓  \▓▓  \▓▓ \▓▓▓▓▓▓▓\▓▓▓▓▓▓▓▓     \▓▓   \▓▓\▓▓\▓▓  \▓▓  \▓▓     \▓▓   \▓▓\▓▓▓▓▓▓▓ \▓▓▓▓▓▓▓ \▓▓\▓▓▓▓▓▓▓    \▓▓▓▓ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Version 1.00 COD/FPS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Aim Assist ====
+Works on ADS or Fire
+Timed ON AA will cut out after set time (1 Second)
+Power [1,2,3] 	==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Progression Anti Recoil ====
+Hip Fire Off = Works on ADS + Fire
+Hip Fire On = Works on Fire
+Inverted Axis Option
+
+X4 PROFILES 
+
+Hold [Crouch] + 
+Press Dpad [UP]    [Profile 1] *Rumble Once*
+Press Dpad [RIGHT] [Profile 2] *Rumble Twice*
+Press Dpad [DOWN]  [Profile 3] *Rumble Three* 
+Press Dpad [LEFT]  [Profile 4] *Rumble Four*
+
+On/Off Toggle = L2/LT + RIGHT
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Jump Shot ====
+Release Fire to Jump [ADS BLOCKS MOD]
+
+Toggle = L2/LT + UP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Crouch Shot ====
+Hold ADS + Fire 
+
+Toggle = L2/LT + DOWN
+
+[Perfect Accuracy] + [Strafe Shot] + [Crouch Shot]  Or [Strafe Shot] + [Crouch Shot] ON = Smart Shot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Strafe Shot ====
+Hold ADS + Fire 
+
+Toggle = L2/LT + LEFT
+
+[Perfect Accuracy] + [Strafe Shot] + [Crouch Shot]  Or [Strafe Shot] + [Crouch Shot] ON = Smart Shot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Perfect Accuracy Shot ====
+Hold ADS + R1/RB 
+
+Toggle = L2/LT + OPTIONS/MENU
+
+Active on ADS + FIRE < 97% When [Perfect Accuracy] + [Strafe Shot] + [Crouch Shot] ON = Smart Shot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Slide Cancel ====
+Hold ADS + L1/LB 
+
+Toggle = L2/LT + SHARE/VIEW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Touchpad Fix ==== 
+* PS On Xbox -- PLAYSTATION CONTROLLER WILL SWAP TOUCHPAD AND SHARE WHEN ON PC Or XBOX
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== LED Visual Identifier ====
+
+==> JumpShot + CrouchShot + StrafeShot On = Yellow
+==> CrouchShot + StrafeShot On = Orange
+==> CrouchShot + JumpShot On = Red
+==> StrafeShot + JumpShot On = White
+==> CrouchShot On = Light Blue
+==> StrafeShot On = Green
+==> JumpShot On = Purple
+==> JumpShot + CrouchShot + StrafeShot Off = Pink
+
+*/
+const string MiscString [] = {"Enabled","Disabled","Mod Toggle On/Off"};
+const string ModString  [] = {" Crouch Shot Mod","  Jump Shot Mod"," Strafe Shot Mod","Slide Cancel Mod","100% Accuracy Mod"," Anti Recoil Mod"};
+/*							                                        
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Crouch   = PS4_R3;
+define Jump     = PS4_CROSS;
+define Sprint   = PS4_L3;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+define Strafe   = PS4_LX;
+define Walk     = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+
+int AAT,Axis,ToggleT,ToggleTime,ToggleName,Modled,Shunt,VibA,TimeR,ProgAR1RYStart,ProgAR1RYEnd,ProgAR1RYTime;
+int ProgArValueY,ProgArPointY,ProgArStepY,ProgArCountY,ProgArIncY;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Aim Assist                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int AimAssist = On;      // Aim Assist [ On / Off ]
+int AATimed = On;		 // Aim Assist Will Cut Out After 1 second By Default (Change Below)
+
+int Power = 1;      	 // Aim Assist Power [1,2,3] 	==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+int AATime = 1000;       // Aim Assist Cut Out Time [1000] = 1 Second
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(         Anti Recoil Settings + Mod Toggle          )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define AntiRecoilHold  = PS4_L2;      // ANTIRECOIL HOLD TOGGLE
+define AntiRecoilPress = PS4_RIGHT;   // ANTIRECOIL PRESS TOGGLE
+
+int ProgressionAR     =  On;
+// PROFILE 1
+int ProgAR1Start   = 15;
+int ProgAR1End     = 22;
+int ProgAR1Time    = 35;
+// PROFILE 2
+int ProgAR2Start   = 25;
+int ProgAR2End     = 36;
+int ProgAR2Time    = 35;
+// PROFILE 3
+int ProgAR3Start   = 32;
+int ProgAR3End     = 48;
+int ProgAR3Time    = 35;
+// PROFILE 4
+int ProgAR4Start   = 45;
+int ProgAR4End     = 65;
+int ProgAR4Time    = 35;
+
+// Anti Recoil Hip Fire
+define ProgressionARHip = Off;
+// Anti Recoil Inverted
+define InvertedYAxis    = Off;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(            Crouch Shot + Toggle Buttons            )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define CrouchShotHold  = PS4_L2;   // CROUCH SHOT HOLD TOGGLE
+define CrouchShotPress = PS4_DOWN; // CROUCH SHOT PRESS TOGGLE
+
+int CrouchShot = Off;	  // Crouch Shot [ On / Off ] By Default
+int CrouchShotWait = 80;  // Crouch Shot Delay Time
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(            Smart Shot + Toggle Buttons             )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define StrafeShotHold  = PS4_L2;   // STRAFE SHOT HOLD TOGGLE
+define StrafeShotPress = PS4_LEFT; // STRAFE SHOT PRESS TOGGLE
+
+int StrafeShot = Off;
+int StrafeWait = 160;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(             Jump Shot + Toggle Buttons             )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define JumpShotHold  = PS4_L2;// JUMP SHOT HOLD TOGGLE
+define JumpShotPress = PS4_UP;// JUMP SHOT PRESS TOGGLE
+
+int JumpShot = Off;		  // Jump Shot [ On / Off ] By Default
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(       Perfect Accuracy + Activate Mod Buttons      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define PerfectAccuracyToggleHold  = PS4_L2;      // PERFECT ACCURACY HOLD TOGGLE
+define PerfectAccuracyTogglePress = PS4_OPTIONS; // PERFECT ACCURACY PRESS TOGGLE
+
+define PerfectAccuracyHold  = PS4_L2; // PERFECT ACCURACY HOLD ACTIVATOR
+define PerfectAccuracyPress = PS4_R1; // PERFECT ACCURACY PRESS ACTIVATOR
+
+int PerfectAccuracy = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(           Slide Cancel + Mod Toggles               )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int SlideCancelMod = On; // On/Off By Default
+define SlideCancelHold  = PS4_L2;
+define SlideCancelPress = PS4_SHARE;
+
+int SlideCancelCW =  On; // Cold War Slide Cancel
+int SlideCancelMW = Off; // Modern Warfare Slide Cancel
+int SlideDelay = 80;// Cold War (80ms) Modern Warfare (120ms)
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Touchpad Fix On PC/Xbox              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int PSonXBOX = On;       // [ On / Off ] DS4/5 On PC/Xbox [Touchpad Button Fix]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Led Identify                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+int LedIdentify = On; /* Zen Led Identifier 
+    
+==> JumpShot + CrouchShot + StrafeShot On = Yellow
+==> CrouchShot + StrafeShot On = Orange
+==> CrouchShot + JumpShot On = Red
+==> StrafeShot + JumpShot On = White
+==> CrouchShot On = Light Blue
+==> StrafeShot On = Green
+==> JumpShot On = Purple
+==> JumpShot + CrouchShot + StrafeShot Off = Pink
+*/
+
+init {
+	
+	ProgAR1RYStart = ProgAR1Start;
+    ProgAR1RYEnd   = ProgAR1End;  
+    ProgAR1RYTime  = ProgAR1Time;
+}
+
+main {
+	
+	block_rumble();
+	
+	if (PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        
+        swap(PS4_TOUCH,PS4_SHARE);
+    }
+    
+	if (AimAssist) {
+		
+		if (AATimed) {
+		
+			if (get_ival(Ads) && get_ptime(Ads) <= AATime || get_ival(Fire) && get_ptime(Fire) <= AATime) {
+	    	
+	    		AimAssist();
+	    	}
+	    	
+	    } else if (get_ival(Ads)|| get_ival(Fire)) {
+	    	
+	    		AimAssist();
+	    }
+	    
+	    if (!get_ival(Ads) && !get_ival(Fire)) {
+	    
+	    	AAT = 0;
+	    	Axis = 0;
+	    }
+	}
+	
+	if (CrouchShot) {
+    
+		if (get_ival(Ads) && get_ival(Fire)) {
+            
+            combo_run(CrouchShot);
+        
+        } else {
+                
+            combo_stop(CrouchShot);
+        }
+    }
+
+    if (StrafeShot) {
+    
+        if (get_ival(Ads) && get_ival(Fire)) {
+        
+            if (abs(get_ival(Strafe)) <= 35 && abs(get_ival(Walk)) <= 35) {    
+            
+                combo_run(StrafeShot);
+        
+            } else {
+                
+                combo_stop(StrafeShot);
+            }
+        }
+    }
+    
+    if (JumpShot) {
+    
+        if (!get_ival(Ads) && event_release(Fire)) {
+            
+            combo_run(JumpShot);
+        
+        } else {
+                
+            combo_stop(JumpShot);
+        }
+    }
+	
+	if (PerfectAccuracy) {
+	
+		if (get_ival(PerfectAccuracyHold) && get_ival(PerfectAccuracyPress)) {
+    
+    		set_val(PerfectAccuracyPress,0);
+    		combo_run(PerfectAccuracy);
+    	
+    	} else {
+    	
+    		combo_stop(PerfectAccuracy);
+    	}
+	}
+	
+	if (SlideCancelMod) {
+
+        if (SlideCancelMW || SlideCancelCW) {
+                    
+            if (abs(get_ival(Walk)) >= 80 || abs(get_val(Strafe)) >= 80) {
+                        
+                if(event_release(Crouch)) {
+                    
+                    if (SlideCancelMW) {
+                    
+                        combo_run(SlideCancelMW);
+                    
+                        if (combo_running(SlideCancelMW) && get_ival(Ads) && event_release(Crouch)) {
+                            
+                            combo_stop(SlideCancelMW);
+                        }
+                    
+                    } else if (SlideCancelCW) {
+                            
+                        combo_run(SlideCancelCW);
+                            
+                        if (combo_running(SlideCancelCW) && get_ival(Ads) && event_release(Crouch)) {
+                            
+                            combo_stop(SlideCancelCW);
+                        }
+                    }
+                }
+            }
+        }
+	}
+	
+    if (ProgressionAR) {
+
+        if (ProgAR1RYStart < ProgAR1RYEnd)
+            
+            ProgArValueY = 1;
+    
+        else
+        
+            ProgArValueY = -1;
+     
+     
+        ProgArPointY = (ProgAR1RYTime * 10) / (abs(ProgAR1RYStart - ProgAR1RYEnd)); 
+       
+        if (!get_ival(Fire)) {
+        
+            ProgArIncY = ProgAR1RYStart;
+            ProgArCountY = 0;
+            ProgArStepY = 0;
+        }
+
+        if (get_ival(Ads) && get_ival(Fire) || ProgressionARHip && get_ival(Fire)) {
+
+            if (!RYProgression())  
+                   
+                   ProgArIncY = RYIncrement();
+            
+            else
+                   
+                   ProgArIncY = ProgAR1RYEnd;
+                   
+            if  (InvertedYAxis) 
+                       
+                set_Val(AimY,inv(ProgArIncY)); 
+                
+            else
+                
+                set_Val(AimY,ProgArIncY);
+        }
+        
+        if (get_ival(Crouch)) {
+    	
+       	    if (event_press(PS4_UP)) {
+    	    
+    	    	ProgAR1RYStart = ProgAR1Start;
+    	    	ProgAR1RYEnd   = ProgAR1End;  
+    	    	ProgAR1RYTime  = ProgAR1Time; 
+    	    	VibA = 1;
+	        
+	        } else if (event_press(PS4_RIGHT)) {
+    	    
+    	    	ProgAR1RYStart = ProgAR2Start;
+    	    	ProgAR1RYEnd   = ProgAR2End;  
+    	    	ProgAR1RYTime  = ProgAR2Time; 
+    	    	VibA = 2;
+	        
+	        } else if (event_press(PS4_DOWN)) {
+    	    
+    	    	ProgAR1RYStart = ProgAR3Start;
+    	    	ProgAR1RYEnd   = ProgAR3End;  
+    	    	ProgAR1RYTime  = ProgAR3Time; 
+    	    	VibA = 3;
+	        
+	        } else if (event_press(PS4_LEFT)) {
+    	    
+    	    	ProgAR1RYStart = ProgAR4Start;
+    	    	ProgAR1RYEnd   = ProgAR4End;  
+    	    	ProgAR1RYTime  = ProgAR4Time; 
+    	    	VibA = 4;
+	        }
+            
+            set_val(PS4_UP,0);set_val(PS4_DOWN,0);set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);
+    	}
+    }
+    
+    if (CrouchShot && StrafeShot && PerfectAccuracy) {
+    
+    	if (get_ival(Ads) && get_ival(Fire)) {
+    	
+    		if (get_ival(Fire) < 97) {
+    			
+    			combo_run(SmartAccuracy);
+    		
+    		} else {
+    		
+    			combo_stop(SmartAccuracy);
+    		}
+    	}
+    }
+    
+    if (get_ival(CrouchShotHold) && event_press(CrouchShotPress)) {
+
+    	Shunt = CrouchShotPress;
+        CrouchShot = !CrouchShot;
+        ToggleName = On;
+        Toggle(CrouchShot,ModString[0]);
+    }
+
+    if (get_ival(StrafeShotHold) && event_press(StrafeShotPress)) {
+
+        Shunt = StrafeShotPress;
+        StrafeShot = !StrafeShot;
+        ToggleName = On;
+        Toggle(StrafeShot,ModString[2]);
+    }
+        
+    if (get_ival(JumpShotHold) && event_press(JumpShotPress)) {
+
+        Shunt = JumpShotPress;
+        JumpShot = !JumpShot;
+        ToggleName = On;
+        Toggle(JumpShot,ModString[1]);
+    } 
+    
+    if ((SlideCancelCW || SlideCancelMW) && get_ival(SlideCancelHold) && event_press(SlideCancelPress)) {
+
+        Shunt = SlideCancelPress;
+        SlideCancelMod = !SlideCancelMod;
+        ToggleName = On;
+        Toggle(SlideCancelMod,ModString[3]);
+    }
+    
+    if (get_ival(PerfectAccuracyToggleHold) && event_press(PerfectAccuracyTogglePress)) {
+
+        Shunt = PerfectAccuracyTogglePress;
+        PerfectAccuracy = !PerfectAccuracy;
+        ToggleName = On;
+        Toggle(PerfectAccuracy,ModString[4]);
+    }
+
+    if (get_ival(AntiRecoilHold) && event_press(AntiRecoilPress)) {
+
+        Shunt = AntiRecoilPress;
+        ProgressionAR = !ProgressionAR;
+        ToggleName = On;
+        Toggle(ProgressionAR,ModString[5]);
+    }
+    
+    if (ToggleTime) {
+        
+        TimeToggle();
+    }
+    
+    if (LedIdentify) {
+    
+        if (JumpShot && CrouchShot && StrafeShot) {  // Yellow
+        
+        	set_rgb(200,120,2);    	
+            
+        } else if (CrouchShot && StrafeShot) {  // Orange        
+                                                                 //==> JumpShot + CrouchShot + StrafeShot On = Yellow
+        	set_rgb(200,50,0);    	                             //==> CrouchShot + StrafeShot On = Orange
+                                                                 //==> CrouchShot + JumpShot On = Red
+        } else if (CrouchShot && JumpShot) {  // Red             //==> StrafeShot + JumpShot On = White
+                                                                 //==> CrouchShot On = Light Blue
+        	set_rgb(200,0,0);                                    //==> StrafeShot On = Green
+                                                                 //==> JumpShot On = Purple
+        } else if (StrafeShot && JumpShot) {  // White           //==> JumpShot + CrouchShot + StrafeShot Off = Pink
+        
+        	set_rgb(150,100,50);
+        	
+        } else if (CrouchShot) {  // Light Blue
+        
+        	set_rgb(0,200,200);    	
+        
+        } else if (StrafeShot) {  // Green
+        
+        	set_rgb(0,200,0); 
+        	
+        } else if (JumpShot) {    // Purple
+        
+        	set_rgb(255,0,255);
+        
+        } else {
+        
+        	set_rgb(255,20,20);   // Pink
+        }	
+    } 
+    
+    if (VibA > 0) {
+		
+		RumbleCount();
+	}
+	
+	if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        
+        } else {
+            
+            set_val(Shunt,Off);
+        }
+    }
+}
+
+combo CrouchShot {
+
+    set_val(Crouch,100);
+    wait(40);
+    wait(CrouchShotWait);
+}
+
+combo StrafeShot {
+
+    set_val(Strafe,-100);
+    wait(StrafeWait);
+    set_val(Strafe,100);
+    wait(StrafeWait);
+}
+
+combo JumpShot {
+
+    set_val(Jump,100);
+    wait(50);
+}
+
+combo PerfectAccuracy {
+	
+	set_val(Fire,100);
+	wait(50);
+	wait(300);
+}
+
+combo SmartAccuracy {
+	
+	set_val(Fire,100);
+	wait(50);
+	set_val(Fire,0);	
+	wait(300);
+}
+
+combo SlideCancelMW {
+   
+    set_val(Crouch,100);
+    wait(SlideDelay); 
+    set_val(Crouch,0);
+    wait(60); 
+    set_val(Crouch,100); 
+    wait(50); 
+    set_val(Crouch,100);
+    set_val(Jump,100);
+    wait(60); 
+    set_val(Crouch,0);
+    set_val(Jump,100);
+    wait(10); 
+    set_val(Jump,0);
+}
+
+combo SlideCancelCW {
+    
+    set_val(Crouch,100);
+    wait(SlideDelay);
+    set_val(Crouch,0);
+    wait(20);
+    set_val(Sprint,0);
+    set_val(Crouch,100);
+    set_val(Sprint,100);
+    wait(20);
+    set_val(Crouch,0);
+    set_val(Sprint,0);
+    wait(20);
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    
+    } else {
+        
+        set_rgb(255,0,0);
+        set_rumble(RUMBLE_B,15);
+    }
+    
+    wait(150);
+    set_rgb(0,0,0);
+    wait(250);
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+        else
+            
+        set_rgb(255,0,0);
+
+    reset_rumble();
+    reset_leds();
+}
+
+function AimAssist () {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10 * 2);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10 * 2);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10 * 2));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10 * 2));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_val(Input),-100,100));
+        
+    return; 
+}
+
+function RYProgression() { 
+    
+    ProgArCountY++;
+    
+    if (ProgArCountY > ProgAR1RYTime * 10) {
+        
+        ProgArCountY = ProgAR1RYTime * 10;
+        
+        return 1;
+    }
+    
+    return 0;
+}
+
+function RYIncrement() {
+    
+    ProgArStepY++;
+    
+    if (ProgArStepY == ProgArPointY) {
+       
+        ProgArStepY = 0;
+        
+        ProgArIncY += ProgArValueY;
+    }
+    
+    return ProgArIncY;
+}
+
+function Toggle(ModT,ModP) {
+    
+	Modled = ModT;
+    ToggleT = 0;
+    ToggleTime = On;
+    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[3]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[0]);    
+        
+        } else {
+                
+            printf(36,38,0,1,MiscString[1]);
+        }
+        
+        ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+    if (ToggleT >= 5000) {
+        cls_oled(0);
+        ToggleTime = Off;
+        ToggleT = 0;
+    }
+}
+
+function RumbleCount () {
+    
+    if (VibA > 0) 
+        
+        TimeR += get_rtime();
+        set_rumble(RUMBLE_A,15);
+    
+    if (TimeR > 250) 
+
+        reset_rumble();
+
+    if (TimeR > 350) {
+        
+        VibA -= 1;
+        TimeR = 0;    
+    }    
+}

@@ -1,0 +1,385 @@
+// cold_war_zombies_aimabuse_2020.gpc
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+
+//═════════════════════════════════════════════════════════════
+//═════════════════ Script made by MrSloth ═════════════════
+//═════════════════ SlothScriptsgpc		  ═════════════════
+//═════════════════════════════════════════════════════════════
+
+//═════════════════► Zombies AimABUSE & Rapid Fire
+
+//You can edit this Values for a different usage but i tested them out and in my opinion the aimabuse works perfect with this Values.
+
+
+//Zoom in&out Values without scope
+    int AimAbuseNC          = TRUE;      
+	int ZoomInValues1      = 119;      
+	int ZoomOutValues1     = 210; 
+//Zoom in&out Values with Scope
+    int AimAbuseScope          = TRUE;      
+	int ZoomInValues      = 410;      
+	int ZoomOutValues     = 70;
+	
+//═════════════════► Rapid Fire (L2 + LEFT) (Left Mouse + 1)
+	int Rapid_Fire = FALSE;  
+	
+//═════════════════► Sloths Aim Assist
+    int sloths_aim_assist = TRUE; 
+    int RADIUS = 10; 
+	
+//═════════════════► Anti Recoil to switch press (TRIANGLE) or edit Button in definitions
+
+//--------------------------------------------------------------------------------------------------------------//
+// PRIMARY WEAPON ANTIRECOIL 
+ 
+    define Primary_Starting_Anti_Recoil_Value 		= 14;  
+    define Primary_Ending_Anti_Recoil_Value   		= 8;  
+    define Primary_Total_Anti_Recoil_Time     		= 8000;
+
+// PRIMARY WEAPON  HORIZONTAL ANTIRECOIL 
+	define Primary_Starting_H_Anti_Recoil_Value		= 0; 
+	define Primary_Mid_H_Anti_Recoil_Value			= 0;
+	define Primary_Ending_H_Anti_Recoil_Value 		= 1;
+	define Primary_TotalHTime						= 8000;
+//--------------------------------------------------------------------------------------------------------------//
+// SECONDARY WEAPON ANTIRECOIL 
+ 
+    define Secondary_Starting_Anti_Recoil_Value		= 14; 
+    define Secondary_Ending_Anti_Recoil_Value   	= 8;  
+    define Secondary_Total_Anti_Recoil_Time     	= 8000;
+   
+// SECONDARY WEAPON  HORIZONTAL ANTIRECOIL 
+	define Secondary_Starting_H_Anti_Recoil_Value	= 0; 
+	define Secondary_Mid_H_Anti_Recoil_Value		= 0;
+	define Secondary_Ending_H_Anti_Recoil_Value 	= 1;
+	define Secondary_TotalHTime						= 8000;
+//--------------------------------------------------------------------------------------------------------------//
+
+//═════════════════► AutoPing (Change "FALSE" if u dont use)
+	int TimePing = TRUE;
+
+//═════════════════► Layout
+	define PS = PS4_PS;
+	define SHARE = PS4_SHARE;
+	define OPTIONS = PS4_OPTIONS;
+	define R1 = PS4_R1;
+	define R2 = PS4_R2;
+	define R3 = PS4_CROSS;
+	define L1 = PS4_L1;
+	define L2 = PS4_L2;
+	define L3 = PS4_L3;
+	define RX = PS4_RX;
+	define RY = PS4_RY;
+	define LX = PS4_LX;
+	define LY = PS4_LY;
+	define UP = PS4_UP;
+	define DOWN = PS4_DOWN;
+	define LEFT = PS4_LEFT;
+	define RIGHT = PS4_RIGHT;
+	define TRIANGLE = PS4_TRIANGLE;
+	define CIRCLE = PS4_CIRCLE;
+	define CROSS = PS4_R3;
+	define SQUARE = PS4_SQUARE
+	define TOUCHPAD = PS4_TOUCH;
+    define VIB_A = RUMBLE_A;
+    
+//═════════════════► 
+	int    SLOTH_BOOST   =  2;
+	int    SLOTH_SHAKE   = 35;
+	int RADIUS1,RADIUS2 = 10,RADIUS3 = 100;
+    int STEPS1
+    int time; 
+    int Delay = 20;
+    int APMOV = 10;
+    int AMMOV = -10;
+    int DelayMOV = 20;
+    int ReleaseMOV = 11;
+ 	int STEPS = 15;                                  
+    int AP = 11;
+    int AM = -11;
+    int Release = 12;
+    int angle, cos_angle, sin_angle;                      
+	int actual_X, actual_Y, actual_Magnitude, max_Magnitude;
+    int Starting_Anti_Recoil_Value; 
+    int Ending_Anti_Recoil_Value    
+    int Total_Anti_Recoil_Time; 
+    int i_val;
+    int i_pnt;
+    int i_num;
+    int i_cnt;
+    int v,ar_y;
+	int x_val;
+	int Starting_H_Anti_Recoil_Value;
+	int Mid_H_Anti_Recoil_Value;
+	int Ending_H_Anti_Recoil_Value;
+	int TotalHTime;
+    int weapon;
+	init {c_val();} 
+	const char sloths_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,    
+        80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7, 
+        6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,  
+        -60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, 
+        -96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,   
+        -96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, 
+        -59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,
+        9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,
+        82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};  
+		define SCOPE = 7     
+  		define FIRE = 4  
+  
+   		define RF_SPEED = 30;
+ 		define ON  = TRUE;
+		define OFF = FALSE;
+
+        define X = PS4_RX;                                     
+        define Y = PS4_RY;                                    
+        define ACTIVE_WHEN_ADS    = ON;                     
+        define ACTIVE_WHEN_FIRING = ON;                            
+        define SLOTH_BOOST_FIRE   = OFF;
+		define SLOTH_SHAKE_FIRE   = OFF;
+		define STEP_INTERVAL =  1;                            
+        define VM_INTERVAL   = -2;
+        define STEPS2 = 0;
+    define Switch_Weapon = PS4_TRIANGLE; //═► Change Anti Recoil Tree Switch Button here
+
+/*═════════════════ | M | A | I | N |  | S | E | C | T | I | O | N | ═════════════════*/  	
+
+   	main {
+   	    if(event_press(Switch_Weapon)){
+        weapon = !weapon;
+        if(!weapon){
+            Starting_Anti_Recoil_Value 		= Primary_Starting_Anti_Recoil_Value; 
+            Ending_Anti_Recoil_Value   		= Primary_Ending_Anti_Recoil_Value;  
+            Total_Anti_Recoil_Time     		= Primary_Total_Anti_Recoil_Time; 
+            Starting_H_Anti_Recoil_Value 	= Primary_Starting_H_Anti_Recoil_Value; 
+            Mid_H_Anti_Recoil_Value			= Primary_Mid_H_Anti_Recoil_Value;
+            Ending_H_Anti_Recoil_Value   	= Primary_Ending_H_Anti_Recoil_Value;
+            TotalHTime						= Primary_TotalHTime
+        }else{
+            Starting_Anti_Recoil_Value 		= Secondary_Starting_Anti_Recoil_Value; 
+            Ending_Anti_Recoil_Value   		= Secondary_Ending_Anti_Recoil_Value;   
+            Total_Anti_Recoil_Time     		= Secondary_Total_Anti_Recoil_Time;
+            Starting_H_Anti_Recoil_Value 	= Secondary_Starting_H_Anti_Recoil_Value; 
+            Mid_H_Anti_Recoil_Value			= Secondary_Mid_H_Anti_Recoil_Value;
+            Ending_H_Anti_Recoil_Value   	= Secondary_Ending_H_Anti_Recoil_Value; 
+            TotalHTime						= Secondary_TotalHTime
+        } 
+        c_val();
+    } 
+    if(get_val(PS4_L2) && get_val(Switch_Weapon))
+        set_val(Switch_Weapon,0);
+        
+    if(!get_lval(PS4_R2)) {
+       ar_y = Starting_Anti_Recoil_Value;
+       i_cnt = 0;
+       i_num = 0;
+    }
+        if(get_val(PS4_R2)) {
+        if(!p_complete())  
+            ar_y = p_val();
+        else
+            ar_y = Ending_Anti_Recoil_Value;
+        set_val(PS4_RY,y_val());
+    }   						
+    if(get_val(PS4_R2) && get_val(PS4_L2) && get_ptime(PS4_R2) > 1) {
+	combo_run(Start)}
+	if(get_val(PS4_R2) && get_val(PS4_L2) && get_ptime(PS4_R2) > 1500) {
+	combo_stop(Start);
+	combo_run(Mid);}
+	if(get_val(PS4_R2) && get_val(PS4_L2) && get_ptime(PS4_R2) > 2300) {
+	combo_stop(Mid);
+	combo_run(End);}
+	if(get_val(PS4_R2) && get_val(PS4_L2) && get_ptime(PS4_R2) > TotalHTime) {
+	combo_stop(End);}
+if (get_val(SCOPE))combo_run(ASMOV)
+         if(get_val(SCOPE)&& !get_val(FIRE)) combo_run(AS);
+ 	 	if(sloths_aim_assist){ 
+          actual_X = get_val(X);   
+          actual_Y = get_val(Y);           
+          actual_Magnitude = isqrt(pow(actual_X, 2) + pow(actual_Y, 2));  
+          max_Magnitude = (actual_Magnitude < 100); 
+          if (SLOTH_BOOST_FIRE) {
+			if (get_val(FIRE)) {	
+   				RADIUS1 =  SLOTH_BOOST * RADIUS2;}
+			else if (!get_val(FIRE)) {
+    		RADIUS1 =  RADIUS3;}}
+			if (SLOTH_SHAKE_FIRE) {
+			if (SLOTH_SHAKE_FIRE && get_val(FIRE)) {
+				STEPS1 = SLOTH_SHAKE;}
+				else if (!get_val(FIRE)) { 
+				STEPS1 = STEPS2;}}   		
+          if(!(time++ % STEP_INTERVAL)){                                  
+                 angle += STEPS + STEPS1;}                                                               
+          angle = angle % 360;                                            
+          sin_angle = sloths_Array[angle % 360];                           
+          cos_angle = sloths_Array[(angle + 270) % 360];                  
+          cos_angle = (cos_angle * RADIUS) / 100;                         
+          sin_angle = (sin_angle * RADIUS) / 100;                           
+          if((ACTIVE_WHEN_ADS && get_val(SCOPE)) || (ACTIVE_WHEN_FIRING && get_val(FIRE))){ 
+               if(actual_Magnitude <= RADIUS){                                                      
+                    sin_angle -= actual_Y;                                                              
+                    cos_angle -= actual_X;}else {sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;}set_val(X, calculate(actual_X + cos_angle, -100, 100));set_val(Y, calculate(actual_Y + sin_angle, -100, 100));}}
+    if((get_val(PS4_R2)) && (get_val(PS4_L2))) {
+        combo_run(AutoPing);
+    }
+    else if(TimePing <= 2000)
+		{
+			TimePing++;
+		}
+		else
+		{
+			TimePing = 0;
+		}
+if(get_val(PS4_L2) && event_press(PS4_LEFT)) {
+        combo_run (vibrate);
+        Rapid_Fire=!Rapid_Fire;}
+        if (Rapid_Fire) {
+   if(get_val(PS4_R2)) {
+        combo_run (Rapiid_Fire);}}
+if(get_val(PS4_L3)){
+	combo_run(Sprint)}        
+if(get_val(PS4_L3) && get_val(PS4_L2)){
+		combo_stop(Sprint)}
+    if(event_release(PS4_L2)){
+    combo_stop(AimAbuseScope)
+    }
+    if(event_release(PS4_R2)){
+    combo_stop(AimAbuseNC)
+    }
+if(AimAbuseNC){                                                                            
+      if(get_val(PS4_R2)> 95){                                                          
+      combo_run(AimAbuseNC);}                                                             
+      if(event_release(PS4_R2)){ combo_stop(AimAbuseNC);}
+}  
+
+if(AimAbuseScope){                                                                            
+      if(get_val(PS4_L2)> 95){                                                          
+      combo_run(AimAbuseScope);}                                                             
+      if(event_release(PS4_L2)){ combo_stop(AimAbuseScope);}
+}      
+}
+/*═════════════════ | C | O | M | B | O | | S | E | C | T | I | O | N | ═════════════════*/
+
+combo AimAbuseNC {set_val(PS4_L2, 100); wait(ZoomInValues1); set_val(PS4_L2, 0); wait(ZoomOutValues1);} 
+
+combo AimAbuseScope {set_val(PS4_L2, 100); wait(ZoomInValues); set_val(PS4_L2, 0); wait(ZoomOutValues);} 
+
+combo Rapiid_Fire {
+	set_val(PS4_R2, 100); 
+	wait(30);
+	set_val(PS4_R2, 0); 
+	wait(20);
+	set_val(PS4_R2, 100); 
+	wait(30);
+	set_val(PS4_R2, 0); 
+	wait(20);
+}
+combo Sprint {
+		set_val(PS4_L3, 100)
+		wait(20)
+		set_val(PS4_L3, 0)
+		wait(20)
+		set_val(PS4_L3, 100)
+		wait(20)
+		set_val(PS4_L3, 0)
+		wait(20)
+}
+combo AutoPing {
+ 	set_val(PS4_UP, 100);
+	wait(40);
+	set_val(PS4_UP, 0);
+
+	wait(1500);
+
+ 	set_val(PS4_UP, 100);
+ 	wait(40); 
+ 	set_val(PS4_UP, 0);
+}
+combo AS { 
+            set_val(10,a_f(10,AP));
+            wait(Delay)
+            set_val(9,a_f(9,AP));
+            wait(Delay)
+            set_val(10,a_f(10,AM));
+            wait(Delay)
+            set_val(9,a_f(9,AM));
+            wait(Delay)}
+ 
+combo ASMOV { 
+            set_val(12,a_m(12,APMOV));
+            wait(DelayMOV)
+            set_val(11,a_m(11,APMOV));
+            wait(DelayMOV)
+            set_val(12,a_m(12,AMMOV));
+            wait(DelayMOV)
+            set_val(11,a_m(11,AMMOV));
+            wait(DelayMOV)}
+combo Start {
+    x_val = get_val(PS4_RX) + Starting_H_Anti_Recoil_Value;
+    if(x_val > 100) x_val = 100;
+    set_val(PS4_RX,x_val);
+}
+combo Mid {
+    x_val = get_val(PS4_RX) + Mid_H_Anti_Recoil_Value;
+    if(x_val > 100) x_val = 100;
+    set_val(PS4_RX,x_val);
+}
+combo End {
+    x_val = get_val(PS4_RX) + Ending_H_Anti_Recoil_Value;
+    if(x_val > 100) x_val = 100;
+    set_val(PS4_RX,x_val);
+}
+combo vibrate {     
+set_rumble(RUMBLE_A, 85);      
+wait(225);                         
+reset_rumble();                    
+}              
+
+/*═════════════════ | F | U | N | C | T | I | O | N | S | ═════════════════*/
+
+   function calculate(int v, int lo, int hi) {  
+      if(v < lo) return lo;               
+      if(v > hi) return hi;        
+      return v;     
+    } 
+    function a_f(p,m) {
+    if(abs(get_val(p)) < Release)
+    return m;
+    return get_val(p);}
+  function a_m(p,m) {
+    if(abs(get_val(p)) < ReleaseMOV)
+    return m;
+    return get_val(p);}                                                                                                                                     
+function p_complete() { 
+    i_cnt++;
+    if (i_cnt > Total_Anti_Recoil_Time / 10) {
+        i_cnt = Total_Anti_Recoil_Time / 10;
+        return 1;
+    }
+    return 0;
+}
+function p_val() {
+    i_num++;
+    if(i_num == i_pnt) {
+        i_num = 0;
+        ar_y += i_val;
+    }
+    return ar_y;
+} 
+function y_val() {
+    v = get_val(PS4_RY);
+    if(abs(v) < 10)
+        v = 0;
+    if(abs(v) > ar_y + 5)
+        return v;
+    return v + ar_y;           
+}
+function c_val() {
+    if(Starting_Anti_Recoil_Value < Ending_Anti_Recoil_Value)
+        i_val = 1;
+    else
+        i_val = -1;
+    i_pnt = (Total_Anti_Recoil_Time / 10) / (abs(Starting_Anti_Recoil_Value - Ending_Anti_Recoil_Value));
+} 
+//*═════════════════ | E | N | D | ═════════════════

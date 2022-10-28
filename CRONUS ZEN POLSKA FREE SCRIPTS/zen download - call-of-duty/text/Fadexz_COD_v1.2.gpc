@@ -1,0 +1,1112 @@
+// GPC Online Library
+// fadexz_cod_script.gpc
+
+/*
+
+
+
+
+    ████─   ██─   ███─  ████─ █    █  ███
+    █      █  █   █  █  █──    █─ █     █──
+    ████   ████─  █  █  ███     ██     █
+    █──   ██  ██  █  █─ █      █  █─  █──
+    █     █──  █  ███─  ████─ █─   █  ███─
+    
+    ████   ███─  ███─
+    █─    █─  █  █  █─
+    █     █   █  █─ █
+    ████─  ███   ███──
+
+    v1.2
+
+
+
+
+    Features:
+    █ Standard Anti-Recoil + "Rumble-Based Offset" Anti-Recoil
+    █ Polar Aim Assist Abuse (always have moving strength aim assist)
+    █ Reload Cancel (on aim and shoot)
+    █ Rapid Fire (turbo for non-auto weapons)
+    █ Auto Reload
+    █ Panic Jumpshot
+    █ "Precise" Auto Sprint + Boosted Auto Sprint (Exploit for Cold War)
+    █ Turbo Jump
+    █ Turbo Swap (fun feature)
+    █ Turbo Melee
+    █ Auto Hold Breath
+    █ Periodic Auto Ping
+    █ Hair Triggers
+    █ Crossover Fix (support for PS4 Controllers, etc.)
+
+
+    Notes:
+    █ Make sure to select the features you want below in the "Toggle Features", those are your default toggle values
+    █ Check all the settings below if you need to make adjustments, also be sure to adjust "iui_input_interval" below to whatever your max frametime plus 1, mainly intended to be changed for higher framerates like if on PC for faster combo inputs
+    █ Anti-recoil is a work in-progress, will improve later, not recommended to use with 'Aim Assist Abuse' because of conflicts they cause
+    █ Required in-game Sprint Behaviour > Go To < (press to activate sprint)
+    █ Boosted Auto Sprint is ~3.5% faster than normal sprinting (Black Ops Cold War), however I didn't test in normal gameplay if it is still has as much of a benefit (might be more annoying than useful)
+    █ No saving to memory yet, changes in the menu are temporary, set default values below
+    █ Probably will add preset classes and a quick reload feature in the future, let me know if you have other suggestions
+
+
+    ██████████████████████████████████████████████████████████████████████████████████──
+    ███ Script Controls ██████████████████████████████████████████████████████████████─  
+    ██████████████████████████████████████████████████████████████████████████████████
+    █                                                                                █──
+    █   Toggle Rapid Fire        = Hold VIEW & Press RIGHT                           █─
+    █                                                                                █
+    ██████████████████████████████████████████████████████████████████████████████████─
+    █                                                                                █──
+    █   Enter/Close Mod Menu     = Hold 'AIM' & Press 'OPTIONS' (layout below)       █─
+    █   Enter Edit Menu          = Press A/CROSS (on mod selection)                  █
+    █   Exit Current Menu        = Press B/CIRCLE                                    █──
+    █   Toggle Mod (Mod Menu)    = Press UP or DOWN to toggle the mods on/off        █─
+    █   Change Value (Edit Menu) = Press UP or DOWN to increase/decrease the value   █
+    █                                                                                █──
+    ██████████████████████████████████████████████████████████████████████████████████
+
+
+    Additional Credits:
+    █ DoNotAtMe     > Made the base Polar Aim Assist Abuse code
+    █ TaylorDrift21 > Created the base mod menu + "rumble-based offset" Anti-Recoil code
+    █ Swizzy        > Simplified my Rainbow LED code
+
+
+    █ Discord:   Fadexz#0001 (291872132898619392)
+    █ Forum:     cronusmax.com/forums/member.php/356349
+    █ Instagram: Fadexz_
+    █ Twitter:   Fadexz_
+
+
+    █ Please report any issues or suggestions to me! 😉
+
+
+    Enjoy!
+
+
+
+*/
+
+
+
+define
+
+// (Script) Game Button Layout (may add the pre-filled in-game layouts in the future)
+SCOREBOARD         = XB1_VIEW,
+OPTIONS            = XB1_MENU,
+AIM                = XB1_LT,
+FIRE               = XB1_RT,
+SPRINT             = XB1_LS,
+MELEE              = XB1_RS,
+MOVE_X             = XB1_LX,
+MOVE_Y             = XB1_LY,
+LOOK_X             = XB1_RX,
+LOOK_Y             = XB1_RY,
+PING               = XB1_LEFT,
+SCORESTREAK        = XB1_RIGHT,
+JUMP               = XB1_A,
+CROUCH_PRONE_SLIDE = XB1_B,
+RELOAD_INTERACTION = XB1_X,
+SWAP               = XB1_Y,
+
+// Rainbow LED
+RGB_Delay_Interval   = 350,
+RGB_Brightest_Colour =  30,  // [Max: 255]
+RGB_Darkest_Colour   =   0,  // [Max: 255]
+
+// Menu
+MM_Total_Edit_Values = 8;
+
+
+
+int
+
+// Toggle Features
+ar_anti_recoil_toggle = 0,  // [1 = MW Rumble-based AR | 2 = CW Rumble-based AR] 'Aim Assist Abuse' will conflict with this
+rc_reload_cancel_toggle = 2,  // [1 = On Fire | 2 = On Aim + Fire]
+aa_polar_aim_assist_abuse_toggle = TRUE,  // Anti-Recoil will conflict with this
+rf_rapid_fire_toggle = FALSE,
+pj_panic_jumpshot_toggle = FALSE,
+as_precise_auto_sprint_toggle = 1,  // [1 = Auto Sprint | 2 = Boosted Auto Sprint] Makes the area required for sprinting a little smaller than in-game Auto Sprint, requires auto sprint in-game disabled as it is a replacement, intended to help make the walk area larger on the stick
+ap_periodic_auto_ping_toggle = FALSE,
+ar2_auto_reload_toggle = FALSE,  // Can cause conflicts with 'Reload Cancel' and switch weapon
+tj_turbo_jump_toggle = TRUE,
+ts_turbo_swap_toggle = TRUE,
+tm_turbo_melee_toggle = TRUE,
+ahb_auto_hold_breath_toggle = TRUE,
+ht_hair_triggers_toggle = TRUE,
+cf_crossover_fix_toggle = TRUE,
+rl_rainbow_led_toggle = TRUE,
+
+// Combo Input Update Interval
+// -- For console should stay at '18' unless you know how this works (calculating highest game frametime)
+// -- Setting this correctly (mostly for PC) will result in faster input of combos (increase it by 1 if you experience missed button inputs from combos due to frame drops), for calculating use the lowest fps you get in-game
+// -- Input Wait Interval Calculation Examples: (1000ms ÷ 60fps) + 1 = 17.7ms (18ms) or (1000 ÷ 144) + 1 = 7.9 (8ms)
+iui_input_interval = 18,
+
+// Fully Aiming Check
+fac_ads_time = 320,
+fac_ads_timer,
+
+// Reload Cancel
+rc_max_reload_time_for_cancel = 3000,  // Feel free to set this to ~6000ms for even for LMGs but it will make reloading twice rapidly sometimes swap to the wrong weapon (need to find the issue still)
+
+// Polar Aim Assist Slowdown Abuse
+aa_radius = 20,  // Circle Size/Strength
+aa_steps = 24,   // Cirle Speed (how much it will move through the circle each "input interval")
+
+// Anti-Recoil
+ar_vert_value = 25,
+ar_hori_value = 0,
+ar_vert_output,
+ar_hori_output,
+ar_smart_rumble,
+ar_strength,
+ar_smart_sens_side,
+ar_smart_sens,
+
+// Turbo Jump
+tj_jump_wait_time = 180,
+
+// Turbo Swap
+ts_swap_wait_time = 120,
+
+// Rainbow LED
+rgb_red = RGB_Darkest_Colour,
+rgb_green = RGB_Brightest_Colour,
+rgb_blue = RGB_Darkest_Colour,
+rgb_run_red,
+rgb_run_green = TRUE,
+rgb_run_blue,
+rgb_timer,
+
+// Reload Cancel
+rc_reloading,
+rc_reloading_time,
+rc_did_shoot_before_reload,
+
+// Polar Aim Assist Abuse
+aa_time,
+aa_angle,
+aa_cos_angle,
+aa_sin_angle,
+aa_actual_magnitude,
+aa_max_magnitude,
+
+// Crossover Fix
+cf_swap_xb1_share_sync,
+
+// Menu
+mm_display_splash = TRUE,
+mm_screen_saver,
+mm_screen_saver_timer,
+mm_mod_menu,
+mm_display_menu,
+mm_mod_name_index,
+mm_edit_menu,
+mm_val_name_index;
+
+
+
+// Menu
+
+const string Mod_Title_Strings[] = {
+/* 0*/ "Anti-Recoil",
+/* 1*/ "Polar AA Abuse",
+/* 2*/ "Reload Cancel",
+/* 3*/ "Auto Reload",
+/* 4*/ "Panic Jumpshot",
+/* 5*/ "Turbo Jump",
+/* 6*/ "Turbo Swap",
+/* 7*/ "Turbo Melee",
+/* 8*/ "Auto Hold Breath",
+/* 9*/ "Auto Ping",
+/*10*/ "Auto Sprint",
+/*11*/ "Hair Triggers",
+/*12*/ "Crossover Fix",
+/*13*/ "Rainbow LED",
+/*14*/ ""
+};
+
+const string Edit_Title_Strings[] = {
+/*0*/ "Vertical",
+/*1*/ "Horizontal",
+/*2*/ "Radius",
+/*3*/ "Speed",
+/*4*/ "Reload Time",
+/*5*/ "Wait Time",
+/*6*/ "Wait Time",
+/*7*/ "Input Interval",
+/*8*/ "ADS Time",
+/*9*/ ""
+};
+
+const string Misc_Title_Strings[] = {
+/* 0*/ "Fadexz",
+/* 1*/ "COD",
+/* 2*/ "v1.2",
+/* 3*/ "> On",
+/* 4*/ "> Off",
+/* 5*/ "> Standard AR",
+/* 6*/ "> MW Rumble AR",
+/* 7*/ "> CW Rumble AR",
+/* 8*/ "> On Fire",
+/* 9*/ "> On Aim + Fire",
+/*10*/ "> Standard",
+/*11*/ "> CW Boost Exp.",
+/*12*/ ""
+};
+
+
+
+init {
+
+
+// Start LED on Blue for PlayStation
+
+ if(get_console() == PIO_PS4 || get_console() == PIO_PS3) {
+  rgb_red = RGB_Darkest_Colour;
+  rgb_green = RGB_Darkest_Colour;
+  rgb_blue = RGB_Brightest_Colour;
+  rgb_run_red = FALSE;
+  rgb_run_green = FALSE;
+  rgb_run_blue = TRUE;
+ }
+
+
+}
+
+
+
+main {
+
+
+// Mod Menu
+
+ if(get_ival(AIM)) {
+  if(event_press(OPTIONS)) {
+   // Display Mod Menu
+   if(!mm_mod_menu) {
+    mm_mod_menu = TRUE;
+    mm_display_menu = TRUE;
+    mm_edit_menu = FALSE;
+    mm_display_splash = FALSE;
+   }
+   // Display "Splash Screen"
+   else {
+    mm_mod_menu = FALSE;
+    mm_display_menu = FALSE;
+    mm_edit_menu = FALSE;
+    mm_display_splash = TRUE;
+   }
+  }
+  set_val(XB1_MENU,0);
+ }
+
+ // Not on "Splash Screen"
+ if(!mm_display_splash) {
+  vm_tctrl(0);
+  // On Mod Menu
+  if(mm_mod_menu) {
+   mm_mod_name_index = menu_navigation(mm_mod_name_index,0,13);
+   // Menu Toggles                               >> mm_mod_name_index == 0
+   ar_anti_recoil_toggle            = toggle_switch(!mm_mod_name_index     ,ar_anti_recoil_toggle           ,0,3);
+   aa_polar_aim_assist_abuse_toggle = toggle_switch(mm_mod_name_index == 1 ,aa_polar_aim_assist_abuse_toggle,0,1);
+   rc_reload_cancel_toggle          = toggle_switch(mm_mod_name_index == 2 ,rc_reload_cancel_toggle         ,0,2);
+   ar2_auto_reload_toggle           = toggle_switch(mm_mod_name_index == 3 ,ar2_auto_reload_toggle          ,0,1);
+   pj_panic_jumpshot_toggle         = toggle_switch(mm_mod_name_index == 4 ,pj_panic_jumpshot_toggle        ,0,1);
+   tj_turbo_jump_toggle             = toggle_switch(mm_mod_name_index == 5 ,tj_turbo_jump_toggle            ,0,1);
+   ts_turbo_swap_toggle             = toggle_switch(mm_mod_name_index == 6 ,ts_turbo_swap_toggle            ,0,1);
+   tm_turbo_melee_toggle            = toggle_switch(mm_mod_name_index == 7 ,tm_turbo_melee_toggle           ,0,1);
+   ahb_auto_hold_breath_toggle      = toggle_switch(mm_mod_name_index == 8 ,ahb_auto_hold_breath_toggle     ,0,1);
+   ap_periodic_auto_ping_toggle     = toggle_switch(mm_mod_name_index == 9 ,ap_periodic_auto_ping_toggle    ,0,1);
+   as_precise_auto_sprint_toggle    = toggle_switch(mm_mod_name_index == 10,as_precise_auto_sprint_toggle   ,0,2);
+   ht_hair_triggers_toggle          = toggle_switch(mm_mod_name_index == 11,ht_hair_triggers_toggle         ,0,1);
+   cf_crossover_fix_toggle          = toggle_switch(mm_mod_name_index == 12,cf_crossover_fix_toggle         ,0,1);
+   rl_rainbow_led_toggle            = toggle_switch(mm_mod_name_index == 13,rl_rainbow_led_toggle           ,0,1);
+  }
+  // On Edit Menu
+  if(mm_edit_menu) {
+   mm_val_name_index = menu_navigation(mm_val_name_index,0,MM_Total_Edit_Values + 1);  // 'MM_Total_Edit_Values' should be the last edit value number below
+   // Edit Menu - Edit Values [>> Min, Max, Step]
+   ar_vert_value                 = edit_value(mm_val_name_index,0,ar_vert_value                ,-60,  60,  1);
+   ar_hori_value                 = edit_value(mm_val_name_index,1,ar_hori_value                ,-60,  60,  1);
+   aa_radius                     = edit_value(mm_val_name_index,2,aa_radius                    ,  1,  60,  1);
+   aa_steps                      = edit_value(mm_val_name_index,3,aa_steps                     ,  1,  90,  1);
+   rc_max_reload_time_for_cancel = edit_value(mm_val_name_index,4,rc_max_reload_time_for_cancel,  1,9000,200);
+   tj_jump_wait_time             = edit_value(mm_val_name_index,5,tj_jump_wait_time            ,  0,9000, 20);
+   ts_swap_wait_time             = edit_value(mm_val_name_index,6,ts_swap_wait_time            ,  0,9000, 20);
+   iui_input_interval            = edit_value(mm_val_name_index,7,iui_input_interval           ,  1,  50,  1);
+   fac_ads_time                  = edit_value(mm_val_name_index,8,fac_ads_time                 ,  1, 900, 20);  // Move this one up??
+   // Mod edit value indexes
+   // if mm_mod_name_index == 0
+   if(!mm_mod_name_index)
+    mm_val_name_index = cycle(mm_val_name_index,0,1);
+   if(mm_mod_name_index == 1)
+    mm_val_name_index = cycle(mm_val_name_index,2,3);
+   if(mm_mod_name_index == 2)
+    mm_val_name_index = 4;
+   if(mm_mod_name_index == 5)
+    mm_val_name_index = 5;
+   if(mm_mod_name_index == 6)
+    mm_val_name_index = 6;
+   if(mm_mod_name_index == 8)
+    mm_val_name_index = 8;
+   if(mm_mod_name_index == 11)
+    mm_val_name_index = 7;
+  }
+ }
+
+ if(mm_display_menu) {
+  cls_oled(OLED_BLACK);
+  // Display Rectangle Around The Text
+  rect_oled(0,0,OLED_WIDTH,OLED_HEIGHT,OLED_BLACK,OLED_WHITE);
+  // Display Edit Menu Mod Text
+  if(mm_edit_menu)
+   printf(center_text(get_valname_chars(mm_val_name_index),OLED_FONT_SMALL_WIDTH),12,OLED_FONT_SMALL,OLED_WHITE,Edit_Title_Strings[mm_val_name_index]);
+  // Display Mod Menu Mod Text
+  else if(mm_mod_menu)
+   printf(center_text(get_modname_chars(mm_mod_name_index),OLED_FONT_SMALL_WIDTH),12,OLED_FONT_SMALL,OLED_WHITE,Mod_Title_Strings[mm_mod_name_index]);
+  mm_display_menu = FALSE;
+ }
+
+
+ // -- Following will only run on the "Splash Screen"
+ if(!mm_mod_menu && !mm_edit_menu) {
+
+  // Display Splash Screen
+  if(mm_display_splash) {
+   cls_oled(OLED_BLACK);
+   printf(center_text(get_misc_title_strings_chars(0),OLED_FONT_MEDIUM_WIDTH), 5,OLED_FONT_MEDIUM,OLED_WHITE,Misc_Title_Strings[0]);
+   printf(center_text(get_misc_title_strings_chars(1),OLED_FONT_MEDIUM_WIDTH),27,OLED_FONT_MEDIUM,OLED_WHITE,Misc_Title_Strings[1]);
+   printf(center_text(get_misc_title_strings_chars(2),OLED_FONT_SMALL_WIDTH ),49,OLED_FONT_SMALL ,OLED_WHITE,Misc_Title_Strings[2]);
+   mm_display_splash = FALSE;
+   mm_screen_saver  = TRUE;
+  }
+  // Screen Saver
+  // -- Add for menu??
+  if(mm_screen_saver) {
+   mm_screen_saver_timer += get_rtime();
+   if(mm_screen_saver_timer > 32767 - get_rtime()) {
+    cls_oled(OLED_BLACK);
+    mm_screen_saver_timer = 0;
+   }
+  }
+
+
+// Script Update Interval (1ms)
+
+   vm_tctrl(-9);
+
+
+// 'PS4_TOUCH' and 'XB1_VIEW' + 'XB1_SHARE' Fix (proper support for all controllers - works in theory :P)
+
+   if(cf_crossover_fix_toggle) {
+
+    // If using a PS4 Controller on another console
+    if(get_console() != PIO_PS4 && get_controller() == PIO_PS4 && SCOREBOARD != PS4_TOUCH) {
+     swap(PS4_TOUCH,PS4_SHARE);
+     // Only remap 'PS4_SHARE' (now 'PS4_TOUCH') to 'XB1_SHARE' (Button 27) on Xbox One, other consoles 'PS4_SHARE' will be left unmapped
+     if(get_console() == PIO_XB1)
+      swap(PS4_TOUCH,XB1_SHARE);
+    }
+    // If using a PS4 but not using a PS4 Controller
+    else if(get_console() == PIO_PS4) {  // Remove this line for savings??
+     if(get_controller() != PIO_PS4)
+      swap(PS4_TOUCH,PS4_SHARE);
+     if(get_controller() == PIO_XB1) {
+      if(event_press(XB1_SHARE))
+       cf_swap_xb1_share_sync = TRUE;
+     }
+     else cf_swap_xb1_share_sync = FALSE;
+    }
+
+    if(cf_swap_xb1_share_sync) {
+     swap(XB1_SHARE,PS4_SHARE);
+     set_val(XB1_SYNC,0);
+    }
+
+   }
+
+
+// Fully Aiming Check
+
+   if(get_ival(AIM)) {
+    if(fac_ads_timer < fac_ads_time)
+     fac_ads_timer += get_rtime();
+   }
+   else if(fac_ads_timer > 0)
+    fac_ads_timer -= get_rtime();
+
+
+// Hair Triggers
+
+   if(ht_hair_triggers_toggle)
+    deadzone(AIM,FIRE,99,99);
+
+
+// Auto Hold Breath
+
+   if(ahb_auto_hold_breath_toggle && fac_ads_timer >= fac_ads_time)
+    set_val(SPRINT,100);
+
+
+// Anti-Recoil
+
+   if(get_ival(FIRE)) {
+   
+    if(ar_anti_recoil_toggle == 1)
+     combo_run(Anti_Recoil);
+
+    if(ar_anti_recoil_toggle == 2 || ar_anti_recoil_toggle == 3) {
+     if(!get_rumble(RUMBLE_A) || !get_rumble(RUMBLE_B))
+      ar_smart_sens(ar_vert_value,PS4_RY);
+     else {
+      if(ar_anti_recoil_toggle == 2)
+       ar_smart_rumble = get_rumble(RumbleToUse())
+      else if(ar_anti_recoil_toggle == 3) 
+       ar_smart_rumble = get_rumble(RUMBLE_A) / 2;
+     }
+     if(ar_smart_rumble > 10 && ar_smart_rumble < 90)
+      ar_strength = ar_vert_value + ar_smart_rumble / 4;
+     if(ar_strength < 10) {
+      ar_smart_sens(ar_vert_value,PS4_RY);
+      ar_smart_sens(ar_hori_value,PS4_RX); 
+     }
+     else {
+      ar_smart_sens(ar_strength,PS4_RY);
+      ar_smart_sens(ar_hori_value,PS4_RX);
+     }
+     ar_strength = 0;
+     ar_smart_rumble = 0;
+    }
+
+   }
+
+
+// Reload Cancel
+
+   if(rc_reload_cancel_toggle) {
+
+    if(event_press(FIRE))
+     rc_did_shoot_before_reload = TRUE;
+
+    if(event_press(RELOAD_INTERACTION) && rc_did_shoot_before_reload) {
+     rc_reloading = TRUE;
+     rc_did_shoot_before_reload = FALSE;
+    }
+
+    if(rc_reloading) {
+
+     if(get_ival(RELOAD_INTERACTION) && get_ptime(RELOAD_INTERACTION) >= 400 || event_press(SCORESTREAK)) {
+      rc_reloading = FALSE;
+      combo_stop(Reload_Cancel);
+     }
+
+     rc_reloading_time += get_rtime();
+
+     if(rc_reloading_time > rc_max_reload_time_for_cancel)
+      rc_reloading = FALSE;
+
+     if(rc_reloading_time > 0 && rc_reloading_time <= rc_max_reload_time_for_cancel && (rc_reload_cancel_toggle == 2 && event_press(AIM) || event_press(FIRE)))
+      combo_run(Reload_Cancel);
+
+    }
+    else rc_reloading_time = 0;
+
+   }
+
+
+// Auto Reload
+
+   if(ar2_auto_reload_toggle && event_release(FIRE)) {
+    combo_run(Auto_Reload);
+    // Note: Might have reconsider whether this is a good idea
+    rc_reloading = TRUE;
+   }
+
+
+// Auto Ping
+
+   if(ap_periodic_auto_ping_toggle && get_ival(FIRE) && fac_ads_timer >= fac_ads_time && get_brtime(FIRE) >= 20000)
+    combo_run(Auto_Ping);
+   else combo_stop(Auto_Ping);
+
+
+// Panic Jump Shot
+
+   if(pj_panic_jumpshot_toggle && event_press(AIM) && event_press(FIRE))
+    combo_run(Jump_Shot);
+
+
+// Auto Sprint
+
+   if(as_precise_auto_sprint_toggle == 1 || as_precise_auto_sprint_toggle == 2)
+    if(!get_ival(AIM) && !get_ival(CROUCH_PRONE_SLIDE) && get_brtime(CROUCH_PRONE_SLIDE) >= 3000 && isqrt(pow(abs(get_ival(MOVE_X)),2) + pow(abs(get_ival(MOVE_Y)),2)) >= 99 && get_ival(MOVE_Y) <= -67) {
+     if(as_precise_auto_sprint_toggle == 1)
+      combo_run(Auto_Sprint);
+     if(as_precise_auto_sprint_toggle == 2)
+      combo_run(Boosted_Auto_Sprint);
+    }
+    else {
+     combo_stop(Auto_Sprint);
+     combo_stop(Boosted_Auto_Sprint);
+    }
+
+
+// Turbo Jump
+
+   if(tj_turbo_jump_toggle)
+    if(get_ival(JUMP) && get_ptime(JUMP) >= 400)
+     combo_run(Turbo_Jump);
+    else combo_stop(Turbo_Jump);
+
+
+// Turbo Swap Weapon
+
+   if(ts_turbo_swap_toggle)
+    if(get_ival(SWAP) && get_ptime(SWAP) >= 400)
+     combo_run(Turbo_Swap);
+    else combo_stop(Turbo_Swap);
+
+
+// Turbo Melee
+
+   if(tm_turbo_melee_toggle)
+    if(get_ival(MELEE) && get_ptime(MELEE) >= 400)
+     combo_run(Turbo_Melee);
+    else combo_stop(Turbo_Melee);
+
+
+// Polar Aim Assist Abuse
+
+   aa_actual_magnitude = isqrt(pow(get_ival(LOOK_X),2) + pow(get_ival(LOOK_Y),2));
+   aa_max_magnitude = aa_actual_magnitude < 100;
+
+   if(!(aa_time ++ % iui_input_interval))
+    aa_angle += aa_steps;
+
+   aa_angle %= 360;
+   aa_sin_angle = AA_Polar_Array[aa_angle % 360];
+   aa_cos_angle = AA_Polar_Array[(aa_angle + 270) % 360];
+   aa_cos_angle = (aa_cos_angle * aa_radius) / 100;
+   aa_sin_angle = (aa_sin_angle * aa_radius) / 100;
+
+   if(aa_polar_aim_assist_abuse_toggle && aa_actual_magnitude <= aa_radius + 5 && (fac_ads_timer >= fac_ads_time && !get_ival(FIRE) || get_ival(FIRE)) && get_brtime(SCORESTREAK) >= 3000) {
+    if(aa_actual_magnitude <= aa_radius) {
+     aa_sin_angle -= get_ival(LOOK_Y);
+     aa_cos_angle -= get_ival(LOOK_X);
+    }
+    else {
+     aa_sin_angle = (aa_sin_angle * (200 - ((abs(get_ival(LOOK_Y)) + aa_actual_magnitude) / 10) * 10) / 200) * aa_max_magnitude;
+     aa_cos_angle = (aa_cos_angle * (200 - ((abs(get_ival(LOOK_X)) + aa_actual_magnitude) / 10) * 10) / 200) * aa_max_magnitude;
+    }
+    set_val(LOOK_X,clamp(get_ival(LOOK_X) + aa_cos_angle,-100,100));
+    set_val(LOOK_Y,clamp(get_ival(LOOK_Y) + aa_sin_angle,-100,100));
+   }
+
+
+// Rapid Fire
+
+   if(get_ival(SCOREBOARD) && event_press(SCORESTREAK))
+    rf_rapid_fire_toggle = !rf_rapid_fire_toggle;
+
+   if(get_ival(SCOREBOARD) && get_ival(SCORESTREAK))
+    set_val(SCORESTREAK,0);
+
+   if(rf_rapid_fire_toggle && get_ival(FIRE) && get_ptime(FIRE) >= 80)
+    combo_run(Rapid_Fire);
+   else combo_stop(Rapid_Fire);
+
+
+// -- End of run only on "Splash Screen"
+  }
+
+
+ // Rainbow LED
+
+  if(rl_rainbow_led_toggle) {
+
+   if(RGB_Delay_Interval && rgb_timer < RGB_Delay_Interval)
+    rgb_timer += get_rtime();
+   else rgb_timer = 0;
+
+   if(rgb_timer >= RGB_Delay_Interval) {
+    if(rgb_run_red)
+     run_rgb(0,1,2);
+    if(rgb_run_green)
+     run_rgb(1,2,0);
+    if(rgb_run_blue)
+     run_rgb(2,0,1);
+    if(mm_mod_menu)
+     set_rgb(rgb_red / 2,rgb_green / 2,rgb_blue / 2);
+    else set_rgb(rgb_red,rgb_green,rgb_blue);
+   }
+
+  }
+  else set_rgb(0,0,0);
+
+
+ }
+
+
+
+// Reload Cancel
+
+combo Reload_Cancel {
+ set_val(SWAP,100);
+ wait(iui_input_interval);
+ wait(iui_input_interval);
+ set_val(SWAP,100);
+ wait(iui_input_interval);
+ wait(iui_input_interval - get_rtime());
+ rc_reloading = FALSE;
+}
+
+
+
+// Auto Reload
+
+combo Auto_Reload {
+ set_val(RELOAD_INTERACTION,100);
+ wait(iui_input_interval);
+}
+
+
+
+// Auto Ping
+
+combo Auto_Ping {
+ set_val(PING,100);
+ wait(iui_input_interval);
+ wait(iui_input_interval);
+ set_val(PING,100);
+ wait(iui_input_interval);
+ // Note: Bandaid fix for looping
+ wait(5000);
+}
+
+
+
+// Jump Shot
+
+combo Jump_Shot {
+ set_val(JUMP,100);
+ wait(iui_input_interval);
+}
+
+
+
+// Auto Sprint
+
+combo Auto_Sprint {
+ set_val(SPRINT,100);
+ wait(iui_input_interval);
+ set_val(SPRINT,0);
+ wait(iui_input_interval - get_rtime());
+ set_val(SPRINT,0);
+}
+
+combo Boosted_Auto_Sprint {
+ wait(iui_input_interval);
+ set_val(XB1_LS,100);
+ wait(iui_input_interval);
+ wait(1000);
+ set_val(XB1_LY,0);
+ wait(iui_input_interval - get_rtime());
+ set_val(XB1_LY,0);
+}
+
+
+
+// Turbo Jump
+
+combo Turbo_Jump {
+ set_val(JUMP,100);
+ wait(iui_input_interval);
+ set_val(JUMP,0);
+ wait(tj_jump_wait_time - get_rtime());
+ set_val(JUMP,0);
+}
+
+
+
+// Turbo Swap
+
+combo Turbo_Swap {
+ set_val(SWAP,100);
+ wait(iui_input_interval);
+ set_val(SWAP,0);
+ wait(ts_swap_wait_time - get_rtime());
+ set_val(SWAP,0);
+}
+
+
+
+// Turbo Melee
+
+combo Turbo_Melee {
+ set_val(MELEE,100);
+ wait(iui_input_interval);
+ set_val(MELEE,0);
+ wait(iui_input_interval - get_rtime());
+ set_val(MELEE,0);
+}
+
+
+
+// Rapid Fire
+
+combo Rapid_Fire {
+ set_val(FIRE,100);
+ wait(iui_input_interval);
+ set_val(FIRE,0);
+ wait(iui_input_interval - get_rtime());
+ set_val(FIRE,0);
+}
+
+
+
+// Anti-Recoil
+combo Anti_Recoil {
+ ar_vert_output = get_val(PS4_RY) + ar_vert_value;
+ if(ar_vert_output > 100)
+  ar_vert_output = 100;
+ if(abs(get_val(PS4_RY)) < abs(ar_vert_value) + 5)
+  set_val(PS4_RY,ar_vert_output);
+// ---
+ ar_hori_output = get_val(PS4_RX) + ar_hori_value;
+ if(ar_hori_output > 100)
+  ar_hori_output = 100;
+ if(abs(get_val(PS4_RX)) < abs(ar_hori_value) + 5)
+  set_val(PS4_RX,ar_hori_output);
+}
+
+
+
+// Menu
+
+combo Menu_Toggle_FX {
+ set_rumble(RUMBLE_B,50);
+ set_rgb(0,150,8);
+ wait(60);
+ reset_rumble();
+ reset_leds();
+}
+
+
+
+// Anti-Recoil
+
+function RumbleToUse() {
+ if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B))
+  return RUMBLE_A;
+ if(get_rumble(RUMBLE_A) == 100)
+  return RUMBLE_B;
+ if(get_rumble(RUMBLE_B) == 100)
+  return RUMBLE_A;
+ if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B))
+  return RUMBLE_A;
+ if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B))
+  return RUMBLE_B;
+ return 0;
+}
+
+function ar_smart_sens(f_val,f_axis) {
+
+ if(f_val < 0)
+  // Left / Up for inverted ar
+  ar_smart_sens_side = -1;
+  // Right / Down for standard ar
+ else ar_smart_sens_side = 1;
+ 
+ // If Anti_Recoil has a negative value (Left or Up)
+ if(ar_smart_sens_side == -1) {
+  // If Right Stick input has a positive value
+  if(get_ival(f_axis) > 0)
+   ar_smart_sens = ((get_ival(f_axis) * (100 + abs(f_val))) / 100);
+   // If the Right Stick input has a negative value
+  else if(get_ival(f_axis) <= 0)
+   ar_smart_sens = ((get_ival(f_axis) * (100 + f_val)) / 100);
+   // Set ar_smart_sens Anti-Recoil
+   if(get_ival(f_axis) >= f_val + ar_smart_sens)
+    set_val(f_axis, f_val + ar_smart_sens);
+ }
+ // If Anti-Recoil has a positive value (Right or Down)
+ else {
+  // If the Right Stick input has a negative value
+  if(get_ival(f_axis) < 0)
+   ar_smart_sens = ((get_ival(f_axis) * (100 + f_val)) / 100);
+   // If the Right Stick input has a positive value
+   else if(get_ival(f_axis) >= 0)
+    ar_smart_sens = ((get_ival(f_axis) * (100 + inv(f_val))) / 100);
+    // Set ar_smart_sens Anti_Recoil
+    if(get_ival(f_axis) <= f_val + ar_smart_sens)
+     set_val(f_axis,f_val + ar_smart_sens)
+ }
+
+}
+
+
+
+// Rainbow LED
+
+function run_rgb(primary_colour,secondary_colour,tertiary_colour) {
+ if(rgb_red[secondary_colour] <= RGB_Darkest_Colour) {
+  rgb_red[primary_colour] ++;
+  if(rgb_red[primary_colour] >= RGB_Brightest_Colour) {
+   rgb_run_red[primary_colour] = FALSE;
+   rgb_run_red[tertiary_colour] = TRUE;
+  }
+ }
+ if(rgb_red[secondary_colour] >= RGB_Brightest_Colour) {
+  rgb_red[primary_colour] --;
+  if(rgb_red[primary_colour] <= RGB_Darkest_Colour) {
+   rgb_run_red[primary_colour] = FALSE;
+   rgb_run_red[tertiary_colour] = TRUE;
+  }
+ }
+ if(rgb_red[primary_colour] > RGB_Brightest_Colour)
+  rgb_red[primary_colour] = RGB_Brightest_Colour;
+ if(rgb_red[primary_colour] < RGB_Darkest_Colour)
+  rgb_red[primary_colour] = RGB_Darkest_Colour;
+}
+
+
+
+// Menu
+
+function menu_navigation(f_mod_or_val,f_min,f_max) {
+
+ // Previous
+ if(event_press(XB1_LEFT)) {
+  f_mod_or_val = cycle(f_mod_or_val - 1,f_min,f_max);
+  mm_display_menu = TRUE;
+ } 
+ // Next
+ if(event_press(XB1_RIGHT)) {
+  f_mod_or_val = cycle(f_mod_or_val + 1,f_min,f_max);
+  mm_display_menu = TRUE;
+ }
+ set_val(XB1_RIGHT,0);
+ set_val(XB1_LEFT,0);
+
+ // Example
+ //if(f_mod_or_val <= MM_Total_Edit_Values)  At the Top Of The Script "define MM_Total_Edit_Values = 6"
+
+ // If selected an edit mod
+ if(f_mod_or_val >= 0 && f_mod_or_val <= 2 || f_mod_or_val == 5 || f_mod_or_val == 6 || f_mod_or_val == 8 || f_mod_or_val == 11) {
+  // Enter Edit Menu
+  if(event_press(XB1_A)) {
+   mm_val_name_index = MM_Total_Edit_Values + 1;
+   mm_edit_menu = TRUE;
+   mm_mod_menu = FALSE;
+   mm_display_menu = TRUE;
+  }
+  set_val(XB1_A,0);
+ }
+
+ // Exit Mod Menu
+ if(mm_mod_menu) {
+  if(event_press(XB1_B)) {
+   mm_display_splash = TRUE;
+   mm_mod_menu = FALSE;
+   mm_display_menu = FALSE;
+   combo_run(Menu_Toggle_FX);
+  }
+  set_val(XB1_B,0);
+ }
+
+ // Exit Edit Menu
+ if(mm_edit_menu) {
+  if(event_press(XB1_B)) {
+   mm_edit_menu = FALSE;
+   mm_mod_menu = TRUE;
+   mm_display_menu = TRUE;
+  }
+  set_val(XB1_B,0);
+ }
+ return f_mod_or_val;
+
+}
+
+// NOTE: Maybe reduce repeated lines here
+function toggle_switch(f_name,f_val,f_min,f_max) {
+ if(f_name) {
+  if(event_press(XB1_DOWN)) {
+   f_val = cycle(f_val --, f_min, f_max);
+   mm_display_menu = TRUE;
+   combo_run(Menu_Toggle_FX);
+  }
+  if(event_press(XB1_UP)) {
+   f_val = cycle(f_val ++, f_min, f_max);
+   mm_display_menu = TRUE;
+   combo_run(Menu_Toggle_FX);
+  }
+  // Anti-Recoil Toggles
+  // if mm_mod_name_index == 0
+  if(!mm_mod_name_index) {
+   // if f_val == 0
+   if(!f_val)
+    printf(center_text(get_misc_title_strings_chars(4),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[4]);
+   else if(f_val == 1)
+    printf(center_text(get_misc_title_strings_chars(5),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[5]);
+   else if(f_val == 2)
+    printf(center_text(get_misc_title_strings_chars(6),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[6]);
+   else if(f_val == 3)
+    printf(center_text(get_misc_title_strings_chars(7),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[7]);
+  }
+  // Reload Cancel Toggles
+  else if(mm_mod_name_index == 2) {
+   // if f_val == 0
+   if(!f_val)
+    printf(center_text(get_misc_title_strings_chars(4),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[4]);
+   else if(f_val == 1)
+    printf(center_text(get_misc_title_strings_chars(8),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[8]);
+   else if(f_val == 2)
+    printf(center_text(get_misc_title_strings_chars(9),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[9]);
+  }
+  // Auto Sprint Toggles
+  else if(mm_mod_name_index == 10) {
+   // if f_val == 0
+   if(!f_val)
+    printf(center_text(get_misc_title_strings_chars( 4),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[ 4]);
+   else if(f_val == 1)
+    printf(center_text(get_misc_title_strings_chars(10),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[10]);
+   else if(f_val == 2)
+    printf(center_text(get_misc_title_strings_chars(11),OLED_FONT_SMALL_WIDTH),34,OLED_FONT_SMALL,OLED_WHITE,Misc_Title_Strings[11]);
+  }
+  // Normal Off/On Toggle
+  else {
+   if(f_val == 1)
+    printf(center_text(get_misc_title_strings_chars(3),OLED_FONT_MEDIUM_WIDTH),34,OLED_FONT_MEDIUM,OLED_WHITE,Misc_Title_Strings[3]);
+   // if f_val == 0
+   else if(!f_val)
+    printf(center_text(get_misc_title_strings_chars(4),OLED_FONT_MEDIUM_WIDTH),34,OLED_FONT_MEDIUM,OLED_WHITE,Misc_Title_Strings[4]);
+  }
+  set_val(XB1_UP,0);
+  set_val(XB1_DOWN,0);
+ }
+ return f_val;
+}
+
+function edit_value(f_idx,f_num,value_index,value_index_min,value_index_max,value_index_val) {
+ if(f_num == f_idx) {
+  if(event_press(PS4_UP)) {
+   value_index = cycle(value_index + value_index_val,value_index_min,value_index_max);
+   mm_display_menu = TRUE;
+  }
+  if(event_press(PS4_DOWN)) {
+   value_index = cycle(value_index - value_index_val,value_index_min,value_index_max);
+   mm_display_menu = TRUE;
+  }
+  set_val(PS4_UP,0);
+  set_val(PS4_DOWN,0);
+  number_to_string(value_index,find_digits(value_index));
+ }
+ return value_index;
+}
+
+// Loop values
+function cycle(f_val, f_lo, f_hi) {
+ if(f_val > f_hi)
+  return f_lo;
+ if(f_val < f_lo)
+  return f_hi;
+ return f_val;
+}
+
+// Calculate length of misc title string
+function get_misc_title_strings_chars(f_idx){
+ if(Misc_Title_Strings[f_idx + 1] != -1)
+  return Misc_Title_Strings[f_idx + 1] - Misc_Title_Strings[f_idx] - 1;
+ return sizeof(Misc_Title_Strings) - Misc_Title_Strings[f_idx];
+}
+
+// Calculate length of mod title string
+function get_modname_chars(f_idx){
+ if(Mod_Title_Strings[f_idx + 1] != -1)
+  return Mod_Title_Strings[f_idx + 1] - Mod_Title_Strings[f_idx] - 1;
+ return sizeof(Mod_Title_Strings) - Mod_Title_Strings[f_idx];
+}
+
+// Calculate length of edit title string
+function get_valname_chars(f_idx){
+ if(Edit_Title_Strings[f_idx + 1] != -1)
+  return Edit_Title_Strings[f_idx + 1] - Edit_Title_Strings[f_idx] - 1;
+ return sizeof(Edit_Title_Strings) - Edit_Title_Strings[f_idx];
+}
+
+// Center the text
+function center_text(f_chars,f_font) {
+ return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+// Convert numbers array (columns)
+const uint8 ASCII_NUM[] = {
+/*0*/ 48,
+/*1*/ 49,
+/*2*/ 50,
+/*3*/ 51,
+/*4*/ 52,
+/*5*/ 53,
+/*6*/ 54,
+/*7*/ 55,
+/*8*/ 56,
+/*9*/ 57
+};
+
+// Convert int to string
+int i, c, c_val;
+
+function number_to_string(value,f_digits){
+ i = 1;
+ c_val = 10000;
+ if(value < 0) {
+  putc_oled(i,45);
+  i += 1;
+  value = abs(value);
+ } 
+ for(c = 5; c >= 1; c--) {
+  if(f_digits >= c) {
+   putc_oled(i,ASCII_NUM[value / c_val]);
+   value = value % c_val;
+   i +=  1;
+   if(c == 4) {
+    putc_oled(i,44);
+    i += 1;
+   }
+  }
+  c_val /= 10;
+ }
+ // Edit Menu Number
+ puts_oled(center_text(i - 1,OLED_FONT_LARGE_WIDTH),37,OLED_FONT_LARGE,i - 1,OLED_WHITE);
+}
+
+// Calculate number of digits for size
+function find_digits(f_num) {
+ f_num = abs(f_num);
+ if(f_num / 10000 > 0)
+  return 5;
+ if(f_num / 1000 > 0)
+  return 4;
+ if(f_num / 100 > 0)
+  return 3;
+ if(f_num / 10 > 0)
+  return 2;
+ return 1;
+}
+
+
+
+// Polar Aim Assist Abuse
+
+const int8 AA_Polar_Array[] = {
+ 100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,
+ 53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,
+ -40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,
+ -93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,
+ -94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,
+ -41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,
+ 54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+};

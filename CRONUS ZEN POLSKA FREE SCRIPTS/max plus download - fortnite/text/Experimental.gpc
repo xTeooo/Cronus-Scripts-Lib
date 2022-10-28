@@ -1,0 +1,355 @@
+
+define AIM_ASSIST=1;//[0 = OFF / 1 = ON] 
+define LY = XB1_LY;
+define LX = XB1_LX;
+define RX = XB1_RX;
+define RY = XB1_RY;
+define FIRE = XB1_RT;
+define ADS = XB1_LT;
+
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//Sensitivity																														                                ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+    //--constants
+    define SENS_X = 75;       //--initial RX sentitivity
+    define SENS_Y = 75;       //--initial RY sensitivity
+    define SENS_STRAFE = 100; //--LX sensitivity when firing for increased strafing movement
+    define X_THRESHOLD = 75;  //--stick input point where RX sens increases
+    define Y_THRESHOLD = 75;  //--stick input point where RY sens increases
+    define X_RESET = 30;      //--stick input point where RX sens will reset back to initial value
+    define Y_RESET = 30;      //--stick input point where RY sens will reset back to initial value
+    define MAX_SENS = 150;    //--maximum sensitivity value 
+    define SENS_RATE = 8;     //--rate sensitivity increased (8 = 80ms delay between increase)
+    //--variables
+    int sens_x = SENS_X;
+    int sens_y = SENS_Y;
+    int sens_xcnt,sens_ycnt;
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//Aim_Abuse_Values																																				    ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+	int AimAbuse = TRUE;
+	int AimAbuse_HOLD      = 300;	int AbHO      = 300;  //How long you HOLD ADS Button
+	int AimAbuse_RELEASE   =  25;	int AbRO      =  25; //How long you release ADS Button
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//anti recoil, aim assist variables																																    ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣	
+ 	int	Build_Mode  = FALSE;   		int d_click;										  
+	int WAIT;	int num, i, a;		int button;									  	
+	int edit 		= FALSE;		int first_time;				  	
+   	int Attack		= FALSE;	    int MODE_SYSTEM = TRUE;	   									  
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//anti recoil, aim assist variables																																    ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+ int a_r__c, a_r_x__c;
+ int c___x, c___y;
+ int x_y__max = 10;
+ int inY[25], inX[25];
+ int token, token_x, ry__par, rx__par;
+ int Y_val, X_val;
+ int edit3 = FALSE;
+ int v, v_x;
+
+
+int buffer;
+init {
+    a_r__c = get_pvar(SPVAR_10,-100,100, 15); 
+     a_r_x__c = get_pvar(SPVAR_11,-100,100, 0);
+    buffer = get_pvar(SPVAR_8, 400, 2000, 500);
+    first_time = get_pvar(SPVAR_16, 0, 1, 1);
+    }/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {
+    //--TRACE 1 , 2 , 3 , 4 , 5 , 6
+
+    set_val (34, buffer/100); set_val (35, X_val); //set_val (36, ZOOM_SENS);     
+    //--EPROM STACK MEMORY FIX
+    if (first_time == 1){RESET_Defaults();}  
+    c___x = d___z(RX,0);
+    c___y = d___z(RY,0);
+    //---double click timer 
+    if(d_click) {d_click -= get_rtime();}
+
+  if (Attack) {
+  if(AimAbuse){
+		AB_CNG(AimAbuse);
+   if(get_val(XB1_LT)> 95){
+      combo_run(AimAbuse);}
+   if(event_release(XB1_LT)){ combo_stop(AimAbuse);
+}
+}
+
+    combo_run(SENS_SET);
+ 
+ 
+ 
+    //--reset sensitivity values
+    if((event_release(XB1_LT) && !get_val(XB1_RT)) || (event_release(XB1_RT) && !get_val(XB1_LT))) {
+        sens_x = SENS_X; 
+        sens_y = SENS_Y;
+    }
+ 
+
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//Aim_Assist																																		                ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+	if (AIM_ASSIST==1) {
+	if(get_val(ADS)) combo_run(AA_XY);
+    else combo_stop(AA_XY);}
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+// Aim_Assist																																		                ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣                                 
+    if (get_val (FIRE)) { 
+    if (get_val(ADS)) {
+    Y_val = a_r__c;	 X_val = a_r_x__c;
+    set_val (RY,Y()); set_val (RX,X());
+                
+    if (edit3){
+    a__r (); a__r_x ();}}}}
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//InstaEdit & InstaReset																																		    ║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+	if (event_press(XB1_PL2)) {   														                                      	
+		edit = TRUE;}	
+		
+	if (edit) {
+	if (get_val(XB1_PL2)){
+		combo_run(EDIT2); }else{ combo_stop(EDIT2);}}
+				
+	if (edit) {																                                      
+	if (event_release(XB1_PL2)) {								                                      
+		combo_stop(EDIT2);	                    								  										  
+		set_click(XB1_RIGHT, 2, 0)																							  
+		edit = FALSE;}}
+		
+	//Start of the clicker
+	if (a) {
+		if (i < num) {
+			if (!combo_running(master)) {
+				combo_run(master);
+			}
+		}
+		else if (i > num) {
+			a = FALSE;
+		}
+	}
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//  Build_Mode       		  																						  	  											║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+	if(MODE_SYSTEM){              																						  
+	if(event_press(XB1_B)){	
+	  
+	  										Attack		 = !Attack;		Build_Mode	 = !Build_Mode;}}
+	
+		
+
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//Attack_Mode																																						║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+	if(get_val(XB1_LT)&&event_press(XB1_XBOX)){
+	
+									   		Attack			= TRUE;		Build_Mode		= FALSE;					  
+
+	
+	MODE_SYSTEM =!MODE_SYSTEM;}	
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//	RESET	                  																						      											║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+	if(MODE_SYSTEM){			 			 																			  
+	if(event_press(XB1_Y)){
+	   
+											Attack			= TRUE;		Build_Mode		= FALSE;}}
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+        /*
+        
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |T|U|R|B|O| |B|T|N| |A|.|K|.| |H|A|I|R| |T|R|I|G|G|E|R|S| | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+deadzone(FIRE,ADS,99,99);}
+ /* 
+
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo master {
+	wait(WAIT);
+	set_val(button, 100);
+	wait(20);
+	set_val(button, 0);
+	wait(20);
+	i = i + 1;
+}
+	combo EDIT2 {																										  
+	wait(110);																											  
+	set_val(XB1_RT, 100);																								  
+	wait(5000);}
+
+	combo SENS_SET {
+    //--increase rx sens
+    if(abs(get_lval(RX)) >= X_THRESHOLD) {
+        sens_xcnt += 1;
+        if(sens_xcnt >= SENS_RATE && sens_x < MAX_SENS) { 
+            sens_x += 1; sens_xcnt = 0; 
+        } else if(sens_x >= MAX_SENS) sens_xcnt = 0;  
+    }
+    //--reset rx sens
+    else if(abs(get_val(RX)) < X_RESET) {
+        sens_xcnt = 0; sens_x = SENS_X;                
+    } 
+    //--increase ry sens
+    if(abs(get_val(RY)) >= Y_THRESHOLD) {
+        sens_ycnt += 1;
+        if(sens_ycnt >= SENS_RATE && sens_y < MAX_SENS) { 
+            sens_y += 1; sens_ycnt = 1; 
+        } else if(sens_y >= MAX_SENS) sens_ycnt = 0; 
+    }
+    //--decrease rx sens
+    else if(abs(get_val(RY)) < X_RESET) {
+        sens_y = SENS_X ; sens_ycnt = 0;
+    }
+    //--set r x/y sensitivity
+    sensitivity(RX,NOT_USE,sens_x);
+    sensitivity(RY,NOT_USE,sens_y);
+}
+
+ combo AimAbuse {
+set_val(XB1_LT, 100);
+wait(AimAbuse_HOLD);
+set_val(XB1_LT, 0);
+wait(AimAbuse_RELEASE);
+}
+ combo AA_XY {
+    set_val(RY,xy_val(RY, 24));
+    wait(20);
+    set_val(RX,xy_val(RX, 24));
+    set_val(LX,xy_val(LX, 24));
+    wait(20);
+    set_val(RY,xy_val(RY, 24 * -1));
+    wait(20);
+    set_val(RX,xy_val(RX, 24 * -1));
+    set_val(LX,xy_val(LX, 24 * -1));
+    wait(20);
+}
+ 
+function d___z(f_axis,f_val) {
+    f_val = get_val(f_axis);
+    if(abs(f_val) < 10) {
+        set_val(f_axis,0); 
+        return 0;
+    }
+    return f_val;
+}
+ 
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < 25)  
+    return f_val;    
+    return get_val(f_axis);     
+} 
+function Y() {
+    v =  c___y;
+    v = get_val(RY);
+    if(abs(v) < RY)
+        v = 0;
+    if(abs(v) > Y_val + 5)
+        return v;
+    return v + Y_val;           
+}
+ function X() {
+     v_x = c___x;
+     if(abs(v_x) < RX)
+         v_x = 0;
+     if(abs(v_x) > X_val + 5)
+         return v_x;
+     return v_x + X_val;           
+ }
+ function a__r (){
+    if(abs(c___y) >= x_y__max){
+     inY[token] =  c___y;
+     token += 1; 
+     if(token == 25) 
+     {
+     for(token = 0;token <= 24;token++) 
+     {
+     ry__par += inY[token];
+     }
+     ry__par /= 25;
+     a_r__c += ry__par / 10;
+     ry__par = 0;
+     token = 0;}}}
+     
+ function a__r_x (){
+     if(abs(c___x) >= x_y__max) 
+     {
+     inX[token_x] =  c___x;
+     token_x += 1; 
+     if(token_x == 25) 
+     {
+     for(token_x = 0;token_x <= 24;token_x++) 
+     {
+     rx__par += inX[token_x];
+     }
+     rx__par /= 25; 
+     a_r_x__c += rx__par / 10;
+     rx__par = 0;
+     token_x = 0;
+     }
+     }
+      }
+ function RESET_Defaults () {
+     a_r__c =15;
+     a_r_x__c=0;
+    Y_val =  15;
+    X_val = 0;
+    first_time=0;
+    buffer=500;
+    save_pvars ();    
+    }
+ function save_pvars (){
+    set_pvar(SPVAR_10, a_r__c);    
+    set_pvar(SPVAR_11, a_r_x__c);    
+    set_pvar(SPVAR_16, first_time); 
+    set_pvar(SPVAR_8, buffer);
+
+    
+    }
+
+function set_click(B, Num, Wait) {
+	WAIT = Wait;
+	i = 0;
+	button = B;
+	num = Num;
+	a = TRUE;
+}
+function AB_CNG(reduce1) {
+	if (reduce1) {
+			if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+			AimAbuse_HOLD = AbHO;
+			AimAbuse_RELEASE = AbRO;
+
+		}
+		if (abs(get_val(9)) > 20 < 40 || (abs(get_val(10)) > 20 < 40)) {
+			AimAbuse_HOLD = AbHO - 10;
+			AimAbuse_RELEASE = AbRO - 5;
+		}
+		if (abs(get_val(9)) > 40 < 60 || (abs(get_val(10)) > 40 < 60)) {
+			AimAbuse_HOLD = AbHO - 20;
+			AimAbuse_RELEASE = AbRO - 5;
+		}
+		if (abs(get_val(9)) > 60 < 80 || (abs(get_val(10)) > 60 < 80)) {
+			AimAbuse_HOLD = AbHO - 30;
+			AimAbuse_RELEASE = AbRO - 5;
+		}
+		if (abs(get_val(9)) > 80 || (abs(get_val(10)) > 80)) {
+			AimAbuse_HOLD = AbHO - 40;
+			AimAbuse_RELEASE = AbRO - 20;
+
+		}
+		if (abs(get_val(9)) < 20 || abs(get_val(10)) < 20) {
+			AimAbuse_HOLD = AbHO;
+			AimAbuse_RELEASE = AbRO;
+		}
+	}
+}                            
