@@ -1,0 +1,668 @@
+
+/* ______   _____  _______   _________  ____  ____    ______   _______  _____          _     _________   
+|_   _ `.|_   _||_   __ \ |  _   _  ||_  _||_  _| .' ____ \ |_   __ \|_   _|        / \   |  _   _  |  
+  | | `. \ | |    | |__) ||_/ | | \_|  \ \  / /   | (___ \_|  | |__) | | |         / _ \  |_/ | | \_|  
+  | |  | | | |    |  __ /     | |       \ \/ /     _.____`.   |  ___/  | |   _    / ___ \     | |      
+ _| |_.' /_| |_  _| |  \ \_  _| |_      _|  |_    | \____) | _| |_    _| |__/ | _/ /   \ \_  _| |_     
+|______.'|_____||____| |___||_____|    |______|    \______.'|_____|  |________||____| |____||_____|    
+       ____   ____   ______                                                                            
+      |_  _| |_  _|.' ____ \                                                                           
+        \ \   / /  | |____\_|                                                                          
+         \ \ / /   | '____`'.                                                                          
+          \ ' /    | (____) |                                                                          
+           \_/     '.______.'                                                                          
+ ____  _____  ______        _         _____   ___  ____    _____    _____                              
+|_   \|_   _||_   _ \      / \       / ___ `.|_  ||_  _|  / ___ `. / ___ `.                            
+  |   \ | |    | |_) |    / _ \     |_/___) |  | |_/ /   |_/___) ||_/___) |                            
+  | |\ \| |    |  __'.   / ___ \     .'____.'  |  __'.    .'____.' .'____.'                            
+ _| |_\   |_  _| |__) |_/ /   \ \_  / /_____  _| |  \ \_ / /_____ / /_____                             
+|_____|\____||_______/|____| |____| |_______||____||____||_______||_______|                            
+                                                                                                       
+only mess with the standing limit which is how much you have to push the analog to let the Coronas know 
+that you are moving shot so the standing limit can only be between 10 and 99 
+
+these here are my offline values for base 38/38/38 full speed 
+jumper time     520 
+fade  shot      700
+
+if the light on this end is green that means you're online  
+to switch from online and offline modes you hold options and press down 
+
+if the light is off that means you're offline
+to go online press options and press up your shots will be saved just like the previous versions 
+
+if you want to adjust 
+your jump shot timing hold L2 and then d-pad  
+to adjust your fades R1 and then the d-pad 
+
+left and right d-pad are by 1 millisecond 
+up and down are by 5 milliseconds 
+
+this has no dribbles when I do release the beta w dribbles as I did with this one donators will receive it first and 
+then week or so after I will released to public for free so no need to donate if you're patient if you're not give 
+me all your money at paypal or cashapp
+
+PAYPAL @dirty619
+CASHAPP $JC20000
+
+
+
+
+you can even go tested in the cages or if you find a dead Park just do it with some friends but if not just join the 
+Discord and you'll be able to find somebody to help test this with shouldn't be hard
+*/
+int Block_Output;
+int Dribbles;
+int DribbleSet = TRUE;
+int Screen_Saver;
+const string REGULAR = "JUMPSHOT";
+const string FADE = "MOVING SHOT";
+const string LINE1 = "NBA 2K22";
+const string LINE2 = "D1RTY 23MiX";
+const string LINE3 = "Made By";
+const string LINE4 = "DIRTY GAMING TIPS";
+const string DRIBBLE1 = "QS & Pullback";
+const string DRIBBLE2 = "Momentum2Curry";
+const string DRIBBLE3 = "CURRY SLIDE";
+const string DRIBBLE4 = "EXPLOSIVE";
+const string DRIBBLE5 = "SPIN BACK";
+const string DRIBBLE6 = "SPIN FORWARD";																								
+const string DRIBBLE7 = "Advanced Dribble";
+const string DRIBBLE8 = "Cross Over";
+const string DRIBBLE9 = "Momentum Upcourt";
+const string DRIBBLE10 = "L3 Pro2 R3 SPDBST";
+const string DRIBBLE11 = "Crab";
+int TIMER = 300;
+define FONT_LENGTH = 2;
+define SMALL_FONT = 0;
+define MEDIUM_FONT = 1;
+define FONT_WIDTH = 0;
+define FONT_HEIGHT = 1;
+define BLACK_COLOR = 0;
+define WHITE_COLOR = 1;
+//┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+int	Standing_Limit	= 50;/*-either 1 thru 99 This is how far the  left analog needs to be pressed in order to be considered moving-*/
+int Jumper_Timing 		= 520;///Must be a higher value than Catch and Shoot		
+int Fade_Shot_Timing 	= 700;///Must be a higher value than Pullup												
+//└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+	int Index = 1;
+	int  Moving;
+	int Online_Toggle;
+	define green = 17;
+	define off = 0;	
+init{
+	cls_oled(0);//--/Clears Oled
+    printf(center_x(sizeof(LINE1) - 1, OLED_FONT_MEDIUM_WIDTH),5,OLED_FONT_MEDIUM,OLED_WHITE,LINE1[0]);//-- Display Script Title          
+    printf(center_x(sizeof(LINE2) - 1, OLED_FONT_MEDIUM_WIDTH),25,OLED_FONT_MEDIUM,OLED_WHITE,LINE2[0]);//-- Display Script Title          
+    printf(center_x(sizeof(LINE3) - 1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,LINE3[0]);//-- Display Script Title          
+    printf(center_x(sizeof(LINE4) - 1, OLED_FONT_SMALL_WIDTH),55,OLED_FONT_SMALL,OLED_WHITE,LINE4[0]);//-- Display Script Title
+    Jumper_Timing		= 	get_pvar(SPVAR_2,Jumper_Timing 		,4000, Jumper_Timing);
+	Fade_Shot_Timing    = 	get_pvar(SPVAR_4,Fade_Shot_Timing 	,4000, Fade_Shot_Timing);
+	Online_Toggle		= 	get_pvar(SPVAR_5,0,2   , Online_Toggle);
+}
+
+main{
+	vm_tctrl(-9);
+	   Screen_Saver = TRUE;//--ScreenSaver Always Running
+		if(!Moving)
+		{
+			if(get_val(PS4_SQUARE))
+			{  				
+				if(get_ptime(PS4_SQUARE) >= Jumper_Timing)
+				{
+					set_val(PS4_SQUARE,0);
+				}
+			}
+		}
+		if(Moving)
+		{
+			if(get_val(PS4_SQUARE))
+			{ 
+				if(get_ptime(PS4_SQUARE) >= Fade_Shot_Timing)
+				{
+					set_val(PS4_SQUARE,0);
+				}
+			}
+		}
+	if(!Online_Toggle){
+					Led_Status(off);
+		if(get_val(PS4_OPTIONS))
+		{	
+			if(event_press(PS4_DOWN))
+			{
+				Online_Toggle 			= TRUE;
+				Jumper_Timing 			= Jumper_Timing 	  		+ 150;
+				Fade_Shot_Timing 		= Fade_Shot_Timing 		  	+ 150;
+				combo_run(SAVE);
+			}
+		}
+	}		
+	if(Online_Toggle){
+						Led_Status(green);
+	if(get_val(PS4_OPTIONS))
+			{	
+				if(event_press(PS4_UP))
+				{
+					Online_Toggle 			= FALSE;
+					Jumper_Timing 			= Jumper_Timing 	  		- 150;
+					Fade_Shot_Timing 		= Fade_Shot_Timing 		  	- 150;
+					combo_run(SAVE);
+				}
+			}
+	}
+//--Toggle Dribbles On Off
+	    if(get_val(PS4_CROSS)){
+      		    if(event_press(PS4_UP)){Block_Output = PS4_UP;
+				    EXIT();
+				    Dribbles = !Dribbles;
+			    }
+	    	    if(event_press(PS4_RIGHT)){Block_Output = PS4_RIGHT;
+				    EXIT();
+				    DribbleSet ++;	
+				    if (DribbleSet >11)
+					DribbleSet = 1;
+			    }
+			    if(event_press(PS4_LEFT)){Block_Output = PS4_LEFT;
+				    EXIT();
+				    DribbleSet --;	
+				    if (DribbleSet <1)
+				    DribbleSet = 11;
+			    }
+        }		
+        if(Block_Output){ //----block output
+		    if(event_release(Block_Output)){
+			    Block_Output = 0;
+		    }else{
+		        set_val(Block_Output,0);
+			}
+	    }
+		if(Dribbles){ 
+  		    if(DribbleSet == 1){	
+	    	    printf(center_x(sizeof(DRIBBLE1) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE1[0]);//-- Display Script Title          
+	    		    if((get_val(PS4_LX))<0 && event_press(PS4_L3))
+	    			    combo_run(LH_QUICKSTOP);
+	    		    if((get_val(PS4_LX))>0 && event_press(PS4_L3))
+	    			    combo_run(RH_QUICKSTOP); 
+				    if (get_val(PS4_R3))
+                        combo_run(Pullback);		
+		    }
+		    if(DribbleSet == 2){
+    	        printf(center_x(sizeof(DRIBBLE2) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE2[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_MM_CURRY);
+				    if (event_press(PS4_R3))
+					    combo_run(RH_MM_CURRY);			
+		    }
+	        if(DribbleSet == 3){
+    	        printf(center_x(sizeof(DRIBBLE3) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE3[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3))
+						combo_run(LH_CURRY);	
+				    if (event_press(PS4_R3))
+						combo_run(RH_CURRY);		
+		    }
+		    if(DribbleSet == 4){
+    	        printf(center_x(sizeof(DRIBBLE4) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE4[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_EXPLOSIVE);	
+				    if (event_press(PS4_R3)) 
+					    combo_run(RH_EXPLOSIVE);			
+		    }
+		    if(DribbleSet == 5){
+    	        printf(center_x(sizeof(DRIBBLE5) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE5[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_SPINBACK);
+				    if (event_press(PS4_R3)) 
+					    combo_run(RH_SPINBACK);		
+		    }
+		    if(DribbleSet == 6){
+    	        printf(center_x(sizeof(DRIBBLE6) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE6[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_SPIN_FORWARD);
+				    if (event_press(PS4_R3)) 
+					    combo_run(RH_SPIN_FORWARD);
+		    }
+		    if(DribbleSet == 7){
+    	        printf(center_x(sizeof(DRIBBLE7) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE7[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_DUFF);
+				    if (event_press(PS4_R3)) 
+					    combo_run(RH_DUFF);
+		    }
+		    if(DribbleSet == 8){
+    	        printf(center_x(sizeof(DRIBBLE8) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE8[0]);//-- Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(LH_CROSSOVER);
+				if (event_press(PS4_R3)) 
+					combo_run(RH_CROSSOVER);
+		    }
+		    if(DribbleSet == 9){
+    	        printf(center_x(sizeof(DRIBBLE9) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE9[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_UPCOURT);
+				    if (event_press(PS4_R3)) 
+					    combo_run(RH_UPCOURT);
+		    }
+	        if(DribbleSet == 10){
+    	        printf(center_x(sizeof(DRIBBLE10) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE10[0]);//-- Display Script Title          
+				    if (get_val(PS4_R3)) 
+					    combo_run(SPAM_DRIBBLE);		
+				    if (event_press(PS4_L3)) 
+					    combo_run(SPEEDBOOST_CROSSOVER);		
+		    }
+		    if(DribbleSet == 11) {
+    	        printf(center_x(sizeof(DRIBBLE11) - 1, OLED_FONT_SMALL_WIDTH),28,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE11[0]);//-- Display Script Title          
+				    if (event_press(PS4_L3)) 
+					    combo_run(LH_CRAB);
+				    if (event_press(PS4_R3))
+					    combo_run(RH_CRAB);			
+		    }
+	    }
+		
+		if(abs(get_val(PS4_LX)) > Standing_Limit || abs(get_val(PS4_LY)) > Standing_Limit)
+		{
+			Moving = TRUE;
+		}
+		else
+		{
+			Moving = FALSE;
+		}
+		if(get_val(PS4_L2))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(REGULAR) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,REGULAR[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+		}
+		if(get_val(PS4_R1))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(FADE) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,FADE[0]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+       }
+       if(Screen_Saver) {     //-- Screen saver (OLED off)                         
+            TIMER += get_rtime();
+			    if(TIMER >= 4500) {                        
+				    cls_oled(0);         
+				    TIMER = 0;      
+				    Screen_Saver = FALSE; 
+			    }                         
+        }
+         if(event_press(XB1_B)) {     
+   		    EXIT();           
+          }
+set_val(TRACE_1,DribbleSet);//----
+}
+combo LH_MM_CURRY{		
+	set_val(PS4_RX, 100);
+	wait(100);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(100);
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+combo RH_MM_CURRY{ 
+	set_val(PS4_RX, -100);
+	wait(100);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(100);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+combo LH_CURRY{
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, 50);
+	wait(150);
+}
+combo RH_CURRY{
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, 50);
+	wait(150);
+}
+combo LH_CRAB{
+	set_val(XB1_RX, 85);
+	set_val(XB1_RY, -75);
+	wait(150);
+}
+combo RH_CRAB{
+	set_val(XB1_RX, -85);
+	set_val(XB1_RY, -75):
+	wait(150);
+}
+combo RH_DUFF{
+	call(RH_CRAB);
+	wait(600);
+	wait(100);
+	call(LH_MM_CURRY);
+	wait(300);
+}
+combo LH_DUFF{			
+	call(LH_CRAB);
+	wait(600);
+	wait(100);
+	call(RH_MM_CURRY);
+	wait(300);
+}
+combo RH_UPCOURT{
+	set_val(XB1_LY, -100);
+	wait(100);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, 0);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, 100);
+	wait(300);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, 0);
+	wait(300);
+	call(RH_CURRY);
+}
+combo LH_UPCOURT{
+	set_val(XB1_LY, -100);
+	wait(100);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, 0);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, -100);
+	wait(300);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, 0);
+	wait(300);
+	call(LH_CURRY);
+}
+combo LH_CROSSOVER{ 
+	set_val(PS4_RY, -100);
+	wait(100);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(300);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(200);
+	call(LH_CURRY);
+	wait(300);
+}
+combo RH_CROSSOVER{ 
+	set_val(PS4_RY, -100);
+	wait(100);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(300);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(200);
+	call(RH_CURRY);
+	wait(300);
+}
+combo LH_EXPLOSIVE{
+	set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	wait(150);
+    set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(200);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -70);
+	wait(100);
+}
+combo RH_EXPLOSIVE{	
+	set_val(PS4_RX, -75);
+	set_val(PS4_RY, 75);
+	wait(150);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(200);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(100);
+}
+combo LH_SPINBACK{ 
+	set_val(PS4_RY, -100); //-- 12 'o Clock
+	//set_val(PS4_LY, 100);
+	wait(120); //--//--testing 30 from 60
+	//set_val(PS4_LY, 100);
+	set_val(PS4_RX, -100); //-- 9 'o Clock
+	wait(120);	//--//--same
+	set_val(PS4_LY, 100);
+	set_val(PS4_RY, 100);//-- 6 'o Clock
+	wait(120);//--//--//--60 from 120
+	set_val(PS4_LY, 100); 
+	wait(700);
+}
+combo RH_SPINBACK{ 
+	set_val(PS4_RY, -100); //-- 12 'o Clock
+	//set_val(PS4_LY, 100);
+	wait(120);
+	//set_val(PS4_LY, 100);
+	set_val(PS4_RX, 100); //-- 3 'o Clock
+	wait(120);
+	set_val(PS4_LY, 100);
+	set_val(PS4_RY, 100);//-- 6 'o Clock
+	wait(120);
+	set_val(PS4_LY, 100); 
+	wait(700);
+}
+combo LH_SPIN_FORWARD{ 	                        
+	set_val(PS4_RX, -100);   	
+	wait(10);
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, -30);
+	wait(10);
+	set_val(PS4_RX, -20);
+	set_val(PS4_RY, -100);
+	wait(10);
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+combo RH_SPIN_FORWARD{ 	
+	set_val(PS4_RX, 100);
+	wait(10);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, -30);
+	wait(10);
+	set_val(PS4_RX, 20);
+	set_val(PS4_RY, -100);
+	wait(10);
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+combo LH_QUICKSTOP{ 
+	set_val(PS4_RX, 100);
+	wait(100);
+}
+combo RH_QUICKSTOP{ 
+	set_val(PS4_RX, -100);
+	wait(100);
+}
+combo SPEEDBOOST_CROSSOVER{	
+	set_val(XB1_RY, -100);
+	wait(100);
+	set_val(XB1_RY, 0);
+	wait(60);	
+}
+combo Pullback {
+	set_val(XB1_RY, -40);
+	wait(20);
+	set_val(XB1_RY, -90);
+	wait(20);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_RY, -97);
+	wait(10);
+	set_val(XB1_RY, 24);
+	wait(20);
+	set_val(XB1_RY, 46);
+	wait(20);
+	set_val(XB1_RY, 0);
+	set_val(XB1_LY, 53);
+	wait(20);
+	set_val(XB1_LY, 100);
+	wait(80);
+	set_val(XB1_LY, 0);
+}
+combo SPAM_DRIBBLE{
+	set_val(XB1_LY, 100);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_RY,0);
+	wait(50);
+	set_val(XB1_RY, 0);
+	set_val(XB1_LY, 0);
+}
+combo SAVE{
+	set_rumble(RUMBLE_A,100);
+	wait(200);
+	reset_rumble();
+	set_pvar(SPVAR_1, Jumper_Timing);
+	set_pvar(SPVAR_2, Fade_Shot_Timing);
+	set_pvar(SPVAR_3, Online_Toggle);
+}		  	
+function Display_Values(f_val,f_dgts) {
+    if(f_dgts >= 5)
+    {
+        putc_oled(Index,(f_val / 10000) + 48);
+        f_val %= 10000;
+        Index++;
+    }
+    if(f_dgts >= 4)
+    {
+        putc_oled(Index,(f_val / 1000) + 48);
+        f_val %= 1000;
+        Index++;
+    }
+    if(f_dgts >= 3)
+    {
+        putc_oled(Index,(f_val / 100) + 48);
+        f_val %= 100;
+        Index++;
+    }
+    if(f_dgts >= 2)
+    {
+        putc_oled(Index,(f_val / 10) + 48);
+        f_val %= 10;
+        Index++;
+    }
+    putc_oled(Index,f_val + 48);
+    puts_oled(1,1,2,Index,1);    
+    Index = 1;
+} 
+function FindDigits(f_num) {
+    f_num = abs(f_num);
+    	if(f_num /  10000 > 0) return 5;
+    	if(f_num /  1000 > 0) return 4;
+    	if(f_num /  100 > 0) return 3;
+    	if(f_num /   10 > 0) return 2;
+    	return 1;
+}
+function center_x(f_chars,f_font){  //--  center_x(number of chars,font size);                                                 
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); //-- return X for Centering String Horizontally
+}
+function Led_Status(colour) {
+    set_led(LED_1, duint8(colour * 4));
+    set_led(LED_2, duint8((colour * 4) + 1));
+    set_led(LED_3, duint8((colour * 4) + 2));
+    set_led(LED_4, duint8((colour * 4) + 3));
+}
+function EXIT(){               
+	cls_oled(0);             
+}
+data 					  
+(0,0,0,0,//-- Off	    
+1,0,0,0, //-- Dim Blue	  
+0,1,0,0, //-- Dim Red		  
+0,0,1,0, //-- Dim Green	
+0,0,0,1, //-- Dim Pink	
+1,0,1,0, //-- Dim SkyBlue	
+0,1,1,0, //-- Dim Yellow	
+1,1,1,0, //-- Dim White	
+2,0,0,0, //-- Blue		
+0,2,0,0, //-- Red			
+0,0,2,0, //-- Green		
+0,0,0,2, //-- Pink		
+2,0,2,0, //-- SkyBlue		
+0,2,2,0, //-- Yellow		
+2,2,2,0, //-- White		
+3,0,0,0, //-- Bright Blue	
+0,3,0,0, //-- Bright Red	
+0,0,3,0, //-- Bright Green
+0,0,0,3, //-- Bright Pink	
+3,0,3,0, //-- Bright SkyBlue
+0,3,3,0, //-- Bright Yellow
+3,3,3,0  //-- Bright white
+);		
+ ����������������

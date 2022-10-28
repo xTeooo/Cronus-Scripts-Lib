@@ -1,0 +1,244 @@
+#pragma METAINFO("Multi-Recoil Concept", 1, 0, "USER101")
+ 
+/* Interactive Configuration
+<cfgdesc>
+[LICENSING AND USAGE:]
+collapsible = 0
+shortdesc    = <<<MULTILINE
+<font color=#0000ff>
+Open source unoptimized code. Free to use and modify with attribution. Visit the forums document page for an overview of the multi-recoil concept.
+@User101
+for concept and creation of multilayer recoil.
+@AryanX
+for releasing original anti recoil code.</font>
+MULTILINE
+color        = #000000
+control        = info
+ 
+[PRESET 1:]
+collapsible = 2
+color        = #001298
+ 
+[PRIMARY RECOIL VERTICAL]
+group        = true
+shortdesc    = <b>VERTICAL RECOIL:</b> Initial vertical recoil amount.
+byteoffset    = 0
+bitsize        = 32
+control        = spinboxf
+decimals    = 2
+default        = 0
+minimum        = 0
+maximum        = 10000
+step        = 10
+ 
+[SECONDARY TIMEOUT VERTICAL]
+group        = true
+shortdesc    = <b>SECONDARY TIMER VERTICAL:</b>(ms) Timer for applying secondary vertical recoil.
+byteoffset    = 4
+bitsize        = 16
+control        = slider
+default        = 0
+minimum        = 0
+maximum        = 4000
+step        = 1
+ 
+[SECONDARY RECOIL VERTICAL]
+group        = true
+shortdesc    = <b>SECONDARY VERTICAL RECOIL:</b> Secondary vertical recoil amount.
+byteoffset    = 6
+bitsize        = 32
+control        = spinboxf
+decimals    = 2
+default        = 0
+minimum        = 0
+maximum        = 10000
+step        = 10
+ 
+[FINAL TIMEOUT VERTICAL]
+group        = true
+shortdesc    = <b>FINAL TIMER VERTICAL:</b>(ms) Timer for applying final vertical recoil.
+byteoffset    = 10
+bitsize        = 16
+control        = slider
+default        = 0
+minimum        = 0
+maximum        = 4000
+step        = 1
+ 
+[FINAL RECOIL VERTICAL]
+group        = true
+shortdesc    = <b>FINAL VERTICAL RECOIL:</b> Final vertical recoil amount.
+byteoffset    = 12
+bitsize        = 32
+control        = spinboxf
+decimals    = 2
+default        = 0
+minimum        = 0
+maximum        = 10000
+step        = 10
+ 
+[LOG GAP]
+group        = true
+shortdesc   =<<<MULTILINE
+ <font color=#c0c0c0>_________________________________________________________________________
+ </font>
+MULTILINE
+control        = info
+ 
+[PRIMARY RECOIL HORIZONTAL]
+group        = true
+shortdesc    = <b>HORIZONTAL RECOIL:</b> Initial horizontal recoil amount.
+byteoffset    = 16
+bitsize        = 32
+control        = spinboxf
+decimals    = 2
+default        = 0
+minimum        = -10000
+maximum        = 10000
+step        = 1
+ 
+[SECONDARY TIMEOUT HORIZONTAL]
+group        = true
+shortdesc    = <b>SECONDARY TIMER HORIZONTAL:</b>(ms) Timer for applying secondary horizontal recoil.
+byteoffset    = 20
+bitsize        = 16
+control        = slider
+default        = 0
+minimum        = 0
+maximum        = 4000
+step        = 1
+ 
+[SECONDARY RECOIL HORIZONTAL]
+group        = true
+shortdesc    = <b>SECONDARY HORIZONTAL RECOIL:</b> Secondary horizontal recoil amount.
+byteoffset    = 22
+bitsize        = 32
+control        = spinboxf
+decimals    = 2
+default        = 0
+minimum        = -10000
+maximum        = 10000
+step        = 1
+ 
+[FINAL TIMEOUT HORIZONTAL]
+group        = true
+shortdesc    = <b>FINAL TIMER HORIZONTAL:</b>(ms) Timer for applying final horizontal recoil.
+byteoffset    = 26
+bitsize        = 16
+control        = slider
+default        = 0
+minimum        = 0
+maximum        = 4000
+step        = 1
+ 
+[FINAL RECOIL HORIZONTAL]
+group        = true
+shortdesc    = <b>FINAL HORIZONTAL RECOIL:</b> Final horizontal recoil amount.
+byteoffset    = 28
+bitsize        = 32
+control        = spinboxf
+decimals    = 2
+default        = 0
+minimum        = -10000
+maximum        = 10000
+step        = 1
+ 
+<shortdesc>
+Team, 
+Here is an example of a three layer recoil preset. This could be useful for weapons that have more than one vertex along the shot pattern. Its basically three recoil values that get applied at different times while shooting through a single magazine/clip. Visit the forums document page for an overview of the multi-recoil concept. I hope you find this useful.
+ 
+<b>v1.00</b>
+ 
+- Advanced triple layer recoil demonstration.
+- Slide concept on documents forum page.
+</shortdesc>
+ 
+<keywords>Modern Warfare Warzone Call of Duty 2020 user101 anti recoil aim assist multiplayer mad max 3 layer multi recoil concept</keywords>
+<docurl>https://www.consoletuner.com/forum/viewtopic.php?f=23&t=15709</docurl>
+ 
+</cfgdesc>
+ 
+***************************************************************************** */
+ 
+#define float fix32                                        // Define float as fix32
+#define MinARecoilPercent 20.0                             // Minimum Recoil 
+ 
+uint16 T;                                                // Timer
+uint16 T2V;                                                // Timer
+uint16 T2H;                                                // Timer
+uint16 ARVT1;                                            // Vertical Timeout 1
+uint16 ARVT2;                                            // Vertical Timeout 2
+uint16 ARHT1;                                            // Horizontal Timeout 1
+uint16 ARHT2;                                            // Horizontal Timeout 2
+ 
+float ARV;                                                // Anti_Recoil Vertical Value
+float ARH;                                                // Anti_Recoil Horizontal Value
+ 
+float ARVP1;                                            // Anti_Recoil Vertical Value1
+float ARHP1;                                            // Anti_Recoil Horizontal Value1
+float ARVP2;                                            // Anti_Recoil Vertical Value2
+float ARHP2;                                            // Anti_Recoil Horizontal Value2
+float ARVP3;                                            // Anti_Recoil Vertical Value3
+float ARHP3;                                            // Anti_Recoil Horizontal Value3
+ 
+init{
+    pmem_load();                                        // Load Persistent Memory
+ 
+    pmem_read(0,     &ARV);                                // Initialize Vertical Recoil Value
+    pmem_read(4,     &ARVT1);                            // Initialize Secondary Recoil Timer
+    pmem_read(6,     &ARVP2);                            // Initialize Secondary Recoil Value
+    pmem_read(10,     &ARVT2);                            // Initialize Final Recoil Timer
+    pmem_read(12,     &ARVP3);                            // Initialize Final Recoil Value
+ 
+    pmem_read(16,   &ARH);                                // Initialize Vertical Recoil Value
+    pmem_read(20,     &ARHT1);                            // Initialize Secondary Recoil Timer
+    pmem_read(22,      &ARHP2);                            // Initialize Secondary Recoil Value
+    pmem_read(26,     &ARHT2);                            // Initialize Final Recoil Timer
+    pmem_read(28,     &ARHP3);                            // Initialize Final Recoil Value
+ 
+    ARVP1 = ARV;                                        // Initialize Vertical Recoil Placeholder
+    ARHP1 = ARH;                                        // Initialize Horizontal Recoil Placeholder
+}
+ 
+main {
+    if(get_val(BUTTON_5)){                                 // If Fire Trigger execute this
+ 
+        T += elapsed_time();                            // Start Initial Timer
+ 
+        AntiRecoil(STICK_1_Y, ARVP1);                    // Set Initial Vertical Recoil
+        AntiRecoil(STICK_1_X, ARHP1);                    // Set Initial Horizontal Recoil
+ 
+        if (ARVP2 != 0.0 && T >= ARVT1){                // If Secondary Vertical Timer Reached execute
+            T2V += elapsed_time();                        // Start Secondary Vertical timer
+            ARVP1 = ARVP2;                                // Apply Secondary Vertical Recoil
+            if (ARVP3 != 0.0 && T2V >= ARVT2){            // If Final Vertical Timer reached execute 
+                ARVP1 = ARVP3;                            // Apply Final Vertical Recoil value 
+            }
+        }
+        if (ARHP2 != 0.0 && T >= ARHT1){                // If Secondary Horizontal Timer Reached execute
+            T2H += elapsed_time();                        // Start Secondary Horizontal timer
+            ARHP1 = ARHP2;                                // Apply Secondary Horizontal Recoil
+            if (ARHP3 != 0.0 && T2H >= ARHT2){            // If Final Horizontal Timer reached execute 
+                ARHP1 = ARHP3;                            // Apply Final Horizontal Recoil value 
+            }
+        }
+    }
+ 
+    if(event_release(BUTTON_5)){                        // If Fire Trigger released execute this
+        T = 0;                                            // Reset Timer
+        T2V = 0;                                        // Reset Secondary Vertical Timer
+        T2H = 0;                                        // Reset Secondary Horizontal Timer
+        ARVP1 = ARV;                                    // Reset Vertical Recoil Placeholder
+        ARHP1 = ARH;                                    // Reset Horizontal Recoil Placeholder
+    }
+ 
+}
+/* AryanX AntiRecoil Method */
+void AntiRecoil(uint8 AxisToApply, float ARecoilToApply){
+    float CurrentX = get_val(STICK_1_X);
+    float CurrentY = get_val(STICK_1_Y);
+    float MinARecoilFactor = MinARecoilPercent / 100.0;
+    float MinARecoilToApply = MinARecoilFactor * ARecoilToApply;
+    float MovementARecoilToApply = (1.0 - MinARecoilFactor) * ((ARecoilToApply * (100.0 - sqrt(CurrentX*CurrentX + CurrentY*CurrentY))) / (100.0 + abs(CurrentX) + (CurrentY*CurrentY*0.5)));
+    set_val(AxisToApply,clamp(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply),-100.00,100.00 - MinARecoilToApply));
+}

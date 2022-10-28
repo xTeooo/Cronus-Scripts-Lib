@@ -1,0 +1,5613 @@
+
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr" wf-loading>
+    <head>
+        
+    
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="shortcut icon" type="image/png" href="/assets/images/favicon.png">
+
+
+    <script>
+        window.newrelicAttributes = {
+            accountId: "1796917",
+            trustKey: "1796917",
+            agentId: "149134891",
+            licenseKey: "f701a6c63c",
+            applicationId: "149134891"
+        };
+    </script>
+    <script src="/newrelic.js"></script>
+
+
+
+<!-- Compliant Google Optimize -->
+<script>
+        (() => {
+            const getPrivacyCookie = () => {
+                const privacyCookie = document.cookie.match('(^|;)\\s*cmapi_cookie_privacy\\s*=\\s*([^;]+)');
+
+                return privacyCookie ? privacyCookie.pop() : null;
+            };
+
+            const getBehaviorCookie = () => {
+                const behaviorCookie = document.cookie.match('(^|;)\\s*notice_behavior\\s*=\\s*([^;]+)');
+
+                return behaviorCookie ? behaviorCookie.pop() : null;
+            };
+
+            const hasOptedIn = () => {
+                const behaviorCookie = getBehaviorCookie();
+                const privacyCookie = getPrivacyCookie();
+
+                return behaviorCookie && behaviorCookie.match(/^none$/) || privacyCookie && privacyCookie.match(/2|3/);
+            }
+
+            const appendOptimize = () => {
+                const head = document.getElementsByTagName('head')[0];
+
+                if (head) {
+                    const script = document.createElement('script');
+
+                    script.src = 'https://www.googleoptimize.com/optimize.js?id=GTM-M6BQF2W';
+                    script.id = "google-optimize"
+                    head.append(script);
+                }
+            };
+
+            const removeOptimize = () => {
+                const head = document.getElementsByTagName('head')[0];
+                const optimizeScript = document.getElementById('google-optimize');
+
+                if (head && optimizeScript) {
+                    head.removeChild(optimizeScript);
+                }
+            }
+
+            /**
+             * Append or remove Google Optimize script to head,
+             * depending on whether user's cookie preferences
+             * have opted in and Google Optimize script already
+             * exists in head.
+             */
+            const handleConsentDecision = () => {
+                const googleOptimizeScript = document.getElementById('google-optimize');
+                if (hasOptedIn() && !googleOptimizeScript) {
+                    appendOptimize();
+                } else if (!hasOptedIn() && googleOptimizeScript) {
+                    removeOptimize();
+                }
+            }
+
+            /**
+             * Callbacks will occur in the form of a PostMessage event. This code listens for the
+             * appropriately formatted PostMessage event, gets the new consent decision, and then sets
+             * the new cookie preferences.
+             */
+            const handlePreferencesUpdated = (e) => {
+                try {
+                    const { capabilities, action } = JSON.parse(e.data).PrivacyManagerAPI || {};
+                    if (capabilities && action === 'getConsentDecision') {
+                        handleConsentDecision();
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            /**
+             * Registers with the TrustArc Content Manager (CM) API to receive callbacks when
+             * a preference update occurs, and initialized dispatched preferences array to
+             * the user's current preferences. You must wait for the CM API (PrivacyManagerAPI object)
+             * to exist on the page before registering.
+             */
+            const CMICallbackRegister = () => {
+                const interval = setInterval(() => {
+                    if (window.PrivacyManagerAPI && interval) {
+                        const apiObject = {
+                            PrivacyManagerAPI: {
+                                action: 'getConsentDecision',
+                                timestamp: new Date().getTime(),
+                                self: window.location.host
+                            }
+                        };
+                        window.top.postMessage(JSON.stringify(apiObject), '*');
+                        clearInterval(interval);
+                    }
+                }, 50);
+            }
+
+            /**
+             * Listener registers a message callback on the TrustArc Content Manager when
+             * user's cookie preferences are updated and adds an event listener
+             * on the message events that occur when said preference updates occur.
+             */
+            const trustArcScriptLoadListener = () => {
+                if (typeof window.truste === 'object') {
+                    CMICallbackRegister();
+                    window.addEventListener('message', handlePreferencesUpdated);
+                }
+            }
+
+            window.addEventListener('load', trustArcScriptLoadListener);
+            const behaviorCookie = getBehaviorCookie();
+
+            if (behaviorCookie === null) {
+                // wait for TrustArc script to load before checking cookies
+                let numIntervals = 0;
+                const scriptLoadInterval = setInterval( () => {
+                    if(getBehaviorCookie()) {
+                        handleConsentDecision();
+                        clearInterval(scriptLoadInterval);
+                    }
+                    // Stop running interval after 8 times (8x the documented 500ms it
+                    // should take to load the TrustArc script on the BE) to prevent running forever
+                    if (++numIntervals >= 10) {
+                        clearInterval(scriptLoadInterval);
+                    }
+                } , 500);
+            } else {
+                handleConsentDecision();
+            }
+        })();
+</script>
+    <!-- End Compliant Google Optimize -->
+
+
+<!-- Google Tag Manager -->
+<script>
+    (function(w, d, s, l) {
+        w[l] = w[l] || [];
+        w[l].push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
+        });
+
+        var f = d.getElementsByTagName(s)[0];
+        var j = d.createElement(s);
+        var dl = l !== 'dataLayer' ? '&l=' + l : '';
+
+        j.async = true;
+        j.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-TG32RCX' + dl;
+        f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer');
+</script>
+<!-- End Google Tag Manager -->
+
+
+
+<style>
+    [unresolved] {
+        visibility: hidden !important;
+    }
+</style>
+
+
+<noscript>
+    <style>
+        [unresolved] {
+            visibility: visible !important;
+        }
+    </style>
+</noscript>
+
+<style>
+    body {
+        margin: 0;
+    }
+
+    .image img {
+        max-width: 100%;
+    }
+</style>
+
+
+<script>
+    
+    if (!CSS.supports('width', 'calc((var(--test))')) {
+        window.ShadyCSS = {
+            shimcssproperties: true
+        };
+    }
+
+    document.addEventListener('nds.typeKit.active', function() {
+        document.querySelector('html').removeAttribute('wf-loading');
+    });
+</script>
+
+<script src="//unpkg.com/@webcomponents/webcomponentsjs@2.2.7/webcomponents-loader.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+<script src="//w.soundcloud.com/player/api.js"></script>
+
+
+
+
+
+
+<script>
+    window.nds = window.nds || {};
+    window.nds.componentUrlPrefix = '//pl.ea.com/release/4.49.0/elements/ea-elements.min.js'.substring(0, '//pl.ea.com/release/4.49.0/elements/ea-elements.min.js'.lastIndexOf('/') + 1);
+    window.nds.contentfulUrl = 'https://contentful-proxy.juno.ea.com/graphql';
+    window.nds.salUrl = 'https://service-aggregation-layer.juno.ea.com/graphql';
+    window.nds.useApq = true;
+    window.nds.salClientId = 'eacom-fe';
+    window.nds.xGameDistMethod = 'eacom';
+    window.nds.lockboxGameId = 'eacom';
+    window.nds.lockboxInvoiceSource = 'EACOM-STORE-WEB-%countryCode%';
+    window.nds.lockboxExternalPaymentPath = '/lockbox-external-payment';
+</script>
+<script type="module" src="//pl.ea.com/release/4.49.0/elements/ea-elements.min.js"></script>
+<script nomodule defer src="//pl.ea.com/release/4.49.0/elements/ea-elements.min.js"></script>
+
+
+
+    
+        
+            
+                <style> @font-face {font-family: 'PaintedLady'; src: url(/assets/fonts/ufc/PaintedLady.otf) format('opentype');}    @font-face {font-family: 'PaintedLady'; src: url(/assets/fonts/ufc/PaintedLady.woff2) format('woff2');} </style>
+            
+        
+    
+
+<style>
+    @font-face {
+    font-family: 'ElectronicArtsDisplay';
+    src: url(/assets/fonts/display/ElectronicArtsDisplay-Regular.woff2) format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ElectronicArtsDisplay';
+    src: url(/assets/fonts/display/ElectronicArtsDisplay-Bold.woff2) format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ElectronicArtsText';
+    src: url(/assets/fonts/text/ElectronicArtsText-Light.woff2) format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ElectronicArtsText';
+    src: url(/assets/fonts/text/ElectronicArtsText-LightItalic.woff2) format('woff');
+    font-weight: 300;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'ElectronicArtsText';
+    src: url(/assets/fonts/text/ElectronicArtsText-Regular.woff2) format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ElectronicArtsText';
+    src: url(/assets/fonts/text/ElectronicArtsText-Italic.woff2) format('woff');
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: 'ElectronicArtsText';
+    src: url(/assets/fonts/text/ElectronicArtsText-Bold.woff2) format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ElectronicArtsText';
+    src: url(/assets/fonts/text/ElectronicArtsText-BoldItalic.woff2) format('woff');
+    font-weight: 600;
+    font-style: italic;
+}
+
+</style>
+
+
+
+
+
+
+    <title>UFC 4 Submissions Tutorial - Choke Submissions</title>
+    
+
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="UFC 4 Submissions Tutorial - Choke Submissions">
+<meta property="og:description" content=" Learn about UFC 4 striking offense basics and master your performance inside the Octagon.">
+<meta property="og:url" content="https://www.ea.com/games/ufc/ufc-4/tips-and-tricks/submissions/choke-submissions
+">
+<meta property="og:site_name" content="Electronic Arts Inc.">
+
+    <meta property="og:image" content="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-4-featured-image-16x9.png.adapt.crop191x100.1200w.png">
+
+
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="628">
+
+
+<meta name="description" content=" Learn about UFC 4 striking offense basics and master your performance inside the Octagon.">
+<meta name="author" content="Electronic Arts">
+<meta property="article:modified_time" content="2020-08-06T22:15:06Z">
+<meta property="article:published_time" content="2020-08-06T22:15:06Z">
+
+
+
+
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ea">
+<meta name="twitter:title" content="UFC 4 Submissions Tutorial - Choke Submissions">
+<meta name="twitter:description" content=" Learn about UFC 4 striking offense basics and master your performance inside the Octagon.">
+
+    <meta name="twitter:image" content="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-4-featured-image-16x9.png.adapt.crop16x9.1023w.png">
+
+<meta name="twitter:creator" content="@ea">
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+     
+"image": {
+    "@type": "ImageObject",
+    "url": "https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-4-featured-image-16x9.png.adapt.crop191x100.1200w.png"
+},
+ 
+    "author": {
+      "@type": "Organization",
+      "name": "Electronic Arts",
+      "sameAs": "https://en.wikipedia.org/wiki/Electronic_Arts"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "Electronic Arts",
+        "sameAs": "https://en.wikipedia.org/wiki/Electronic_Arts",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://media.contentapi.ea.com/content/dam/ea/EA_logo.png",
+            "width": 60,
+            "height": 60
+        }
+    },
+    "inLanguage": "en",
+    "description": " Learn about UFC 4 striking offense basics and master your performance inside the Octagon.",
+    "datePublished": "2020-08-06T22:15:06Z",
+    "dateModified": "2020-08-06T22:15:06Z",
+    "headline": "UFC 4 Submissions Tutorial - Choke Submissions",
+    "url": "https://www.ea.com/games/ufc/ufc-4/tips-and-tricks/submissions/choke-submissions
+"
+}
+</script>
+
+
+
+    <script >bazadebezolkohpepadr="755722205"</script><script type="text/javascript" src="https://www.ea.com/akam/13/2d0b65c1"  defer></script></head>
+    <body unresolved>
+        
+    
+
+
+<custom-style><style include="ea-shared-styles-base-common"></style></custom-style>
+<custom-style><style include="ea-shared-styles-base-headings"></style></custom-style>
+<custom-style><style include="ea-shared-styles-base-lists"></style></custom-style>
+<custom-style><style include="ea-shared-styles-base-links"></style></custom-style>
+<custom-style><style include="ea-shared-styles-base-images"></style></custom-style>
+<custom-style><style include="ea-shared-styles-typography-headings"></style></custom-style>
+<custom-style><style include="ea-shared-styles-typography-paragraphs"></style></custom-style>
+<custom-style><style include="ea-shared-styles-typography-labels"></style></custom-style>
+
+
+    
+        
+            <custom-style>
+                <style>
+                    html {
+                        
+                            --ea-theme-primary-font-family: "seravek-web", sans-serif;
+                        
+                            --ea-theme-secondary-font-family: "oswald", sans-serif;
+                        
+                            --ea-theme-header-font-family: var(--ea-theme-secondary-font-family);
+                        
+                            --ea-theme-header-font-weight-normal: normal;
+                        
+                            --ea-theme-header-font-weight-bold: 500;
+                        
+                            --ea-theme-header-letter-spacing: normal;
+                        
+                            --ea-theme-body-font-family: var(--ea-theme-primary-font-family);
+                        
+                            --ea-theme-body-font-weight-light: lighter;
+                        
+                            --ea-theme-body-font-weight-normal: normal;
+                        
+                            --ea-theme-body-font-weight-bold: bolder;
+                        
+                            --ea-theme-body-letter-spacing: normal;
+                        
+                            --ea-theme-typographic-headings-font-family: var(--ea-theme-secondary-font-family);
+                        
+                            --ea-theme-l1-font-weight: 500;
+                        
+                            --ea-theme-l2-font-weight: 500;
+                        
+                            --ea-theme-l3-font-weight: 500;
+                        
+                            --ea-theme-l4-font-weight: 500;
+                        
+                            --ea-theme-h1-font-weight: 200;
+                        
+                            --ea-theme-h2-font-weight: 300;
+                        
+                            --ea-theme-h3-font-weight: 300;
+                        
+                            --ea-theme-h4-font-weight: 300;
+                        
+                            --ea-theme-h5-font-weight: 300;
+                        
+                            --ea-theme-h6-font-weight: 300;
+                        
+                            --ea-theme-d1-font-weight: 500;
+                        
+                            --ea-theme-d2-font-weight: 500;
+                        
+                            --ea-theme-d3-font-weight: 500;
+                        
+                            --ea-theme-d4-font-weight: 500;
+                        
+                            --ea-theme-d5-font-weight: 500;
+                        
+                            --ea-theme-d6-font-weight: 500;
+                        
+                            --ea-text-case: uppercase;
+                        
+                            --ea-theme-color:  #E2F71F;
+                        
+                            --ea-theme-tabs-background-color: transparent;
+                        
+                            --ea-theme-tabs-indicator-color: #E2F71F;
+                        
+                            --ea-theme-tabs-accent-elements: #7F7F7F;
+                        
+                            --nintendo-brand-color: #000000;
+                        
+                    }
+                </style>
+            </custom-style>
+        
+    
+
+
+
+<ea-elements-loader elements="ea-network-nav, ea-player, ea-type-kit">
+</ea-elements-loader>
+
+
+    <ea-network-nav
+        unresolved
+        userData="/user-data"
+        content="//nds-network-nav.ea.com/en-us/network-nav"
+        login-url="/login"
+        logout-url="/logout"
+            
+                
+                    
+                        hide-logo
+                    
+                
+            
+    ></ea-network-nav>
+
+
+
+
+
+
+
+    
+        
+            
+                
+<ea-elements-loader elements="ea-local-nav-advanced, ea-link">
+</ea-elements-loader>
+<ea-local-nav-advanced
+    
+    
+        home-text = "Home"
+        home-tooltip = ""
+        home-link = "/games/ufc/ufc-4"
+    
+    
+        logo-image="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-logo-1.svg"
+    
+    
+        logo-tooltip="EA SPORTS UFC 3 Logo"
+    
+    
+        theme = "light"
+    
+    
+        shelf-type = "band"
+    
+    
+        open-drawer-text = "Menu"
+    
+    
+        close-drawer-text = "Close"
+    
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    unresolved
+>
+    
+
+    
+
+    
+        <a title="" href="/games/ufc/ufc-4">
+            Home
+            
+                <img
+                    src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-logo-1.svg"
+                    
+                        alt="EA SPORTS UFC 3 Logo"
+                    
+                />
+            
+        </a>
+    
+
+    
+        
+            
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav
+    slot="local-nav-shelf-link"
+    toggle-text="About "
+    theme="light"
+    type="simple"
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section
+    title-text=""
+    slot="sub-nav-section"
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Gameplay"
+    link-href="/games/ufc/ufc-4/gameplay"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/gameplay">Gameplay</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Career Mode"
+    link-href="/games/ufc/ufc-4/career-mode"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/career-mode">Career Mode</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="5 Star Fighters"
+    link-href="/games/ufc/ufc-4/five-star-fighters"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/five-star-fighters">5 Star Fighters</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Soundtrack"
+    link-href="/games/ufc/ufc-4/soundtrack"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/soundtrack">Soundtrack</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Accessibility"
+    link-href="/able/resources/ufc/ufc-4"
+    link-target="_blank"
+    
+    unresolved
+>
+    <a href="/able/resources/ufc/ufc-4">Accessibility</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+</ea-local-nav-shelf-sub-nav-section>
+
+</ea-local-nav-shelf-sub-nav>
+
+        
+    
+        
+            
+                <ea-link
+                    slot="local-nav-shelf-link"
+                    class="eapl-local-nav__shelf-link"
+                    text-color="dark"
+                    link-href="/games/ufc/ufc-4/roster"
+                    link-title=""
+                    link-text="FIGHTERS"
+                    unresolved
+                >
+                    <a href="/games/ufc/ufc-4/roster">FIGHTERS</a>
+                </ea-link>
+            
+        
+    
+        
+            
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav
+    slot="local-nav-shelf-link"
+    toggle-text="Tips &amp; Tricks"
+    theme="light"
+    type="simple"
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section
+    title-text=""
+    slot="sub-nav-section"
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Striking Offense"
+    link-href="/games/ufc/ufc-4/tips-and-tricks/striking-offense"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/tips-and-tricks/striking-offense">Striking Offense</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Striking Defense "
+    link-href="/games/ufc/ufc-4/tips-and-tricks/striking-defense"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/tips-and-tricks/striking-defense">Striking Defense </a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Ground Offense"
+    link-href="/games/ufc/ufc-4/tips-and-tricks/ground-offense"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/tips-and-tricks/ground-offense">Ground Offense</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Ground Defense"
+    link-href="/games/ufc/ufc-4/tips-and-tricks/ground-defense"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/tips-and-tricks/ground-defense">Ground Defense</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Stamina and Health"
+    link-href="/games/ufc/ufc-4/tips-and-tricks/stamina-and-health"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/tips-and-tricks/stamina-and-health">Stamina and Health</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+<ea-elements-loader elements="ea-local-nav-shelf-sub-nav-section-link">
+</ea-elements-loader>
+<ea-local-nav-shelf-sub-nav-section-link
+    slot="sub-nav-section-link"
+    link-text="Submissions"
+    link-href="/games/ufc/ufc-4/tips-and-tricks/submissions"
+    link-target="_self"
+    
+    unresolved
+>
+    <a href="/games/ufc/ufc-4/tips-and-tricks/submissions">Submissions</a>
+</ea-local-nav-shelf-sub-nav-section-link>
+
+</ea-local-nav-shelf-sub-nav-section>
+
+</ea-local-nav-shelf-sub-nav>
+
+        
+    
+        
+            
+                <ea-link
+                    slot="local-nav-shelf-link"
+                    class="eapl-local-nav__shelf-link"
+                    text-color="dark"
+                    link-href="/games/ufc/ufc-4/news"
+                    link-title=""
+                    link-text="NEWS"
+                    unresolved
+                >
+                    <a href="/games/ufc/ufc-4/news">NEWS</a>
+                </ea-link>
+            
+        
+    
+        
+            
+                <ea-link
+                    slot="local-nav-shelf-link"
+                    class="eapl-local-nav__shelf-link"
+                    text-color="dark"
+                    link-href="https://forums.ea.com/en/ufc/categories/ufc-4"
+                    link-title=""
+                    link-text="COMMUNITY"
+                    unresolved
+                >
+                    <a href="https://forums.ea.com/en/ufc/categories/ufc-4">COMMUNITY</a>
+                </ea-link>
+            
+        
+    
+
+    
+        
+            
+
+    <ea-elements-loader elements="ea-local-nav-drawer-sub-nav-advanced">
+    </ea-elements-loader>
+    <ea-local-nav-drawer-sub-nav-advanced
+        
+            slot="local-nav-drawer-link"
+        
+        toggle-text="About "
+        toggle-tooltip=""
+        theme="light"
+        
+            type="simple"
+        
+        unresolved
+    >
+        
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/gameplay"
+        link-title=""
+        link-text="Gameplay"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/gameplay">Gameplay</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/career-mode"
+        link-title=""
+        link-text="Career Mode"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/career-mode">Career Mode</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/five-star-fighters"
+        link-title=""
+        link-text="5 Star Fighters"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/five-star-fighters">5 Star Fighters</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/soundtrack"
+        link-title=""
+        link-text="Soundtrack"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/soundtrack">Soundtrack</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/able/resources/ufc/ufc-4"
+        link-title=""
+        link-text="Accessibility"
+        text-color=""
+        unresolved
+    >
+        <a href="/able/resources/ufc/ufc-4">Accessibility</a>
+    </ea-link>
+
+
+        
+    </ea-local-nav-drawer-sub-nav-advanced>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        
+            slot="local-nav-drawer-link"
+        
+        class="eapl-local-nav__drawer-link"
+        link-href="/games/ufc/ufc-4/roster"
+        link-title=""
+        link-text="FIGHTERS"
+        text-color="dark"
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/roster">FIGHTERS</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-local-nav-drawer-sub-nav-advanced">
+    </ea-elements-loader>
+    <ea-local-nav-drawer-sub-nav-advanced
+        
+            slot="local-nav-drawer-link"
+        
+        toggle-text="Tips &amp; Tricks"
+        toggle-tooltip=""
+        theme="light"
+        
+            type="simple"
+        
+        unresolved
+    >
+        
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/tips-and-tricks/striking-offense"
+        link-title=""
+        link-text="Striking Offense"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/tips-and-tricks/striking-offense">Striking Offense</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/tips-and-tricks/striking-defense"
+        link-title=""
+        link-text="Striking Defense "
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/tips-and-tricks/striking-defense">Striking Defense </a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/tips-and-tricks/ground-offense"
+        link-title=""
+        link-text="Ground Offense"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/tips-and-tricks/ground-offense">Ground Offense</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/tips-and-tricks/ground-defense"
+        link-title=""
+        link-text="Ground Defense"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/tips-and-tricks/ground-defense">Ground Defense</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/tips-and-tricks/stamina-and-health"
+        link-title=""
+        link-text="Stamina and Health"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/tips-and-tricks/stamina-and-health">Stamina and Health</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        slot="local-nav-drawer-sub-link"
+        class="eapl-local-nav__drawer-sub-link"
+        link-href="/games/ufc/ufc-4/tips-and-tricks/submissions"
+        link-title=""
+        link-text="Submissions"
+        text-color=""
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/tips-and-tricks/submissions">Submissions</a>
+    </ea-link>
+
+
+        
+    </ea-local-nav-drawer-sub-nav-advanced>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        
+            slot="local-nav-drawer-link"
+        
+        class="eapl-local-nav__drawer-link"
+        link-href="/games/ufc/ufc-4/news"
+        link-title=""
+        link-text="NEWS"
+        text-color="dark"
+        unresolved
+    >
+        <a href="/games/ufc/ufc-4/news">NEWS</a>
+    </ea-link>
+
+
+        
+            
+
+    <ea-elements-loader elements="ea-link">
+    </ea-elements-loader>
+    <ea-link
+        
+            slot="local-nav-drawer-link"
+        
+        class="eapl-local-nav__drawer-link"
+        link-href="https://forums.ea.com/en/ufc/categories/ufc-4"
+        link-title=""
+        link-text="COMMUNITY"
+        text-color="dark"
+        unresolved
+    >
+        <a href="https://forums.ea.com/en/ufc/categories/ufc-4">COMMUNITY</a>
+    </ea-link>
+
+
+        
+    
+
+    
+        
+
+
+    <ea-elements-loader elements="ea-cta-dropdown, ea-hybrid-modal-invoker">
+    </ea-elements-loader>
+
+    
+        <ea-cta-dropdown
+            slot="cta-dropdown"
+            theme="dark"
+            cta-title-text="Buy Now"
+            cta-link="/games/ufc/ufc-4/buy"
+            border-color="none"
+            fill-color="brand"
+            text-color="dark"
+
+            
+            
+            
+            unresolved
+        >
+            
+
+            
+        </ea-cta-dropdown>
+    
+
+
+
+        
+            <ea-elements-loader elements="ea-local-nav-dropdown">
+            </ea-elements-loader>
+            <ea-local-nav-dropdown
+                slot="local-nav-dropdown"
+                theme="dark"
+                menu-title=""
+                cta-title-text="Buy Now"
+                cta-link="/games/ufc/ufc-4/buy"
+                border-color="none"
+                fill-color="brand"
+                text-color="dark"
+                unresolved
+            >
+            
+            
+            </ea-local-nav-dropdown>
+        
+    
+</ea-local-nav-advanced>
+
+            
+        
+    
+
+
+
+
+
+<main>
+    
+
+
+<ea-elements-loader elements="ea-spacer">
+</ea-elements-loader>
+<ea-spacer
+    unresolved
+    
+        smallest="4rem"
+    
+    
+        small="4rem"
+    
+    
+        medium="4rem"
+    
+    
+        large="4rem"
+    
+    
+        largest="4rem"
+    
+>
+</ea-spacer>
+
+<ea-elements-loader elements="ea-section">
+</ea-elements-loader>
+<ea-section
+    unresolved
+    slot="section"
+    
+    
+        type="full-bleed"
+    
+    
+        layout="100"
+    
+    
+    
+        background-color="none"
+    
+    
+    
+        background-overflow="visible"
+    
+    
+        spacing-top="none"
+    
+    
+        spacing-bottom="none"
+    
+    
+    
+    
+    
+>
+    
+    
+
+
+<ea-section-column
+    slot="section-column"
+    
+        indent-left=""
+    
+    
+        indent-right=""
+    
+    
+        text-align="left"
+    
+    
+    
+>
+    
+<ea-elements-loader elements="ea-hero">
+</ea-elements-loader>
+<ea-hero
+    
+        layout="medium"
+    
+    
+        text-position="left"
+    
+    
+        text-align="left"
+    
+    
+        text-color="light"
+    
+    
+        stacked
+    
+    
+    
+    
+    
+    
+        background-color="none"
+    
+    
+    
+    
+        title-text="UFC 4 Choke Submissions Tips & tricks"
+    
+    
+        subtitle-text="Learn how to improve your skills in UFC 4"
+    
+    
+    
+        image-smallest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop16x9.320w.jpg"
+        image-small="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop16x9.767w.jpg"
+        image-medium="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop2x1.1023w.jpg"
+        image-large="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop5x2.1455w.jpg"
+        image-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop7x2.1920w.jpg"
+        image-tooltip=""
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        spacing-bottom="none"
+    
+    
+        spacing-top="none"
+    
+    
+        scrim-color="none"
+    
+    
+        scrim-opacity="medium"
+    
+    
+    unresolved
+    
+        custom-styles="{}"
+    
+    
+    
+>
+    
+        <h1>UFC 4 Choke Submissions Tips &amp; tricks</h1>
+    
+    
+        <h2>Learn how to improve your skills in UFC 4</h2>
+    
+    
+    
+    
+        <img
+            src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop16x9.320w.jpg"
+            alt=""
+            srcset="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop16x9.320w.jpg 320w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop16x9.767w.jpg 768w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop2x1.1023w.jpg 1024w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop5x2.1455w.jpg 1320w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/08/hub2.jpg.adapt.crop7x2.1920w.jpg 1456w"
+        />
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/tips-and-tricks"
+    
+    
+    
+        link-text="Back to Tips &amp; Tricks Hub"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="brand"
+    
+    
+        text-color="dark"
+    
+    
+        stroke-color="none"
+    
+    
+        target="_self"
+    
+    
+    
+    
+    
+        intent="navigation"
+    
+    
+    
+    
+        emphasis="primary"
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/tips-and-tricks"
+        
+        
+    >
+        
+            Back to Tips &amp; Tricks Hub
+        
+    </a>
+</ea-cta>
+
+    
+</ea-hero>
+
+</ea-section-column>
+
+    
+</ea-section>
+
+<ea-elements-loader elements="ea-section">
+</ea-elements-loader>
+<ea-section
+    unresolved
+    slot="section"
+    
+    
+        type="railed"
+    
+    
+        layout="100"
+    
+    
+    
+        background-color="none"
+    
+    
+    
+        background-overflow="visible"
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="none"
+    
+    
+    
+    
+    
+>
+    
+    
+
+
+<ea-section-column
+    slot="section-column"
+    
+        indent-left="1"
+    
+    
+        indent-right="1"
+    
+    
+        text-align="left"
+    
+    
+    
+>
+    
+<ea-elements-loader elements="ea-media">
+</ea-elements-loader>
+<ea-media
+    slot="media"
+    
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-html5-video">
+</ea-elements-loader>
+<ea-html5-video
+    slot="html5-video"
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        webm-src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-offense.mp4"
+    
+
+    
+        mp4-src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-offense.mp4"
+    
+
+    
+        webm-src-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-offense.mp4"
+    
+
+    
+        mp4-src-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-offense.mp4"
+    
+
+    
+
+    
+
+    
+        controls=""
+    
+
+    
+        loop=""
+    
+
+    
+        muted=""
+    
+
+    
+
+    
+    unresolved
+>
+    
+</ea-html5-video>
+
+    
+
+    
+</ea-media>
+
+<ea-elements-loader elements="ea-subheading">
+</ea-elements-loader>
+<ea-subheading
+    unresolved
+    
+        type="ordered"
+    
+    
+        layout="small"
+    
+    
+        text-align="left"
+    
+    
+        text-color="dark"
+    
+    
+    
+        title-text="Choke Submission Offense"
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+>
+    
+    
+        <h3>Choke Submission Offense</h3>
+    
+    
+</ea-subheading>
+
+<ea-elements-loader elements="ea-text">
+</ea-elements-loader>
+<ea-text
+    unresolved
+    slot="text"
+    
+        text-color="dark"
+    
+>
+    <p>Use ^LS^ to move your wedge and chase the opponent's wedge. The longer your wedge covers the opponent's and the more they overlap, the more your Submission meter grows.</p>
+<p><b>Inputs:</b></p>
+<p>^LS^</p>
+
+    
+</ea-text>
+
+</ea-section-column>
+
+    
+</ea-section>
+
+<ea-elements-loader elements="ea-section">
+</ea-elements-loader>
+<ea-section
+    unresolved
+    slot="section"
+    
+    
+        type="railed"
+    
+    
+        layout="100"
+    
+    
+    
+        background-color="none"
+    
+    
+    
+        background-overflow="visible"
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="none"
+    
+    
+    
+    
+    
+>
+    
+    
+
+
+<ea-section-column
+    slot="section-column"
+    
+        indent-left="1"
+    
+    
+        indent-right="1"
+    
+    
+        text-align="left"
+    
+    
+    
+>
+    
+<ea-elements-loader elements="ea-media">
+</ea-elements-loader>
+<ea-media
+    slot="media"
+    
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-html5-video">
+</ea-elements-loader>
+<ea-html5-video
+    slot="html5-video"
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        webm-src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-defense.mp4"
+    
+
+    
+        mp4-src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-defense.mp4"
+    
+
+    
+        webm-src-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-defense.mp4"
+    
+
+    
+        mp4-src-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-defense.mp4"
+    
+
+    
+
+    
+
+    
+        controls=""
+    
+
+    
+        loop=""
+    
+
+    
+        muted=""
+    
+
+    
+
+    
+    unresolved
+>
+    
+</ea-html5-video>
+
+    
+
+    
+</ea-media>
+
+<ea-elements-loader elements="ea-subheading">
+</ea-elements-loader>
+<ea-subheading
+    unresolved
+    
+        type="ordered"
+    
+    
+        layout="small"
+    
+    
+        text-align="left"
+    
+    
+        text-color="dark"
+    
+    
+    
+        title-text="Choke Submission Defense"
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+>
+    
+    
+        <h3>Choke Submission Defense</h3>
+    
+    
+</ea-subheading>
+
+<ea-elements-loader elements="ea-text">
+</ea-elements-loader>
+<ea-text
+    unresolved
+    slot="text"
+    
+        text-color="dark"
+    
+>
+    <p>Use ^LS^ to move your wedge around the circle to move away from the attacker. Moving too quickly or side to side will cause your wedge to grow. Using controlled movement will keep your wedge small.</p>
+<p><b>Inputs:</b></p>
+<p>^LS^</p>
+
+    
+</ea-text>
+
+</ea-section-column>
+
+    
+</ea-section>
+
+<ea-elements-loader elements="ea-section">
+</ea-elements-loader>
+<ea-section
+    unresolved
+    slot="section"
+    
+    
+        type="railed"
+    
+    
+        layout="100"
+    
+    
+    
+        background-color="none"
+    
+    
+    
+        background-overflow="visible"
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="small"
+    
+    
+    
+    
+    
+>
+    
+    
+
+
+<ea-section-column
+    slot="section-column"
+    
+        indent-left="1"
+    
+    
+        indent-right="1"
+    
+    
+        text-align="left"
+    
+    
+    
+>
+    
+<ea-elements-loader elements="ea-media">
+</ea-elements-loader>
+<ea-media
+    slot="media"
+    
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+    unresolved
+>
+    
+<ea-elements-loader elements="ea-html5-video">
+</ea-elements-loader>
+<ea-html5-video
+    slot="html5-video"
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        webm-src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-damage.mp4"
+    
+
+    
+        mp4-src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-damage.mp4"
+    
+
+    
+        webm-src-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-damage.mp4"
+    
+
+    
+        mp4-src-largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/videos/2020/07/training-hub/manual-submission-choke-sub-damage.mp4"
+    
+
+    
+
+    
+
+    
+        controls=""
+    
+
+    
+        loop=""
+    
+
+    
+        muted=""
+    
+
+    
+
+    
+    unresolved
+>
+    
+</ea-html5-video>
+
+    
+
+    
+</ea-media>
+
+<ea-elements-loader elements="ea-subheading">
+</ea-elements-loader>
+<ea-subheading
+    unresolved
+    
+        type="ordered"
+    
+    
+        layout="small"
+    
+    
+        text-align="left"
+    
+    
+        text-color="dark"
+    
+    
+    
+        title-text="Damage Effects"
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+>
+    
+    
+        <h3>Damage Effects</h3>
+    
+    
+</ea-subheading>
+
+<ea-elements-loader elements="ea-text">
+</ea-elements-loader>
+<ea-text
+    unresolved
+    slot="text"
+    
+        text-color="dark"
+    
+>
+    <p>If the attacker achieves a lot of progress in a choke, the defender's stamina will be drained.</p>
+
+    
+</ea-text>
+
+</ea-section-column>
+
+    
+</ea-section>
+
+<ea-elements-loader elements="ea-section">
+</ea-elements-loader>
+<ea-section
+    unresolved
+    slot="section"
+    
+    
+        type="railed"
+    
+    
+        layout="100"
+    
+    
+    
+        background-color="none"
+    
+    
+    
+        background-overflow="visible"
+    
+    
+        spacing-top="none"
+    
+    
+        spacing-bottom="none"
+    
+    
+        mp4-src=""
+    
+    
+        webm-src=""
+    
+    
+    
+>
+    
+    
+
+
+<ea-section-column
+    slot="section-column"
+    
+        indent-left="1"
+    
+    
+        indent-right="1"
+    
+    
+        text-align="center"
+    
+    
+    
+>
+    
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/tips-and-tricks"
+    
+    
+    
+        link-text="Back to Tips &amp; Tricks Hub"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="brand"
+    
+    
+        text-color="dark"
+    
+    
+        stroke-color="none"
+    
+    
+        target="_self"
+    
+    
+    
+    
+    
+        intent="navigation"
+    
+    
+    
+    
+        emphasis="primary"
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/tips-and-tricks"
+        
+        
+    >
+        
+            Back to Tips &amp; Tricks Hub
+        
+    </a>
+</ea-cta>
+
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/tips-and-tricks/submissions"
+    
+    
+    
+        link-text="Back to Submissions Hub"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="brand"
+    
+    
+        text-color="dark"
+    
+    
+        stroke-color="none"
+    
+    
+        target="_self"
+    
+    
+    
+    
+    
+        intent="navigation"
+    
+    
+    
+    
+        emphasis="primary"
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/tips-and-tricks/submissions"
+        
+        
+    >
+        
+            Back to Submissions Hub
+        
+    </a>
+</ea-cta>
+
+</ea-section-column>
+
+    
+</ea-section>
+
+<ea-elements-loader elements="ea-section">
+</ea-elements-loader>
+<ea-section
+    unresolved
+    slot="section"
+    
+    
+        type="railed"
+    
+    
+        layout="100"
+    
+    
+    
+        background-color="none"
+    
+    
+    
+        background-overflow="hidden"
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="small"
+    
+    
+    
+    
+    
+>
+    
+    
+
+
+<ea-section-column
+    slot="section-column"
+    
+        indent-left=""
+    
+    
+        indent-right=""
+    
+    
+        text-align="left"
+    
+    
+    
+>
+    
+<ea-elements-loader elements="ea-subheading">
+</ea-elements-loader>
+<ea-subheading
+    unresolved
+    
+        type="ordered"
+    
+    
+        layout="small"
+    
+    
+        text-align="center"
+    
+    
+        text-color="dark"
+    
+    
+    
+        title-text="LATEST NEWS"
+    
+    
+    
+        spacing-top="small"
+    
+    
+        spacing-bottom="medium"
+    
+>
+    
+    
+        <h3>LATEST NEWS</h3>
+    
+    
+</ea-subheading>
+
+<ea-elements-loader elements="ea-grid">
+</ea-elements-loader>
+<ea-grid
+    
+
+    type="ordered"
+
+
+    tile-media-shape="rectangle"
+
+
+
+    layout="3up"
+
+
+    tile-type="vertical"
+
+
+    tile-text-align="left"
+
+
+    tile-text-color="light"
+
+
+    tile-color="dark"
+
+
+
+
+
+
+
+    hide-ctas
+
+
+    hide-brand-stroke
+
+
+    hide-byline
+
+
+    spacing-top="medium"
+
+
+    spacing-bottom="medium"
+
+
+
+
+    
+    
+    
+        tile-scrim-color="none"
+    
+    
+        tile-scrim-opacity="medium"
+    
+    tile-align="center"
+    
+    
+        cards=""
+    
+    
+    
+        background-color="none"
+    
+    
+    
+    
+    animate-in-order=""
+    animate-out-order=""
+    
+    unresolved
+>
+    
+    
+
+    
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:0"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2021/10/ufc4-featured-image-primeicons-16x9.png.adapt.crop16x9.431p.png"
+        
+        
+        
+            eyebrow-text="Nov 4, 2021"
+        
+        
+        
+            title-text="UFC Patch Notes (4.13.00)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC Patch Notes (4.13.00)</h3>
+        
+        
+            <div>Nov 4, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes that include one new fighter, 6 new legend versions of fighters, and new vanity and player card customization! 
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/patch-notes-prime-icons"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/patch-notes-prime-icons"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:1"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2021/07/ufc4-feature-image-ea-play.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Jul 8, 2021"
+        
+        
+        
+            title-text="Shape Your Legend with UFC 4 on EA Play"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>Shape Your Legend with UFC 4 on EA Play</h3>
+        
+        
+            <div>Jul 8, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Shape your legend in the Octagon® as EA SPORTS™ UFC® 4 is now available on The Play List with EA Play.
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/shape-your-legend-with-ufc-4-on-ea-play"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/shape-your-legend-with-ufc-4-on-ea-play"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:2"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2021/06/patch-notes-12-0-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Jun 12, 2021"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (12.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (12.0)</h3>
+        
+        
+            <div>Jun 12, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 12.0 that includes 2 new licensed fighters and gameplay updates!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-12"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-12"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:3"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/articles/patch-notes/patch-notes-11/patch-notes-11-0-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="May 13, 2021"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (11.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (11.0)</h3>
+        
+        
+            <div>May 13, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 11.0 that includes 2 new licensed fighters, likeness updates, and more!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-11"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-11"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:4"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/patch-notes-10-0-16x9-1.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Apr 8, 2021"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (10.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (10.0)</h3>
+        
+        
+            <div>Apr 8, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 9.0 that includes 2 new licensed fighters and gameplay updates!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-10"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-10"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:5"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/articles/patch-notes/patch-notes-9/patch-notes-9-00-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Mar 4, 2021"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (9.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (9.0)</h3>
+        
+        
+            <div>Mar 4, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 9.0 that includes 2 new licensed fighters and gameplay updates!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-9"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-9"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:6"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/articles/damage-model-blog/ufc-4-damage-model-blog-featured-image-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Mar 4, 2021"
+        
+        
+        
+            title-text="UFC 4 Damage Model Deep Dive"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Damage Model Deep Dive</h3>
+        
+        
+            <div>Mar 4, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Take a deep dive into the UFC 4 damage model to get a better understanding of what’s happening behind the scenes!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-damage-model-blog"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-damage-model-blog"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:7"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2021/01/patch-notes-7-00-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Jan 21, 2021"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (7.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (7.0)</h3>
+        
+        
+            <div>Jan 21, 2021</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 7.0 that includes a new Legacy version of Conor McGregor, licensed fighter Jiri Prochazka, community requested gameplay updates, and more!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-7"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-7"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:8"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/12/patch-notes-6-00-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Dec 10, 2020"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (6.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (6.0)</h3>
+        
+        
+            <div>Dec 10, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 6.0 that includes 2 new licensed fighters (Michael Chandler and Alex Perez), gameplay updates, and more!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-6"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-6"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:9"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/11/patch-notes-5-00-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Nov 19, 2020"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (5.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (5.0)</h3>
+        
+        
+            <div>Nov 19, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 5.0 that includes 2 new licensed fighters (Khamzat Chimaev and Megan Anderson), gameplay updates, and more!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-5"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-5"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:10"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/10/patch-notes-4-00-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Oct 22, 2020"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (4.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (4.0)</h3>
+        
+        
+            <div>Oct 22, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 4.0 that includes 3 new fighters, Halloween vanity, and more gameplay updates!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-4"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-4"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:11"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/images/2020/10/featured-image-fighter-drop-2-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Oct 22, 2020"
+        
+        
+        
+            title-text="UFC 4 Free Trial Weekend"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Free Trial Weekend</h3>
+        
+        
+            <div>Oct 22, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Play UFC 4 for and fight as Brock Lesnar — both free for a limited time.
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/free-trial-weekend"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/free-trial-weekend"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:12"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/patch-notes-3-00-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Sep 24, 2020"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (3.0)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (3.0)</h3>
+        
+        
+            <div>Sep 24, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Check out the full patch notes for patch 3.0 that includes new fighters, vanity, and tons of gameplay updates!
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-3"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-3"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:13"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/patch-notes-2-03-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Sep 4, 2020"
+        
+        
+        
+            title-text="UFC 4 Patch Notes (2.03)"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Patch Notes (2.03)</h3>
+        
+        
+            <div>Sep 4, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            See the full patch notes for the emergency patch addressing stability issues and updates to gameplay balance.
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-patch-notes-203"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-patch-notes-203"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:14"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc4-ea-access-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Aug 10, 2020"
+        
+        
+        
+            title-text="Enter the Octagon early with EA Access and EA SPORTS UFC®4! "
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>Enter the Octagon early with EA Access and EA SPORTS UFC®4! </h3>
+        
+        
+            <div>Aug 10, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Be the first to fight in UFC® 4 and shape your legend.
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ea-access"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ea-access"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:15"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/gameplay-deep-dive-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Aug 7, 2020"
+        
+        
+        
+            title-text="UFC 4 New Gameplay Features Deepdive"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 New Gameplay Features Deepdive</h3>
+        
+        
+            <div>Aug 7, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Deep dive into the new gameplay features in UFC 4 and some of the design decisions behind them.
+
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/new-gameplay-deepdive"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/new-gameplay-deepdive"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:16"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-ratings-beta-updates-16x9.jpg.adapt.crop16x9.431p.jpg"
+        
+        
+        
+            eyebrow-text="Aug 7, 2020"
+        
+        
+        
+            title-text="UFC 4 Changes Based on Your Closed Beta Feedback"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Changes Based on Your Closed Beta Feedback</h3>
+        
+        
+            <div>Aug 7, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            An in-depth look at the changes and updates made to UFC 4 based on community feedback following the closed beta.
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/closed-beta-changes"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/closed-beta-changes"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:17"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc4-career-mode-lf-master.png.adapt.crop16x9.431p.png"
+        
+        
+        
+            eyebrow-text="Jul 28, 2020"
+        
+        
+        
+            title-text="UFC 4 Star Rating System Explained"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 Star Rating System Explained</h3>
+        
+        
+            <div>Jul 28, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            Deep dive into all the info on the new 1-5 star fighter rating system
+
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/star-rating-system"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/star-rating-system"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+<ea-elements-loader elements="ea-container, ea-tile">
+</ea-elements-loader>
+<ea-container
+    slot="container"
+    
+        filter-key="All"
+    
+    >
+    <ea-tile
+        unresolved
+        slot="tile"
+        style="--ea-animation-index:18"
+        
+        
+        
+        
+            media="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/ufc-4-featured-image-16x9.png.adapt.crop16x9.431p.png"
+        
+        
+        
+            eyebrow-text="Jul 12, 2020"
+        
+        
+        
+            title-text="UFC 4 - Major changes"
+        
+        
+        
+        
+        
+        
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+    >
+        
+            <h3>UFC 4 - Major changes</h3>
+        
+        
+            <div>Jul 12, 2020</div>
+            
+        
+        
+        
+        <ea-tile-copy slot="copy">
+        
+            A letter from Brian Hayes, Creative Director of UFC 4.
+        
+        </ea-tile-copy>
+        
+        
+            
+<ea-elements-loader elements="ea-cta">
+</ea-elements-loader>
+<ea-cta
+    
+        slot="cta"
+    
+    
+        type="standard"
+    
+    
+        link-url="/games/ufc/ufc-4/news/ufc-4-major-changes"
+    
+    
+    
+        link-text="Learn More"
+    
+    
+        icon="none"
+    
+    
+    
+        fill-color="none"
+    
+    
+        text-color="dark"
+    
+    
+    
+    
+    
+    
+    
+        intent="news"
+    
+    
+    
+    
+    
+    
+    
+    
+    unresolved
+>
+    <a
+        
+            href="/games/ufc/ufc-4/news/ufc-4-major-changes"
+        
+        
+    >
+        
+            Learn More
+        
+    </a>
+</ea-cta>
+
+        
+        
+        
+    </ea-tile>
+</ea-container>
+
+
+
+    
+
+<ea-elements-loader elements="ea-load-more">
+</ea-elements-loader>
+<ea-load-more
+    label-text="Load More"
+    quantity="12"
+    slot="load-more"
+    title="Load More"
+    theme="dark"
+    unresolved
+>
+    Load More
+</ea-load-more>
+
+
+</ea-grid>
+
+<ea-elements-loader elements="ea-subheading">
+</ea-elements-loader>
+<ea-subheading
+    unresolved
+    
+        type="ordered"
+    
+    
+        layout="small"
+    
+    
+        text-align="left"
+    
+    
+        text-color="dark"
+    
+    
+    
+        title-text="&nbsp;"
+    
+    
+    
+        spacing-top="medium"
+    
+    
+        spacing-bottom="medium"
+    
+>
+    
+    
+        <h3>&amp;nbsp;</h3>
+    
+    
+</ea-subheading>
+
+</ea-section-column>
+
+    
+</ea-section>
+
+<ea-elements-loader elements="ea-page-background">
+</ea-elements-loader>
+<ea-page-background
+    unresolved
+    layout="fixed"
+    background-color=""
+    
+>
+    
+
+
+    <ea-elements-loader elements="ea-image">
+    </ea-elements-loader>
+    <ea-image
+        unresolved
+        tooltip=""
+        smallest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.320w.png"
+        small="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.768w.png"
+        medium="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.1024w.png"
+        large="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.1456w.png"
+        largest="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.1920w.png"
+        
+        
+        
+        
+            slot="image"
+        
+        
+    >
+        <img
+            src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.320w.png"
+            alt=""
+            srcset="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.320w.png 320w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.768w.png 768w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.1024w.png 1024w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.1456w.png 1320w, https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/scrolling-page-bg-l.png.adapt.1920w.png 1456w" />
+    </ea-image>
+
+
+
+</ea-page-background>
+
+
+
+
+    
+        
+    
+
+
+
+    
+    <div style="display: none;"></div>
+</main>
+<footer role="contentinfo">
+    
+
+    
+        
+            
+                
+<ea-elements-loader elements="ea-local-footer, ea-local-links, ea-local-link, ea-social-links, ea-social-link, ea-hybrid-regional-rating">
+</ea-elements-loader>
+<ea-local-footer
+    theme="light"
+    sal-game-slug="ufc-4"
+    rating-lang="en"
+    unresolved
+>
+    <ea-local-links
+        slot="local-links"
+        title-text="UFC 4"
+        text-color="light"
+        unresolved
+    >
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/roster"
+            link-title=""
+            link-text="Fighters"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/roster"
+                title=""
+            >Fighters</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/news"
+            link-title=""
+            link-text="News"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/news"
+                title=""
+            >News</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/gameplay"
+            link-title=""
+            link-text="Gameplay"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/gameplay"
+                title=""
+            >Gameplay</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/career-mode"
+            link-title=""
+            link-text="Career Mode"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/career-mode"
+                title=""
+            >Career Mode</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/tips-and-tricks"
+            link-title=""
+            link-text="Tips and Tricks"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/tips-and-tricks"
+                title=""
+            >Tips and Tricks</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/soundtrack"
+            link-title=""
+            link-text="Soundtrack"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/soundtrack"
+                title=""
+            >Soundtrack</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="https://forums.ea.com/en/ufc/categories/ufc-4"
+            link-title=""
+            link-text="Community"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="https://forums.ea.com/en/ufc/categories/ufc-4"
+                title=""
+            >Community</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/newsletter"
+            link-title=""
+            link-text="Newsletter"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/newsletter"
+                title=""
+            >Newsletter</a>
+        </ea-local-link>
+    
+        <ea-local-link
+            slot="local-link"
+            link-url="/games/ufc/ufc-4/buy"
+            link-title=""
+            link-text="Buy Now"
+            text-color="light"
+            unresolved
+        >
+            <a
+                href="/games/ufc/ufc-4/buy"
+                title=""
+            >Buy Now</a>
+        </ea-local-link>
+    
+    </ea-local-links>
+
+    <ea-social-links
+        slot="social-links"
+        text-color="light"
+        title-text="Join The Conversation"
+        unresolved
+    >
+    
+        <ea-social-link
+            slot="social-link"
+            link-url="http://www.facebook.com/EASPORTSUFC"
+            link-title=""
+            link-target="_blank"
+            text-color="light"
+            social-network="facebook"
+            unresolved
+        >
+            <a
+                href="http://www.facebook.com/EASPORTSUFC"
+                title=""
+            >facebook</a>
+        </ea-social-link>
+    
+        <ea-social-link
+            slot="social-link"
+            link-url="https://twitter.com/EASPORTSUFC"
+            link-title=""
+            link-target="_blank"
+            text-color="light"
+            social-network="twitter"
+            unresolved
+        >
+            <a
+                href="https://twitter.com/EASPORTSUFC"
+                title=""
+            >twitter</a>
+        </ea-social-link>
+    
+        <ea-social-link
+            slot="social-link"
+            link-url="https://www.instagram.com/easportsufc/"
+            link-title=""
+            link-target="_blank"
+            text-color="light"
+            social-network="instagram"
+            unresolved
+        >
+            <a
+                href="https://www.instagram.com/easportsufc/"
+                title=""
+            >instagram</a>
+        </ea-social-link>
+    
+        <ea-social-link
+            slot="social-link"
+            link-url="https://www.youtube.com/channel/UC86X0tzvfk12eAG9JYMp99w"
+            link-title=""
+            link-target="_blank"
+            text-color="light"
+            social-network="youtube"
+            unresolved
+        >
+            <a
+                href="https://www.youtube.com/channel/UC86X0tzvfk12eAG9JYMp99w"
+                title=""
+            >youtube</a>
+        </ea-social-link>
+    
+    </ea-social-links>
+
+    
+
+    
+        
+<ea-elements-loader elements="ea-rating-link">
+</ea-elements-loader>
+<ea-rating-link
+    unresolved
+    slot="rating-link"
+    link-url="http://www.esrb.com"
+    link-title="ESRB"
+    
+    
+        image-smallest="https://media.contentapi.ea.com/content/dam/ufc/common/legal/ufc-esrb-t-new-1.svg"
+        image-small="https://media.contentapi.ea.com/content/dam/ufc/common/legal/ufc-esrb-t-new-1.svg"
+        image-medium="https://media.contentapi.ea.com/content/dam/ufc/common/legal/ufc-esrb-t-new-1.svg"
+        image-large="https://media.contentapi.ea.com/content/dam/ufc/common/legal/ufc-esrb-t-new-1.svg"
+        image-largest="https://media.contentapi.ea.com/content/dam/ufc/common/legal/ufc-esrb-t-new-1.svg"
+        image-alt=""
+        
+        
+    
+>
+    <a
+        href="http://www.esrb.com"
+        title="ESRB"
+    ></a>
+</ea-rating-link>
+
+    
+
+    
+<ea-elements-loader elements="ea-hybrid-regional-rating"></ea-elements-loader>
+
+<ea-hybrid-regional-rating
+    
+    
+        slug="ufc-4"
+    
+    
+        slot="regional-rating"
+    
+    
+        lang="en"
+    
+>
+</ea-hybrid-regional-rating>
+
+
+    
+</ea-local-footer>
+
+            
+        
+    
+
+
+    
+
+    
+        
+            
+                
+<ea-elements-loader elements="ea-network-footer, ea-network-legal, ea-link, ea-content-loader">
+</ea-elements-loader>
+<ea-network-footer
+    theme="dark"
+    
+    
+        logo-image="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/black-ea-logo.png"
+        logo-tooltip=""
+    
+    
+        logo-link-url="https://www.ea.com"
+        logo-link-text="EA"
+        logo-link-tooltip="EA"
+    
+    unresolved
+>
+    
+        <img
+            src="https://media.contentapi.ea.com/content/dam/ufc/ufc-4/common/black-ea-logo.png"
+            alt=""
+        />
+    
+    
+        
+            <ea-link
+                slot="link"
+                link-href="/games/library"
+                link-title="Game Library"
+                link-text="Game Library"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/games/library"
+                    title="Game Library"
+                >Game Library</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="/subscribe"
+                link-title="Subscribe"
+                link-text="Subscribe"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/subscribe"
+                    title="Subscribe"
+                >Subscribe</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="/ea-app"
+                link-title="EA app"
+                link-text="EA app"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/ea-app"
+                    title="EA app"
+                >EA app</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="/about"
+                link-title="About"
+                link-text="About"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/about"
+                    title="About"
+                >About</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="/able"
+                link-title="Accessibility"
+                link-text="Accessibility"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/able"
+                    title="Accessibility"
+                >Accessibility</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="https://help.ea.com/"
+                link-title="Help"
+                link-text="Help"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="https://help.ea.com/"
+                    title="Help"
+                >Help</a>
+            </ea-link>
+        
+    
+    
+    
+<ea-elements-loader elements="ea-locale-selector">
+</ea-elements-loader>
+<ea-locale-selector
+    slot="locale-selector"
+    theme="dark"
+    value="en-us"
+    label-text=""
+    
+    unresolved
+    >
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="en-us"
+        >United States</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="en-gb"
+        >United Kingdom</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="en-au"
+        >Australia </ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="fr-fr"
+        >France</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="de-de"
+        >Deutschland</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="it-it"
+        >Italia</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="ja-jp"
+        >日本</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="pl-pl"
+        >Polska</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="pt-br"
+        >Brasil</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="ru-ru"
+        >Россия</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="es-es"
+        >España</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="es-mx"
+        >Mexico</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="zh-hk"
+        >香港</ea-locale-selector-option>
+    
+        <ea-locale-selector-option
+            slot="locale-selector-option"
+            value="ko-kr"
+        >대한민국</ea-locale-selector-option>
+    
+</ea-locale-selector>
+
+    <ea-network-legal
+        slot="network-legal"
+        copyright-text="© 2022 Electronic Arts Inc."
+        text-color="dark"
+        unresolved
+    >
+        
+            <ea-link
+                slot="link"
+                link-href="http://www.ea.com/legal"
+                link-title="Legal &amp; Privacy"
+                link-text="Legal &amp; Privacy"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="http://www.ea.com/legal"
+                    title="Legal &amp; Privacy"
+                >Legal &amp; Privacy</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="https://www.ea.com/terms-of-service"
+                link-title="NEW User Agreement"
+                link-text="User Agreement"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="https://www.ea.com/terms-of-service"
+                    title="NEW User Agreement"
+                >User Agreement</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="https://www.ea.com/legal/privacy-and-cookie-policy"
+                link-title="Privacy &amp; Cookie Policy (Your Privacy Rights)"
+                link-text="Privacy &amp; Cookie Policy (Your Privacy Rights)"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="https://www.ea.com/legal/privacy-and-cookie-policy"
+                    title="Privacy &amp; Cookie Policy (Your Privacy Rights)"
+                >Privacy &amp; Cookie Policy (Your Privacy Rights)</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="/service-updates"
+                link-title="Online Service Updates"
+                link-text="Online Service Updates"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/service-updates"
+                    title="Online Service Updates"
+                >Online Service Updates</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="/security"
+                link-title="Security"
+                link-text="Security"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="/security"
+                    title="Security"
+                >Security</a>
+            </ea-link>
+        
+            <ea-link
+                slot="link"
+                link-href="https://www.youtube.com/t/terms"
+                link-title="YouTube Terms of Service"
+                link-text="YouTube Terms of Service"
+                text-color="dark"
+                unresolved
+            >
+                <a
+                    href="https://www.youtube.com/t/terms"
+                    title="YouTube Terms of Service"
+                >YouTube Terms of Service</a>
+            </ea-link>
+        
+        <ea-content-loader
+            slot="link"
+            content-url="https://www.ea.com/ccpa/footer-link"
+        >
+        </ea-content-loader>
+        
+    </ea-network-legal>
+    
+<ea-elements-loader elements="ea-truste">
+</ea-elements-loader>
+
+
+<script async>
+
+        function createElement(id, hidden) {
+            const element = document.createElement("div");
+
+            element.id = id;
+            element.hidden = hidden;
+
+            return element;
+        }
+
+        function createScriptTag() {
+            const script = document.createElement("script");
+            let src = `//consent.trustarc.com/notice?domain=ea.com&c=teconsent&js=nj&noticeType=bb&text=true&gtm=1`;
+
+            if (shouldAutoShowCookiePreferences()) {
+                src = src + "&behavior=expressed";
+            }
+
+            script.src = src;
+            script.setAttribute("crossorigin", "");
+
+            return script;
+        }
+
+        function shouldAutoShowCookiePreferences() {
+            const showCookiePreferencesParam = "show=cookiePreferences";
+            const urlSearchParams = window.location.search.slice(1).split("&");
+
+            return urlSearchParams.includes(showCookiePreferencesParam);
+        }
+
+        function isLocalNDS(componentUrlPrefix) {
+            return componentUrlPrefix && componentUrlPrefix.includes('local');
+        }
+
+        function isNDSBranch(componentUrlPrefix) {
+            return componentUrlPrefix && componentUrlPrefix.includes('branch');
+        }
+
+        function isNDSVersionGreaterOrEqual(componentUrlPrefix) {
+            let ndsVersion = componentUrlPrefix && componentUrlPrefix.match('/release\/([^\/]*)/')[1];
+            let isGreaterOrEqual = ndsVersion && ndsVersion.localeCompare("4.40.5", undefined, { numeric: true, sensitivity: 'base' });
+
+            return isGreaterOrEqual >= 0;
+        }
+
+        const componentUrlPrefix = window.nds.componentUrlPrefix;
+
+        /**
+         * Check for backwards compatibility with NDS version greater or equal to when TrustArc was integrated
+         */
+        if (
+            isLocalNDS(componentUrlPrefix) ||
+            isNDSBranch(componentUrlPrefix) ||
+            isNDSVersionGreaterOrEqual(componentUrlPrefix)
+        )
+        {
+            const trustArcScript = createScriptTag();
+            const elements = document.createDocumentFragment();
+
+            elements.appendChild(createElement("consent_blackbar", false));
+            elements.appendChild(createElement("teconsent", true));
+            elements.appendChild(trustArcScript);
+
+            document.body.appendChild(elements);
+        }
+
+</script>
+<ea-truste
+    unresolved
+    slot="truste"
+    
+        domain="ea.com"
+    
+>
+    <div>
+        
+            <a href="//privacy.truste.com/privacy-seal/validation?rid=f1a11c5d-0232-4077-8498-2e69a38c1335" target="_blank">
+                <img style="border: none" src="//privacy-policy.truste.com/privacy-seal/seal?rid=f1a11c5d-0232-4077-8498-2e69a38c1335" alt="TRUSTe"/>
+            </a>
+        
+    </div>
+</ea-truste>
+
+</ea-network-footer>
+
+            
+        
+    
+
+
+</footer>
+<ea-player player-endpoint="/user-data"></ea-player>
+
+
+    
+        
+            
+                
+<ea-elements-loader elements="ea-modal">
+</ea-elements-loader>
+<ea-modal
+    modal
+    unresolved
+    
+        id="eacomagegate"
+    
+    
+        theme="dark"
+    
+    
+>
+    
+<ea-elements-loader elements="ea-age-gate">
+</ea-elements-loader>
+<ea-age-gate
+    unresolved
+    slot="age-gate"
+    id="eacomagegate"
+    
+        age="18"
+    
+    
+        error="You are not eligible to view this content."
+    
+    
+    
+        message="Please provide your birth date. "
+    
+>
+    
+        
+<ea-elements-loader elements="ea-date-field">
+</ea-elements-loader>
+<ea-date-field
+    
+        slot="date-field"
+    
+    
+        type="date"
+    
+    
+    
+    
+    
+    
+        text-color="light"
+    
+    
+    
+        month-placeholder="MM"
+    
+    
+        day-placeholder="DD"
+    
+    
+        year-placeholder="YYYY"
+    
+    
+    
+        label-text="Enter your birthdate"
+    
+    
+    
+    unresolved
+>
+</ea-date-field>
+
+    
+    
+        
+<ea-elements-loader elements="ea-submit">
+</ea-elements-loader>
+<ea-submit
+    unresolved
+    
+        slot="submit"
+    
+    
+        value-text="Submit"
+    
+    
+        text-color="light"
+    
+    
+    
+></ea-submit>
+
+    
+</ea-age-gate>
+
+</ea-modal>
+
+            
+        
+    
+
+
+
+
+    
+        
+            
+                <script src="//pl.ea.com/release/4.49.0/elements/browser-support.min.js"></script>
+<script>
+    eaBrowserSupport.requiredFeatures = 'picture';
+    eaBrowserSupport.requiredHeading = 'Sorry, this browser is not supported';
+    eaBrowserSupport.requiredText = 'Please download a supported browser to view this webpage.';
+    eaBrowserSupport.recommendedFeatures = 'cssgrid';
+    eaBrowserSupport.recommendedText = 'This browser is not recommended and the webpage may not display properly.';
+    eaBrowserSupport.ctas = [{"text":"Download Chrome","url":"https://www.google.com/chrome/"},{"text":"Download Firefox","url":"https://www.mozilla.org/firefox/new/"},{"text":"Download Edge","url":"https://www.microsoft.com/edge/"}];
+    eaBrowserSupport.dismissText = 'Dismiss';
+    eaBrowserSupport.svgLogo = '';
+    eaBrowserSupport.init();
+</script>
+
+            
+        
+    
+
+
+
+
+    <ea-type-kit kit-url="//use.typekit.net/txn1klh.js"></ea-type-kit>
+
+
+    <noscript><img src="https://www.ea.com/akam/13/pixel_2d0b65c1?a=dD0yMzdlNjI2OWM5ZjM1Mjk5ODgxOGM5YzJiOGY4M2ZjOTY5NDdlY2U0JmpzPW9mZg==" style="visibility: hidden; position: absolute; left: -999px; top: -999px;" /></noscript></body>
+</html>
+

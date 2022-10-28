@@ -1,0 +1,765 @@
+//Posted by DoGzTheFiGhTeR, a member of the Cronus Community - https://www.cronusmax.com/forums
+ 
+//Posted : Thursday 26th of August, 2021 4:27 UTC  
+ 
+
+
+
+
+// heres a tool to help you along your journey.. i have included a vibration recorder from Dogs to this LegitCloudzz script. If you look at the mods like auto fish or dolphin dive
+// you can get the idea of how a combo is triggered based off of vibration.
+
+ define RECORDBTN = PS4_R3; 
+int RECORD;
+int A,B,C,D,E,F,T;
+
+/****THESE BUTTONS MUST MATCH YOUR IN GAME CONTROLS FOR THE SCRIPT TO WORK CORRECTLY****/
+define BTN_ADS           = PS4_L2;
+define BTN_SHOOT         = PS4_R2;
+
+int Rumble;
+int OldRumble; 
+int RumbleTimer;
+int RumbleFlag;
+int RumbleCount;
+int r_tag = FALSE;
+	
+//--TOGGLES	& DYNAMIC VARIABLES
+int corr;                          
+	
+//--Aim Assist
+int bUseAimAssist = TRUE;					//AIM ASSIST TOGGLE
+define	STEP_INTERVAL =  1;              
+define	STEPS =  10;
+int interval_t, angle;
+int fub = 3;					//Fire Under Boost
+int fob = 1;					//Fire Over Boost
+int leftDboost = 0;				//Left Directional Boost
+int rightDboost = 0;			//Right Directional Boost
+int ADS_ASSIST = TRUE;			//Aim Assist while ADSing 				- Hold Y / Triangle and press Up Dpad
+int FIRE_ASSIST = TRUE;			//Aim Assist While Firing				- Hold Y / Triangle and press Down Dpad
+int DRIFT_ASSIST = FALSE;		//Aim Assist Directional Drift Boost	- Hold Y / Triangle and press Left Dpad
+int aaValueReal = 3921;			//Aim Assist Shake
+int aaValue;
+int SPEED	= 6;				//Aim Assist Rotating Speed		BLUE
+int SPEED2	= 8;				//Aim Assist Rotating Speed2	RED
+int SPEED3	= 12;				//Aim Assist Rotating Speed3	GREEN
+int activeSPEED;				//LEAVE AS IS
+int ASPD;
+
+int i;
+int StickDZ[2],
+STICK_X[2],
+STICK_Y[2],
+OffsetX[2],
+OffsetY[2],
+ValOutX[2], 
+ValOutY[2],
+ValPrevX[2],
+ValPrevY[2],
+XY[2],
+ValInY[2],
+ValInX[2],
+o[4],
+i2;
+
+
+//Recenter Sticks
+int recenter = TRUE;					//STICK DRIFT REMOVAL
+	
+//Auto Wall Replace Rumble - Hold X/Square and tap UP Dpad
+int rumbleWall = FALSE;
+define FIRE    = XB1_RT;
+define BUILD   = XB1_B;
+define WALL    = XB1_RT;
+
+//Auto Rumble Swim - Hold X/Square and tap DOWN Dpad
+int autoswim = TRUE;
+define JUMP  = XB1_A;
+
+//Auto Rumble Bunny Hop - Hold X/Square and tap LEFT Dpad
+int bunnyhop = FALSE;
+
+//Auto Rumble Fish - Hold X/Square and tap RIGHT Dpad
+int autofish = TRUE;
+
+//Custom Sensitivity
+int GEN_SENS      = 100;  					//GENERAL SENS WHEN NOT HOLDING ADS OR FIRE
+int ADS_SENS      = 100;					//SENS WHEN ADSing AND NOT FIRING
+int FIRE_SENS     = 100;					//SENS IN USE WHEN HIPFIRE
+int ADS_FIRE_SENS = 100;					//SENS WHEN HOLDING FIRE AND ADS
+int SCOPED_SENS   = 100;					//SCOPED SENSITIVITY
+int USE_SENS;
+int CS = TRUE;								//Custom Sensitivty Toggle
+
+define SCOPE_BTN  = XB1_LS;					//BUTTON TO HOLD WHILE SCOPED IN FOR SNPIER SCOPED SENSITIVTY
+
+int modval;
+//Anti Recoil
+int Anti_Recoil = TRUE;
+int ARidx;
+const int16 ARstr[] = {285, 245, 225};			//Primary Weapon Anti Recoil Strength
+const int16 ARtime[] = {0,500,800};			//Primary Weapon Anti Recoil Time
+
+	define Blue = 0;
+	define Red = 1;
+	define Green = 2;
+	define Pink = 3;
+	define Yellow = 4;
+
+	data(
+	2,0,0,0, // Blue
+	0,2,0,0, // Red
+	0,0,2,0, // Green
+	0,0,0,2, // Pink
+	0,2,2,0 // Yellow
+	);
+	
+init
+{
+	aaValueReal = get_pvar(SPVAR_1,		1,			32767, 		aaValueReal);		
+	SPEED	    = get_pvar(SPVAR_2,		1,			100, 		SPEED);					
+	SPEED2	    = get_pvar(SPVAR_3,		1,			100, 		SPEED2);					
+	SPEED3	    = get_pvar(SPVAR_4,		1,			100, 		SPEED3);	
+	
+	ASPD = 0;
+  	STICK_X = 9;  STICK_X[1] = 11; 
+  	STICK_Y = 10; STICK_Y[1] = 12; 
+  	StickDZ = max(abs(get_val(9)), abs(get_val(10))) + 5;
+  	StickDZ[1]  = max(abs(get_val(11)), abs(get_val(12))) + 5;
+}
+ 
+main
+{
+
+/*◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿*/ 
+set_val (TRACE_1, A);
+set_val (TRACE_2, B);
+set_val (TRACE_3, C);
+set_val (TRACE_4, D);
+set_val (TRACE_5, E);
+set_val (TRACE_6, F);
+
+if (event_press(RECORDBTN)) {
+    RECORD = !RECORD;
+}
+if (RECORD && get_ival (PS4_L2) && get_ival (PS4_R2)) {
+ 
+T += get_rtime();
+if (T == 80)
+A = abs(get_rumble(RUMBLE_A));
+if (T == 80)
+B = abs(get_rumble(RUMBLE_B));
+if (T == 100)
+C = abs(get_rumble(RUMBLE_A));
+if (T == 100)
+D = abs(get_rumble(RUMBLE_B));
+if (T == 150)
+E = abs(get_rumble(RUMBLE_A));
+if (T == 150)
+F = abs(get_rumble(RUMBLE_B));
+}
+if (event_release(PS4_L2) || event_release(PS4_R2)) {
+    RECORD = FALSE;
+    T = 0;
+}
+if (RECORD) {
+    set_led(LED_3,3);
+}
+else 
+    reset_leds();
+    
+/*◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿◸◹◺◿*/ 
+
+	//set_val(TRACE_1,activeSPEED);
+	//set_val(TRACE_2,ASPD);
+	//set_val(TRACE_3,aaValueReal);
+	//set_val(TRACE_4,ARstr[ARidx]);
+	
+	aaValue = aaValueReal / 327;
+	
+    if(get_val(XB1_LB) && event_press(XB1_RB)){
+    	ASPD++;
+    }
+    if(ASPD > 2) ASPD = 0;
+    
+    if(ASPD == 0){
+    	activeSPEED = SPEED;
+    	set_ds4_led(Blue);
+    }
+    if(ASPD == 1){
+    	activeSPEED = SPEED2;
+    	set_ds4_led(Red);
+    }
+    if(ASPD == 2){
+    	activeSPEED = SPEED3;
+    	set_ds4_led(Green);
+    }
+    
+    if(get_val(XB1_MENU) && event_press(XB1_VIEW)){
+    	modval = !modval;
+    	cls_oled(0);
+    }
+    if(modval){
+    	cls_oled(0);
+    	printf(60,10,OLED_FONT_MEDIUM,1,activeSPEED);
+    	printf(60,40,OLED_FONT_MEDIUM,1,aaValueReal);
+    	number_to_string(activeSPEED,find_digits(activeSPEED));
+    	number_to_string(aaValueReal,find_digits(aaValueReal));
+    		if(get_val(PS4_UP) && get_ptime(PS4_UP) > 150){
+    			activeSPEED ++;
+    		}
+    		if(get_val(PS4_DOWN) && get_ptime(PS4_DOWN) > 150){
+    			activeSPEED --;
+    		}
+    		if(event_press(PS4_UP)){
+    			activeSPEED ++;
+    		}
+    		if(event_press(PS4_DOWN)){
+    			activeSPEED --;
+    		}
+    		if(activeSPEED < 1){
+    			activeSPEED = 1;
+    		}
+    		if(get_val(PS4_LEFT) && get_ptime(PS4_LEFT) > 150){
+    			aaValueReal += 1;
+    		}
+    		if(get_val(PS4_RIGHT) && get_ptime(PS4_RIGHT) > 150){
+    			aaValueReal -= 1;
+    		}
+    		if(event_press(PS4_LEFT)){
+    			aaValueReal += 1;
+    		}
+    		if(event_press(PS4_RIGHT)){
+    			aaValueReal -= 1;
+    		}
+    		if(aaValue < 1){
+    			aaValueReal = 1;
+    		}
+    	}
+    //Adjustments
+    RumbleADJ();
+    RumbleToUse();
+	
+	//AIM ASSIST
+	AimAssist();
+	
+	//Calculations
+	CalcStuff();
+	
+	//Recenter Sticks
+	Recenter_Sticks();
+	
+	//Anti Recoil
+	if(Anti_Recoil){
+		AROverTime();
+	}
+	
+	//Auto Rumble Wall
+	if(get_val(XB1_X) && event_press(XB1_UP)){
+		rumbleWall	= !rumbleWall;
+		set_ledx(rumbleWall + 1,3);
+	}
+	
+	if(rumbleWall){
+		if((get_rumble(RUMBLE_A) == 11) && (get_rumble(RUMBLE_B) == 11)){
+				combo_run(autowall);
+			}
+		}
+
+	//Auto Rumble Swim
+	if(get_val(XB1_X) && event_press(XB1_DOWN)){
+		autoswim	= !autoswim;
+		set_ledx(autoswim + 1,3);
+	}
+	
+	if(autoswim){
+		if((get_rumble(RUMBLE_LT) == 11) && (get_rumble(RUMBLE_RT) == 11) && get_val(JUMP)){
+				combo_run(autoSwim);
+			}
+		}
+		
+	//Auto Rumble Bunny Hop
+	if(get_val(XB1_X) && event_press(XB1_LEFT)){
+		bunnyhop	= !bunnyhop;
+		set_ledx(bunnyhop + 1,3);
+	}
+	
+	if(bunnyhop){
+		if((get_rumble(RUMBLE_A) == 2) && (get_rumble(RUMBLE_B) == 2) &&(get_rumble(RUMBLE_LT) == 2) && (get_rumble(RUMBLE_RT) == 2) && get_val(JUMP)){
+				combo_run(bunnyHop);
+			}
+		}
+		
+	//Auto Rumble Auto Fish
+	if(get_val(XB1_X) && event_press(XB1_RIGHT)){
+		autofish	= !autofish;
+		set_ledx(autofish + 1,3);
+	}
+	
+	if(autofish){
+		if((get_rumble(RUMBLE_A) == 12) && (get_rumble(RUMBLE_B) == 12) &&(get_rumble(RUMBLE_LT) == 12) && (get_rumble(RUMBLE_RT) == 12)){
+				combo_run(auto_fish);
+			}
+		}
+		
+	//ADS Assist
+	if(get_val(XB1_Y) && event_press(XB1_UP)){
+		ADS_ASSIST	= !ADS_ASSIST;
+		set_ledx(ADS_ASSIST + 1,3);
+	}
+	
+	//Fire Assist
+	if(get_val(XB1_Y) && event_press(XB1_DOWN)){
+		FIRE_ASSIST	= !FIRE_ASSIST;
+		set_ledx(FIRE_ASSIST + 1,3);
+	}
+	
+	//Drift Assist
+	if(get_val(XB1_Y) && event_press(XB1_LEFT)){
+		DRIFT_ASSIST	= !DRIFT_ASSIST;
+		set_ledx(DRIFT_ASSIST + 1,3);
+	}
+	
+	//Custom Sensitivity
+    if(CS){
+    	if(!get_val(XB1_LT) && !get_val(XB1_RT) && !get_val(SCOPE_BTN)) { 
+    		USE_SENS=GEN_SENS;
+    	}
+		else if(get_val(XB1_LT) && !get_val(XB1_RT) && !get_val(SCOPE_BTN)) { 
+    		USE_SENS=ADS_SENS;
+    	}    
+    	else if(!get_val(XB1_LT) && get_val(XB1_RT) && !get_val(SCOPE_BTN)) { 
+    		USE_SENS=FIRE_SENS;
+    	}
+    	else if(get_val(XB1_LT) && get_val(XB1_RT) && !get_val(SCOPE_BTN)) { 
+    		USE_SENS=ADS_FIRE_SENS;
+    	}
+    	else if(get_val(SCOPE_BTN)) { 
+    		USE_SENS=SCOPED_SENS;
+    	}
+    		sensitivity(XB1_RY,NOT_USE,USE_SENS);
+    		sensitivity(XB1_RX,NOT_USE,USE_SENS);
+    }
+    
+    
+    
+    //////////////////////////////////////////////////////////////////////////
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    //////////////////////////////////////////////////////////////////////////
+	
+} 
+
+//////////////////////////////////////////////////////////////////////////
+//Recenter Sticks
+//////////////////////////////////////////////////////////////////////////
+function Recenter_Sticks(){
+	if(RumbleFlag){
+		if(r_tag){
+  			shakecheck = TRUE;
+  		}
+  	}
+  	if(!RumbleFlag){
+		if(!r_tag){
+  			shakecheck = FALSE;
+  		}
+  	} 
+if(recenter){
+if(shakecheck || !get_val(BTN_ADS)){
+  	do { o[i] = get_val(9 + i);
+  	} while (i = (i + 1) % 4);
+  
+  	do {
+    ValInY[i] = get_oval(STICK_Y[i]) - 1;
+    ValInX[i] = get_oval(STICK_X[i]); 
+    if (isqrt(pow(get_val(STICK_X[i]), 2) + pow(get_val(STICK_Y[i]), 2)) <  StickDZ[i]) {
+      	if (ValInY[i] != ValPrevY[i] || ValInX[i] != ValPrevX[i]) {
+        	ValPrevX[i] = ValInX[i];
+        	ValPrevY[i] = ValInY[i];
+        	XY[i]  = 100;
+      	}
+      	if (XY[i]) {
+        	XY[i] -= get_rtime();
+        	if (XY[i] <= 0) {
+          		OffsetX[i] = inv(ValInX[i]);
+          		OffsetY[i] = inv(ValInY[i]);
+          		offset2(STICK_X[i], OffsetX[i]);
+          		offset2(STICK_Y[i], OffsetY[i]);
+          		ValOutX[i] = inv(get_val(STICK_X[i]));
+          		ValOutY[i] = inv(get_val(STICK_Y[i]));
+        	}
+  		}
+    }
+    offset2(STICK_X[i], OffsetX[i] + ValOutX[i]);
+    offset2(STICK_Y[i], OffsetY[i] + ValOutY[i]);
+  	} while(i = (i + 1) % 2);
+  }
+  }
+}
+//////////////////////////////////////////////////////////////////////////
+//Aim Assist
+//////////////////////////////////////////////////////////////////////////
+int angle2;
+int shakecheck;
+function Shake() { 
+  	angle2 = (angle2 + activeSPEED) % 360;
+    set_polar(POLAR_RS,angle2, aaValueReal);
+} 
+//////////////////////////////////////////////////////////////////////////
+//Aim Assist
+//////////////////////////////////////////////////////////////////////////
+function AimAssist() {
+if(get_val(BTN_ADS)) {
+	if(bUseAimAssist) {
+	  	interval_t += get_rtime();
+  		if(!(interval_t % STEP_INTERVAL)) {
+    		angle = (angle+STEPS) % 360; 
+  		}
+  				
+		if(!RumbleFlag){
+    		if(!r_tag){
+    			if(ADS_ASSIST){
+    				//ADS Aim Assist
+					if(isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) <= aaValue) {
+						if(get_val(BTN_ADS) > 98 && !get_val(BTN_SHOOT)){
+							Shake();	
+						}
+					}
+				}
+				if(DRIFT_ASSIST){
+					//Left Boost Drift
+					if(isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX))) >= aaValue) {
+						if(get_val(BTN_ADS) > 98 && !get_val(BTN_SHOOT)){
+							combo_run(leftDrift);	
+						}
+					}
+					//Right Boost Drift
+					if(isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX))) >= aaValue) {
+						if(get_val(BTN_ADS) > 98 && !get_val(BTN_SHOOT)){
+							combo_run(rightDrift);	
+						}
+					}
+				}
+				if(FIRE_ASSIST){
+					//Fire Assist
+					if(get_val(BTN_SHOOT)){
+						if(isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) <= aaValue) {
+    						combo_run(fire_under);
+    					}
+    					if(isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) >= aaValue) {
+    						combo_run(fire_over);
+    					}
+					}
+				}
+			}
+		}
+	}
+}
+}
+//////////////////////////////////////////////////////////////////////////
+//Left Drift
+//////////////////////////////////////////////////////////////////////////
+ combo leftDrift {
+   	offset(XB1_RX,aaValue + leftDboost);
+   	wait(30);
+   	offset(XB1_RX,(aaValue + leftDboost) * -1);
+   	wait(30);
+}
+//////////////////////////////////////////////////////////////////////////
+//Right Drift
+//////////////////////////////////////////////////////////////////////////  
+ combo rightDrift {
+   	offset(XB1_RX,aaValue + rightDboost);
+   	wait(30);
+   	offset(XB1_RX,(aaValue + rightDboost) * -1);
+   	wait(30);
+}  
+//////////////////////////////////////////////////////////////////////////
+//Fire Under
+//////////////////////////////////////////////////////////////////////////
+ combo fire_under {
+   	offset(XB1_RX,aaValue + fub);
+   	wait(30);
+   	offset(XB1_RX,(aaValue + fub) * -1);
+   	wait(30);
+ }
+//////////////////////////////////////////////////////////////////////////
+//Fire Over
+//////////////////////////////////////////////////////////////////////////
+ combo fire_over {
+   	offset(XB1_RX,aaValue + fob);
+   	wait(40);
+   	offset(XB1_RX,(aaValue + fob) * -1);
+   	wait(40);
+}	
+//////////////////////////////////////////////////////////////////////////
+//Rumble Adjustments
+//////////////////////////////////////////////////////////////////////////
+function RumbleADJ() {
+
+	if(get_val(BTN_ADS)) {
+		corr = isqrt(abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY)));
+	    if(corr > 100) corr = 100;
+	}
+	   	
+	if(RumbleCount > 30){
+		RumbleCount = 0;
+	}
+		
+	if(RumbleCount > 30){
+		RumbleCount = 0;
+	}
+
+	if(get_val(BTN_SHOOT) > 98){
+		RumbleTimer += get_rtime();
+	if(get_rumble(RUMBLE_B) > 0)Rumble = get_rumble(RUMBLE_B)*255/100;
+	    if(Rumble > OldRumble){
+	        OldRumble = Rumble;
+	        RumbleTimer = 0;RumbleCount++;
+		}
+	    else OldRumble = Rumble; 
+	}
+	if(event_release(BTN_SHOOT)){
+	    RumbleTimer = 0;
+	    OldRumble = 0;
+	    Rumble = 0;
+		RumbleCount = 0;
+	}
+	if(get_rumble(RUMBLE_B) > 0){
+		RumbleFlag = TRUE;
+		r_tag = TRUE;
+	} else {
+		RumbleFlag = FALSE;
+		r_tag = FALSE;
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+//Clamp
+//////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////
+//Offset
+//////////////////////////////////////////////////////////////////////////
+
+function offset(int axis, int offset_val) {
+  	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return 
+}
+
+int cur_rumble;
+
+function RumbleToUse(){
+	if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B)){
+		cur_rumble = get_rumble(RUMBLE_A);
+	}
+	if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B)){
+		cur_rumble = get_rumble(RUMBLE_A);
+	}
+	if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B)){
+		cur_rumble = get_rumble(RUMBLE_B);
+	}
+}	
+//////////////////////////////////////////////////////////////////////////
+//CalcStuff
+//////////////////////////////////////////////////////////////////////////
+function CalcStuff(){
+
+if(get_val(XB1_LT) || get_val(XB1_RT)) {
+	    corr = isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY)));
+	    if(corr > 100) corr = 100;
+    }
+   	
+	if(RumbleCount > 30){
+		RumbleCount = 0;
+	}
+	
+	if(RumbleCount > 30){
+		RumbleCount = 0;
+	}
+
+	if(get_val(XB1_RT) > 98){
+		RumbleTimer += get_rtime();
+	if(get_rumble(RUMBLE_B) > 0)Rumble = get_rumble(RUMBLE_B)*255/100;
+	    if(Rumble > OldRumble){
+	        OldRumble = Rumble;
+	        RumbleTimer = 0;RumbleCount++;
+		}
+	    else OldRumble = Rumble; 
+	}
+	if(event_release(XB1_RT)){
+	    RumbleTimer = 0;
+	    OldRumble = 0;
+	    Rumble = 0;
+		RumbleCount = 0;
+	}
+	if(get_rumble(RUMBLE_B) > 0){
+		RumbleFlag = TRUE;
+		r_tag = TRUE;
+	} else {
+		RumbleFlag = FALSE;
+		r_tag = FALSE;
+	}
+}
+//////////////////////////////////////////////////////////////////////////
+//Clamp2
+//////////////////////////////////////////////////////////////////////////
+function clamp2(v, lo, hi) { return min(hi, max(v, lo)); }
+
+//////////////////////////////////////////////////////////////////////////
+//get_oval
+//////////////////////////////////////////////////////////////////////////
+function get_oval(io) { return o[io-9]; }
+
+//////////////////////////////////////////////////////////////////////////
+//Offset 2
+//////////////////////////////////////////////////////////////////////////
+function offset2(axis, offset_val) { 
+  set_val(axis, clamp2(offset_val * (100 - abs(get_oval(axis))) / 100 + get_oval(axis), -100, 100));
+  if(abs(get_val(axis)) < 2) set_val(axis, 0); 
+  return;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Anti Recoil Over Time
+//////////////////////////////////////////////////////////////////////////
+int ARtimeactive;
+int last = 0;
+  function AROverTime() 
+{
+	ARtimeactive = get_ptime(FIRE);
+ 
+    for (ARidx=sizeof(ARtime)/3;ARidx>=0;ARidx--) 
+	{
+	    if (ARtimeactive >= ARtime[ARidx]) 
+		{
+            if (ARidx != last)  last=i2;
+ 
+				Anti_Recoil(XB1_RY,(ARstr[ARidx] * get_rumble(RUMBLE_B)) / 100);
+            return;
+		}
+	}
+}
+ 
+//////////////////////////////////////////////////////////////////////////
+//Square Value
+//////////////////////////////////////////////////////////////////////////
+ 
+function sq(v){
+	return v * v;
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Anti Recoil New Style
+//////////////////////////////////////////////////////////////////////////
+ 
+int iD,aD,aD1,aD2;
+
+function Anti_Recoil(int axis, int Value) {
+ 
+  iD = get_val(axis) + Value;
+  aD = (Value) / 100;
+  aD1 = 1 + (aD);
+  aD2 = 1 - (aD);
+ 
+  if(iD == (get_ival(axis) > 0)){ 
+  iD = iD * aD2 + Value - sq(10) * (aD2 * (aD1 - 1));
+  } else {
+  iD = iD *  aD1 - Value * (1 - aD2);
+  }
+  if(RumbleFlag){
+if(r_tag){
+  offset(axis, clamp(iD, -100, 100));
+  }
+  }
+  return;
+}
+
+combo autowall {
+	set_val(BUILD, 100);
+	wait(30);
+	wait(30);
+	set_val(WALL, 100);
+	wait(30);
+	wait(30);
+}
+
+combo autoSwim {
+	wait(470);
+	set_val(JUMP, 0);
+	wait(20);
+	set_val(JUMP, 100);
+	wait(10);
+}
+
+combo bunnyHop{
+	wait(380);
+	set_val(JUMP, 0);
+	wait(20);
+	set_val(JUMP, 100);
+	wait(10);
+}
+
+combo auto_fish{
+wait(20);
+set_val(XB1_RT,100);
+wait(20);
+}
+ const byte NUM_ASCII[] = 
+   {48,49,50,51,52,53,54,55,56,57};
+    int ni = 1;
+function number_to_string(f_val,f_dgts) {
+    if(f_dgts == 4) {
+        putc_oled(ni,NUM_ASCII[f_val / 1000]);
+        f_val = f_val % 1000;
+        ni +=  1;
+}
+    if(f_dgts >= 3) {
+       putc_oled(ni,NUM_ASCII[f_val / 100]);
+       f_val = f_val % 100;
+       ni +=  1;        
+}
+    if(f_dgts >= 2){
+       putc_oled(ni,NUM_ASCII[f_val / 10]);
+       f_val = f_val % 10;
+       ni += 1;}
+       putc_oled(ni,NUM_ASCII[f_val]);
+      // puts_oled(50,35,2,ni,1);   
+       puts_oled(center_x(sizeof(ni) - 1, OLED_FONT_MEDIUM_WIDTH),35,2,ni,1);    
+         ni = 1;
+} 
+function find_digits(f_num){
+     f_num = abs(f_num);
+    if(f_num / 1000 > 0) return 4;
+    if(f_num /  100 > 0) return 3;
+    if(f_num /   10 > 0) return 2;
+    return 1;
+}
+function set_ds4_led(colour) {
+    set_led(LED_1, dbyte(colour * 4));
+    set_led(LED_2, dbyte((colour * 4) + 1));
+    set_led(LED_3, dbyte((colour * 4) + 2));
+    set_led(LED_4, dbyte((colour * 4) + 3));
+} 
+//center_x(sizeof(aaValueReal) - 1, OLED_FONT_MEDIUM_WIDTH),
+//////////////////////////////////////////////////////////////////////////
+//Center Text To OLED Screen
+//////////////////////////////////////////////////////////////////////////
+function center_x(f_chars,f_font) {                                                         
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); 
+}   
+  

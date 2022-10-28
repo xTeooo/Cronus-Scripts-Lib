@@ -1,0 +1,199 @@
+int var1; 
+int var2; 
+int var3; 
+int var4; 
+int var5;
+int var6; 
+
+
+init { 
+	Load();
+} 
+
+main { 
+	set_val(TRACE_1,var1);
+	set_val(TRACE_2,var2);
+	set_val(TRACE_3,var3);
+	set_val(TRACE_4,var4);
+	set_val(TRACE_5,var5);
+	set_val(TRACE_6,var6);
+	
+	if(event_press(PS4_RIGHT)){ 
+	
+		var1 = clamp(var1 + 1,0,12);
+		var2 = clamp(var2 + 1,0,30);
+		var3 = clamp(var3 + 1,0,24);
+		var4 = clamp(var4 + 1,0,60);
+		var5 = clamp(var5 + 1,0,60);
+		var6 = clamp(var6 + 1,0,1000);
+		
+		
+	} 
+	if(event_press(PS4_LEFT)){ 
+		
+		var1 = clamp(var1 - 1,0,12);
+		var2 = clamp(var2 - 1,0,30);
+		var3 = clamp(var3 - 1,0,24);
+		var4 = clamp(var4 - 1,0,60);
+		var5 = clamp(var5 - 1,0,60);
+		var6 = clamp(var6 - 1,0,1000);
+
+		
+	} 
+	if(event_press(PS4_CROSS)){ 
+		Save();
+	}
+	if(event_press(PS4_SQUARE)){ 
+		Load();
+	}
+} 
+
+function Load() {
+	reset_spvar();
+	var1 = read_spvar(0,12 ,0);
+	var2 = read_spvar(0,30,0);
+	var3 = read_spvar(0,24,0);
+	var4 = read_spvar(0,60,0);
+	var5 = read_spvar(0,60,0);
+	var6 = read_spvar(0,1000,0);
+}
+
+function Save(){ 
+
+	reset_spvar();
+	save_spvar(var1 ,0,12,FALSE);
+	save_spvar(var2 ,0,30,FALSE);
+	save_spvar(var3 ,0,24,FALSE);
+	save_spvar(var4 ,0,60,FALSE);
+	save_spvar(var5 ,0,60,FALSE);
+	save_spvar(var6 ,0,1000,FALSE);
+}
+
+// Use these for 32-bit SPVARs
+define MAX_BITS = 16;
+define MAX_FW_BITS = 16;
+
+function reset_spvar() {
+	spvar_current_slot = SPVAR_1; // Change this to say where it's safe to start storing data
+	spvar_current_bit = 0;
+	spvar_current_value = 0;
+}
+
+// ------ DO NOT TOUCH ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING! ------ 
+define FULL_BITMASK = -1;
+
+function get_bit_count(val) {
+/*	if (val == (1 << (MAX_FW_BITS - 1))) {
+		return MAX_FW_BITS;
+	}*/
+	if (val < 0) {
+		return get_bit_count(abs(val + 1));
+	}
+	spvar_tmp = 0;
+	do {
+		spvar_tmp++;
+		val = val >> 1; // Shift the value down 1 bit
+	} while (val);
+	return spvar_tmp;
+}
+function get_bit_count2(min, max) {	
+	spvar_tmp = max(get_bit_count(min), get_bit_count(max));
+	if (is_signed2(min, max)) {
+		spvar_tmp++;
+	}
+	return spvar_tmp;
+}
+function is_signed2(min, max) { return min < 0 || max < 0; }
+
+function make_full_mask(bits) {	
+	if (bits == MAX_FW_BITS) {
+		return FULL_BITMASK;
+	}
+	return (FULL_BITMASK & (~(1 << (MAX_FW_BITS - 1)))) >> (MAX_FW_BITS - bits - 1);
+}
+function make_sign(bits) { return 1 << clamp(bits - 1, 0, MAX_FW_BITS - 1); }
+function make_sign_mask(bits) { return ~make_sign(bits); }
+
+function pack_u(val, bits) { return val & make_full_mask(bits); }
+function pack_i(val, bits) {
+	if (val < 0) {
+		return (abs(val) & make_sign_mask(bits)) | make_sign(bits);	
+	}
+	return val & make_sign_mask(bits);
+}
+function unpack_i(val, bits) {
+	if (val & make_sign(bits)) {
+		return 0 - (val & make_sign_mask(bits));
+	}
+	return val & make_sign_mask(bits);
+}
+
+int spvar_current_bit;
+int spvar_current_slot;
+int spvar_current_value;
+int spvar_tmp;
+int spvar_bits;
+
+function read_spvar_slot(slot) { return get_pvar(slot, 0-(FULL_BITMASK & (1 << (MAX_BITS - 1))), 0-((0-(FULL_BITMASK & (1 << (MAX_BITS - 1)))) + 1), 0); }
+
+function save_spvar(val, min, max, save) {
+	spvar_bits = get_bit_count2(min, max); // Set min to be the bits we're going to need to store this value	
+	
+	if (is_signed2(min, max)) {
+		val = pack_i(val, spvar_bits); // Pack as signed value	
+	}
+	val = pack_u(val, spvar_bits); // Pack as unsigned value - because this is more inclusive than signed, we don't need an else here - just always do it (micro optimization)
+	
+	if (spvar_bits > MAX_BITS - spvar_current_bit) { // If we cannot fit the value here, we need to store what we can and move to the next slot
+		spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Add what we can to the current value
+		set_pvar(spvar_current_slot, spvar_current_value); // Force save, we're moving to the next value		
+		spvar_current_slot++; // Move to the next slot
+		spvar_bits -= (MAX_BITS - spvar_current_bit); // Update the required bits according to our needs for the next slot
+		val = val >> (MAX_BITS - spvar_current_bit); // Move the remaining bits to their new location
+		spvar_current_bit = 0; // We've hit the end, so we start over
+		spvar_current_value = 0; // Reset our value so we start clean
+	}
+	
+	spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Add the value to the current position
+	spvar_current_bit += spvar_bits; // Increment the bit position
+	if (spvar_current_bit >= MAX_BITS) {
+		spvar_current_bit -= MAX_BITS; // We went beyond the end here, this is too big apparently
+		set_pvar(spvar_current_slot, spvar_current_value);
+		spvar_current_slot++; // move to the next slot
+		if (!spvar_current_bit) {
+			spvar_current_value = 0; // Reset our value so we start clean
+		}
+	}
+	if (save) {
+		set_pvar(spvar_current_slot, spvar_current_value);
+	}	
+}
+
+function read_spvar(min, max, default) {
+	spvar_current_value = read_spvar_slot(spvar_current_slot); // Load the value so we always have it where we need it to be
+	spvar_bits = get_bit_count2(min, max); // Set min to be the bits we're going to need to store this value
+	spvar_current_value = pack_u(spvar_current_value >> spvar_current_bit, spvar_bits); // Shift our bits into position
+	
+	if (spvar_bits > MAX_BITS - spvar_current_bit) { // if the value doesn't fit in this variable, we need to fetch the next value aswell and merge them accordingly
+		spvar_current_slot++; // Move to the next slot
+		spvar_tmp = read_spvar_slot(spvar_current_slot); // load the new slot into a temporary variable
+		spvar_tmp = pack_u(spvar_tmp, spvar_bits - (MAX_BITS - spvar_current_bit)); // Get the bits we need
+		spvar_tmp = spvar_tmp << (MAX_BITS - spvar_current_bit); // Shift the bits into their correct position
+		spvar_current_value = pack_u(spvar_current_value, (spvar_bits - (MAX_BITS - spvar_current_bit)));
+		spvar_current_value = spvar_current_value | spvar_tmp; // put all bits together again
+		spvar_current_bit = spvar_current_bit - MAX_BITS; // Reset the bit position so we get the correct position next
+	}	
+	spvar_current_bit += spvar_bits; // move to the next variable position
+	if (spvar_current_bit >= MAX_BITS) {
+		spvar_current_bit -= MAX_BITS; // We went beyond the end here, this is too big apparently
+		spvar_current_slot++;
+	}	
+	spvar_current_value = pack_u(spvar_current_value, spvar_bits); // Extract all bits included for this value
+	if (is_signed2(min, max)) { // Check if we have a sign bit
+		spvar_current_value = unpack_i(spvar_current_value, spvar_bits); // Restore signed value
+	}
+	if (spvar_current_value < min || spvar_current_value > max) { // Check if the value is below our specified min or above our specified max, if so - return the default value instead
+		return default;
+	}
+	return spvar_current_value;
+}

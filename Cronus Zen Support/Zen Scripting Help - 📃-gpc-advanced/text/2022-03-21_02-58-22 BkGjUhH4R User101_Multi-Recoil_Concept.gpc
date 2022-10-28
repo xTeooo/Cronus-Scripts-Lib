@@ -1,0 +1,74 @@
+
+define MinARecoilPercent = 20;                             // Minimum Recoil 
+ 
+int T;                                                // Timer
+int T2V;                                                // Timer
+int T2H;                                                // Timer
+int ARVT1;                                            // Vertical Timeout 1
+int ARVT2;                                            // Vertical Timeout 2
+int ARHT1;                                            // Horizontal Timeout 1
+int ARHT2;                                            // Horizontal Timeout 2
+ 
+int ARV;                                                // Anti_Recoil Vertical Value
+int ARH;                                                // Anti_Recoil Horizontal Value
+ 
+int ARVP1;                                            // Anti_Recoil Vertical Value1
+int ARHP1;                                            // Anti_Recoil Horizontal Value1
+int ARVP2;                                            // Anti_Recoil Vertical Value2
+int ARHP2;                                            // Anti_Recoil Horizontal Value2
+int ARVP3;                                            // Anti_Recoil Vertical Value3
+int ARHP3;                                            // Anti_Recoil Horizontal Value3
+
+int CurrentX;
+int CurrentY;
+int MinARecoilFactor;
+int MinARecoilToApply;
+int MovementARecoilToApply;
+ 
+init{
+    ARVP1 = ARV;                                        // Initialize Vertical Recoil Placeholder
+    ARHP1 = ARH;                                        // Initialize Horizontal Recoil Placeholder
+}
+ 
+main {
+    if(get_val(PS4_R2)){                                 // If Fire Trigger execute this
+ 
+        T += get_rtime();                            // Start Initial Timer
+ 
+        AntiRecoil(PS4_RY, ARVP1);                    // Set Initial Vertical Recoil
+        AntiRecoil(PS4_RX, ARHP1);                    // Set Initial Horizontal Recoil
+ 
+        if (ARVP2 != 0 && T >= ARVT1){                // If Secondary Vertical Timer Reached execute
+            T2V += get_rtime();                        // Start Secondary Vertical timer
+            ARVP1 = ARVP2;                                // Apply Secondary Vertical Recoil
+            if (ARVP3 != 0 && T2V >= ARVT2){            // If Final Vertical Timer reached execute 
+                ARVP1 = ARVP3;                            // Apply Final Vertical Recoil value 
+            }
+        }
+        if (ARHP2 != 0 && T >= ARHT1){                // If Secondary Horizontal Timer Reached execute
+            T2H += get_rtime();                        // Start Secondary Horizontal timer
+            ARHP1 = ARHP2;                                // Apply Secondary Horizontal Recoil
+            if (ARHP3 != 0 && T2H >= ARHT2){            // If Final Horizontal Timer reached execute 
+                ARHP1 = ARHP3;                            // Apply Final Horizontal Recoil value 
+            }
+        }
+    }
+ 
+    if(event_release(PS4_R2)){                        // If Fire Trigger released execute this
+        T = 0;                                            // Reset Timer
+        T2V = 0;                                        // Reset Secondary Vertical Timer
+        T2H = 0;                                        // Reset Secondary Horizontal Timer
+        ARVP1 = ARV;                                    // Reset Vertical Recoil Placeholder
+        ARHP1 = ARH;                                    // Reset Horizontal Recoil Placeholder
+    }
+ 
+}
+/* AryanX AntiRecoil Method */
+function AntiRecoil(AxisToApply, ARecoilToApply){
+    CurrentX = get_val(PS4_RX);
+    CurrentY = get_val(PS4_RY);
+    MinARecoilFactor = MinARecoilPercent / 100;
+    MinARecoilToApply = MinARecoilFactor * ARecoilToApply;
+    MovementARecoilToApply = (1 - MinARecoilFactor) * ((ARecoilToApply * (100 - isqrt(CurrentX*CurrentX + CurrentY*CurrentY))) / (100 + abs(CurrentX) + (CurrentY*CurrentY/2)));
+    set_val(AxisToApply,clamp(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply),-100,100 - MinARecoilToApply));
+}

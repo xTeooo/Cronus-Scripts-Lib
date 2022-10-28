@@ -1,0 +1,101 @@
+
+const string STRINGS[] = {
+  "Hello",  // entry 0 - 5 chars
+  "my",     // entry 1 - 2 chars
+  "name",   // entry 2 - 4 chars
+  "is",     // entry 3 - 2 chars
+  "NooZbaR" // entry 4 - 6 chars
+};
+
+const string NAME[] = {
+	"WTF",   // entry 0 - 3 chars
+	"is",    // entry 1 - 2 chars
+	"going", // entry 2 - 5 chars
+	"on"     // entry 3 - 2 chars
+};
+
+define STRINGS_TXT = 0;
+define NAME_TXT = 1;
+ 
+int string_idx;
+int name_idx;
+
+int display_new = 1;
+
+main {
+set_val(TRACE_1, string_idx);
+set_val(TRACE_2, entry_count(STRINGS_TXT)); // how many entries has your STRINGS[] array
+set_val(TRACE_3, get_string_length(get_string(STRINGS_TXT, string_idx))); // how many chars has the word defined by string_idx
+
+set_val(TRACE_4, name_idx);
+set_val(TRACE_5, entry_count(NAME_TXT));
+set_val(TRACE_6, get_string_length(get_string(NAME_TXT, name_idx)));
+
+
+	if(get_val(PS4_L2))
+	{
+		if(event_press(PS4_UP))
+		{
+			string_idx = cycle(string_idx++, 0, entry_count(STRINGS_TXT));
+			display_new = 1;
+		}
+		if(event_press(PS4_DOWN))
+		{
+			string_idx = cycle(string_idx--, 0, entry_count(STRINGS_TXT));
+			display_new = 1;
+		}
+			
+		if(event_press(PS4_RIGHT))
+		{
+			name_idx = cycle(name_idx++, 0, entry_count(NAME_TXT));
+			display_new = 1;
+		}
+		if(event_press(PS4_LEFT))
+		{
+			name_idx = cycle(name_idx--, 0, entry_count(NAME_TXT));
+			display_new = 1;
+		}
+	}
+	
+	if(display_new)
+	{
+		cls_oled(OLED_BLACK);
+		printf(center_x(get_string_length(get_string(STRINGS_TXT, string_idx)), OLED_FONT_SMALL_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,get_string(STRINGS_TXT, string_idx));
+		printf(center_x(get_string_length(get_string(NAME_TXT, name_idx)), OLED_FONT_SMALL_WIDTH),30,OLED_FONT_SMALL,OLED_WHITE,get_string(NAME_TXT, name_idx));
+		display_new = FALSE;
+	}
+	
+}
+
+int i;
+function entry_count(f_array_idx) {
+    i = 0;
+    if (f_array_idx == STRINGS_TXT) { while (STRINGS[i] != -1) { i++; } }
+    else if (f_array_idx == NAME_TXT) { while (NAME[i] != -1) { i++; } }
+    // and so on ...
+    return i - 1; // number of items will be here
+}
+
+int stringLength;
+function get_string_length(offset) { 
+    stringLength = 0;
+    while (duint8(offset++)) { stringLength++; }
+    return stringLength + 1;
+}
+
+function get_string(f_array_idx, f_idx) {
+	if(f_array_idx == STRINGS_TXT) return STRINGS[f_idx];
+	else if(f_array_idx == NAME_TXT) return NAME[f_idx];
+	// and so on ...	
+	return -1;
+}
+
+function center_x(f_chars,f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+
+function cycle(f_val, f_lo, f_hi) {
+	if(f_val > f_hi) return f_lo;
+	if(f_val < f_lo) return f_hi;
+	return f_val;
+}

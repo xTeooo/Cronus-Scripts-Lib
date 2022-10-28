@@ -1,0 +1,106 @@
+enum {
+
+FIGHTER_1,
+FIGHTER_2,
+FIGHTER_3,
+FIGHTER_4
+
+}
+
+
+
+const string Fighters[] = {
+
+/*0*/  "Fighter 1",
+/*1*/  "Fighter 2",
+/*2*/  "Fighter 3",
+/*3*/  "Fighter 4"
+
+}
+
+
+
+define Screen_Saver_Time = 60000;
+
+
+
+int activeFighter;
+int screen_saver_timer = Screen_Saver_Time;
+
+
+
+init {
+
+
+    cls_oled(OLED_BLACK);
+    print(16,22,OLED_FONT_MEDIUM,OLED_WHITE,Fighters[activeFighter]);
+
+
+}
+
+
+
+main {
+
+
+    if(get_val(PS4_R3) && event_press(PS4_L3)) {
+        activeFighter ++;
+        if(activeFighter >= 4) {
+            activeFighter = 0;
+        }
+        cls_oled(OLED_BLACK);
+        print(16,22,OLED_FONT_MEDIUM,OLED_WHITE,Fighters[activeFighter]);
+        screen_saver_timer = Screen_Saver_Time;
+    }
+
+    if(activeFighter == FIGHTER_1) {
+        if (get_val(PS4_RX) >= 60) {
+            combo_run(CRightAF1)}
+
+    }
+
+    if(activeFighter == FIGHTER_2) {
+        if(get_val(PS4_RX) >= 60) {
+            combo_run(CRightAF2)}
+
+    }
+
+    if(activeFighter == FIGHTER_3) {
+        if(get_val(PS4_RX) >= 60) {
+            combo_run(CRightAF3)}
+
+    }
+
+    if(activeFighter == FIGHTER_4) {
+        if(get_val(PS4_RX) >= 60) {
+            combo_run(CRightAF4);
+        }
+    }
+
+
+    if(screen_saver_timer) {
+        if(screen_saver_timer <= get_rtime())
+            cls_oled(OLED_BLACK);
+        screen_saver_timer = max(0, screen_saver_timer - get_rtime());
+    }
+
+
+}
+
+
+
+combo CRightAF1 {
+
+}
+
+combo CRightAF2 {
+
+}
+
+combo CRightAF3 {
+
+}
+
+combo CRightAF4 {
+
+}

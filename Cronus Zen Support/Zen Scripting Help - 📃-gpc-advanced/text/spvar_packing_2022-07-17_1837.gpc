@@ -1,0 +1,214 @@
+// Define 6 variables to use in this example
+int var1, var2, var3, var4, var5, var6;
+
+init {
+	Load(); // Load our settings from flash or set the defaults	
+}
+
+main {
+	
+	// Display the various values in TRACE_1 to TRACE_6 so we can see what happens when we press the buttons below
+	set_val(TRACE_1, var1);
+	set_val(TRACE_2, var2);
+	set_val(TRACE_3, var3);
+	set_val(TRACE_4, var4);
+	set_val(TRACE_5, var5);
+	set_val(TRACE_6, var6);	
+	
+	// Press Right on the d-pad to increment the values
+	if(event_press(PS4_RIGHT)) {
+		var1 = clamp(var1 +  1,    0,    30);
+		var2 = clamp(var2 + 20,    0, 30000);
+		var3 = clamp(var3 + 10,  -99,    99);
+		var4 = clamp(var4 +  1,    0,    50);
+		var5 = clamp(var5 + 40, -200,   200);
+		var6 = clamp(var6 + 10,    0,    60);		
+	}
+	// Press Left on the d-pad to decrement the values
+	if(event_press(PS4_LEFT)) {
+		var1 = clamp(var1 -  1,    0,    30);
+		var2 = clamp(var2 - 20,    0, 30000);
+		var3 = clamp(var3 - 10,  -99,    99);
+		var4 = clamp(var4 -  1,    0,    50);
+		var5 = clamp(var5 - 40, -200,   200);
+		var6 = clamp(var6 - 10,    0,    60);		
+	}
+	
+	// Press A/Cross to save
+	if(event_press(PS4_CROSS)){ 
+		Save();
+	}
+	// Press X/Square to load
+	if(event_press(PS4_SQUARE)){ 
+		Load();
+	}
+}
+
+
+// This is an example of how this can be used for loading values - NOTE: the ranges here must match what you have in your save function!
+function Load() {
+	reset_spvar(); // Always reset the spvar state before reading to ensure that we're reading from the same location as we last saved
+	if (read_spvar(0, 1, 0)) { // Read and check the first bit, if it's set, we know something should've been saved, otherwise we fall back on our default setting
+		var1 = read_spvar(   0,    30, 0); // Read var1 with a value within the range 0 to 30 with a default value of 0
+		var2 = read_spvar(	 0, 30000, 0); // Read var2 with a value within the range 0 to 30000 with a default value of 0
+		var3 = read_spvar( -99,    99, 0); // Read var3 with a value within the range -99 to 99 with a default value of 0
+		var4 = read_spvar(   0,    50, 0); // Read var4 with a value within the range 0 to 50 with a default value of 0
+		var5 = read_spvar(-200,   200, 0); // Read var5 with a value within the range -200 to 200 with a default value of 0
+		var6 = read_spvar(   0,    60, 0); // Read var6 with a value within the range 0 to 60 with a default value of 0
+	}
+	else {
+		var1 = 1; // Set var1 to it's default value of 1
+		var2 = 2; // Set var2 to it's default value of 2
+		var3 = 5; // Set var3 to it's default value of 5
+		var4 = 4; // Set var4 to it's default value of 4
+		var5 = 5; // Set var5 to it's default value of 5
+		var6 = 6; // Set var6 to it's default value of 6
+	}
+}
+
+// This is an example of how this can be used for saving values - NOTE: the ranges here must match what you have in your load function!
+function Save(){ 
+	reset_spvar(); // Always reset the spvar state before saving to ensure that we're saving at the same location as we will later read
+	save_spvar(   1,	0,     1); // Save a constant 1 to denote previously saved data, this range uses 1 bit
+	// At this point we're using 1 bit in SPVAR_1
+	save_spvar(var1, 	0,    30); // Save var1 with a range between 0 and 30, this range uses 5 bits
+	// At this point we're using 6 bits in SPVAR_1
+	save_spvar(var2, 	0, 30000); // Save var2 with a range between -0 and 30000, this range uses 15 bits
+	// At this point we're using 21 bits in SPVAR_1
+	save_spvar(var3,  -99,    99); // Save var3 with a range between -99 and 99, this range uses 8 bits
+	// At this point we're using 29 bits in SPVAR_1
+	save_spvar(var4, 	0,    50); // Save var4 with a range between 0 and 50, this range uses 6 bits
+	// At this point we're using 32 bits in SPVAR_1 and 3 bits in SPVAR_2 - var4 is saved across both SPVAR_1 (the last 3 bits) and SPVAR_2 (the first 3 bits)
+	save_spvar(var5, -200,   200); // Save var5 with a range between -200 and 200, this range uses 9 bits
+	// At this point we're using 32 bits in SPVAR_1 and 18 bits in SPVAR_2
+	save_spvar(var6, 	0,    60); // Save var6 with a range between 0 and 60, this range uses 6 bits
+	// At this point we're using 32 bits in SPVAR_1 and 24 bits in SPVAR_2
+}
+// Function used to reset the SPVAR state to where we begin, this one you can change if you like, the rest you should leave as-is or you risk breaking the logic of this. YOU HAVE BEEN WARNED!
+function reset_spvar() {
+	spvar_current_slot = SPVAR_1; // Change this to say where it's safe to start storing data
+	spvar_current_bit = 0; // Should always be 0, unless you're using part of the first SPVAR in which case you should also change the next line to include the value you are storing in the bits you are using
+	spvar_current_value = 0;
+	
+	spvar_total_bits = 0; // Reset the total bits counter to 0
+}
+
+int spvar_total_bits; 		// Variable used for you to know how many bits are used in total
+
+function get_total_spvars() { return (spvar_total_bits / 32) + (spvar_total_bits % 32 != 0) + 1; }
+
+// ------ DO NOT TOUCH ANYTHING BELOW THIS LINE UNLESS YOU KNOW WHAT YOU ARE DOING! ------ 
+
+int spvar_current_bit, 		// Variable used to keep track of the next available bit
+	spvar_current_slot,		// Variable used to keep track of the currently used SPVAR slot
+	spvar_current_value,	// Variable used to keep track of the current value with all the bits from the previous variables saved in the current SPVAR
+	spvar_tmp,				// Variable used temporarily during the various calculation steps
+	spvar_bits;				// Variable used to keep track of the number of bits required to represent the currently saved/loaded variable
+
+// Function used to count the number of bits used by the given value
+function get_bit_count(val) {
+	spvar_tmp = 0; // We need to start at 0, we use spvar_tmp here as we need to track the bits during our loop below
+	val = abs(val); // Force value to be positive
+	while (val) { // Loop while val is anything but 0
+		spvar_tmp++; // Increment the bit count by 1
+		val = val >> 1; // Shift the value down 1 bit, once we have no more bits set this will result in 0
+	}
+	return spvar_tmp;
+}
+// Function used to count the number of bits used by 2 given values
+function get_bit_count2(val1, val2) {	
+	spvar_tmp = max(get_bit_count(val1), get_bit_count(val2)); // Get the highest bit count required for either min or max
+	if (is_signed2(val1, val2)) { // Check if we need to know if the value is negative or not
+		spvar_tmp++; // If we need to track if the saved value is negative, we need 1 bit for that specifically - the others are used to store the actual value
+	}
+	spvar_total_bits += spvar_tmp;
+	return spvar_tmp;
+}
+// Function used to determine if either of 2 given values is negative
+function is_signed2(val1, val2) { return val1 < 0 || val2 < 0; }
+// Function used to generate a bitmask for the sign bit, this will always be the highest bit in the range we're requesting it for, to do that - we need to start with the lowest bit set and move it up the number of steps there is between 1 and the bits we need, this needs to be a maximum of 31 but can never be negative
+function make_sign(bits) { return 1 << clamp(bits - 1, 0, 31); }
+// Function used to generate a full bitmask (essentially all bits set up to and including the number of bits given)
+function make_full_mask(bits) {	
+	if (bits == 32) { // If we're wanting a bitmask for all bits, we can simply return -1 (which is all bits set to 1)
+		return -1;
+	}
+	return 0x7FFFFFFF >> (31 - bits); // What we do here is basically take a value with all bits except the highest set and shift them down as many times as we need to get a mask that fits the bit count we're looking for
+}
+// Function used to generate a bitmask for just the bits required for the value part of a signed range, this means all the bits below the sign bit
+function make_sign_mask(bits) { return make_full_mask(bits - 1); }
+// Function used to pack a value that has potential for being negative in a way that we use the least number of bits we really need to represent the value
+function pack_i(val, bits) {
+	if (val < 0) { // Check if we have a negative value, if so - handle it accordingly
+		return (abs(val) & make_sign_mask(bits)) | make_sign(bits); // Get the positive version of the value and keep the bits that are within range of what we're doing and add the sign bit since we have a negative value and return the result
+	}
+	return val & make_sign_mask(bits); // Get the bits that are within our range
+}
+// Function used to unpack (restore) a value that has potential for being negative, essentially reversing what pack_i does above
+function unpack_i(val, bits) {
+	if (val & make_sign(bits)) { // Check if the stored value is supposed to be negative
+		return 0 - (val & make_sign_mask(bits)); // Retrieve the stored positive value and subtract it from 0 (resulting in the same value except negative), return the result
+	}
+	return val & make_sign_mask(bits); // Retrieve the stored positive value and return it
+}
+// Function used to read the value of a SPVAR without any limits
+function read_spvar_slot(slot) { return get_pvar(slot, 0x80000000, 0x7FFFFFFF, 0); }
+// Function used to save your value in the SPVARs, this is the function you'll be calling when saving a value. You need to provide the value to save aswell as the range (minimum and maximum value, this is how we determine how many bits to use when saving this value)
+function save_spvar(val, min, max) {
+	spvar_bits = get_bit_count2(min, max); // Set spvar_bits to the number of bits we need for this range
+	
+	val = clamp(val, min, max); // Make sure the value is within our defined range to begin with
+	
+	if (is_signed2(min, max)) { // If either min or max is negative, we need to pack this value as a possibly negative value
+		val = pack_i(val, spvar_bits); // Pack as signed value (possibly negative)
+	}
+	val = val & make_full_mask(spvar_bits); // Pack as unsigned value (always positive), this essentially just makes the resulting value not have any extra bits set - it's safe to use after the signed packing since we're not using any bits outside of the unsigned range anyways
+	
+	if (spvar_bits >= 32 - spvar_current_bit) { // Check if there is not enough bits remaining to save this value as-is. if there aren't enough bits, we save what we can here and store the remaining bits in the next spvar, if this means we're hitting the end, we can make this smaller by handling the case where we use all bits here aswell
+		spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Add what we can to the current value where there is bits available to use
+		set_pvar(spvar_current_slot, spvar_current_value); // Save the current SPVAR before advancing to the next one
+		spvar_current_slot++; // Move to the next slot
+		spvar_bits -= (32 - spvar_current_bit); // Update the required bits according to our needs for the next slot, if we don't do this here, we'll screw up the saved value by moving it too far out of range
+		val = val >> (32 - spvar_current_bit); // Move the remaining bits down, discarding the bits we've already saved
+		spvar_current_bit = 0; // Reset the current bit counter since we're starting with a new SPVAR
+		spvar_current_value = 0; // Reset our value so we start clean, we aren't currently using any bits anyways
+	}
+	
+	spvar_current_value = spvar_current_value | (val << spvar_current_bit); // Merge the current SPVAR value with our currently value where there is space to keep our value
+	spvar_current_bit += spvar_bits; // Move up the counter of next available bit to where we are currently saving data at
+	if (!spvar_current_bit) {
+		spvar_current_value = 0; // Reset our value so we start clean, we aren't currently using any bits anyways
+	}
+	set_pvar(spvar_current_slot, spvar_current_value); // Save the SPVAR with the current value, this won't write anything to flash unless the value changed - so we can do this for each variable saved to no risk missing anything
+}
+// Function used to read your value from the SPVARs, this is the function you'll be calling when reading a value. You need to provide the range (minimum and maximum value, this is how we determine how many bits to use when reading the value) aswell as a default value if what we read is out of range
+function read_spvar(min, max, def) {
+	spvar_bits = get_bit_count2(min, max); // Set spvar_bits to the number of bits we need for this range
+	spvar_current_value = (read_spvar_slot(spvar_current_slot) >> spvar_current_bit) & make_full_mask(spvar_bits); // Read the current SPVAR value from flash and shift them into position, we'll handle split values next
+	
+	if (spvar_bits >= 32 - spvar_current_bit) { // Check if we are dealing with a split SPVAR value, essentially if the current position means we're using more than 32 bits in the SPVAR, we need to retrieve the missing bits from the next SPVAR and put them back to our current value, we use the same space saving trick here as in the save function
+		spvar_current_value = (spvar_current_value & make_full_mask(32 - spvar_current_bit)) | ((read_spvar_slot(spvar_current_slot + 1) & make_full_mask(spvar_bits - (32 - spvar_current_bit))) << (32 - spvar_current_bit));
+		//Below is a breakdown of the line above, with each step done one at a time instead of all at once - this however increases codesize - the below code is to explain how it all works tho
+		//spvar_tmp = read_spvar_slot(spvar_current_slot + 1); // Read the SPVAR slot coming after the initial one we used to spvar_tmp from flash, we need to maintain the data we've read thus far, but also add on what we have in flash for the next SPVAR
+		//spvar_tmp = spvar_tmp & make_full_mask(spvar_bits - (32 - spvar_current_bit)); // Extract the bits we need need (the ones that didn't fit in the previous SPVAR)
+		//spvar_tmp = spvar_tmp << (32 - spvar_current_bit); // Move the bits into their original position, they were stored at the beginning of the new SPVAR but belong at the top of the currently read value
+		//spvar_current_value = (spvar_current_value & make_full_mask(32 - spvar_current_bit)) | spvar_tmp; // put all bits together again with the part read from the first SPVAR cleaned up to only include the bits from this variable/value and not all bits set in the upper range like they normally are
+	}	
+	spvar_current_bit += spvar_bits; // Move up the counter of next available bit to where we are will be reading data from next
+	spvar_current_value = spvar_current_value & make_full_mask(spvar_bits); // Extract all bits included for this value and discard any other bits
+	if (spvar_current_bit >= 32) {
+		spvar_current_slot++; // Move to the next SPVAR slot
+		spvar_current_bit -= 32; // Remove 32 from the spvar_current_bit tracker since we've gone beyond what we can do here
+	}
+	
+	if (is_signed2(min, max)) { // Check if the value can be negative and handle it accordingly
+		spvar_current_value = unpack_i(spvar_current_value, spvar_bits); // Restore the signed, possibly negative value
+	}
+	
+	if (spvar_current_value < min || spvar_current_value > max) { // Check if the value is below our specified min or above our specified max, if so - return the default value instead
+		return def; // This can be changed to min instead as a reasonable default with the default parameter being removed if you don't need to have a override value for the default when out of range, that will save a bit of code size
+	}
+	
+	// Return the retrieved value to the user since it's within the expected range
+	return spvar_current_value;
+}

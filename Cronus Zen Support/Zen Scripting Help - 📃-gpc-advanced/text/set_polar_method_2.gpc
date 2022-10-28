@@ -1,0 +1,77 @@
+// GPC Online Library
+// set_polar_method_2.gpc
+
+/*
+    set_polar() Method 2
+    Made by: DontAtMe
+
+    Usage:
+    f_set_polar(STICK, ANGLE, RADIUS);
+
+    STICK:
+    2 = Right Stick
+    4 = Left Stick
+
+    ANGLE:
+    A value 0 to 359.
+          0 = (right)
+         45 = (down-right)
+         90 = (down)
+        135 = (down-left)
+        180 = (left)
+        225 = (up-left)
+        270 = (up)
+        315 = (up-right)
+
+*/
+define RIGHT_STICK  = 2;
+define LEFT_STICK   = 4;
+int x_Out, y_Out, angle_Out, ang_velocity;
+//------------------------------------------------------------------------------
+
+// Adjust variables
+define speed = 1;
+define radius = 100;
+
+main {
+  ang_velocity = (ang_velocity + speed) % 360;
+
+  // right stick rotating anti-clockwise.
+  f_set_polar(RIGHT_STICK, ang_velocity * -1, radius);
+
+  // left stick rotating clockwise.
+  f_set_polar(LEFT_STICK, ang_velocity, radius);
+}
+
+function f_sin(angle) { return (f_cos(angle - 90)); }
+function f_cos(angle) {
+  if (angle < 0) angle = (angle % 360) + 360;
+  angle = (angle % 360);
+
+  x_Out = 100;
+  y_Out = 100;
+  angle_Out = angle % 45;
+
+  if (angle < 45) { y_Out = (100 * angle_Out) / 45; }
+  else if (angle < 90)  { x_Out = (100 * (45 - angle_Out)) / 45; }
+  else if (angle < 135) { x_Out = (-100 * angle_Out) / 45; }
+  else if (angle < 180) { y_Out = (100 * (45 - angle_Out)) / 45; x_Out = -100; }
+  else if (angle < 225) { y_Out = (100 * angle_Out) / 45; x_Out = -100; }
+  else if (angle < 270) { x_Out = (-100 * (45 - angle_Out)) / 45; y_Out = -100; }
+  else if (angle < 315) { x_Out = (100 * angle_Out) / 45; y_Out = -100; }
+  else { y_Out = ( 100 * (45 - angle_Out)) / 45; }
+
+  angle_Out = abs(y_Out);
+
+  if (abs(x_Out) > angle_Out) angle_Out = abs(x_Out);
+
+  return (x_Out * angle_Out / isqrt((pow(x_Out, 2) + pow(y_Out, 2))));
+}
+
+function f_set_polar(stick, angle, radius) {
+  set_val(7 + stick, f_clamp((f_cos(angle) * radius) / 100,-100, 100));
+  set_val(8 + stick, f_clamp((f_sin(angle) * radius) / 100,-100, 100));
+  return;
+}
+
+function f_clamp(v, lo, hi) { if(v < lo) return lo; if(v > hi) return hi; return v; }
