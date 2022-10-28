@@ -1,0 +1,52 @@
+int AUTO;
+int SPAM_SQUARE;
+int BLOCK_RUMBLE;
+int FIRE;
+int SPAM_R2;
+
+main
+{
+	//ON&OFF_TOGGLE
+	if(get_ival(XB1_PL2))
+	{
+		AUTO         = double_tap_toggle(PS4_UP   ,AUTO);
+		SPAM_SQUARE  = double_tap_toggle(PS4_DOWN ,SPAM_SQUARE);
+		BLOCK_RUMBLE = double_tap_toggle(PS4_LEFT ,BLOCK_RUMBLE);
+		FIRE         = double_tap_toggle(PS4_RIGHT,FIRE);
+		SPAM_R2      = double_tap_toggle(PS4_R2   ,SPAM_R2);
+	}
+}
+
+combo RUMBLE_NOTIFIER_BIG
+{
+    set_rumble(RUMBLE_A,100);
+    set_rumble(RUMBLE_B,100);
+    wait(300);
+    reset_rumble();
+}
+
+combo RUMBLE_NOTIFIER_SMALL
+{
+	set_rumble(RUMBLE_A,30)
+    set_rumble(RUMBLE_B,30);
+    wait(300);
+    reset_rumble();
+}
+
+function double_tap_toggle(f_btn,f_var)
+{
+	if(event_press(f_btn) && get_brtime(f_btn) < 200)
+	{
+		f_var = !f_var;
+		if(f_var)
+		{
+			combo_run(RUMBLE_NOTIFIER_BIG);
+		}
+		else
+		{
+			combo_run(RUMBLE_NOTIFIER_SMALL);
+		}
+	}
+	set_val(f_btn,0);
+	return f_var;
+}

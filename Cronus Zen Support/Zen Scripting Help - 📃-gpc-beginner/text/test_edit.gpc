@@ -1,0 +1,109 @@
+int	SCRIPT_ON		= FALSE;
+int RUN				= FALSE;
+int BLCOK_RUMBLE	= FALSE;
+
+main
+{
+	if(!get_val(PS4_L3) && event_press(PS4_PS) && get_brtime(PS4_PS) < 150)//SCRIPT_ON&OFF
+	{
+		SCRIPT_ON = !SCRIPT_ON;
+		if(SCRIPT_ON)
+		{
+			//set_rgb(0,0,255);//BLUE
+			set_ps4_lbar(255,0,0);//BLUE
+			set_led(LED_1,3);//LED_1: BLUE
+			set_led(LED_2,0);//LED_2: RED
+			set_led(LED_3,0);//LED_3: GREEN
+			set_led(LED_4,0);//LED_4: PINK
+			combo_run(RUMBLE_NOTIFIER_BIG);
+		}
+		else
+		{
+			//set_rgb(255,0,0);//RED
+			set_ps4_lbar(0,255,0);//RED
+			set_led(LED_1,0);//LED_1: BLUE
+			set_led(LED_2,3);//LED_2: RED
+			set_led(LED_3,0);//LED_3: GREEN
+			set_led(LED_4,0);//LED_4: PINK
+			combo_run(RUMBLE_NOTIFIER_SMALL);
+			cls_oled(OLED_BLACK);
+			//print(10, 25, OLED_FONT_MEDIUM, OLED_WHITE, str[0]);
+		}
+	}
+	if(get_val(PS4_PS) && get_ptime(PS4_PS) < 150)
+	{
+		set_val(PS4_PS,0);
+	}
+//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+	if(SCRIPT_ON)
+	{
+//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+		if(!get_val(XB1_PL2) && event_release(XB1_PR2) && get_ptime(XB1_PR2) < 200)
+		{
+			RUN ++;
+			if(RUN > 2)
+				RUN = 0;
+			combo_run(RUMBLE_NOTIFIER_BIG);
+		}
+		if(!get_ival(XB1_PR2))
+		{
+			if(RUN == 1)
+			{
+				set_val(PS4_CROSS,100);
+			}
+			if(RUN == 2)
+			{
+				if(abs(get_val(PS4_LX)) >= 20 || abs(get_val(PS4_LY)) >= 20)
+    			{
+    				combo_run(LED_BLINK);
+    				combo_run(SPAM_CROSS);
+    			}
+			}
+		}
+	}
+	else
+		RUN = 0;
+}
+
+
+//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+combo LED_BLINK
+{
+    set_rgb(51,51,51);
+    wait(300);
+    set_rgb(0,0,0);
+    wait(300);
+}
+//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+combo SPAM_CROSS
+{
+	set_val(PS4_CROSS,100);
+	wait(40);
+	set_val(PS4_CROSS,0);
+	wait(40 - get_rtime());
+	set_val(PS4_CROSS,0);
+}
+//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+combo RUMBLE_NOTIFIER_BIG
+{
+    set_rumble(RUMBLE_A,100);
+    set_rumble(RUMBLE_B,100);
+    wait(300);
+    reset_rumble();
+	if(BLCOK_RUMBLE)
+    {
+        block_rumble();
+    }
+}
+//———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
+combo RUMBLE_NOTIFIER_SMALL
+{
+	set_rumble(RUMBLE_A,30)
+    set_rumble(RUMBLE_B,30);
+    wait(300);
+    reset_rumble();
+    if(BLCOK_RUMBLE)
+    {
+        block_rumble();
+    }
+}

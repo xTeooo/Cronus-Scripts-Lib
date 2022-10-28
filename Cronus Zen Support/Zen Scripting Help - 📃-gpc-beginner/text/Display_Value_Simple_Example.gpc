@@ -1,0 +1,106 @@
+define Screen_Sleep_Time = 10000;
+
+
+
+int
+
+num,
+ran_text_pos_x,
+ran_text_pos_y,
+screen_sleep_timer = Screen_Sleep_Time,
+val_str,
+digits_val,
+digit_idx;
+
+
+
+init {
+
+
+  cls_oled(OLED_BLACK);
+  int_to_string(num,find_digits(num));
+
+
+}
+
+
+
+main {
+
+
+  if(event_press(XB1_DOWN)) {
+    num ++;
+    screen_sleep_timer = Screen_Sleep_Time;
+    ran_text_pos_x = random(-10,10);
+    ran_text_pos_y = random(-5,5);
+    cls_oled(OLED_BLACK);
+    int_to_string(num,find_digits(num));
+  }
+
+
+  if(screen_sleep_timer) {
+    if(screen_sleep_timer <= get_rtime()) {
+      // -- Note: You can exit your menu here
+      cls_oled(OLED_BLACK);
+    }
+    screen_sleep_timer = max(0,screen_sleep_timer - get_rtime());
+  }
+
+
+}
+
+
+
+// -- Center the text on screen
+function center_text(f_chars,f_font) {
+
+  return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+
+}
+
+// -- Convert number to string value
+function int_to_string(f_value,f_digits) {
+
+  val_str = 1;
+  digits_val = 10000;
+
+  // -- Add "-"
+  if(f_value < 0) {
+    putc_oled(val_str,ASCII_MINUS);
+    val_str ++;
+    f_value = abs(f_value);
+  }
+
+  // -- Convert digits to ASCII
+  for(digit_idx = 5; digit_idx >= 1; digit_idx --) {
+    if(f_digits >= digit_idx) {
+      putc_oled(val_str,ASCII_DIGIT0 + (f_value / digits_val));
+      f_value %= digits_val;
+      val_str ++;
+    }
+    digits_val /= 10;
+  }
+
+  // -- Draw Value
+  puts_oled(center_text(val_str - 1,OLED_FONT_MEDIUM_WIDTH) + ran_text_pos_x,28 + ran_text_pos_y,OLED_FONT_MEDIUM,val_str - 1,OLED_WHITE);
+
+}
+
+// -- Calculate number of digits for length
+function find_digits(f_num) {
+
+  f_num = abs(f_num);
+
+  // -- Note: Max 5 digits
+  if(f_num / 10000 > 0)
+    return 5;
+  if(f_num / 1000 > 0)
+    return 4;
+  if(f_num / 100 > 0)
+    return 3;
+  if(f_num / 10 > 0)
+    return 2;
+
+  return 1;
+
+}

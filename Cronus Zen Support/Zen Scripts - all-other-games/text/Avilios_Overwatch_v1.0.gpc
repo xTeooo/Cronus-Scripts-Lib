@@ -1,0 +1,3251 @@
+
+
+
+/*
+					  	░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+					 	░░░░░░┌───┬┐░░┌┬───┬───┬┐┌┐┌┬───┬────┬───┬┐░┌┐░░░░░░
+					 	░░░░░░│┌─┐│└┐┌┘│┌──┤┌─┐││││││┌─┐│┌┐┌┐│┌─┐││░││░░░░░░
+					 	░░░░░░││░│├┐││┌┤└──┤└─┘│││││││░│├┘││└┤│░└┤└─┘│░░░░░░ V 1.0
+------------------------░░░░░░││░│││└┘││┌──┤┌┐┌┤└┘└┘│└─┘│░││░││░┌┤┌─┐│░░░░░░------------------------
+					  	░░░░░░│└─┘│└┐┌┘│└──┤││└┼┐┌┐┌┤┌─┐│░││░│└─┘││░││░░░░░░
+					  	░░░░░░└───┘░└┘░└───┴┘└─┘└┘└┘└┘░└┘░└┘░└───┴┘░└┘░░░░░░
+				 	 	░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+====================================================================================================
+						Thank you to TaylorDrift21, DoNotAtMe and SS_Nikolai!
+====================================================================================================
+                             
+====================================================================================================
+-------------------------------- INSTRUCTIONS PLEASE READ ------------------------------------------
+====================================================================================================
+Enter Mod Menu     = HOLD ADS & OPTIONS.  
+----------------------------------------------------------------------------------------------------
+Exit Menu          = HOLD ADS & PRESS CROUCH.
+----------------------------------------------------------------------------------------------------
+Changing Values    = HOLD ADS & PRESS LEFT, RIGHT, UP OR DOWN.
+----------------------------------------------------------------------------------------------------
+Toggle Mod On/Off  = HOLD ADS & PRESS LEFT OR RIGHT.
+----------------------------------------------------------------------------------------------------
+Navigate The Menu  = PRESS LEFT OR RIGHT TO CHANGE MENU PAGE. 
+					 PRESS UP OR DOWN TO SCROLL THROUGH THE OPTIONS.
+====================================================================================================
+------------------------------------- HERO INSTRUCTIONS --------------------------------------------
+====================================================================================================
+Ashe			   = PRESS MODBUTTON TO PERFORM A SHOTGUN JUMP.
+----------------------------------------------------------------------------------------------------
+Bastion			   = WHILE IN YOUR ULT, PRESS MODBUTTON TO ROCKET JUMP.
+					 WHILE IN YOUR ULT, YOU HEAL AFTER FIRING A ROCKET.
+----------------------------------------------------------------------------------------------------
+Brigitte		   = PRESS MODBUTTON TO PERFORM A BASH JUMP.
+----------------------------------------------------------------------------------------------------
+Cassidy			   = PRESS MODBUTTON TO PERFORM A COMBAT ROLL
+----------------------------------------------------------------------------------------------------
+Junkrat			   = PLACE DOWN A MINE AND PRESS MODBUTTON TO PERFORM A MINE JUMP.
+----------------------------------------------------------------------------------------------------
+Lucio			   = HOLD ABILITY_1 TO SWITCH TO THE OPPOSITE SONG AND AUTO AMP IT UP.
+----------------------------------------------------------------------------------------------------
+Mercy			   = PRESS AND OR HOLD MODBUTTON TO START A SUPER JUMP, YOU NEED TO TIME THE JUMP.
+----------------------------------------------------------------------------------------------------
+Moira			   = DOUBLE TAP PRIMARY OR SECONDARY FIRE TO AUTOMATICALLY THROW OUT AN ORB.
+----------------------------------------------------------------------------------------------------
+Pharah			   = PRESS MODBUTTON TO PERFORM A ROCKET JUMP.
+----------------------------------------------------------------------------------------------------
+Soldier			   = MOVE FORWARD TO AUTO SPRINT AND PRESS MODBUTTON TO PERFORM A HELIX JUMP.
+----------------------------------------------------------------------------------------------------
+Zarya			   = PRESS MODBUTTON TO PERFORM A PULSE JUMP.
+----------------------------------------------------------------------------------------------------
+Zenyatta		   = HOLD SECONDARY FIRE TO CHARGE YOUR ORBS AND IT'LL AUTO RELEASE WHEN MAX DAMAGE.
+----------------------------------------------------------------------------------------------------
+Symmetra		   = HOLD SECONDARY FIRE TO CHARGE YOUR ORB AND IT'LL AUTO RELEASE WHEN MAX DAMAGE.
+----------------------------------------------------------------------------------------------------
+Sigma			   = PRESS MODBUTTON TO PERFORM A ROCK JUMP.
+----------------------------------------------------------------------------------------------------
+Genji			   = PRESS MODBUTTON TO PERFORM A SHURIKEN & MELEE COMBO.
+----------------------------------------------------------------------------------------------------
+Tracer			   = PRESS MODBUTTON TO USE YOUR ULTIMATE AND AUTOMATICALLY RECALL RIGHT AFTER.
+====================================================================================================
+
+====================================================================================================
+--------------------------------------- MADE BY AVILIO ---------------------------------------------
+====================================================================================================
+Message me if you need help, find any bugs or would like something to be added.     Avilio#1394
+====================================================================================================
+
+====================================================================================================
+
+			░█──░█ ░█▀▀▀█ ░█─░█ ░█▀▀█ 　 ░█─▄▀ ░█▀▀▀ ░█──░█ ░█▀▀█ ▀█▀ ░█▄─░█ ░█▀▀▄ ░█▀▀▀█ 
+			░█▄▄▄█ ░█──░█ ░█─░█ ░█▄▄▀ 　 ░█▀▄─ ░█▀▀▀ ░█▄▄▄█ ░█▀▀▄ ░█─ ░█░█░█ ░█─░█ ─▀▀▀▄▄ 
+			──░█── ░█▄▄▄█ ─▀▄▄▀ ░█─░█ 　 ░█─░█ ░█▄▄▄ ──░█── ░█▄▄█ ▄█▄ ░█──▀█ ░█▄▄▀ ░█▄▄▄█
+
+====================================================================================================*/
+
+									define primaryFire 	 = PS4_R2;
+									define secondaryFire = PS4_L2;
+									define Ability_1	 = PS4_L1;
+									define Ability_2	 = PS4_R1;
+									define Ultimate		 = PS4_TRIANGLE;
+									define Jump			 = PS4_CROSS;
+									define Crouch	 	 = PS4_CIRCLE;
+									define Melee	  	 = PS4_R3;
+									define Interact	  	 = PS4_SQUARE;
+									define walkF	 	 = PS4_LY;
+									define walkB	  	 = PS4_LY;
+									define aimY		  	 = PS4_RY;
+									define aimX			 = PS4_RX;
+									define Options		 = PS4_OPTIONS
+									define Up			 = PS4_UP;
+									define Down			 = PS4_DOWN;
+									define Left			 = PS4_LEFT;
+									define Right		 = PS4_RIGHT;
+
+									define modButton 	 = PS4_RIGHT;
+
+/*==================================================================================================
+
+====================================================================================================*/
+
+// Menu
+int Menu,Page,selectBar;
+
+// Mods Toggles
+int antiRecoil; // Anti Recoil
+int arType; // Anti Recoil
+int Bhop; // Bhop
+int autoMelee; // Auto Melee
+int hairTriggers; // Hair Triggers
+int Vibrations; // Vibration Toggle
+int Deadzone; // Custom Deadzone
+
+// Heroes
+int Ashe;
+int Bastion;
+int Brigitte;
+int Cassidy;
+int Junkrat;
+int Lucio;
+int Mercy;
+int Moira;
+int Pharah;
+int Soldier;
+int Zarya;
+int Zenyatta;
+int Symmetra;
+int Sigma;
+int Genji;
+int Tracer;
+
+// Mod Values
+int verticalVal; // Anti Recoil Start/Legacy value
+int timeAR; // Proggresive Anti Recoil Time 
+int endVal; // Proggresive Anti Recoil End value
+int deadzoneVal; // Custom Deadzone Value
+
+// Aim Assist
+const int8 PolarArray[] = { -100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100};
+const int8 LinearArray[] = { 100,-100,-99,-98,-97,-96,-95,-94,-93,-91,-90,-89,-88,-87,-86,-85,-84,-82,-81,-80,-79,-78,-77,-76,-75,-73,-72,-71,-70,-69,-68,-67,-66,-64,-63,-62,-61,-60,-59,-58,-57,-55,-54,-53,-52,-51,-50,-49,-48,-46,-45,-44,-43,-42,-41,-40,-39,-37,-36,-35,-34,-33,-32,-31,-30,-28,-27,-26,-25,-24,-23,-22,-21,-19,-18,-17,-16,-15,-14,-13,-12,-10,-9,-8,-7,-6,-5,-4,-3,-11,2,3,4,5,6,7,8,10,11,12,13,14,15,16,17,19,20,21,22,23,24,25,26,28,29,30,31,32,33,34,35,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,55,56,57,58,59,60,61,62,64,65,66,67,68,69,70,71,73,74,75,76,77,78,79,80,82,83,84,85,86,87,88,89,91,92,93,94,95,96,97,98,100,100,100,99,98,97,96,95,94,93,91,90,89,88,87,86,85,84,82,81,80,79,78,77,76,75,73,72,71,70,69,68,67,66,64,63,62,61,60,59,58,57,55,54,53,52,51,50,49,48,46,45,44,43,42,41,40,39,37,36,35,34,33,32,31,30,28,27,26,25,24,23,22,21,19,18,17,16,15,14,13,12,10,9,8,7,6,5,4,3,1,-1,-1,-2,-3,-4,-5,-6,-7,-8,-10,-11,-12,-13,-14,-15,-16,-17,-19,-20,-21,-22,-23,-24,-25,-26,-28,-29,-30,-31,-32,-33,-34,-35,-37,-38,-39,-40,-41,-42,-43,-44,-46,-47,-48,-49,-50,-51,-52,-53,-55,-56,-57,-58,-59,-60,-61,-62,-64,-65,-66,-67,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-82,-83,-84,-85,-86,-87,-88,-89,-91,-92,-93,-94,-95,-96,-97,-98,-100};
+int RX,RY,angle,CosAngle,SinAngle,ActualMagnitude,MaxMagnitude,GetAngle,InSpiral,OutSpiral,i,inc,x,y;
+int PolarStrength,SmartAAV1Rumble,SpiralPosition1,InnerSpiral,OuterSpiral,SpiralPosition2,Position,AngleDirection;
+int ToggleADirection;
+int CycleRefresh;
+int ToggleTaylorPolarAim; // Taylor Aim Assist
+int ToggleAAType;		  // Aim Assist Type
+int TaylorShapes;		  // Aim Assist Shapes
+int TaylorRadius;	 	  // Size of the shape
+int AdsSpeed;			  // Speed of the shape when NOT moving Right Stick
+int TaylorAngle;		  // Speed of the shape when moving right stick
+int TaylorPBoostStr;	  // How much strength you want added to the aim assist when using boost
+int TaylorABoostSpd;	  // How much speed you want added to the aim assist when using boost
+int ToggleBoostFire;	  // If you want Boost in strength when you primaryFire
+define TimeInterval = 4;
+init { 
+/* This is needed for several shapes */
+	InitializeShapeChange();
+}
+
+// Strings
+const string onoffStrings[]	 	 = { "Off" , "On" }; // Toggle
+const string modStrings[] 	 	 = { "Aim Assist" , "Anti Recoil" , "Misc" , "Controller" , "Hero" , "" } // Mods
+const string aaStrings[]  	 	 = { "Toggle" , "Type" , "Shape" , "Radius" , "Ads Speed" , "Speed" , "Boost" , "" }; // Aim Assist
+const string plStrings[] 	 	 = { "Polar" , "Linear" }; // Aim Assist
+const string polarStrings[] 	 = { "Circle" , "Tall Oval" , "Wide Oval" , "Vtex Oval" , "Spiral" , "Helix" , "" }; // Aim Assist
+const string linearStrings[]  	 = { "Diamond" , "T Diamond" , "W Diamond" , "S Prism" , "S Diamond" , "H Diamond" , "" }; // Aim Assist
+const string arStrings[]   	 	 = { "Legacy" , "2 Step" , "Vertical" , "Start" , "Time" , "End" , "" }; // Anti Recoil
+const string miscStrings[]	 	 = { "Bhop" , "Auto Melee" , "" }; // Misc
+const string controllerStrings[] = { "H Triggers" , "Vibrations" , "Deadzone" , "" }; // Controller
+const string heroStrings[]	 	 = { "Ashe" , "Bastion" , "Brigitte" , "Cassidy" , "Junkrat" , "Lucio" , "Mercy" , "Moira" , "Pharah" , "Soldier" , "Zarya" , "Zenyatta" , "Symmetra" , "Sigma" , "Genji" , "Tracer" , "" }; // Heroes
+const string saveStrings[]		 = { " " , "VALUES" , "SAVED"};
+const string scriptStrings[]	 = { "BY AVILIO" , "OVERWATCH" , "v1.0" };
+
+// Display
+int Count;
+int displayNew =  TRUE;
+int logVal;
+int current_slot = TRUE;
+init {
+current_slot = get_slot();
+}
+
+// Main
+main {
+	
+	if(current_slot){ // Script Logo
+	
+		combo_run(Logo);
+		
+		current_slot = FALSE;
+		
+	}
+	
+	if(Menu){ // Block Input's When In OLED Menu
+		
+		block_all_input();
+		
+		}
+		
+	if(!Menu) // Blocks Mod Button Input
+	
+	if(get_ival(modButton)){
+		
+		set_val(modButton,0);
+		
+		}
+/*
+ _____                _____     _           
+|     |___ ___ _ _   |   __|___| |_ ___ ___ 
+| | | | -_|   | | |  |   __|   |  _| -_|  _|
+|_|_|_|___|_|_|___|  |_____|_|_|_| |___|_|  
+============================================
+*/
+                                            
+	if(!Menu)
+	
+	if(get_ival(secondaryFire) && event_press(Options)){
+		
+		Menu = TRUE;
+		Page = 1;
+		selectBar = 1;
+		
+		}
+/*
+ _____                _____ _             
+|     |___ ___ _ _   |     | |___ ___ ___ 
+| | | | -_|   | | |  |   --| | . |_ -| -_|
+|_|_|_|___|_|_|___|  |_____|_|___|___|___|
+==========================================
+*/
+	if(Menu)
+	
+	if(get_ival(secondaryFire) && event_press(Crouch)){
+		
+		Menu = FALSE;
+		combo_run(block_input_combo);
+		set_pvar(SPVAR_1,antiRecoil);
+		set_pvar(SPVAR_2,arType);
+		set_pvar(SPVAR_3,Bhop);
+		set_pvar(SPVAR_4,autoMelee);
+		set_pvar(SPVAR_5,hairTriggers);
+		set_pvar(SPVAR_6,Vibrations);
+		set_pvar(SPVAR_7,Deadzone);
+		set_pvar(SPVAR_8,verticalVal);
+		set_pvar(SPVAR_9,endVal);
+		set_pvar(SPVAR_10,timeAR);
+		set_pvar(SPVAR_11,deadzoneVal);
+		set_pvar(SPVAR_12,ToggleTaylorPolarAim);
+		set_pvar(SPVAR_13,ToggleAAType);
+		set_pvar(SPVAR_14,TaylorShapes);
+		set_pvar(SPVAR_15,TaylorRadius);
+		set_pvar(SPVAR_16,AdsSpeed);
+		set_pvar(SPVAR_17,TaylorAngle);
+		set_pvar(SPVAR_18,TaylorPBoostStr);
+		set_pvar(SPVAR_19,TaylorABoostSpd);
+		set_pvar(SPVAR_20,ToggleBoostFire);
+		set_pvar(SPVAR_21,Ashe);
+		set_pvar(SPVAR_22,Bastion);
+		set_pvar(SPVAR_23,Brigitte);
+		set_pvar(SPVAR_24,Cassidy);
+		set_pvar(SPVAR_25,Junkrat);
+		set_pvar(SPVAR_26,Lucio);
+		set_pvar(SPVAR_27,Mercy);
+		set_pvar(SPVAR_28,Moira);
+		set_pvar(SPVAR_29,Pharah);
+		set_pvar(SPVAR_30,Soldier);
+		set_pvar(SPVAR_31,Zarya);
+		set_pvar(SPVAR_32,Zenyatta);
+		set_pvar(SPVAR_33,Symmetra);
+		set_pvar(SPVAR_34,Sigma);
+		set_pvar(SPVAR_35,Genji);
+		set_pvar(SPVAR_36,Tracer);
+		
+		combo_run(save_CMB);
+		
+		}
+/*
+ _____       _    _____     _         _   
+|     |___ _| |  |   __|___| |___ ___| |_ 
+| | | | . | . |  |__   | -_| | -_|  _|  _|
+|_|_|_|___|___|  |_____|___|_|___|___|_|  
+==========================================
+*/
+	if(!Menu || Page == 0){
+	
+		cls_oled(0);
+		
+		}
+
+	if(Menu)
+	
+	if(!get_ival(PS4_L2) && event_press(Right)){
+		
+		Page += 1;
+		
+		}
+	
+	if(Menu)
+	
+	if(!get_ival(PS4_L2) && event_press(Left)){
+		
+		Page -= 1;
+		
+		}
+	
+	if(Menu)
+	
+	if(Page < 1){
+		
+		Page = 5;
+		
+		}
+		
+	if(Menu)
+	
+	if(Page > 5){
+		
+		Page = 1;
+		
+		}
+/*
+ _____ _          _____         _     _   
+|  _  |_|_____   |  _  |___ ___|_|___| |_ 
+|     | |     |  |     |_ -|_ -| |_ -|  _|
+|__|__|_|_|_|_|  |__|__|___|___|_|___|_|  
+==========================================
+*/
+	if(Menu)
+	
+	if(Page == 1 && selectBar <= 3){ // Aim Assist
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(10, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[0]); // Aim Assist
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,aaStrings[0]);	// Toggle
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,aaStrings[1]);	// Type
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,aaStrings[2]);	// Shape
+		set_hsb(355,55,100); // Pink
+		
+		}
+	
+	if(Menu)
+	
+	if(Page == 1 && selectBar >= 4 && selectBar <= 6){ // Aim Assist
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(10, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[0]); // Aim Assist
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,aaStrings[3]);	// Radius
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,aaStrings[4]);	// secondaryFire Speed
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,aaStrings[5]);	// Speed
+		set_hsb(355,55,100); // Pink
+		
+		}
+	if(Menu)
+	
+	if(Page == 1 && selectBar >= 7 && selectBar <= 9){ // Aim Assist
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(10, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[0]); // Aim Assist
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,aaStrings[6]);	// Boost
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,aaStrings[3]);	// Radius
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,aaStrings[5]);	// Speed
+		set_hsb(355,55,100); // Pink
+		
+		}
+	
+	if(Menu)
+	if(Page == 1 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		ToggleTaylorPolarAim = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		ToggleTaylorPolarAim = FALSE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3)
+	if(!ToggleTaylorPolarAim){
+		printf(Center_X(-3, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3)
+	if(ToggleTaylorPolarAim){
+		printf(Center_X(-3, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		ToggleAAType = 1;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		ToggleAAType = 0;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3)
+	if(ToggleAAType == 0){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,plStrings[0]);	// Polar
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3)
+	if(ToggleAAType == 1){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,plStrings[1]);	// Linear
+		}
+///////// POLAR AIM ASSIST /////////// Avilio Tag
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 0)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		TaylorShapes += 1;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 0)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		TaylorShapes -= 1;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 0)
+	if(TaylorShapes <= 0){
+		TaylorShapes = 0;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 0)
+	if(TaylorShapes >= 5){
+		TaylorShapes = 5;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 0 && TaylorShapes == 0){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,polarStrings[0]);	// Circular
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 0 && TaylorShapes == 1){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,polarStrings[1]);	// Tall Oval
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 0 && TaylorShapes == 2){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,polarStrings[2]);	// Wide Oval
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 0 && TaylorShapes == 3){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,polarStrings[3]);	// Vortex Oval 
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 0 && TaylorShapes == 4){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,polarStrings[4]);	// Spiral
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 0 && TaylorShapes == 5){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,polarStrings[5]);	// Helix
+		}
+///////// LINEAR AIM ASSIST /////////
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		TaylorShapes += 1;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		TaylorShapes -= 1;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 1)
+	if(TaylorShapes <= 0){
+		TaylorShapes = 0;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 3 && ToggleAAType == 1)
+	if(TaylorShapes >= 5){
+		TaylorShapes = 5;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 1 && TaylorShapes == 0){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,linearStrings[0]);	// Diamond
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 1 && TaylorShapes == 1){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,linearStrings[1]);	// Tall Diamond
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 1 && TaylorShapes == 2){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,linearStrings[2]);	// Wide Diamond
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 1 && TaylorShapes == 3){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,linearStrings[3]);	// Spiral Prism 
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 1 && TaylorShapes == 4){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,linearStrings[4]);	// Spiral Diamond
+		}
+	if(Menu)
+	if(Page == 1 && selectBar <= 3 && ToggleAAType == 1 && TaylorShapes == 5){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,linearStrings[5]);	// Helix Diamond
+		}
+///////// RADIUS /////////
+	if(Menu)
+	if(Page == 1 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		TaylorRadius = Cycle(TaylorRadius + 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		TaylorRadius = Cycle(TaylorRadius - 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		TaylorRadius = Cycle(TaylorRadius + 10, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		TaylorRadius = Cycle(TaylorRadius - 10, 0, 100);
+		displayNew = TRUE;
+	}
+	if(Menu)
+	if(Page == 1 && selectBar >= 4 && selectBar <= 6) 
+	if(displayNew){
+		Count = 0;
+		NumberToString(TaylorRadius, FindDigits (TaylorRadius), 25);
+		}
+///////// secondaryFire SPEED /////////
+	if(Menu)
+	if(Page == 1 && selectBar == 5)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		TaylorAngle = Cycle(TaylorAngle + 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 5)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		TaylorAngle = Cycle(TaylorAngle - 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 5)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		TaylorAngle = Cycle(TaylorAngle + 10, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 5)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		TaylorAngle = Cycle(TaylorAngle - 10, 0, 100);
+		displayNew = TRUE;
+	}
+	if(Menu)
+	if(Page == 1 && selectBar >= 4 && selectBar <= 6) 
+	if(displayNew){
+		Count = 0;
+		NumberToString(TaylorAngle, FindDigits (TaylorAngle), 35);
+		}	
+///////// SPEED /////////
+	if(Menu)
+	if(Page == 1 && selectBar == 6)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		AdsSpeed = Cycle(AdsSpeed + 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 6)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		AdsSpeed = Cycle(AdsSpeed - 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 6)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		AdsSpeed = Cycle(AdsSpeed + 10, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 6)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		AdsSpeed = Cycle(AdsSpeed - 10, 0, 100);
+		displayNew = TRUE;
+	}
+	if(Menu)
+	if(Page == 1 && selectBar >= 4 && selectBar <= 6) 
+	if(displayNew){
+		Count = 0;
+		NumberToString(AdsSpeed, FindDigits (AdsSpeed), 45);
+		}	
+///////// BOOST TOGGLE /////////
+	if(Menu)
+	if(Page == 1 && selectBar >= 7)
+	if(!ToggleBoostFire){
+		printf(Center_X(-9, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 1 && selectBar >= 7)
+	if(ToggleBoostFire){
+		printf(Center_X(-9, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}	
+	if(Menu)
+	if(Page == 1 && selectBar == 7)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		ToggleBoostFire = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 7)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		ToggleBoostFire = FALSE;
+		}
+///////// BOOST RADIUS /////////
+	if(Menu)
+	if(Page == 1 && selectBar == 9)// Avilio Tag
+	if(get_ival(PS4_L2) && event_press(Right)){
+		TaylorPBoostStr = Cycle(TaylorPBoostStr + 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 9)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		TaylorPBoostStr = Cycle(TaylorPBoostStr - 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 9)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		TaylorPBoostStr = Cycle(TaylorPBoostStr + 10, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 9)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		TaylorPBoostStr = Cycle(TaylorPBoostStr - 10, 0, 100);
+		displayNew = TRUE;
+	}
+	if(Menu)
+	if(Page == 1 && selectBar >= 7 && selectBar <= 9) 
+	if(displayNew){
+		Count = 0;
+		NumberToString(TaylorPBoostStr, FindDigits (TaylorPBoostStr), 45);
+		}	
+///////// BOOST SPEED /////////
+	if(Menu)
+	if(Page == 1 && selectBar == 8)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		TaylorABoostSpd = Cycle(TaylorABoostSpd + 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 8)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		TaylorABoostSpd = Cycle(TaylorABoostSpd - 1, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 8)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		TaylorABoostSpd = Cycle(TaylorABoostSpd + 10, 0, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 1 && selectBar == 8)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		TaylorABoostSpd = Cycle(TaylorABoostSpd - 10, 0, 100);
+		displayNew = TRUE;
+	}
+	if(Menu)
+	if(Page == 1 && selectBar >= 7 && selectBar <= 9) 
+	if(displayNew){
+		Count = 0;
+		NumberToString(TaylorABoostSpd, FindDigits (TaylorABoostSpd), 35);
+		}	
+///////// INGAME AIM ASSIST /////////
+	if(ToggleTaylorPolarAim) 
+	{   
+		
+		RX = get_val(PS4_RX);                                
+		RY = get_val(PS4_RY);
+		ActualMagnitude = isqrt(pow(RX, 2) + pow(RY, 2));   
+		MaxMagnitude = (ActualMagnitude < 100);                                  
+		angle = angle % 360;
+		
+		// Angle Direction \\ 
+		if(ToggleADirection) { 
+			AngleDirection = (get_val(PS4_RX) > 0);
+		}
+		// Selected Curve Type \\ 
+		if(ToggleAAType == 0){
+		CosAngle = PolarArray[(angle + 270) % 360];  
+		SinAngle = PolarArray[angle % 360];
+	    }
+	    if(ToggleAAType == 1){
+	    CosAngle = LinearArray[(angle + 270) % 360];  
+		SinAngle = LinearArray[angle % 360];
+		}
+		
+        // Speed On Movement of Right Stick Change \\ 
+        if ((abs(get_val(PS4_RX)) < 10) * (abs(get_val(PS4_RY)) < 10)) 
+	    	angle += AdsSpeed + GetAngle;
+	    else 
+	    	angle += TaylorAngle + GetAngle;
+	    
+		if(ToggleBoostFire) 
+		{
+			if(get_ival(primaryFire))
+			{
+				SmartAAV1Rumble = get_rumble(RumbleToUse());
+				GetAngle = TaylorABoostSpd;
+			
+		        if(SmartAAV1Rumble > 10 && SmartAAV1Rumble < 90) 
+		        {
+				    PolarStrength  = (TaylorPBoostStr + SmartAAV1Rumble / 6); 
+				    SmartAAV1Rumble = 0;
+			    }
+			    if(!get_rumble(RUMBLE_A) && !get_rumble(RUMBLE_B))
+			    {
+			    	GetShapes(TaylorPBoostStr/2); 
+			    }
+			    else
+			    {
+					GetShapes(PolarStrength/2); 	
+		    	} 
+		    }
+		    if(event_release(primaryFire)) 
+			{
+				GetAngle = 0;
+			} 
+		}	
+		if(get_val(secondaryFire) || get_val(primaryFire))
+		{
+        	if(ActualMagnitude < TaylorRadius)           
+        	{
+	   			SinAngle -= RX;                                                              
+				CosAngle -= RY;
+			}
+			else
+			{
+				SinAngle = (SinAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;  
+				CosAngle = (CosAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; 
+			}
+			if(!ToggleBoostFire || !get_rumble(RumbleToUse())){
+				
+				GetShapes(TaylorRadius);	
+			}
+	    	PolarStrength = 0; 
+	        SmartAAV1Rumble   = 0; 
+   		 } 
+	}
+/*
+ _____     _   _    _____             _ _ 
+|  _  |___| |_|_|  | __  |___ ___ ___|_| |
+|     |   |  _| |  |    -| -_|  _| . | | |
+|__|__|_|_|_| |_|  |__|__|___|___|___|_|_|
+==========================================
+*/
+	if(Menu)
+	
+	if(Page == 2){ // Anti Recoil
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(11, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[1]);
+		
+		}
+	
+	if(Menu)
+	if(Page == 2){
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(11, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[1]); // Anti Recoil
+		set_hsb(220,100,100); // Blue
+		}
+	if(Menu)
+	if(Page == 2 && selectBar <= 3){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,aaStrings[0]);	// Toggle
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,aaStrings[1]);	// Type
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		antiRecoil = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		antiRecoil = FALSE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar <= 3)
+	if(!antiRecoil){
+		printf(Center_X(-3, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 2 && selectBar <= 3)
+	if(antiRecoil){
+		printf(Center_X(-3, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		arType += 1;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		arType -= 1;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 2)
+	if(arType < 0){
+		arType = 0;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 2)
+	if(arType > 1){
+		arType = 1;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar <= 3)
+	if(arType == 0){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,arStrings[0]);	// Toggle
+		}
+	if(Menu)
+	if(Page == 2 && selectBar <= 3)
+	if(arType == 1){
+		printf(Center_X(1, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,arStrings[1]);	// Toggle
+		}
+	if(Menu)
+	if(arType == 0)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,arStrings[2]);	// On
+		}
+	if(Menu)
+	if(arType == 1)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,arStrings[3]);	// On
+		}
+	if(Menu)
+	if(arType == 1)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,arStrings[4]);	// On
+		}
+	if(Menu)
+	if(arType == 1)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,arStrings[5]);	// On
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		verticalVal = Cycle(verticalVal + 1, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		verticalVal = Cycle(verticalVal - 1, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		verticalVal = Cycle(verticalVal + 10, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		verticalVal = Cycle(verticalVal - 10, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6)
+	if(displayNew){
+		Count = 0;
+		NumberToString(verticalVal, FindDigits (verticalVal), 25);
+	}
+	if(Menu)
+	if(Page == 2 && selectBar == 5)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		timeAR = Cycle(timeAR + 100, 0, 10000);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 5)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		timeAR = Cycle(timeAR - 100, 0, 10000);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 5)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		timeAR = Cycle(timeAR + 1000, 0, 10000);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 5)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		timeAR = Cycle(timeAR - 1000, 0, 10000);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6)
+	if(arType == 1)
+	if(displayNew){
+		Count = 0;
+		NumberToString(timeAR, FindDigits (timeAR), 35);
+	}
+	if(Menu)// Avilio Tag
+	if(Page == 2 && selectBar == 6)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		endVal = Cycle(endVal + 1, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 6)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		endVal = Cycle(endVal - 1, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 6)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Up)){
+		endVal = Cycle(endVal + 10, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar == 6)
+	if(arType == 1)
+	if(get_ival(PS4_L2) && event_press(Down)){
+		endVal = Cycle(endVal - 10, -100, 100);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 2 && selectBar >= 4 && selectBar <= 6)
+	if(arType == 1)
+	if(displayNew){
+		Count = 0;
+		NumberToString(endVal, FindDigits (endVal), 45);
+	}
+	
+	if(antiRecoil && arType == 0)
+	if(get_ival(secondaryFire) && get_ival(primaryFire)){
+		set_Val(aimY,verticalVal);
+		}
+	if(antiRecoil && arType == 1)
+	if(get_ival(secondaryFire) && get_ival(primaryFire)){
+		combo_run(progAR_Combo);
+		} else {
+		combo_stop(progAR_Combo);
+		}
+/*
+ _____ _         
+|     |_|___ ___ 
+| | | | |_ -|  _|
+|_|_|_|_|___|___|
+=================
+*/
+	if(Menu)
+	
+	if(Page == 3){ // Misc
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(4, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[2]);
+		
+		}
+	
+	if(Menu)
+	if(Page == 3){
+		cls_oled(0);
+		menuLayout();
+		printf(Center_X(4, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[2]); // Misc
+		set_hsb(120,100,100); // Green
+		
+		}
+	if(Menu)
+	if(Page == 3 && selectBar <= 3){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,miscStrings[0]); // Bhop
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,miscStrings[1]); // Auto Melee
+		}
+		
+	if(Menu)
+	if(Page == 3 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Bhop = TRUE;
+		}
+	if(Menu)
+	if(Page == 3 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Bhop = FALSE;
+		}
+	if(Menu)
+	if(Page == 3 && selectBar <= 3)
+	if(!Bhop){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 3 && selectBar <= 3)
+	if(Bhop){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	if(Bhop)
+	if(get_ival(Jump)){
+		combo_run(bhopCombo);
+		} else {
+		combo_stop(bhopCombo);
+		}
+	if(Menu)
+	if(Page == 3 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		autoMelee = TRUE;
+		}
+	if(Menu)
+	if(Page == 3 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		autoMelee = FALSE;
+		}
+	if(Menu)
+	if(Page == 3 && selectBar <= 3)
+	if(!autoMelee){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 3 && selectBar <= 3)
+	if(autoMelee){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	if(autoMelee)
+	if(get_ival(Melee)){
+		combo_run(meleeCombo);
+		} else {
+		combo_stop(meleeCombo);
+		}
+/*
+ _____         _           _ _         
+|     |___ ___| |_ ___ ___| | |___ ___ 
+|   --| . |   |  _|  _| . | | | -_|  _|
+|_____|___|_|_|_| |_| |___|_|_|___|_|  
+=======================================
+*/
+	if(Menu)
+	
+	if(Page == 4){ // Controller
+		cls_oled(0);
+		menuLayout();
+		set_rgb(255,255,255); // Ice
+		printf(Center_X(10, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[3]);
+		
+		}
+	
+	if(Menu && Page == 4)
+	if(selectBar == 1){
+		select_bar(1);
+		}
+	if(Menu && Page == 4)
+	if(selectBar == 2){
+		select_bar(2);
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,controllerStrings[0]);	// Hair Triggers
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,controllerStrings[1]);	// Vibrations
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,controllerStrings[2]);	// Custom Deadzone
+		}
+	if(Menu)
+	if(Page == 4 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		hairTriggers = TRUE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		hairTriggers = FALSE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(!hairTriggers){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(hairTriggers){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	if(!Menu)
+	if(hairTriggers)
+	if(get_ival(PS4_L2)){
+		set_val(PS4_L2,100);
+		}
+	if(!Menu)
+	if(hairTriggers)
+	if(get_ival(PS4_R2)){
+		set_val(PS4_R2,100);
+		}
+	if(Menu)
+	if(Page == 4 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Vibrations = TRUE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Vibrations = FALSE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(!Vibrations){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(Vibrations){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	if(!Vibrations){
+		block_rumble();
+		}
+	if(Vibrations){
+		set_rumble(RUMBLE_A,get_rumble(RUMBLE_A))
+		set_rumble(RUMBLE_B,get_rumble(RUMBLE_B))
+		}
+	
+	if(Menu)
+	if(Page == 4 && selectBar == 3)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Deadzone = TRUE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar == 3)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Deadzone = FALSE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(!Deadzone){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(Deadzone){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(Menu)
+	if(Page == 4 && selectBar == 3)
+	if(get_ival(secondaryFire) && event_press(Up)){
+		deadzoneVal = Cycle(deadzoneVal + 1, 0, 20);
+		displayNew = TRUE;
+		}
+	if(Menu)
+	if(Page == 4 && selectBar == 3)
+	if(get_ival(secondaryFire) && event_press(Down)){
+		deadzoneVal = Cycle(deadzoneVal - 1, 0, 20);
+		displayNew = TRUE;
+		}
+
+	if(Menu)
+	if(Page == 4 && selectBar <= 3)
+	if(displayNew){
+		Count = 0;
+		NumberToString2(deadzoneVal, FindDigits (deadzoneVal), 45);
+	
+		}
+	
+	if(Deadzone){
+		
+		deadzone(aimX,aimY,deadzoneVal,deadzoneVal);
+		
+		}
+/* 
+ _____             
+|  |  |___ ___ ___ 
+|     | -_|  _| . |
+|__|__|___|_| |___|
+===================
+*/
+	if(Menu)
+	
+	if(Page == 5){ // Hero
+		cls_oled(0);
+		menuLayout();
+		set_hsb(5,100,100); // Orange
+		printf(Center_X(4, OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,modStrings[4]);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar <= 3){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,heroStrings[0]); // Ashe
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,heroStrings[1]); // Bastion
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,heroStrings[2]); // Brigitte
+		}	
+	if(Menu)
+	if(Page == 5 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = TRUE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 1)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar <= 3)
+	if(!Ashe){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar <= 3)
+	if(Ashe){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Ashe)
+	
+	if(event_press(modButton)){
+		
+		combo_run(shotgunJump);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = TRUE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 2)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar <= 3)
+	if(!Bastion){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar <= 3)
+	if(Bastion){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Bastion) // Bastion
+	
+	if(event_press(Ultimate)){
+		
+		combo_run(ultTimer);
+		
+		}
+	
+	if(!Menu)
+	
+	if(Bastion) // Bastion
+	
+	if(combo_running(ultTimer) && event_press(primaryFire)){
+		
+		combo_run(fireHeal);
+		
+		}
+	
+	if(!Menu)
+	
+	if(Bastion) // Bastion
+	
+	if(combo_running(ultTimer) && event_press(modButton)){
+		
+		combo_run(fireHeal);
+		set_val(Jump,100);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 3)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = TRUE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 3)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar <= 3)
+	if(!Brigitte){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar <= 3)
+	if(Brigitte){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,heroStrings[3]); // Cassidy
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,heroStrings[4]); // Junkrat
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,heroStrings[5]); // Lucio
+		}
+	
+	if(!Menu)
+	
+	if(Brigitte)
+	
+	if(event_press(modButton)){
+		
+		combo_run(bashJump);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = TRUE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 4)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6)
+	if(!Cassidy){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6)
+	if(Cassidy){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Cassidy)
+	
+	if(event_press(modButton)){
+		
+		combo_run(combatRoll);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 5)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = TRUE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 5)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;// Avilio Tag
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6)
+	if(!Junkrat){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6)
+	if(Junkrat){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}	
+	
+	if(!Menu)
+	
+	if(Junkrat) // Junkrat
+	
+	if(event_press(modButton)){
+		
+		combo_run(mineJump);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar == 6)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = TRUE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 6)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6)
+	if(!Lucio){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 4 && selectBar <= 6)
+	if(Lucio){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Lucio) // Lucio
+	
+	if(get_ival(Ability_1) && get_ptime(Ability_1) > 600){
+
+		combo_run(lucioCombo);
+		
+		}
+	/////////
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,heroStrings[6]); // Mercy
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,heroStrings[7]); // Moira
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,heroStrings[8]); // Pharah
+		}	
+	if(Menu)
+	if(Page == 5 && selectBar == 7)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = TRUE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 7)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9)
+	if(!Mercy){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9)
+	if(Mercy){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Mercy)
+	
+	if(get_ival(modButton)){
+		
+		set_val(Crouch,100);
+		set_val(Ability_1,100);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 8)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = TRUE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 8)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9)
+	if(!Moira){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9)
+	if(Moira){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu) // Moira
+	
+	if(Moira)
+	
+	if(get_ival(primaryFire) && get_brtime(primaryFire) < 100){
+		
+		set_val(Ability_2,100);
+		
+		}
+	
+	if(!Menu) // Moira
+	
+	if(Moira)
+	
+	if(get_ival(secondaryFire) && get_brtime(secondaryFire) < 100){
+		
+		set_val(Ability_2,100);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 9)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = TRUE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 9)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9)
+	if(!Pharah){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 7 && selectBar <= 9)
+	if(Pharah){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	if(Pharah) // Pharah
+	if(event_press(modButton)){
+		
+		combo_run(pharahRJ);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,heroStrings[9]); // Soldier
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,heroStrings[10]); // Zarya
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,heroStrings[11]); // Zenyatta
+		}	
+	if(Menu)
+	if(Page == 5 && selectBar == 10)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = TRUE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 10)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12)
+	if(!Soldier){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12)
+	if(Soldier){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	if(Soldier) // Soldier
+	if(get_ival(walkF) < -85){
+		
+		set_val(Ability_1,100);
+		
+		}
+	
+	if(!Menu)
+	if(Soldier) // Soldier
+	if(event_press(modButton)){
+		
+		combo_run(soldierRJ);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 11)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = TRUE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 11)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12)
+	if(!Zarya){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12)
+	if(Zarya){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Zarya)
+	
+	if(event_press(modButton)){
+		
+		combo_run(pulseJump);
+		
+		}
+		
+	if(Menu)
+	if(Page == 5 && selectBar == 12)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = TRUE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 12)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12)
+	if(!Zenyatta){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 10 && selectBar <= 12)
+	if(Zenyatta){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Zenyatta)
+	
+	if(get_ival(secondaryFire) && get_ptime(secondaryFire) > 2200){
+		
+		set_val(secondaryFire,0);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,heroStrings[12]); // Simga
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,heroStrings[13]); // Genji
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,heroStrings[14]); // Tracer
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar == 13)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = TRUE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 13)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15)
+	if(!Symmetra){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15)
+	if(Symmetra){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu) // Symmetra
+	
+	if(get_ival(secondaryFire) && get_ptime(secondaryFire) > 1200){
+		
+		set_val(secondaryFire,0);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar == 14)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = TRUE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 14)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15)
+	if(!Sigma){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15)
+	if(Sigma){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		} // Avilio Tag
+	
+	if(!Menu)
+	
+	if(Sigma)
+	
+	if(event_press(modButton)){
+	
+		combo_run(rockJump);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar == 15)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = TRUE;
+		Tracer	 = FALSE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 15)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	
+	if(!Menu)
+	
+	if(Genji)
+	
+	if(event_press(modButton)){
+		
+		combo_run(shurikenMelee);
+		
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15)
+	if(!Genji){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 13 && selectBar <= 15)
+	if(Genji){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 16){
+		printf(Center_X(13, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,heroStrings[15]); // Tracer
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 16)
+	if(get_ival(PS4_L2) && event_press(Right)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = TRUE;
+		}
+	if(Menu)
+	if(Page == 5 && selectBar == 16)
+	if(get_ival(PS4_L2) && event_press(Left)){
+		Ashe 	 = FALSE;
+		Bastion	 = FALSE;
+		Brigitte = FALSE;
+		Cassidy	 = FALSE;
+		Junkrat	 = FALSE;
+		Lucio	 = FALSE;
+		Mercy	 = FALSE;
+		Moira	 = FALSE;
+		Pharah	 = FALSE;
+		Soldier	 = FALSE;
+		Zarya	 = FALSE;
+		Zenyatta = FALSE;
+		Symmetra = FALSE;
+		Sigma	 = FALSE;
+		Genji	 = FALSE;
+		Tracer	 = FALSE;
+		}
+	
+	if(Menu)
+	if(Page == 5 && selectBar >= 16)
+	if(!Tracer){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[0]);	// Off
+		}
+	if(Menu)
+	if(Page == 5 && selectBar >= 16)
+	if(Tracer){
+		printf(Center_X(-11, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,onoffStrings[1]);	// On
+		}
+	
+	if(!Menu)
+	
+	if(Tracer)
+	
+	if(event_press(modButton)){
+	
+		combo_run(ultRecall);
+		
+		}
+/*
+ _____     _         _      _____         
+|   __|___| |___ ___| |_   | __  |___ ___ 
+|__   | -_| | -_|  _|  _|  | __ -| .'|  _|
+|_____|___|_|___|___|_|    |_____|__,|_|  
+==========================================
+*/
+	if(Menu)
+	
+	if(!get_ival(PS4_L2) && event_press(Down)){
+		
+		selectBar += 1;
+		
+		}
+	
+	if(Menu)
+	
+	if(!get_ival(PS4_L2) && event_press(Up)){
+		
+		selectBar -= 1;
+		
+		}
+	
+	if(Menu && Page == 1) // Page 1
+	
+	if(selectBar < 1){
+		
+		selectBar = 1:
+		
+		}
+	
+	if(Menu && Page == 1) // Page 1
+	
+	if(selectBar > 9){
+		
+		selectBar = 9:
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 1){ // Page 1
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 2){ // Page 1
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 3){ // Page 1
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 4){ // Page 1
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 5){ // Page 1
+		
+		select_bar(2);
+		// Avilio Tag
+		}
+	
+	if(Menu && Page == 1 && selectBar == 6){ // Page 1
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 7){ // Page 1
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 8){ // Page 1
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 1 && selectBar == 9){ // Page 1
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 2) // Page 2
+	
+	if(selectBar < 1){
+		
+		selectBar = 1:
+		
+		}
+	
+	if(Menu && Page == 2) // Page 2
+	
+	if(selectBar > 6){
+		
+		selectBar = 6:
+		
+		}
+	
+	if(Menu && Page == 2 && selectBar == 1){ // Page 2
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 2 && selectBar == 2){ // Page 2
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 2 && selectBar == 3){ // Page 2
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 2 && selectBar == 4){ // Page 2
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 2 && selectBar == 5){ // Page 2
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 2 && selectBar == 6){ // Page 2
+		
+		select_bar(3);
+		
+		}
+		
+	if(Menu && Page == 3) // Page 3
+	
+	if(selectBar < 1){
+		
+		selectBar = 1:
+		
+		}
+	
+	if(Menu && Page == 3) // Page 3
+	
+	if(selectBar > 2){
+		
+		selectBar = 2:
+		
+		}
+	
+	if(Menu && Page == 3 && selectBar == 1){ // Page 3
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 3 && selectBar == 2){ // Page 3
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 4) // Page 4
+	
+	if(selectBar < 1){
+		
+		selectBar = 1:
+		
+		}
+	
+	if(Menu && Page == 4) // Page 4
+	
+	if(selectBar > 3){
+		
+		selectBar = 3:
+		
+		}
+	
+	if(Menu && Page == 4 && selectBar == 1){ // Page 4
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 4 && selectBar == 2){ // Page 4
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 4 && selectBar == 3){ // Page 4
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 5) // Page 5
+	
+	if(selectBar < 1){
+		
+		selectBar = 1:
+		
+		}
+	
+	if(Menu && Page == 5) // Page 5
+	
+	if(selectBar > 16){
+		
+		selectBar = 16:
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 1){ // Page 5
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 2){ // Page 5
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 3){ // Page 5
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 4){ // Page 5
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 5){ // Page 5
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 6){ // Page 5
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 7){ // Page 5
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 8){ // Page 5
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 9){ // Page 5
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 10){ // Page 5
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 11){ // Page 5
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 12){ // Page 5
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 13){ // Page 5
+		
+		select_bar(1);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 14){ // Page 5
+		
+		select_bar(2);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 15){ // Page 5
+		
+		select_bar(3);
+		
+		}
+	
+	if(Menu && Page == 5 && selectBar == 16){ // Page 5
+		
+		select_bar(1);
+		
+		}
+}
+
+// Combos
+const image scriptLogo = {128, 64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0xFF, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFF, 0xFF, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0xFF, 0xFF, 0xFF, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7F, 0xFF, 0xFF, 0xFF, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFF, 0xFC, 0x03, 0xFF, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0xE0, 0x00, 0x7F, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x80, 0x00, 0x1F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x7E, 0x00, 0x00, 0x07, 0xE3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1E, 0x3C, 0x00, 0x00, 0x03, 0xC7, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0x18, 0x00, 0x00, 0x01, 0x8F, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0x80, 0x00, 0x00, 0x00, 0x1F, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7F, 0xC0, 0x00, 0x00, 0x00, 0x3F, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7F, 0xC0, 0x00, 0x90, 0x00, 0x3F, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x80, 0x00, 0x90, 0x00, 0x1F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x00, 0x01, 0x98, 0x00, 0x0F, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0x00, 0x01, 0x98, 0x00, 0x0F, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x00, 0x01, 0x9C, 0x00, 0x07, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x00, 0x03, 0x9C, 0x00, 0x07, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x00, 0x03, 0x9C, 0x00, 0x07, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x07, 0x9E, 0x00, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x07, 0x9E, 0x00, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x0F, 0x9F, 0x00, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x0F, 0x9F, 0x00, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x0F, 0x9F, 0x00, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x1F, 0x9F, 0x80, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x3F, 0x9F, 0xC0, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0x7F, 0x9F, 0xE0, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x00, 0xFF, 0x9F, 0xF0, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFC, 0x01, 0xFF, 0x9F, 0xF8, 0x03, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x03, 0xFF, 0x0F, 0xFC, 0x07, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x07, 0xFE, 0x07, 0xFE, 0x07, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFE, 0x0F, 0xFC, 0x03, 0xFF, 0x07, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0x1F, 0xF8, 0x01, 0xFF, 0x8F, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0x3F, 0xF0, 0x00, 0xFF, 0xCF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xE0, 0x00, 0x7F, 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7F, 0xFF, 0xC0, 0x00, 0x3F, 0xFF, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7F, 0xFF, 0x80, 0x00, 0x1F, 0xFF, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0xFF, 0x00, 0x00, 0x0F, 0xFF, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0xFE, 0x00, 0x00, 0x07, 0xFF, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0xFC, 0x00, 0x00, 0x03, 0xFF, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0F, 0xFE, 0x00, 0x00, 0x07, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0F, 0xFF, 0x00, 0x00, 0x0F, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xFF, 0xC0, 0x00, 0x3F, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0xFF, 0xF8, 0x01, 0xFF, 0xFC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xF0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3F, 0xFF, 0xFF, 0xFF, 0xC0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0xFF, 0xFF, 0xFF, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xFF, 0xFF, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0xFF, 0xFF, 0xF8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7F, 0xFF, 0xE0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+combo Logo {
+image_oled(0, 0, TRUE, TRUE, scriptLogo[0]);
+printf(Center_X(0, OLED_FONT_SMALL_WIDTH),17,OLED_FONT_SMALL,OLED_WHITE,scriptStrings[1]); // Overwatch
+printf(Center_X(-5, OLED_FONT_SMALL_WIDTH),27,OLED_FONT_SMALL,OLED_WHITE,scriptStrings[2]); // v1.0
+printf(Center_X(0, OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,scriptStrings[0]); // By Avilio
+wait(2500);
+cls_oled(0);
+}
+combo save_CMB { // SAVE COMBO
+printf(Center_X(13, OLED_FONT_SMALL_WIDTH),10,OLED_FONT_LARGE,OLED_WHITE,saveStrings[1]);
+printf(Center_X(11, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_LARGE,OLED_WHITE,saveStrings[2]);
+wait(700);
+cls_oled(0);
+}
+combo ultRecall { // Tracer
+set_val(Ultimate,100);
+wait(100);
+wait(400);
+set_val(Ability_2,100);
+wait(100);
+}
+combo shurikenMelee { // Genji
+set_val(secondaryFire,100);
+wait(20);
+set_val(Melee,100);
+set_val(secondaryFire,100);
+wait(20);
+set_val(Melee,100);
+wait(50);
+}
+combo rockJump { // Sigma
+set_val(Ability_2,100);
+wait(100);
+set_val(Ability_2,0);
+wait(300);
+set_val(Jump,100);
+wait(50);
+set_val(Jump,0);
+wait(50);
+set_val(Jump,100);
+wait(50);
+set_val(Jump,0);
+wait(50);
+set_val(Jump,100);
+wait(50);
+set_val(Jump,0);
+wait(50);
+set_val(Jump,100);
+wait(50);
+set_val(Jump,0);
+wait(50);
+set_val(Jump,100);
+wait(50);
+set_val(Jump,0);
+}
+combo shotgunJump { // Ashe
+set_val(Jump,100);
+wait(50);
+set_val(Ability_1,100);
+wait(50);
+}
+combo pulseJump { // Zarya
+set_val(Jump,100);
+wait(50);
+set_val(secondaryFire,100);
+wait(50);
+}
+combo mineJump { // Junkrat
+set_val(Jump,100);
+wait(100);
+set_val(Jump,0);
+wait(20);
+set_val(secondaryFire,100);
+wait(100);
+set_val(secondaryFire,0);
+}
+combo combatRoll { // Cassidy
+set_val(Jump,100);
+wait(100);
+set_val(Ability_1,100);
+set_val(Jump,0);
+wait(100);
+set_val(Ability_1,0);
+}
+combo bashJump { // Brigitte
+set_val(Jump,100);
+wait(80);
+set_val(secondaryFire,100);
+set_val(Jump,100);
+wait(20);
+set_val(secondaryFire,100);
+set_val(Jump,0);
+wait(20);
+set_val(primaryFire,100);
+set_val(secondaryFire,100);
+wait(80);
+set_val(primaryFire,0);
+set_val(secondaryFire,100);
+wait(20);
+set_val(secondaryFire,0);
+}
+combo fireHeal { // For Bastion
+set_val(primaryFire,100);
+wait(50);
+set_val(secondaryFire,100);
+wait(100);
+}
+combo ultTimer { // For Bastion
+wait(10000);
+}
+combo pharahRJ {
+set_val(Jump,100);
+wait(10);
+set_val(primaryFire,100);
+set_val(Jump,100);
+wait(80);
+set_val(primaryFire,0);
+set_val(Jump,0);
+}
+combo soldierRJ {
+set_val(Jump,100);
+wait(10);
+set_val(secondaryFire,100);
+set_val(Jump,100);
+wait(80);
+set_val(secondaryFire,0);
+set_val(Jump,0);
+}
+combo lucioCombo {
+set_val(Ability_2,100);
+wait(50);
+wait(1000);
+}
+combo progAR_Combo {
+set_Val(aimY,verticalVal);
+wait(timeAR);
+set_Val(aimY,endVal);
+wait(9000);
+}
+combo bhopCombo {
+wait(10);
+set_val(Jump,0);
+wait(10);
+}
+combo meleeCombo {
+wait(10);
+set_val(Melee,0);
+wait(10);
+}
+combo block_input_combo {
+block_all_input();
+wait(500);
+}
+// Functions
+function set_Val(Input,Output){
+set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+    return;
+}
+function GetShapes(f_var){ 
+
+	if(TaylorShapes == 0) 
+    {
+		if(AngleDirection){
+	   	 	offset(PS4_RX,(f_var * SinAngle)/ 100);
+        	offset(PS4_RY,(f_var * CosAngle) /100);   
+   	 	}else{
+        	offset(PS4_RY ,(f_var * SinAngle)/100);
+        	offset(PS4_RX ,(f_var * CosAngle)/100);
+    	}  
+    }
+    if(TaylorShapes == 1) // Tall Oval
+    {
+    	
+		if(AngleDirection){
+    		offset(PS4_RX,(f_var/2 * SinAngle)/ 100);
+        	offset(PS4_RY,(f_var  * CosAngle) /100);   
+    	}else{
+    		offset(PS4_RY,(f_var * SinAngle)/100);
+    		offset(PS4_RX,(f_var/2 * CosAngle)/ 100);
+    	} 
+    }
+    if(TaylorShapes == 2) // Wide Oval
+    {
+    	if(AngleDirection){
+        	offset(PS4_RX,(f_var * SinAngle)/ 100);
+        	offset(PS4_RY,(f_var/2 * CosAngle) /100);  
+        }else{
+        	offset(PS4_RX,(f_var * CosAngle)/ 100);
+       		offset(PS4_RY,(f_var/2 * SinAngle) /100);  
+        }  
+    }
+    if(TaylorShapes == 3) // SpiralOval
+	{
+		if(!(CycleRefresh++ % TimeInterval))
+		{
+			if(!SpiralPosition1)                                
+			{
+				InnerSpiral -= 1;
+				if(InnerSpiral < f_var/2)
+					SpiralPosition1 = TRUE;   
+			}
+			else
+			{
+			    InnerSpiral += 1;
+				if(InnerSpiral > f_var)
+					SpiralPosition1 = FALSE;
+			}
+			if(!SpiralPosition2)
+			{
+				OuterSpiral -= 1;
+				if(OuterSpiral < f_var/2)
+					SpiralPosition2 = TRUE;
+			}
+			else
+			{
+				OuterSpiral += 1;
+				if(OuterSpiral >  f_var)
+					SpiralPosition2 = FALSE;
+			}
+			CycleRefresh = 0;
+		}
+		
+		if(AngleDirection){
+        	offset(PS4_RX,(OuterSpiral * SinAngle)/ 100);
+        	offset(PS4_RY,(InnerSpiral * CosAngle)/100);	
+        }else{
+        	offset(PS4_RX,(OuterSpiral * CosAngle)/ 100);
+        	offset(PS4_RY,(InnerSpiral * SinAngle)/100);
+        }       
+    } 
+    if(TaylorShapes == 4) // Spiral
+	{
+		
+		if(!(CycleRefresh++ % TimeInterval))
+		{
+			if(!SpiralPosition1)                                
+			{
+				InSpiral -= 1;
+				if(InSpiral < f_var/2)
+					SpiralPosition1 = TRUE;   
+			}
+			else
+			{
+			    InSpiral += 1;
+				if(InSpiral > f_var)
+					SpiralPosition1 = FALSE;
+			}
+			if(!SpiralPosition2)
+			{
+				OutSpiral -= 1;
+				if(OutSpiral < f_var/2)
+					SpiralPosition2 = TRUE;
+			}
+			else
+			{
+				OutSpiral += 1;
+				if(OutSpiral >  f_var)
+					SpiralPosition2 = FALSE;
+			}
+			CycleRefresh = 0;
+		}
+		if(AngleDirection){
+        	offset(PS4_RX,(OutSpiral * SinAngle)/ 100);
+        	offset(PS4_RY,(InSpiral * CosAngle)/100);	
+        }else{
+        	offset(PS4_RX,(OutSpiral * CosAngle)/ 100);
+        	offset(PS4_RY,(InSpiral * SinAngle)/100);
+        }    
+    }
+    if(TaylorShapes == 5) // Helix
+	{
+		inc = (i % 100);
+	    if(Position == 0){ 
+	   		x = inc; y = 100 - inc;} 
+	    else if (Position == 1){ 
+	    	x = 100 - inc; y = - inc;}
+	    else if (Position == 2){
+	    	x = -inc; y = -100 + inc;}
+	    else if(Position == 3){  // Avilio Tag
+	    	x = -100 + inc; y = inc;}
+	    Position ++;
+	   
+	    if(Position == 4){ 
+	    	Position = 0;
+	    }	
+	 	offset(PS4_RX,(f_var * x)/100);
+        offset(PS4_RY,(f_var * y)/100); 
+    }
+}
+function InitializeShapeChange() { 
+	if(TaylorShapes == 3) { 
+		InnerSpiral = TaylorRadius/2;	
+		OuterSpiral = TaylorRadius;
+	}
+} 
+function RumbleToUse() {
+    if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B)) 
+    {
+        return RUMBLE_A;
+    }
+    if(get_rumble(RUMBLE_A) == 100) 
+    {
+    	return RUMBLE_B;
+	}
+	if(get_rumble(RUMBLE_B) == 100) 
+	{
+    	return RUMBLE_A;
+	}
+    if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B)) 
+    {
+        return RUMBLE_A;
+    }
+    if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B)) 
+    {
+        return RUMBLE_B;
+    }
+    return 0;
+}
+function offset( axis,  offset_val) {
+  set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+  return;
+}
+function block_all_input(){
+
+set_val(PS4_PS,0);
+set_val(PS4_SHARE,0);
+set_val(PS4_OPTIONS,0);
+set_val(PS4_R1,0);
+set_val(PS4_R2,0);
+set_val(PS4_R3,0);
+set_val(PS4_L1,0);
+set_val(PS4_L2,0);
+set_val(PS4_L3,0);
+set_val(PS4_LX,0);
+set_val(PS4_LY,0);
+set_val(PS4_RX,0);
+set_val(PS4_RY,0);
+set_val(PS4_UP,0);
+set_val(PS4_DOWN,0);
+set_val(PS4_LEFT,0);
+set_val(PS4_RIGHT,0);
+set_val(PS4_CROSS,0);
+set_val(PS4_CIRCLE,0);
+set_val(PS4_SQUARE,0);
+set_val(PS4_TRIANGLE,0);
+set_val(PS4_TOUCH,0);
+}
+function Center_X(f_chars,f_font){  //--  center_x(number of chars,font size);                                                 
+return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); //-- return X for Centering String Horizontally
+}
+int q, c_Val,c;
+function NumberToString(Value, f_Digits, X) {
+    q     =     1;
+    c_Val = 10000;
+
+    if(Value < 0) //--neg numbers
+    {          
+        putc_oled(q, 45);    //--add leading "-"
+        q += 1;
+        Value = abs(Value);
+    } 
+
+    for(c = 5; c >= 1; c--) 
+    {
+        if(f_Digits >= c) 
+        {
+            putc_oled(q,ASCII_NUM[Value / c_Val]);
+            Value = Value % c_Val;
+            q +=  1; 
+
+            if(c == 4) 
+            {
+                putc_oled(q, 44);   //--add ","
+                q += 1;
+            }
+        }
+            c_Val /= 10;
+    }
+        puts_oled(Center_X(q - 7, OLED_FONT_LARGE_WIDTH), X, OLED_FONT_SMALL, q - 1, OLED_WHITE); // adjustable value centered in X and Y - medium size
+}
+function NumberToString2(Value, f_Digits, X) {
+    q     =     1;
+    c_Val = 10000;
+
+    if(Value < 0) //--neg numbers
+    {          
+        putc_oled(q, 45);    //--add leading "-"
+        q += 1;
+        Value = abs(Value);
+    } 
+
+    for(c = 5; c >= 1; c--) 
+    {
+        if(f_Digits >= c) 
+        {
+            putc_oled(q,ASCII_NUM[Value / c_Val]);
+            Value = Value % c_Val;
+            q +=  1; 
+
+            if(c == 4) 
+            {
+                putc_oled(q, 44);   //--add ","
+                q += 1;
+            }
+        }
+            c_Val /= 10;
+    }
+        puts_oled(Center_X(q - 5, OLED_FONT_LARGE_WIDTH), X, OLED_FONT_SMALL, q - 1, OLED_WHITE); // adjustable value centered in X and Y - medium size
+}
+const uint8 ASCII_NUM[] = 
+//	  0  1  2  3  4  5  6  7  8  9  (column numbers)
+  {48,49,50,51,52,53,54,55,56,57};   
+function Cycle(Value, Min, Max) {
+	if(Value > Max)
+		return Min;
+	if(Value < Min)
+		return Max;
+	return Value;
+}
+function FindDigits(Number) {
+    logVal = 0;
+
+    do
+    {
+        Number /= 10;
+        logVal++;
+    }
+        while (Number);
+    return logVal;
+}
+function menuLayout(){
+rect_oled(1, 1, 127, 63, 0, 1);
+rect_oled(2, 2, 125, 61, 0, 1);
+line_oled(1, 20, 127, 20, 2, 1);
+Arrows();
+}
+function select_bar(Number){
+if(Number == 1){
+pixel_oled(7, 27, 1);
+pixel_oled(8, 27, 1);
+pixel_oled(9, 27, 1);
+pixel_oled(10, 27, 1);
+pixel_oled(11, 27, 1);
+pixel_oled(12, 27, 1);
+pixel_oled(13, 27, 1);
+pixel_oled(14, 27, 1);
+pixel_oled(7, 28, 1);
+pixel_oled(8, 28, 1);
+pixel_oled(9, 28, 1);
+pixel_oled(10, 28, 1);
+pixel_oled(11, 28, 1);
+pixel_oled(12, 28, 1);
+pixel_oled(13, 28, 1);
+pixel_oled(14, 28, 1);
+pixel_oled(7, 29, 1);
+pixel_oled(8, 29, 1);
+pixel_oled(9, 29, 1);
+pixel_oled(10, 29, 1);
+pixel_oled(11, 29, 1);
+pixel_oled(12, 29, 1);
+pixel_oled(13, 29, 1);
+pixel_oled(14, 29, 1);
+pixel_oled(7, 30, 1);
+pixel_oled(8, 30, 1);
+pixel_oled(9, 30, 1);
+pixel_oled(10, 30, 1);
+pixel_oled(11, 30, 1);
+pixel_oled(12, 30, 1);
+pixel_oled(13, 30, 1);
+pixel_oled(14, 30, 1);
+	}
+if(Number == 2){
+pixel_oled(7, 37, 1);
+pixel_oled(8, 37, 1);
+pixel_oled(9, 37, 1);
+pixel_oled(10, 37, 1);
+pixel_oled(11, 37, 1);
+pixel_oled(12, 37, 1);
+pixel_oled(13, 37, 1);
+pixel_oled(14, 37, 1);
+pixel_oled(7, 38, 1);
+pixel_oled(8, 38, 1);
+pixel_oled(9, 38, 1);
+pixel_oled(10, 38, 1);
+pixel_oled(11, 38, 1);
+pixel_oled(12, 38, 1);
+pixel_oled(13, 38, 1);
+pixel_oled(14, 38, 1);
+pixel_oled(7, 39, 1);
+pixel_oled(8, 39, 1);
+pixel_oled(9, 39, 1);
+pixel_oled(10, 39, 1);
+pixel_oled(11, 39, 1);
+pixel_oled(12, 39, 1);
+pixel_oled(13, 39, 1);
+pixel_oled(14, 39, 1);
+pixel_oled(7, 40, 1);
+pixel_oled(8, 40, 1);
+pixel_oled(9, 40, 1);
+pixel_oled(10, 40, 1);
+pixel_oled(11, 40, 1);
+pixel_oled(12, 40, 1);
+pixel_oled(13, 40, 1);
+pixel_oled(14, 40, 1);
+	}
+if(Number == 3){
+pixel_oled(7, 47, 1);
+pixel_oled(8, 47, 1);
+pixel_oled(9, 47, 1);
+pixel_oled(10, 47, 1);
+pixel_oled(11, 47, 1);
+pixel_oled(12, 47, 1);
+pixel_oled(13, 47, 1);
+pixel_oled(14, 47, 1);
+pixel_oled(7, 48, 1);
+pixel_oled(8, 48, 1);
+pixel_oled(9, 48, 1);
+pixel_oled(10, 48, 1);
+pixel_oled(11, 48, 1);
+pixel_oled(12, 48, 1);
+pixel_oled(13, 48, 1);
+pixel_oled(14, 48, 1);
+pixel_oled(7, 49, 1);
+pixel_oled(8, 49, 1);
+pixel_oled(9, 49, 1);
+pixel_oled(10, 49, 1);
+pixel_oled(11, 49, 1);
+pixel_oled(12, 49, 1);
+pixel_oled(13, 49, 1);
+pixel_oled(14, 49, 1);
+pixel_oled(7, 50, 1);
+pixel_oled(8, 50, 1);
+pixel_oled(9, 50, 1);
+pixel_oled(10, 50, 1);
+pixel_oled(11, 50, 1);
+pixel_oled(12, 50, 1);
+pixel_oled(13, 50, 1);
+pixel_oled(14, 50, 1);
+	}
+}
+function Arrows() {
+pixel_oled(13, 6, 1);
+pixel_oled(114, 6, 1);
+pixel_oled(12, 7, 1);
+pixel_oled(13, 7, 1);
+pixel_oled(114, 7, 1);
+pixel_oled(115, 7, 1);
+pixel_oled(11, 8, 1);
+pixel_oled(12, 8, 1);
+pixel_oled(13, 8, 1);
+pixel_oled(14, 8, 1);
+pixel_oled(15, 8, 1);
+pixel_oled(16, 8, 1);
+pixel_oled(17, 8, 1);
+pixel_oled(18, 8, 1);
+pixel_oled(109, 8, 1);// Avilio Tag
+pixel_oled(110, 8, 1);
+pixel_oled(111, 8, 1);
+pixel_oled(112, 8, 1);
+pixel_oled(113, 8, 1);
+pixel_oled(114, 8, 1);
+pixel_oled(115, 8, 1);
+pixel_oled(116, 8, 1);
+pixel_oled(10, 9, 1);
+pixel_oled(11, 9, 1);
+pixel_oled(12, 9, 1);
+pixel_oled(13, 9, 1);
+pixel_oled(14, 9, 1);
+pixel_oled(15, 9, 1);
+pixel_oled(16, 9, 1);
+pixel_oled(17, 9, 1);
+pixel_oled(18, 9, 1);
+pixel_oled(109, 9, 1);
+pixel_oled(110, 9, 1);
+pixel_oled(111, 9, 1);
+pixel_oled(112, 9, 1);
+pixel_oled(113, 9, 1);
+pixel_oled(114, 9, 1);
+pixel_oled(115, 9, 1);
+pixel_oled(116, 9, 1);
+pixel_oled(117, 9, 1);
+pixel_oled(9, 10, 1);
+pixel_oled(10, 10, 1);
+pixel_oled(11, 10, 1);
+pixel_oled(12, 10, 1);
+pixel_oled(13, 10, 1);
+pixel_oled(14, 10, 1);
+pixel_oled(15, 10, 1);
+pixel_oled(16, 10, 1);
+pixel_oled(17, 10, 1);
+pixel_oled(18, 10, 1);
+pixel_oled(109, 10, 1);
+pixel_oled(110, 10, 1);
+pixel_oled(111, 10, 1);
+pixel_oled(112, 10, 1);
+pixel_oled(113, 10, 1);
+pixel_oled(114, 10, 1);
+pixel_oled(115, 10, 1);
+pixel_oled(116, 10, 1);
+pixel_oled(117, 10, 1);
+pixel_oled(118, 10, 1);
+pixel_oled(10, 11, 1);
+pixel_oled(11, 11, 1);
+pixel_oled(12, 11, 1);
+pixel_oled(13, 11, 1);
+pixel_oled(14, 11, 1);
+pixel_oled(15, 11, 1);
+pixel_oled(16, 11, 1);
+pixel_oled(17, 11, 1);
+pixel_oled(18, 11, 1);
+pixel_oled(109, 11, 1);
+pixel_oled(110, 11, 1);
+pixel_oled(111, 11, 1);
+pixel_oled(112, 11, 1);
+pixel_oled(113, 11, 1);
+pixel_oled(114, 11, 1);
+pixel_oled(115, 11, 1);
+pixel_oled(116, 11, 1);
+pixel_oled(117, 11, 1);
+pixel_oled(11, 12, 1);
+pixel_oled(12, 12, 1);
+pixel_oled(13, 12, 1);
+pixel_oled(14, 12, 1);
+pixel_oled(15, 12, 1);
+pixel_oled(16, 12, 1);
+pixel_oled(17, 12, 1);
+pixel_oled(18, 12, 1);
+pixel_oled(109, 12, 1);
+pixel_oled(110, 12, 1);
+pixel_oled(111, 12, 1);
+pixel_oled(112, 12, 1);
+pixel_oled(113, 12, 1);
+pixel_oled(114, 12, 1);
+pixel_oled(115, 12, 1);
+pixel_oled(116, 12, 1);
+pixel_oled(12, 13, 1);
+pixel_oled(13, 13, 1);
+pixel_oled(114, 13, 1);
+pixel_oled(115, 13, 1);
+pixel_oled(13, 14, 1);
+pixel_oled(114, 14, 1);
+}
+// Save
+init {
+antiRecoil 			 = get_pvar(SPVAR_1,0,1,0);
+arType 				 = get_pvar(SPVAR_2,0,1,0);
+Bhop 				 = get_pvar(SPVAR_3,0,1,0);
+autoMelee 			 = get_pvar(SPVAR_4,0,1,0);
+hairTriggers 		 = get_pvar(SPVAR_5,0,1,0);
+Vibrations 			 = get_pvar(SPVAR_6,0,1,0);
+Deadzone 			 = get_pvar(SPVAR_7,0,1,0);
+verticalVal 		 = get_pvar(SPVAR_8,-100,100,0);
+endVal 				 = get_pvar(SPVAR_9,-100,100,0);
+timeAR	 			 = get_pvar(SPVAR_10,0,10000,0);
+deadzoneVal 		 = get_pvar(SPVAR_11,0,20,0);
+ToggleTaylorPolarAim = get_pvar(SPVAR_12,0,1,0);
+ToggleAAType 		 = get_pvar(SPVAR_13,0,1,0);
+TaylorShapes 		 = get_pvar(SPVAR_14,0,5,0);
+TaylorRadius 		 = get_pvar(SPVAR_15,0,100,0);
+AdsSpeed			 = get_pvar(SPVAR_16,0,100,0);
+TaylorAngle			 = get_pvar(SPVAR_17,0,100,0);
+TaylorPBoostStr		 = get_pvar(SPVAR_18,0,100,0);
+TaylorABoostSpd		 = get_pvar(SPVAR_19,0,100,0);
+ToggleBoostFire		 = get_pvar(SPVAR_20,0,1,0);
+// Heroes
+Ashe				 = get_pvar(SPVAR_21,0,1,0);
+Bastion				 = get_pvar(SPVAR_22,0,1,0);
+Brigitte			 = get_pvar(SPVAR_23,0,1,0);
+Cassidy				 = get_pvar(SPVAR_24,0,1,0);
+Junkrat				 = get_pvar(SPVAR_25,0,1,0);
+Lucio				 = get_pvar(SPVAR_26,0,1,0);
+Mercy				 = get_pvar(SPVAR_27,0,1,0);
+Moira				 = get_pvar(SPVAR_28,0,1,0);
+Pharah				 = get_pvar(SPVAR_29,0,1,0);// Avilio Tag
+Soldier				 = get_pvar(SPVAR_30,0,1,0);
+Zarya				 = get_pvar(SPVAR_31,0,1,0);
+Zenyatta			 = get_pvar(SPVAR_32,0,1,0);
+Symmetra			 = get_pvar(SPVAR_33,0,1,0);
+Sigma				 = get_pvar(SPVAR_34,0,1,0);
+Genji				 = get_pvar(SPVAR_35,0,1,0);
+Tracer				 = get_pvar(SPVAR_36,0,1,0);
+}
+ ����������������

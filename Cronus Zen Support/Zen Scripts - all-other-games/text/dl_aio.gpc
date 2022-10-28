@@ -1,0 +1,427 @@
+/*
+Thanks to Swizzy and DoGz for the logo and screensaver respectively
+
+Any questions? Suggestions? Add me on discord: SVD#4805
+
+Requested by: Zen3100
+*/
+
+//Game: Dying Light
+
+int MOD_KEY = XB1_VIEW;
+int KILL_SWITCH = XB1_MENU;
+int LOCKPICK_STEP = 50;
+
+/*
+
+	MODS
+		< AUTO SPRINT > - Automatically presses LS / L3 when you move forward.
+		< AUTO SENSE  > - Automatically presses your sense button so that you can find items easier.
+		< QUICK BREAK > - Hold A / X to quickly break out of zombie grabs or complete button mashing interactions
+		< AUTO PICK >	- Automatically picks locks
+		
+		
+	DEFAULT KEYBINDS
+		View/Share + D-Pad Down		: AUTO SPRINT
+		View/Share + D-Pad Right	: AUTO SENSE
+		View/Share + D-Pad Up		: QUICK BREAK
+		LS + RS						: AUTO PICK
+		
+		
+	KILL SWITCH
+		Double tap the kill switch bind to pause all mods, double tap again to unpause.
+
+*/
+
+////////////////////////////////////////////////////////
+///////// DON'T TOUCH ANYTHING BELOW THIS LINE /////////
+////////////////////////////////////////////////////////
+
+//Message Screen Studio Logo | Messages
+const int16 dlscreen[] = 	{116, 51, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0010, 0x0000, 0x0000, 0x0000, 0x0000, 0x00FE, 0x1C1C, 0xC407, 0x0780, 0x0000, 0x0000, 0x0000, 0x000F, 0xF9C1, 0xDE70, 0x71FE, 0x0000, 0x0000, 0x0000, 0x0000, 0xFF9C, 0x3DE7, 0x871F, 0xE000, 0x0000, 0x0000, 0x0000, 0x0F3C, 0xE39E, 0x7873, 0xCF00, 0x0000, 0x0000, 0x0000, 0x00E1, 0xCE39, 0xE787, 0x3870, 0x0000, 0x0000, 0x0000, 0x000F, 0x1CE3, 0x9E7C, 0x7387, 0x0000, 0x0000, 0x0000, 0x0000, 0xE1C7, 0x70E7, 0xC738, 0x3000, 0x0000, 0x0000, 0x0000, 0x0E1C, 0x7F0E, 0x7C73, 0x8000, 0x0000, 0x0000, 0x0000, 0x00E1, 0xC3F0, 0xE7E7, 0xB800, 0x0040, 0x0000, 0x0000, 0x000E, 0x1C3F, 0x0E7E, 0x7B80, 0x0004, 0x0000, 0x0000, 0x0000, 0xE1C3, 0xE0E7, 0x77B9, 0xF000, 0x4000, 0x0000, 0x0000, 0x0E1C, 0x1E0E, 0x777B, 0x9F20, 0x0600, 0x0000, 0x0000, 0x00E1, 0xC1C0, 0xE77F, 0xB9F3, 0x8070, 0x7C1C, 0x3BFF, 0x000E, 0x1C1C, 0x0E73, 0xFB87, 0x3807, 0x1FE1, 0xC3BF, 0xF000, 0xE1C1, 0xC0E7, 0x3FB8, 0x7380, 0x71FF, 0x1C3B, 0xFF00, 0x0E1C, 0x1C0E, 0x73F3, 0x8738, 0x073C, 0x71C3, 0x8780, 0x00E1, 0xC1C0, 0xE71F, 0x3873, 0x8073, 0xC79C, 0x3878, 0x000E, 0x3C1C, 0x0E71, 0xF387, 0x3807, 0x3C39, 0xC387, 0x0000, 0xE3C1, 0xC0E7, 0x0F38, 0xF380, 0x7380, 0x1C38, 0x7000, 0x0FFC, 0x1C0E, 0x70F3, 0xFF38, 0x0738, 0x01C3, 0x8700, 0x00FF, 0x81C0, 0xE70F, 0x1FE3, 0x8073, 0x801C, 0x3870, 0x000F, 0xE01C, 0x0E70, 0x60FC, 0x3807, 0x3801, 0xFF87, 0x0000, 0x0000, 0x0000, 0x0000, 0x0380, 0x739F, 0x9FF8, 0x7000, 0x0000, 0x0000, 0x0000, 0x0038, 0x0739, 0xF9FF, 0x8700, 0x0000, 0x0000, 0x0000, 0x0003, 0x8073, 0x9F9C, 0x7870, 0x0000, 0x0000, 0x0000, 0x0000, 0x3807, 0x3839, 0xC387, 0x0000, 0x0000, 0x0000, 0x0000, 0x0380, 0x7383, 0x9C78, 0x7000, 0x0000, 0x0000, 0x0000, 0x0038, 0x0738, 0x39C7, 0x8700, 0x0000, 0x0000, 0x0000, 0x0003, 0x8073, 0x839C, 0x7870, 0x0000, 0x0000, 0x0000, 0x0000, 0x3807, 0x3879, 0xC787, 0x0000, 0x0000, 0x0000, 0x0000, 0x0380, 0x73C7, 0x1C38, 0x7000, 0x0000, 0x0000, 0x0000, 0x003F, 0xE71F, 0xF1C3, 0x8700, 0x0000, 0x0000, 0x0000, 0x0003, 0xFE70, 0xFE1C, 0x3870, 0x0000, 0x0000, 0x0000, 0x0000, 0x3FE7, 0x07C1, 0xC787, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0030, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0002, 0x0000};
+const string mods[] = 		{"Auto Sprint", "Auto Sense", "Quick Break", "Auto Pick"}
+const string off_on[] = 	{"OFF", "ON"}
+//
+
+//Menu
+int modStatus[4];
+int killSwitch = 0; 
+//
+
+//DoGz Pipes Screensaver
+int SSTimer,TimeL,TimerP,TimerE,Length,X_POS1,Y_POS1,X_POS2,Y_POS2,Steps1,Steps2,XorY1,XorY2,Dir1,Dir2;
+int Saver = FALSE;
+define TimeoutLimit = 30000;
+//
+
+//Reset
+int reset = FALSE
+int RTimer = 0;
+//
+
+//QuickBreak
+int QBDisable = FALSE
+int QBTimer = 0;
+//
+
+//Auto Pick
+int pickState = 0;
+int flipped = FALSE;
+
+int rumbleLeft, rumbleRight, rumbleTempL, rumbleTempR, pickTimer;
+
+//Misc
+const int16 dpad[] = {XB1_LEFT, XB1_UP, XB1_RIGHT, XB1_DOWN}
+int i;
+//
+
+combo quick_break {
+	set_val(XB1_A, 100)
+	wait(20);
+	set_val(XB1_A, 0);
+	wait(20);
+}
+
+combo auto_sense {
+	set_val(XB1_A, 100)
+	wait(400);
+	set_val(XB1_A, 0);
+	wait(400);
+}
+
+
+
+init {
+	//Populate toggle array
+	for (i = 0; i < 3; i++) {
+		modStatus[i] = FALSE;
+	}
+	
+	//Draw logo
+	cls_oled(0);
+	draw_dlscreen(0,0);
+}
+
+main {
+
+	if (event_press(KILL_SWITCH) && get_brtime(KILL_SWITCH) <= 200) killSwitch = !killSwitch;
+
+	if (!killSwitch) {
+		
+		//Block d-pad inputs while holding mod key
+		if (get_ival(MOD_KEY)){
+			for (i = 0; i < 4; i++) {
+				set_val(dpad[i], 0);
+			}
+		}
+	
+		//Auto Sprint toggle
+		if (get_val(MOD_KEY) && event_press(XB1_DOWN)) flipMod(0);
+		
+		//Auto Sense toggle
+		if (get_val(MOD_KEY) && event_press(XB1_RIGHT)) flipMod(1);
+		
+		//QuickBreak
+		if (get_val(MOD_KEY) && event_press(XB1_UP)) flipMod(2);
+	
+		//Auto Pick
+		if (get_val(XB1_LS) && event_press(XB1_RS)) {
+			pickState = 0;
+			flipMod(3);
+		}
+		
+		//Easily disable auto lockpick mod
+		if (modStatus[3] && abs(get_ival(XB1_RX)) >= 10) flipMod(3);
+	
+		//Auto Sprint
+		if (get_val(XB1_LY) < -65 && modStatus[0]) {
+			set_val(XB1_LS, 100);
+		}
+		
+		//AutoSense
+		if (modStatus[1]) {
+		
+			//Disable mod temporarily if attempting to break out of hold
+			if (event_press(XB1_A) && get_brtime(XB1_A) <= 200) {
+				QBTimer = 0;
+				QBDisable = TRUE;
+			}
+			
+			if (QBDisable) {
+				if (QBTimer >= 5000) {
+					QBDisable = FALSE;
+				} else {
+					QBTimer += get_rtime();
+				}
+			}
+			
+			//Allow looting / interaction
+			if (!QBDisable && !get_val(XB1_A) && (!get_val(XB1_X) || event_release(XB1_X))) {
+				combo_run(auto_sense);
+			}
+		}
+		
+		//Quick Break
+		if (modStatus[2]) {
+			if (get_val(XB1_A) && get_ptime(XB1_A) >= 200) {
+				combo_run(quick_break);
+			}
+		}
+		
+		/*
+		 0 	- init
+		 1	- pickLeft
+		 2	- pickRight
+		*/
+		
+		//Auto Pick
+		if (modStatus[3]) {
+			
+			if (flipped) {
+			
+					if (pickState == 1) {
+						rumbleRight = 0;
+					}
+					if (pickState == 2) {
+						rumbleLeft = 0;
+					}
+				
+					LOCKPICK_STEP = LOCKPICK_STEP / 2;
+					flipped = FALSE;
+			}
+			
+			rumbleTempL = 0;
+			rumbleTempR = 0;
+		
+			if (pickState == 0) {
+				set_val(XB1_RX, -100);
+				
+				
+				rumbleLeft = 0;
+				rumbleRight = 0;
+				
+				rumbleTempL = get_rumble(RUMBLE_LT);
+				rumbleTempR = get_rumble(RUMBLE_RT);
+				
+				if (rumbleTempL > 10) {
+					set_val(XB1_RX, 0);
+					pickState = 1
+					rumbleLeft = rumbleTempL;
+				} else if (rumbleTempR > 10) {
+					set_val(XB1_RX, 0);
+					pickState = 2
+					rumbleRight = rumbleTempR;
+				}
+				
+			}
+			if (pickState == 1) {
+			
+				set_val(XB1_LX, -100);
+				
+				if (pickTimer > LOCKPICK_STEP) {
+					
+					set_val(XB1_LX, 0);
+					set_val(XB1_RX, -100);
+					
+					rumbleTempL = get_rumble(RUMBLE_LT);
+					rumbleTempR = get_rumble(RUMBLE_RT);
+					
+					if (rumbleTempR > rumbleLeft) {
+						pickTimer = 0;
+						set_val(XB1_RX, 0);
+						rumbleRight = rumbleTempR
+						pickState = 2;
+						flipped = TRUE
+					}
+					
+					if (rumbleTempL) {
+						pickTimer = 0;
+						set_val(XB1_RX, 0);
+						if (rumbleTempL >= rumbleLeft) {
+							rumbleLeft = rumbleTempL;
+						}
+					}
+					
+					
+				} else {
+					pickTimer += get_rtime();
+				}
+			}
+			
+			if (pickState == 2) {
+				set_val(XB1_LX, 100);
+				
+				if (pickTimer > LOCKPICK_STEP) {
+					set_val(XB1_LX, 0);
+					set_val(XB1_RX, -100);
+					
+					rumbleTempL = get_rumble(RUMBLE_LT);
+					rumbleTempR = get_rumble(RUMBLE_RT);
+					
+					if (rumbleTempL > rumbleRight) {
+						pickTimer = 0;
+						set_val(XB1_RX, 0);
+						rumbleLeft = rumbleTempL;
+						pickState = 1;
+						flipped = TRUE
+					}
+					
+					if (rumbleTempR) {
+						pickTimer = 0;
+						set_val(XB1_RX, 0);
+						if (rumbleTempR >= rumbleRight) {
+							rumbleRight = rumbleTempR;
+						}
+					}
+					
+				} else {
+					pickTimer += get_rtime();
+				}
+			}
+		}
+	
+	}
+	
+	//if time elapsed greater than limit enable screensaver
+	if (SSTimer >= TimeoutLimit) {
+		Saver = TRUE;
+		SSTimer = 0;
+		cls_oled(0);
+	} else {
+		SSTimer += get_rtime();
+	}
+	
+	//reset screen, draw logo
+	if (reset) {
+		if (RTimer >= 4000) {
+			cls_oled(0);
+			draw_dlscreen(0,0);
+			reset = FALSE;
+		} else {
+			RTimer += get_rtime();
+		}
+	}
+	
+	//play screensaver
+	if (Saver) {
+		Saver();
+	}
+}
+
+//flip mod bool and print
+function flipMod(pos) {
+	modStatus[pos] = !modStatus[pos]
+	Saver = FALSE
+	PrintStatus(pos)
+}
+
+/*
+Print mods to screen,
+Block screensaver and reset timer so screensaver doesn't draw ontop of logo.
+
+Example: "Auto Sprint: ON" <- Toggled on
+		 "Auto Sprint: OFF" <- Toggled off
+*/
+
+function PrintStatus(pos) {
+	cls_oled(0);
+	
+	print(5,15,1,1,mods[pos]);
+	print(55,36,1,1,off_on[modStatus[pos]]);
+	
+	reset = TRUE;
+	RTimer = 0;
+	SSTimer = 0;
+}
+
+//DoGz Pipe Screensaver
+function Saver () {
+    
+    if (Saver) { 
+
+        TimeL += get_rtime();
+    
+        if(TimeL == 30) {            
+            pixel_oled(X_POS1,Y_POS1,1);
+            pixel_oled(X_POS2,Y_POS2,1);
+             
+                 TimerP += 1;    Length -= 1;
+                 TimerE += 1;    Length -= 1;
+                
+                if(XorY1)  X_POS1 +=Dir1;
+                if(XorY2)  X_POS2 +=Dir2;
+                if(!XorY1) Y_POS1 +=Dir1;
+                if(!XorY2) Y_POS2 +=Dir2;
+ 
+            if(Y_POS1 < 1)   Y_POS1 = 63;
+            if(Y_POS2 < 1)   Y_POS2 = 63;
+            if(X_POS1 < 1)   X_POS1 = 127;
+            if(X_POS2 < 1)   X_POS2 = 127;
+            if(Y_POS1 > 63)  Y_POS1 = 1;
+            if(Y_POS2 > 63)  Y_POS2 = 1;
+            if(X_POS1 > 127) X_POS1 = 1;
+            if(X_POS2 > 127) X_POS2 = 1;
+    
+        if(Length < 1) {
+            cls_oled(0);
+            Y_POS2 = random(1,64);
+            Y_POS1 = random(1,64);
+            X_POS1 = random(1,128);
+            X_POS2 = random(1,128);
+            Steps1 = random(5,25);
+            Steps2 = random(5,25);
+            Length = random(200,1000);
+        }
+    
+            if(TimerP > Steps1) { 
+                TimerP = 0;
+                Steps1 = random(5,25);
+                XorY1 = !XorY1;
+                Dir1 = random(1,3);
+    
+                        if(Dir1 == 2) Dir1 = -1;
+            } 
+
+        if(TimerE > Steps2) {
+        	TimerE = 0;
+            Steps2 = random(5,25);
+            XorY2 = !XorY2;
+            Dir2 = random(1,3);
+    
+           	if(Dir2 == 2) Dir2 = -1;
+           	
+           	}                                    
+            
+            TimeL = 0;
+         }
+     }
+}
+
+//Message Screen Studio
+int __dlscreenWidth, __dlscreenX, __dlscreenHeight, __dlscreenY, __dlscreenBit, __dlscreenOffset, __dlscreenData;
+int __dlscreenX2, __dlscreenY2;
+function draw_dlscreen(x, y) {
+	__dlscreenOffset = 1; // Reset the starting point
+	__dlscreenBit = 0; // Reset bit flag
+	__dlscreenWidth = dlscreen[0]; // Fetch the width of what to draw
+	__dlscreenHeight = dlscreen[1]; // Fetch the height of what to draw
+	for (__dlscreenY = 0; __dlscreenY < __dlscreenHeight; __dlscreenY++) { // Loop the Y axis
+		__dlscreenY2 = y + __dlscreenY;
+		if (__dlscreenY2 < 0 || __dlscreenY2 >= 64) {
+			__dlscreenY2 -= 64;
+		}
+		for (__dlscreenX = 0; __dlscreenX < __dlscreenWidth; __dlscreenX++) { // Loop the X axis
+			if (!__dlscreenBit) { // Check if we've already handled the last bit
+				__dlscreenBit = 16; // Reset the bit flag
+				__dlscreenOffset++; // Move to the next value
+				__dlscreenData = dlscreen[__dlscreenOffset]; // Fetch the value
+			}
+			__dlscreenBit--; // Decrement the bit flag, we're moving to the next bit
+			__dlscreenX2 = x + __dlscreenX;
+			if (__dlscreenX2 < 0 || __dlscreenX2 >= 128) {
+				__dlscreenX2 -= 128;
+			}
+			pixel_oled(__dlscreenX2, __dlscreenY2, test_bit(__dlscreenData, __dlscreenBit));
+		}
+	}
+} ú¸Œµ‡¾†¾‰¿‹³…µ‚º

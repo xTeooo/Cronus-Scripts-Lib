@@ -1,0 +1,37 @@
+define INITIAL_STATE = FALSE; 
+ 
+int swap_is_on = INITIAL_STATE;
+int toggle;
+
+main
+{
+    set_ledx(1,1);
+        
+    if (toggle && event_press(PS4_R1)) toggle = FALSE;
+    if (!toggle && get_val(PS4_R1) && get_ptime(PS4_R1) >= 1500) toggle = TRUE;
+    if (toggle) set_val(PS4_R1, 100);
+        
+    if(get_val(PS4_L1) && event_press(PS4_PS)) { 
+       swap_is_on = !swap_is_on;
+    }
+     if(swap_is_on) {
+        set_ledx(2,1);
+    }
+     if(swap_is_on){
+        combo_run(SwapBTN);
+    } else if(combo_running(SwapBTN)) {
+        combo_stop(SwapBTN); 
+    }
+    if(ps4_touchpad(PS4T_P1)){
+		if(ps4_touchpad(PS4T_P1X) < 0){
+			set_val(PS4_L3,100);
+		}
+		else if(ps4_touchpad(PS4T_P1X) > 0) {
+			set_val(PS4_R3,100);
+	    }
+    }
+
+}
+    combo SwapBTN {
+    swap(PS4_SHARE, PS4_TOUCH);
+}

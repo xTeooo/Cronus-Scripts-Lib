@@ -1,0 +1,169 @@
+define
+
+// Auto
+START_BTN = PS4_L2,
+STOP_BTN = PS4_R2;
+
+
+
+int
+
+// Auto
+num = 0,
+wait_end = 8500,
+// Display
+blank_screen,
+screen_saver,
+ran_text_pos_x,
+ran_text_pos_y;
+
+
+
+init {
+
+
+// Display
+
+ cls_oled(OLED_BLACK);
+
+
+}
+
+
+
+main {
+
+
+// Auto
+
+ if(event_press(START_BTN)) {
+  num = 245;
+  blank_screen = 0;
+ }
+
+ if(num && !combo_running(Auto)) {
+  num --;
+  combo_restart(Auto);
+  screen_saver = FALSE;
+  ran_text_pos_x = random(-5,5);
+  ran_text_pos_y = random(-5,5);
+ }
+
+ if(num < 0) {
+  combo_stop(Auto);
+  combo_run(Auto2);
+ }
+
+
+// Display
+
+ if(!screen_saver) {
+  blank_screen += get_rtime();
+  if(blank_screen >= 10000) {
+   cls_oled(OLED_BLACK);
+   screen_saver = TRUE;
+   blank_screen = 0;
+  }
+ }
+ else blank_screen = 0;
+
+ if(!screen_saver) {
+  cls_oled(OLED_BLACK);
+  number_to_string(num,find_digits(num));
+ }
+
+
+}
+
+
+
+// Auto
+
+combo Auto {
+ set_val(PS4_SQUARE,100);
+ wait(1500);
+ set_val(PS4_SQUARE,0);
+ wait(2000);
+ set_val(PS4_SQUARE,100);
+ wait(1500);
+ set_val(PS4_SQUARE,0);
+ wait(2500);
+ set_val(PS4_UP,100);
+ wait(1500);
+ set_val(PS4_UP,0);
+ wait(wait_end);
+}
+
+combo Auto2 {
+ set_val(PS4_OPTIONS,100);
+ wait(80);
+ set_val(PS4_OPTIONS,0);
+ wait(600);
+ set_val(PS4_DOWN,100);
+ wait(80);
+ set_val(PS4_DOWN,0);
+ wait(500);
+ set_val(PS4_CROSS,100);
+ wait(80);
+ set_val(PS4_CROSS,0);
+ wait(800);
+ set_val(PS4_DOWN,100);
+ wait(80);
+ set_val(PS4_DOWN,0);
+ wait(1500);
+ set_val(PS4_CROSS,100);
+ wait(80);
+ set_val(PS4_CROSS,0);
+}
+
+
+
+// Display
+
+function center_text(f_chars,f_font) {
+ return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+
+// Variables for number_to_string() function
+int i, c, c_val;
+// Constant bytes - Convert numbers array - ASCII_NUM[column number]
+const uint8 ASCII_NUM[] = 
+//  0  1  2  3  4  5  6  7  8  9  (column numbers)
+ { 48,49,50,51,52,53,54,55,56,57 };
+
+function number_to_string(value,f_digits){
+ i = 1;
+ c_val = 10000;
+ if(value < 0) {
+  putc_oled(i,45);
+  i += 1;
+  value = abs(value);
+ } 
+ for(c = 5; c >= 1; c--) {
+  if(f_digits >= c) {
+   putc_oled(i,ASCII_NUM[value / c_val]);
+   value = value % c_val;
+   i +=  1;
+   if(c == 4) {
+    putc_oled(i,44);
+    i += 1;
+   }
+  }
+  c_val /= 10;
+ }
+ // Display Number
+ puts_oled(center_text(i - 1,OLED_FONT_LARGE_WIDTH) + ran_text_pos_x,22 + ran_text_pos_y,OLED_FONT_LARGE,i - 1,OLED_WHITE);
+}
+
+function find_digits(f_num) {
+ f_num = abs(f_num);
+ if(f_num / 10000 > 0)
+  return 5;
+ if(f_num / 1000 > 0)
+  return 4;
+ if(f_num / 100 > 0)
+  return 3;
+ if(f_num / 10 > 0)
+  return 2;
+ return 1;
+}

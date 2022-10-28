@@ -1,0 +1,156 @@
+//--use dpad down to inc the display list
+//--use dpad up to dec the display list
+//--use X to clear the display
+
+
+int newRumble,oldRumble,rumbleTimer;
+int rumbleValue[50];
+int rumbleTime[50]
+int rumbleIndex;
+
+int blockButton,displayNew = TRUE;
+
+
+main {
+
+	if(get_val(XB1_RT)){
+	 
+		if(get_rumble(RUMBLE_A)) {
+		    newRumble = get_rumble(RUMBLE_A) * 255 / 100;
+		    if(!rumbleIndex) {
+		    	rumbleTime[rumbleIndex] = rumbleTimer;  //--store time before first rumble
+		    	oldRumble = newRumble;
+		    	rumbleIndex++;
+		    }
+		    //--store up to 50 values and times
+			if(newRumble != oldRumble && rumbleIndex < 50){
+		    	rumbleValue[rumbleIndex] = oldRumble;    //--store old value
+		    	rumbleTime[rumbleIndex] = rumbleTimer;   //--lenght of time
+				oldRumble = newRumble;                   //--set new value
+				rumbleTimer = 0;                         //--reset timer
+				rumbleIndex++;                           //--inc index
+			} 
+		 }
+		 rumbleTimer += get_rtime();
+	}
+ 	if(event_release(XB1_RT)){
+	    rumbleIndex = 0;
+		rumbleTimer = 0;
+		oldRumble = 0;
+		displayNew = TRUE;
+	}  
+	
+////////////    OLED   ////////
+	UpdateIndex();
+	
+	if(displayNew) {
+	    UpdateDisplay(0);
+	}
+       
+	if(blockButton) {
+		if(event_release(blockButton)) {
+			blockButton = 0;
+        }else{
+            set_val(blockButton,0);
+    	}
+	}
+}//--end of main
+
+//////////////////////////////////////////////////
+const string TIME = "TIME";
+const string VALUE = "VALUE";
+
+int displayY;
+
+function UpdateDisplay(i) {
+	 cls_oled(OLED_BLACK);
+	 printf(27,0,OLED_FONT_SMALL,OLED_WHITE,TIME[0]);
+	 printf(81,0,OLED_FONT_SMALL,OLED_WHITE,VALUE[0]);
+     displayY = 11;
+     for(i = 0; i <= 4; i++) {
+         NumberToString(rumbleIndex + i + 1,FindDigits(rumbleIndex + i + 1)); 
+         puts_oled(0,displayY,OLED_FONT_SMALL,bufferIndex - 1,OLED_WHITE); 
+         NumberToString(rumbleTime[rumbleIndex + i],FindDigits(rumbleTime[rumbleIndex + i])); 
+         puts_oled(34,displayY,OLED_FONT_SMALL,bufferIndex - 1,OLED_WHITE); 
+         NumberToString(rumbleValue[rumbleIndex + i],FindDigits(rumbleValue[rumbleIndex + i])); 
+         puts_oled(88,displayY,OLED_FONT_SMALL,bufferIndex - 1,OLED_WHITE); 
+         displayY += 11;
+     }
+	 displayNew = FALSE;
+}
+function UpdateIndex() {
+    //--clear display
+	if(event_press(XB1_X)) {
+	    blockButton = XB1_X;
+	    ResetArrays(0);
+	    displayNew = TRUE;
+	}
+	//--dec display 1
+	if(PressHold(XB1_UP)) {
+	    blockButton = XB1_UP;
+	    rumbleIndex--;
+	    if(rumbleIndex < 0) {
+	        rumbleIndex = 0;
+	    }else{
+			displayNew = TRUE;
+	    }
+	}
+	//--inc display 1
+	if(PressHold(XB1_DOWN)) {
+	    blockButton = XB1_DOWN;
+	    rumbleIndex++;
+	    if(rumbleIndex > 49) {
+			rumbleIndex = 49;
+	    }else{
+	        displayNew = TRUE;
+	    }
+	}
+}
+function ResetArrays(i) {
+    for(i = 0;i <= 49;i++) {
+        rumbleValue[i] = 0;
+        rumbleTime[i] = 0;
+    }
+    rumbleIndex = 0;
+}
+///////////////////////////////////////////////////// 
+function PressHold(f_btn) {
+	return event_press(f_btn) || get_val(f_btn) && get_ptime(f_btn) > 250 
+	       && get_ptime(f_btn) % (get_rtime() * 8) == 0;
+} 
+int bufferIndex;
+int charIndex,digitIndex;
+ 
+function NumberToString(f_val,f_digits) {
+ 
+    bufferIndex = 1;  
+    digitIndex = 10000;
+	if(f_val < 0) {                     //--neg numbers
+         putc_oled(bufferIndex,45);    //--add leading "-"
+         bufferIndex += 1;
+         f_val = abs(f_val);
+	} 
+	for(charIndex = 5; charIndex >= 1; charIndex--) {
+	    if(f_digits >= charIndex) {
+            putc_oled(bufferIndex,(f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex ++; 
+            if(charIndex == 4) {
+                putc_oled(bufferIndex,44);   //--add ","
+                bufferIndex ++;
+            }
+        }
+        digitIndex /= 10;
+    }   
+       
+} 
+///////////////////////////////////////////////////// 
+ 
+function FindDigits(f_number) {
+    f_number = abs(f_number);
+    if(f_number / 10000 > 0) return 5;
+    if(f_number /  1000 > 0) return 4;
+    if(f_number /   100 > 0) return 3;
+    if(f_number /    10 > 0) return 2;
+    return 1;
+}    

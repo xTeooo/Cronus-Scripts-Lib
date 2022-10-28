@@ -1,0 +1,209 @@
+// LT + RIGHT D-Pad to change distance
+// 0. Off    = No Selection
+// 1. Blue   = Close
+// 2. Red    = Medium
+// 3. Green  = Far
+
+
+// Press VIEW to toggle Auto Run
+// 
+
+
+
+define
+
+head_close_time = 160,
+head_med_time   = 140,
+head_far_time  = 120;
+
+
+
+int
+onoff,
+Auto_Melee_onoff,
+rumb_count,
+milliseconds,
+seconds,
+count,
+start;
+
+
+
+main {
+
+
+// LT Hair Trigger
+ if(get_val(XB1_LT))
+  set_val(XB1_LT,100);
+
+
+// RT Hair Trigger (Hip Aim)
+ if(get_val(XB1_RT) >= 1 && get_val(XB1_RT) < 13)
+  set_val(XB1_RT,13);
+
+
+// Auto Run
+ if(event_release(XB1_VIEW) && get_ptime(XB1_VIEW) < 250) {
+  onoff = !onoff;
+  rumble_notify(onoff);
+ }
+
+ if(onoff)
+  combo_run(Easy_Run);
+
+ if(get_val(XB1_VIEW) && get_ptime(XB1_VIEW) < 250)
+  set_val(XB1_VIEW,0);
+
+
+// Auto Deadshot
+ if(get_val(XB1_LT) && get_val(XB1_RT))
+  combo_run(Deadshot);
+
+
+// Anti-AFK Kick
+ if(get_val(XB1_RX) < 20 && get_val(XB1_RY) < 20 && get_val(XB1_LX) < 20 && get_val(XB1_LY) < 20 && !event_press(XB1_XBOX) && !event_press(XB1_A) && !event_press(XB1_UP) && !event_press(XB1_DOWN) && !event_press(XB1_LEFT) && !event_press(XB1_RIGHT)) {
+  milliseconds += get_rtime();
+  if(milliseconds >= 1000) {
+   milliseconds -= 1000;
+   seconds += 1;
+   if(seconds >= 50) {
+    seconds = 0;
+    combo_run(Reset_Kick_Timer);
+   }
+  }
+ }
+
+ if(abs(get_val(XB1_RX)) >= 20 || abs(get_val(XB1_RY)) >= 20 || abs(get_val(XB1_LX)) >= 20 || abs(get_val(XB1_LY)) >= 20 || event_press(XB1_XBOX) || event_press(XB1_A) || event_press(XB1_UP) || event_press(XB1_DOWN) || event_press(XB1_LEFT) || event_press(XB1_RIGHT)) {
+  milliseconds = 0;
+  seconds = 0;
+ }
+
+
+// Headshot Aim
+ if(get_val(XB1_LT) && event_press(XB1_RIGHT))
+  count ++;
+
+ if(count >= 4)
+  count = 0;
+
+ if(!start && get_val(XB1_LT) && get_ptime(XB1_LT) > 250) {
+  if(count == 1)
+   combo_run(AIM_HEAD_CLOSE);
+  if(count == 2)
+   combo_run(AIM_HEAD_MEDIUM);
+  if(count == 3)
+   combo_run(AIM_HEAD_FAR);
+ }
+
+ if(event_release(XB1_LT))
+  start = FALSE;
+
+ if(!count)
+  set_rgb(0,0,0);
+
+ if(count == 1)
+  set_rgb(0,50,0);
+
+ if(count == 2)
+  set_rgb(50,50,0);
+
+ if(count == 3)
+  set_rgb(50,0,0);
+
+
+// Rumble Activation
+ if(rumb_count)
+  combo_run(NOTIFY);
+
+
+}
+
+
+
+// Easy Run
+
+combo Easy_Run {
+ set_val(XB1_A,100);
+ wait(50);
+ wait(50 - get_rtime());
+}
+
+
+
+// Auto Melee
+
+combo Auto_Melee {
+ set_val(XB1_B,100);
+ wait(50);
+ set_val(XB1_B,0);
+ wait(50 - get_rtime());
+ set_val(XB1_B,0);
+}
+
+
+
+// Deadshot
+
+combo Deadshot {
+ set_val(XB1_RS,100);
+ wait(50);
+ set_val(XB1_RS,0);
+ wait(50 - get_rtime());
+ set_val(XB1_RS,0);
+}
+
+
+
+// Anti-AFK Kick
+
+combo Reset_Kick_Timer {
+ set_val(XB1_RS,0);
+ wait(50);
+ set_val(XB1_RS,100);
+ wait(50);
+ set_val(XB1_RS,0);
+ wait(50);
+}
+
+
+
+// Headshot Aim
+
+combo AIM_HEAD_CLOSE {
+ set_val(XB1_RY,-100);
+ wait(head_close_time);
+ start = TRUE;
+}
+
+combo AIM_HEAD_MEDIUM {
+ set_val(XB1_RY,-100);
+ wait(head_med_time);
+ start = TRUE;
+}
+
+combo AIM_HEAD_FAR {
+ set_val(XB1_RY,-100);
+ wait(head_far_time);
+ start = TRUE;
+}
+
+
+
+combo NOTIFY {
+ set_rumble(RUMBLE_LT,15);
+ set_rumble(RUMBLE_RT,15);
+ set_rumble(RUMBLE_A,15);
+ set_rumble(RUMBLE_B,15);
+ wait(100);
+ reset_rumble();
+ wait(100);
+ rumb_count--;
+}
+
+
+
+function rumble_notify(r_count) {
+ if(r_count)
+  rumb_count = r_count;
+  else rumb_count = 2;
+}

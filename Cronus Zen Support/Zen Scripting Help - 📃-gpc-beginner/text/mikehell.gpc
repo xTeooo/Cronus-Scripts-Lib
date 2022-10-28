@@ -1,0 +1,62 @@
+int character;
+main {
+  if (get_val(PS4_TOUCH) && event_press(PS4_L3)) { character++; }
+  if (character >= 3) { character = 0; } // Loop around to the first one if we've hit the limit
+  switch (character) { // This will tell you what character is active by way of color
+    case 0: { set_rgb(100, 0, 0); break; } // Red LED
+    case 1: { set_rgb(0, 100, 0); break; } // Green LED
+    case 2: { set_rgb(0, 0, 100); break; } // Blue LED
+  }
+
+  if (get_stick_direction(PS4_RX) == 1) { // This will check if we should run the combos for the right stick right direction
+    switch (character) { // This will check which character is currently active
+      case 0: { combo_run(character_1_right); break; }
+      case 1: { combo_run(character_2_right); break; }
+      case 2: { combo_run(character_3_right); break; }
+    }
+  }
+  else if (get_stick_direction(PS4_RX) == -1) {
+    switch (character) { // This will check which character is currently active
+      case 0: { combo_run(character_1_left); break; }
+      case 1: { combo_run(character_2_left); break; }
+      case 2: { combo_run(character_3_left); break; }
+    }
+  }
+  if (get_stick_direction(PS4_RY) == 1) {
+    switch (character) { // This will check which character is currently active
+      case 0: { combo_run(character_1_down); break; }
+      case 1: { combo_run(character_2_down); break; }
+      case 2: { combo_run(character_3_down); break; }
+    }
+  }
+  else if (get_stick_direction(PS4_RY) == -1) {
+    switch (character) { // This will check which character is currently active
+      case 0: { combo_run(character_1_up); break; }
+      case 1: { combo_run(character_2_up); break; }
+      case 2: { combo_run(character_3_up); break; }
+    }
+  }
+}
+
+// This function checks if we have a positive or negative value greater than 50% of the stick
+function get_stick_direction(identifier) {
+  if (get_val(identifier) >= 50) { return 1; } // Positive
+  if (get_val(identifier) <= -50) { return -1; } // Negative
+  return 0; // Neither is true
+}
+
+combo character_1_right { /* fill in your combo for the stick right on character 1 here */ }
+combo character_2_right { /* fill in your combo for the stick right on character 2 here */ }
+combo character_3_right { /* fill in your combo for the stick right on character 3 here */ }
+
+combo character_1_left { /* fill in your combo for the stick left on character 1 here */ }
+combo character_2_left { /* fill in your combo for the stick left on character 2 here */ }
+combo character_3_left { /* fill in your combo for the stick left on character 3 here */ }
+
+combo character_1_down { /* fill in your combo for the stick down on character 1 here */ }
+combo character_2_down { /* fill in your combo for the stick down on character 2 here */ }
+combo character_3_down { /* fill in your combo for the stick down on character 3 here */ }
+
+combo character_1_up { /* fill in your combo for the stick up on character 1 here */ }
+combo character_2_up { /* fill in your combo for the stick up on character 2 here */ }
+combo character_3_up { /* fill in your combo for the stick up on character 3 here */ }

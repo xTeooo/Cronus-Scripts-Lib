@@ -1,0 +1,133 @@
+int
+
+// Loop
+loop_count,
+// Display
+clear_screen_timer = 5000,
+ran_text_pos_x,
+ran_text_pos_y,
+i,
+c,
+c_val;
+
+
+
+init {
+
+
+// Display
+
+ cls_oled(OLED_BLACK);
+ set_led(LED_1,0);
+ number_to_string(loop_count,find_digits(loop_count));
+
+
+}
+
+
+
+main {
+
+
+  // Loop
+
+  if(event_press(XB1_A)) {
+    loop_count = 1;
+    clear_screen_timer = 5000;
+    number_to_string(loop_count,find_digits(loop_count));
+  }
+
+  if(event_press(XB1_B)) {
+    loop_count = 0;
+    clear_screen_timer = 5000;
+    number_to_string(loop_count,find_digits(loop_count));
+  }
+
+  if(loop_count && !combo_running(Loop)) {
+    combo_run(Loop);
+    clear_screen_timer = 5000;
+    ran_text_pos_x = random(-15,15);
+    ran_text_pos_y = random(-10,10);
+    cls_oled(OLED_BLACK);
+    number_to_string(loop_count,find_digits(loop_count));
+  }
+
+
+  // Display
+
+  if(clear_screen_timer > 0) {
+    clear_screen_timer -= get_rtime();
+    if(clear_screen_timer <= 0) {
+      cls_oled(OLED_BLACK);
+    }
+  }
+
+
+}
+
+
+
+// Loop
+
+combo Loop {
+
+  wait(10000);
+  loop_count ++;
+
+}
+
+
+
+// Display
+
+function center_text(f_chars,f_font) {
+
+  return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+
+}
+
+function number_to_string(value,f_digits){
+  i = 1;
+  c_val = 10000;
+  if(value < 0) {
+    putc_oled(i,45);
+    i += 1;
+    value = abs(value);
+  } 
+  for(c = 5; c >= 1; c--) {
+    if(f_digits >= c) {
+      putc_oled(i,48 + (value / c_val));
+      value = value % c_val;
+      i +=  1;
+      if(c == 4) {
+        putc_oled(i,44);
+        i += 1;
+      }
+    }
+    c_val /= 10;
+  }
+  puts_oled(center_text(i - 1,OLED_FONT_MEDIUM_WIDTH) + ran_text_pos_x,22 + ran_text_pos_y,OLED_FONT_MEDIUM,i - 1,OLED_WHITE);
+}
+
+function find_digits(f_num) {
+  f_num = abs(f_num);
+  if(f_num / 1000000000 > 0)
+    return 10;
+  if(f_num / 100000000 > 0)
+    return 9;
+  if(f_num / 10000000 > 0)
+    return 8;
+  if(f_num / 1000000 > 0)
+    return 7;
+  if(f_num / 100000 > 0)
+    return 6;
+  if(f_num / 10000 > 0)
+    return 5;
+  if(f_num / 1000 > 0)
+    return 4;
+  if(f_num / 100 > 0)
+    return 3;
+  if(f_num / 10 > 0)
+    return 2;
+  return 1;
+}

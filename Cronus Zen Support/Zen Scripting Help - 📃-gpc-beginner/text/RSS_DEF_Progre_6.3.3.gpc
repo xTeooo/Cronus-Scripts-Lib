@@ -1,0 +1,2346 @@
+/*
+VVVVVVVV           VVVVVVVV                                     iiii          tttt                                            
+V::::::V           V::::::V                                    i::::i      ttt:::t                                            
+V::::::V           V::::::V                                     iiii       t:::::t                                            
+V::::::V           V::::::V                                                t:::::t                                            
+ V:::::V           V:::::V eeeeeeeeeeee    rrrrr   rrrrrrrrr  iiiiiiittttttt:::::ttttttt      aaaaaaaaaaaaa      ssssssssss   
+  V:::::V         V:::::Vee::::::::::::ee  r::::rrr:::::::::r i:::::it:::::::::::::::::t      a::::::::::::a   ss::::::::::s  
+   V:::::V       V:::::Ve::::::eeeee:::::eer:::::::::::::::::r i::::it:::::::::::::::::t      aaaaaaaaa:::::ass:::::::::::::s 
+    V:::::V     V:::::Ve::::::e     e:::::err::::::rrrrr::::::ri::::itttttt:::::::tttttt               a::::as::::::ssss:::::s
+     V:::::V   V:::::V e:::::::eeeee::::::e r:::::r     r:::::ri::::i      t:::::t              aaaaaaa:::::a s:::::s  ssssss 
+      V:::::V V:::::V  e:::::::::::::::::e  r:::::r     rrrrrrri::::i      t:::::t            aa::::::::::::a   s::::::s      
+       V:::::V:::::V   e::::::eeeeeeeeeee   r:::::r            i::::i      t:::::t           a::::aaaa::::::a      s::::::s   
+        V:::::::::V    e:::::::e            r:::::r            i::::i      t:::::t    tttttta::::a    a:::::assssss   s:::::s 
+         V:::::::V     e::::::::e           r:::::r           i::::::i     t::::::tttt:::::ta::::a    a:::::as:::::ssss::::::s
+          V:::::V       e::::::::eeeeeeee   r:::::r           i::::::i     tt::::::::::::::ta:::::aaaa::::::as::::::::::::::s 
+           V:::V         ee:::::::::::::e   r:::::r           i::::::i       tt:::::::::::tt a::::::::::aa:::as:::::::::::ss  
+            VVV            eeeeeeeeeeeeee   rrrrrrr           iiiiiiii         ttttttttttt    aaaaaaaaaa  aaaa sssssssssss  
+            
+		╔═══════Rainbow Six Siege═══════════════════════════════════════════════════════════════════════════════╗
+		║	Version: 	Progressive 6.3.3 - Defenders															║
+		║	Cronus: 	Zen only																				║
+		║	Platform: 	Multi																					║
+		║	Controller: Multi																					║
+		║	Game: 		Rainbow Six Siege																		║
+		║	Author: 	Veritas																					║
+		║	Discord:	https://discord.gg/tkGPX8HaNs															║
+		║	NOTE:		You need to load the 2 scripts in order to work between defenders and attacker			║
+		║				RSS_DEF and RSS_ATK																		║		
+		║   All Scripts Are Free. If you paid for a script, file a chargeback because you have been scammed,	║
+		║	but if you appriciate the works you can donate here: 												║
+		║	https://www.paypal.com/donate?hosted_button_id=AUCJD5BDGTDPY										║		
+		╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+*/
+//══════════════════════════════════════════════════════════════════════════════════════════════
+//Script Specific 
+//══════════════════════════════════════════════════════════════════════════════════════════════
+const string 	operatorName[] 		= {
+	/*------------------------------------------------Original Operators Deffendors------------------------------------------------*/
+	"SMOKE",		"MUTE",			"CASTLE", 		"PULSE", 		"DOC",		"ROOK", 	"KAPKAN",	"TACHANKA",	"JAGER",	"BANDIT",
+	//Black Ice		Dust Line		kull Rain		Red Crow
+	"FROST",		"VALKYRIE",		"CAVEIRA",		"ECHO",
+	//Velvet Shell	Health			Blood Orchid					White Noise
+	"MIRA",		  /*No Operator*/	"LESION",		"ELA",			"VIGIL",	
+	//Chimera		Para Bellum		Para Bellum		Grim Sky		Wind Bastion
+	/*No Operator*/	"MAESTRO",		"ALIBI",		"CLASH",		"KAID",		
+	//Burnt Horizon	Phantom Sight	Ember Rise		Shifting Tides
+	"MOZZIE",		"WARDEN",		"GOYO",			"WAMAI",		
+	//Void Edge 	Steel Wave		Shadow Legacy	Neon Dawn
+	"ORYX",			"MELUSI",	   /*No Operator*/	"ARUNI", "THUNDERBIRD", ""};
+const string  	GunName[] 			= {
+// Gun Name 	Gun Name 	Gun Name 		---Gun Name 	Gun Name
+//Original Operators
+"FMG-9", 		"M590A1", 		"", 		"SMG-11", 		"P226 MK 25", 	// SMOKE
+"MP5K", 		"M590A1", 		"", 		"SMG-11", 		"P226 MK 25", 	// MUTE
+"UMP45", 		"M1014", 		"", 		"SUPER SHO..", 	"M45 MEUSOC",	// CASTLE
+"UMP45", 		"M1014", 		"", 		"M45 MEUSOC", 	"5.7 USG", 		// PULSE **
+"P90", 			"MP5", 			"SGCQB", 	"P9", 			"LFP586", 		// DOC
+"MP5", 			"P90", 			"SGCQB", 	"P9", 			"LFP586", 		// ROOK
+"9X19VSN", 		"SASG-12", 		"", 		"GSH-18", 		"", 			// KAPKAN
+"9X19VSN", 		"DP-27", 		"", 		"PMM", 			"GSH-18", 		// TACHANKA
+"416CCARBINE", "M870", 			"", 		"P12", 			"", 			// JAGER
+"MP7", 			"M870", 		"", 		"P12", 			"", 			// BANDIT
+//Year 1
+"9MM C1", 		"SUPER90", 		"", 		"MK1 9MM", 		"ITA12S", 		// FROST
+"MPX", 			"SPAS-12", 		"", 		"D-50", 		"", 			// VALKYRIE
+"M12", 			"SPAS15", 		"", 		"LUISON", 		"", 			// CAVEIRA
+"MP5SD", 		"SUPERNOVA", 	"", 		"BEARING 9", 	"P229 RC", 		// ECHO
+//Year 2
+"VECTOR .45", 	"ITA12L", 		"", 		"ITA12S", 		"USP40", 		// MIRA
+"T-5 SMG", 		"SIX12 SD", 	"", 		"Q-929", 		"", 			// LESION
+"SCORPION",		"FO-12", 		"", 		"RG15", 		"", 			// ELA
+"K1A", 			"BOSG.12.2", 	"", 		"C75 AUTO", 	"SMG-12", 		// VIGIL
+//Year 3
+"ALDA 5.56", 	"ACS12", 		"", 		"BAILIFF 410", 	"KERATOS.357", 	// MAESTRO
+"MX4 STORM", 	"ACS12", 		"", 		"KERATOS.357", 	"BAILIFF 410", 	// ALIBI
+"P-10C", 		"",		 		"", 		"SPSMG9", 		"", 			// CLASH
+"AUG A3", 		"TCSG12", 		"", 		"LFP586", 		".44MAG SEMI", 	// KAID
+//Year 4
+"COMMANDO 9", 	"P10 RONI", 	"", 		"SDP 9MM", 		"", 			// MOZZIE
+"MPX", 			"M590A1", 		"", 		"SMG-12", 		"P-10C", 		// WARDEN
+"VECTOR .45", 	"TCSG12", 		"", 		"P229 RC", 		"", 			// GOYO
+"AUG A2", 		"MP5K", 		"", 		"KERATOS.357", 	"P12", 			// WAMAI
+//Year 5
+"T-5 SMG", 		"SPAS-12", 		"", 		"BAILIFF 410 410",	"USP40", 	// ORYX
+"MP5", 			"SUPER90", 		"", 		"RG15", 		"PRB92", 		// Melusi
+//Year 6
+"P10 RONI", 	"MK 14 EBR", 	"", 		"PRB92", 		"", 			// ARUNI
+"SPEAR .308", 	"SPAS15", 		"", 		"BEARING 9", 	"Q-929"}		// THUNDERBIRD
+//									0,  			1,  		2,  		3,  			4,  			5,  			6,  				7,  		8
+const string  	GunTypeName[] 		= {"ASSAULTRIFLE", "SHOTGUN", "HANDGUN", "SUBMACHINEGUN", "MACHINEPISTOL", "MARKSMANRIFLE", "LIGHTMACHINEGUN", "HANDGONNE", "NO_GUN", ""};
+const int16   	GunType[] 			= {
+//Original Operators
+0, 1, 0, 3, 2, // SMOKE
+0, 1, 0, 3, 2, // MUTE 
+0, 1, 0, 1, 2, // CASTLE 
+0, 1, 0, 2, 2, // PULSE 
+3, 3, 1, 2, 2, // DOC 
+3, 3, 1, 2, 2, // ROOK 
+3, 1, 0, 2, 2, // KAPKAN
+3, 6, 0, 2, 2, // TACHANKA 
+0, 1, 0, 2, 2, // JAGER	 
+0, 1, 0, 2, 2, // BANDIT
+//Year 1
+0, 2, 0, 2, 1, // FROST
+0, 1, 0, 2, 2, // VALKYRIE 
+3, 1, 0, 2, 2, // CAVEIRA
+3, 1, 0, 4, 2, // ECHO 
+//Year 2
+3, 1, 0, 1, 2, // MIRA 
+0, 1, 0, 2, 2, // LESION 	
+0, 1, 0, 2, 2, // Ela 
+0, 1, 0, 4, 4, // VIGIL
+//Year 3 
+3, 1, 0, 2, 2, // MAESTRO 
+3, 1, 0, 2, 2, // ALIBI
+2, 0, 0, 4, 0, // CLASH 
+3, 1, 0, 2, 2, // KAID 
+//Year 4
+0, 0, 0, 2, 2, // MOZZIE
+3, 1, 0, 3, 2, // WARDEN 
+3, 1, 0, 2, 2, // GOYO 
+0, 4, 0, 2, 2, // WAMAI 
+//Year 5
+0, 1, 0, 2, 2, // ORYX 
+0, 1, 0, 2, 2, // Melusi 
+//Year 6
+0, 5, 0, 2, 2, // ARUNI 
+0, 1, 0, 4, 2} // THUNDERBIRD 
+const int16 	GunRapidFire[] 		= {
+//Original Operators
+0, 1, 0, 0, 1, // SMOKE
+0, 1, 0, 0, 1, // MUTE 
+0, 1, 0, 1, 1, // CASTLE 
+0, 1, 0, 1, 1, // PULSE 
+0, 0, 1, 1, 1, // DOC 
+0, 0, 1, 1, 1, // ROOK 
+0, 1, 0, 1, 1, // KAPKAN
+0, 0, 0, 1, 1, // TACHANKA 
+0, 1, 0, 1, 1, // JAGER	 
+0, 1, 0, 1, 1, // BANDIT
+//Year 1
+0, 1, 0, 1, 1, // FROST
+0, 1, 0, 1, 1, // VALKYRIE 
+0, 1, 0, 1, 1, // CAVEIRA
+0, 1, 0, 0, 1, // ECHO 
+//Year 2
+0, 1, 0, 1, 1, // MIRA 
+0, 1, 0, 1, 1, // LESION 	
+0, 1, 0, 1, 1, // Ela 
+0, 1, 0, 0, 0, // VIGIL
+//Year 3 
+0, 1, 0, 1, 1, // MAESTRO 
+0, 1, 0, 1, 1, // ALIBI
+1, 0, 0, 0, 0, // CLASH 
+0, 1, 0, 1, 1, // KAID 
+//Year 4
+0, 0, 0, 1, 1, // MOZZIE
+0, 1, 0, 0, 1, // WARDEN 
+0, 1, 0, 1, 1, // GOYO 
+0, 0, 0, 1, 1, // WAMAI 
+//Year 5
+0, 1, 0, 1, 1, // ORYX 
+0, 1, 0, 1, 1, // Melusi 
+//Year 6
+0, 1, 0, 1, 1, // ARUNI 
+0, 1, 0, 0, 1} // THUNDERBIRD 
+const int16  	operatorsByYear[] 	= {0, 10, 14, 18, 22, 26, 29};
+int operatorsCount					= 29; 
+const string avilityName[] 			= {"HEARTBEAT", "SENSOR", "SILENT", "STEP", "---", "YOKAI", "EVIL", "EYE", "CCE", "SHIELD", "STIM", "PISTOL", ""};
+										//PULSE					CAVEIRA		  	ECHO			MAESTRO		   CLASH  				DOC		
+const string enterSlotMsg[]			= {"Enter slot number", "for the", "Attackers script", ""};	
+define OPERERATOR_TYPE_ATTACKERS	= 0;
+define OPERERATOR_TYPE_DEFENDERS	= 1;
+int inAbilityCams					= FALSE;
+int abilityDeploying				= FALSE;
+int operatorType					= OPERERATOR_TYPE_ATTACKERS;
+//══════════════════════════════════════════════════════════════════════════════════════════════
+//--LED
+define BLUE      = 1;
+define RED       = 2;
+define GREEN     = 3;
+define PINK      = 4;
+define SKYBLUE	 = 5;
+define YELLOW    = 6;
+define WHITE     = 7;
+	 
+data(
+	0,0,0,0, //0. Off
+	2,0,0,0, //1. Blue
+  	0,2,0,0, //2. Red
+  	0,0,2,0, //3. Lime/Green
+  	0,0,0,2, //4. Fuchsia/Pink
+  	2,0,2,0, //5. SkyBlue
+  	0,2,2,0, //6. Yellow
+  	2,2,2,2  //7. White
+);
+
+const string attackers 			= " Attackers";
+const string defenders			= " Defenders";
+const string configurationText	= "Configure";
+const string operationYear[] 	= {"",		  	"Year 1",	"Year 2", 	"Year 3",	"Year 4",	"Year 5",	"Year 6",	""};
+const string operationName[] 	= {"Original",	"Black",	"Velvet", 	"Chimera",	"Burnt", 	"Void", 	"Crimson",	""};
+const string operationName2[] 	= {"Operators",	"Ice",		"Shell",	"",			"Horizon",	"Edge", 	"Heist",	""};
+
+const int16 operatorTypeMsg[] 	= {80,114,101,115,115,32,65,47,127,32,116,111,32,115,101,108,101,99,116,46,32};										
+const int16 operatorSelMsg[] 	= {80,114,101,115,115,32,65,47,127,32,116,111,32,115,101,108,101,99,116,46,
+									32,72,111,108,100,32,76,84,47,76,50,32,43,32,133,32,134,32,84,111,32,
+									110,97,118,105,103,97,116,101,32,116,104,114,111,117,103,104,32,115,101,97,115,111,110,115,46,32};									
+const string gunIndexMsg[]		= {"Primary", "Secondary", ""}
+const string configuration[]	= {"Anti-recoil", "Guns", "Mods Values", "Reset", "QT On/Off", ""};
+const string toggleMessage[]	= {"Crouch Spam", "Auto Lean", "Fast Pick", "Strafe", "Prone Shot", "Lean Spam", "RF for All", "Rapid Fire", "Pin On Shot", "Auto Scan", "Pf. Grenade", ""};
+const string toggleValuesMsg[]	= {"Crouch Spam", "Auto Lean", "Strafe", "Lean Spam", "tBag LOL", "RF Speed", "Pf. Grenade", ""};
+const string antirecoildMenu[]	= {"AR Start", "AR End", "Vert. Time", "Horiz. Time", ""};
+const string toggleStatus[]		= {"OFF", "ON", ""};
+const string saveMessage		= "SAVED";
+const string saveChanges 		= "Save";
+const string saveChanges02 		= "Changes?";
+const string yes 				= "Yes";
+const string no  				= "No";	
+int yesNoIndex					= TRUE;
+int antirecoilMenuIndex			= 0;
+int VerticalStart[2];
+int VerticalEnd[2];
+int VerticalTime[2];
+int HorizontalStart[2];
+int HorizontalEnd[2];
+int HorizontalTime[2];
+
+int toggleValue					= 0;
+int toggleIndex					= 0;
+int forIndex 					= 1;	
+
+define GUN_PRIMARY				= 0;
+define GUN_SECONDARY			= 1;
+
+define DEFAULT 					= 0;
+define OPERERATOR_TYPE_MOD 		= 1;
+define OPERATOR_SELECTION_MOD 	= 2;
+define OPERATOR_BY_YEAR_MOD 	= 3;
+define GAME_MOD					= 4;
+define ANTIRECOIL_MOD			= 5;
+define GUN_SELECTION_MOD		= 6;
+define RESET_MOD				= 7;
+define CHANGE_SLOT_MOD			= 8;
+define SAVE_AR_MOD				= 9;
+define CONFIG_MOD				= 10;
+define QUICK_TOGGLE_MOD			= 11;
+define QUICK_TOGGLE_EDIT_MOD	= 12;
+
+int currentMod					= DEFAULT;
+int activeGun					= 0;
+int displayOperatorTypeScrollOn	= FALSE;
+int displayOperatorScrollOn		= FALSE;
+int operatorsByYearIndex		= 0;	
+int currentConfigModIndex		= 0;
+int gunRapidFire;
+int operatorIndex				= 0;
+int LINE_TOP					= 7;
+int LINE_CENTER					= 25;
+int LINE_BOTTOM					= 45;
+int messageColumCount 			= 127;
+int messageArrayLine			= 0;
+int messageSize;
+
+int slotNumber;
+
+int rapidFireSpeed 				= 30;
+int tBagSpeed					= 30;
+int crouchSpamSpeed				= 60;
+int leanSpamSpeed				= 95;
+int autoLeanSpeed				= 30;
+int strafeSpeed 				= 200;
+
+int tBagOn						= TRUE;
+int crouchSpamOn				= FALSE;
+int leanSpamOn					= FALSE;
+int pronShotOn					= FALSE;
+int rf4AllOn					= FALSE;
+int autoLeanOn					= FALSE;
+int rapidFireOn					= TRUE;
+int strafeOn					= FALSE;
+int fastPickOn					= FALSE;
+int autoScanOn					= TRUE;
+int autoScanActive				= FALSE;
+int pinOnShotOn					= FALSE;
+int perfectGrenadeOn			= TRUE;
+
+	//Game buttons
+int FireButton					= XB1_RT;
+int AdsButton   				= XB1_LT;
+int AbilityButton  				= XB1_RB;
+int TacticalButton				= XB1_LB;
+int SelectButton    			= XB1_A;
+int CrouchButton    			= XB1_B;
+int MeleeButton     			= XB1_RS;
+int SprintButton    			= XB1_LS;
+int ReloadButton  				= XB1_X;
+int SwapButton      			= XB1_Y;
+    //Special buttons
+int ForceSwapButton 			= XB1_A;
+	//Navigation buttons
+int UpButton					= XB1_UP;
+int RightButton					= XB1_RIGHT;
+int DownButton					= XB1_DOWN;
+int LeftButton					= XB1_LEFT;
+int MenuButton					= XB1_MENU;
+int ModsButton					= XB1_VIEW;
+int LxButton					= XB1_LX;
+int LyButton					= XB1_LY;
+	
+int tempPack[2];
+int saveMatix[9];
+int saveVar;
+int saveIndex;
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		Main block					║
+╚═══════════════════════════════════╝
+*/	
+int abilityReleasingTime 	= 0;
+int abilityCountDown		= 0;
+int abilityTimeCheck		= FALSE;
+int abilityReleasing		= FALSE;
+int abilityActive			= FALSE;
+int abilityFocus			= FALSE;
+int abilityDeployCount		= 0;
+int AREnabled 				= TRUE;
+int QTEnabled				= TRUE;
+int autoLeanDelay			= FALSE;
+int i_val, i_pnt, i_val_h, i_pnt_h, 
+	ar_y, i_cnt, i_num, ar_x, i_cnt_h, 
+	i_num_h, v_x;
+int gunIndex[2],  gunCount[2];
+int autoLeanDelayCountDown = 0;
+//Clean up for better speed
+int VmSpeed;
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		Main block					║
+╚═══════════════════════════════════╝
+*/	
+init{
+	LoadSlotNumber();
+	LoadSettings();
+	LoadSaveMatrix();
+	DisplayMod(OPERATOR_SELECTION_MOD);
+	if(get_console() == PIO_PS4) VmSpeed = -6;
+	if(get_console() == PIO_XB1) VmSpeed = -2;
+}
+main {	   
+	vm_tctrl(VmSpeed);
+	if(autoLeanDelay){                            
+        autoLeanDelayCountDown += get_rtime();
+        if(autoLeanDelayCountDown >= 3000){
+        	autoLeanDelay	= FALSE;
+        }
+	}
+	
+	//This will turn Heir Trigger on
+	if(get_ival(AdsButton) 	> 10) 	Set(AdsButton, 	100);
+	if(get_ival(FireButton) > 10)	Set(FireButton, 100);	
+	if(ButtonHold(AdsButton) && ButtonPress(MenuButton)) DisplayMod(OPERATOR_SELECTION_MOD);
+	if(ButtonHold(AdsButton) && ButtonPress(ModsButton)) DisplayMod(CONFIG_MOD);
+	
+	if(currentMod == GAME_MOD){
+		if(!abilityActive){			
+			//Gun switch 	
+			if(ButtonRelease(SwapButton) && get_ptime(SwapButton) < 500){
+				if(!ButtonHold(TacticalButton) && !ButtonHold(AbilityButton) && !ButtonHold(LeftButton) && !ButtonHold(RightButton)){
+					activeGun = !activeGun;
+				}
+				DisplaySwitchGun();	
+			}
+			//Force Gun switch    	
+			if(ButtonHold(AdsButton) && DoubleTab(ForceSwapButton)){ 
+				activeGun 	= !activeGun;
+				DisplaySwitchGun();
+			}			
+			//Pron Shot
+			if(ButtonPress(FireButton) && pronShotOn) Set(CrouchButton, 100);  
+			//Auto Scan
+			if(autoScanOn && ButtonHold(SwapButton) && get_ptime(SwapButton) >= 1280) autoScanActive = TRUE;
+	        if(autoScanActive) combo_run(AutoScan);
+	        if(ButtonPress(DownButton) || ButtonPress(CrouchButton)	&& combo_running(AutoScan)){autoScanActive = FALSE; combo_stop(AutoScan);}
+			//Crouch Spam
+			if(crouchSpamOn && ButtonHold(FireButton) 	&& get_ptime(FireButton) > 200) combo_run(CrouchSpam);
+			if(crouchSpamOn && !ButtonHold(FireButton) 	&& combo_running(CrouchSpam)) 	combo_stop(CrouchSpam);
+			//Lean Spam
+			if(leanSpamOn 	&& ButtonHold(AdsButton) 	&& ButtonHold(FireButton)) 		combo_run(LeanSpam);
+			if(leanSpamOn	&& !ButtonHold(FireButton)	&& combo_running(LeanSpam)) 	combo_stop(LeanSpam);
+			//Teabugging LOL
+			if(tBagOn && ButtonHold(DownButton) && get_ptime(DownButton) >= 250) 		combo_run(TeaBag);	
+			// Run AutoLean
+			if(autoLeanOn && ButtonPress(ReloadButton)){
+				autoLeanDelayCountDown = 0;
+				autoLeanDelay = TRUE;
+			}
+			if(autoLeanOn && !ButtonHold(FireButton)){
+				if(ButtonHold(AdsButton) && get_ptime(AdsButton) > 200 && abs(get_val(LxButton)) > autoLeanSpeed){
+					if(get_val(LxButton) < 0){
+						if(!get_val(SprintButton)) Set(SprintButton, 100);
+					}else{
+						if(!get_val(MeleeButton)){
+							if(!autoLeanDelay) Set(MeleeButton, 100);
+						}
+					}
+				}
+			}
+			//Strafe
+			if(strafeOn && ButtonHold(FireButton)) combo_run(Strafe);
+			if(strafeOn && !ButtonHold(FireButton) && combo_running(Strafe)) combo_stop(Strafe);
+			if(strafeOn && ((get_val(LyButton) <= -70) || (get_val(LyButton) >= 70) || 
+						    (get_val(LxButton) <= -70) || (get_val(LxButton) >= 70))) combo_stop(Strafe);
+			//FastPick			
+			if(fastPickOn && ButtonHold(AdsButton)){
+				if(ButtonPress(RightButton))	combo_run(FastPickRight);
+				if(ButtonPress(LeftButton)) 	combo_run(FastPickLeft);
+				if(ButtonPress(UpButton)) 		combo_run(FastPickUp);
+				Unset(RightButton);
+				Unset(LeftButton);
+				Unset(UpButton);
+			}						
+		}
+		if(abilityFocus || !abilityActive){
+			if(AREnabled) {
+		    	//Antirecoil by Batts				
+				// Vertical
+	    		// Adding or subtracting
+				if(VerticalStart[activeGun] < VerticalEnd[activeGun]) i_val = 1;
+				else  i_val = -1;
+	    		// Iteration point for progression 
+	    		i_pnt = (VerticalTime[activeGun] * 10) / (abs(VerticalStart[activeGun] - VerticalEnd[activeGun])); 
+	
+				// Horizontal
+	    		// Adding or subtracting
+				if(HorizontalStart[activeGun] < HorizontalEnd[activeGun]) i_val_h = 1;
+				else i_val_h = -1;
+	    		// Iteration point for progression 
+	    		i_pnt_h = (HorizontalTime[activeGun] * 10) / (abs(HorizontalStart[activeGun] - HorizontalEnd[activeGun]));
+	    				
+				// Reset counters/pointers
+				if(!get_ival(FireButton)){
+					// Vertical
+					ar_y = VerticalStart[activeGun];
+					i_cnt = 0;
+					i_num = 0;
+					// Horizontal
+					ar_x = HorizontalStart[activeGun];
+					i_cnt_h = 0;
+					i_num_h = 0;
+				}
+				// If Fire button is held
+	    		if(get_ival(FireButton)){
+			        // Vertical
+        			if(!p_complete()) ar_y = p_val();
+    				else ar_y = VerticalEnd[activeGun];
+           			    
+           			if(y_val() < 100) set_val(PS4_RY,y_val()); 
+		
+	          		// Horizontal
+       			 	if(!p_complete_x()) ar_x = p_val_x();
+    	         	else ar_x = HorizontalEnd[activeGun];
+         
+    	  			 if(x_val() < 100) set_val(PS4_RX,x_val()); 
+    			}
+			}
+			//Drop a yellow pin on firts shot
+			if(ButtonPress(FireButton) && pinOnShotOn) combo_run(PinOnShot);
+			//Rapid Fire for all
+			if((rf4AllOn || gunRapidFire) && rapidFireOn){
+				if(ButtonHold(FireButton))	combo_run(RapidFire);
+				else						combo_stop(RapidFire);    	
+			}
+		}
+		if(QTEnabled){
+			//Quick Toggle		
+			if(ButtonHold(AdsButton)){
+				if(DoubleTab(UpButton)){
+					crouchSpamOn 	= !crouchSpamOn;
+					toggleIndex 	= 0;
+					toggleValue		= crouchSpamOn;
+					if(toggleValue) combo_run(ToggleOn);
+					else combo_run(ToggleOff)
+					combo_run(QuickToggleNotify);					
+				}
+				if(DoubleTab(RightButton)){
+					strafeOn 		= !strafeOn;
+					toggleIndex 	= 3;
+					toggleValue		= strafeOn;
+					if(toggleValue) combo_run(ToggleOn);
+					else combo_run(ToggleOff)
+					combo_run(QuickToggleNotify);
+				}
+				if(DoubleTab(LeftButton)){			
+					fastPickOn 		= !fastPickOn;
+					toggleIndex 	= 2;
+					toggleValue		= fastPickOn;
+					if(toggleValue) combo_run(ToggleOn);
+					else combo_run(ToggleOff)
+					combo_run(QuickToggleNotify);
+				}
+				if(DoubleTab(DownButton)){
+					autoLeanOn 		= !autoLeanOn;
+					toggleIndex 	= 1;
+					toggleValue		= autoLeanOn;
+					if(toggleValue) combo_run(ToggleOn);
+					else combo_run(ToggleOff)
+					combo_run(QuickToggleNotify);
+				}
+				if(ButtonHold(LeftButton)){
+					Unset(LeftButton);
+					if(ButtonPress(ReloadButton)){
+						pronShotOn 		= !pronShotOn;
+						toggleIndex 	= 4;
+						toggleValue		= pronShotOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					if(ButtonPress(SwapButton)){
+						leanSpamOn 		= !leanSpamOn;
+						toggleIndex 	= 5;
+						toggleValue		= leanSpamOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					if(ButtonPress(CrouchButton)){
+						rf4AllOn 		= !rf4AllOn;
+						toggleIndex 	= 6;
+						toggleValue		= rf4AllOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					if(ButtonPress(SelectButton)){
+						rapidFireOn 	= !rapidFireOn;
+						toggleIndex 	= 7;
+						toggleValue		= rapidFireOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					Unset(SwapButton);
+					Unset(SelectButton);
+					Unset(CrouchButton);
+					Unset(ReloadButton);
+				}	
+				if(ButtonHold(RightButton)){
+					Unset(RightButton);
+					if(ButtonPress(SwapButton)){
+						pinOnShotOn		= !pinOnShotOn;
+						toggleIndex 	= 8;
+						toggleValue		= pinOnShotOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					if(ButtonPress(CrouchButton)){
+						autoScanOn 		= !autoScanOn;
+						toggleIndex 	= 9;
+						toggleValue		= autoScanOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					if(ButtonPress(SelectButton)){
+						perfectGrenadeOn = !perfectGrenadeOn;
+						toggleIndex 	= 10;
+						toggleValue		= perfectGrenadeOn;
+						if(toggleValue) combo_run(ToggleOn);
+						else combo_run(ToggleOff)
+						combo_run(QuickToggleNotify);
+					}
+					Unset(SwapButton);
+					Unset(SelectButton);
+					Unset(CrouchButton);
+					Unset(ReloadButton);
+				}
+				Unset(DownButton);
+				Unset(RightButton);
+			}
+		}
+		//Enter/Exit the operator avility
+		if(abilityActive) CheckAbilityOff();
+		else DisplayAbility();
+	}
+	else if(currentMod == CONFIG_MOD){	
+		currentConfigModIndex = EditValues(currentConfigModIndex, 0, 4);
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)) DisplayConfiguration();
+		if(ButtonRelease(SelectButton)){ 			
+			if(currentConfigModIndex == 0) DisplayMod(ANTIRECOIL_MOD);
+			if(currentConfigModIndex == 1) DisplayMod(GUN_SELECTION_MOD);
+			if(currentConfigModIndex == 2) DisplayMod(QUICK_TOGGLE_MOD);	
+			if(currentConfigModIndex == 3) DisplayMod(RESET_MOD);
+			if(currentConfigModIndex == 4){
+				QTEnabled = !QTEnabled; 
+				DisplayConfiguration();
+				SaveSettings();
+			}
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(GAME_MOD);
+		UnsetAllButtons();		
+	}		    
+	else if(currentMod == OPERATOR_SELECTION_MOD){  
+		DisplayScrollMode();
+		if(ButtonPress(CrouchButton)) DisplayMod(OPERERATOR_TYPE_MOD);
+		if(ButtonHold(AdsButton)){
+			operatorsByYearIndex = VerifyMinMax(operatorsByYearIndex, 0, 6);
+			if(ButtonPress(RightButton) || ButtonPress(LeftButton)) DisplayOperatorByYear();
+		}else{
+			operatorIndex = VerifyMinMax(operatorIndex, 0, operatorsCount);
+			if(ButtonPress(RightButton) || ButtonPress(LeftButton)) DisplayOperatorSelection();
+		}
+		if(ButtonRelease(AdsButton))DisplayOperatorSelection();
+		if(ButtonPress(SelectButton)){
+			activeGun = GUN_PRIMARY;
+			gunIndex[GUN_PRIMARY] = 1;
+			gunIndex[GUN_SECONDARY] = 1;
+			ActivateOperator();
+		}
+		UnsetAllButtons();
+	}     
+	else if(currentMod == OPERERATOR_TYPE_MOD){	 
+		DisplayScrollMode();
+		if(ButtonPress(UpButton) || ButtonPress(DownButton)){
+			operatorType 	= !operatorType;
+			DisplayMod(OPERERATOR_TYPE_MOD);
+		}	
+		Unset(UpButton);
+		Unset(DownButton);
+		if(ButtonRelease(SelectButton)) { 	
+			if(slotNumber != 0){
+				UnsetAllButtons();
+				load_slot(slotNumber);
+			}else{
+				arVal = 1;
+				DisplayMod(OPERATOR_SELECTION_MOD);
+			}
+		}	
+		UnsetAllButtons();
+	}		
+	else if(currentMod == ANTIRECOIL_MOD){	
+    	//Antirecoil by Batts				
+		// Vertical
+		// Adding or subtracting
+		if(VerticalStart[activeGun] < VerticalEnd[activeGun])
+			i_val = 1;
+		else
+			i_val = -1;
+		// Iteration point for progression 
+		i_pnt = (VerticalTime[activeGun] * 10) / (abs(VerticalStart[activeGun] - VerticalEnd[activeGun])); 
+
+		// Horizontal
+		// Adding or subtracting
+		if(HorizontalStart[activeGun] < HorizontalEnd[activeGun])
+			i_val_h = 1;
+		else
+			i_val_h = -1;
+		// Iteration point for progression 
+		i_pnt_h = (HorizontalTime[activeGun] * 10) / (abs(HorizontalStart[activeGun] - HorizontalEnd[activeGun]));
+				
+		// Reset counters/pointers
+		if(!get_ival(FireButton)){
+			// Vertical
+			ar_y = VerticalStart[activeGun];
+			i_cnt = 0;
+			i_num = 0;
+			// Horizontal
+			ar_x = HorizontalStart[activeGun];
+			i_cnt_h = 0;
+			i_num_h = 0;
+		}
+		// If Fire button is held
+		if(get_ival(FireButton)){
+	        // Vertical
+			if(!p_complete()) ar_y = p_val();
+			else ar_y = VerticalEnd[activeGun];
+   			    
+   			if(y_val() < 100) set_val(PS4_RY,y_val()); 
+
+      		// Horizontal
+			if(!p_complete_x()) ar_x = p_val_x();
+         	else ar_x = HorizontalEnd[activeGun];
+ 
+  			if(x_val() < 100) set_val(PS4_RX,x_val()); 
+		}
+	
+		//Rapid Fire for all
+		if((rf4AllOn || gunRapidFire) && rapidFireOn){
+			if(ButtonHold(FireButton))	combo_run(RapidFire);
+			else						combo_stop(RapidFire);    	
+		}
+
+		if(	ButtonRelease(LeftButton) || ButtonRelease(RightButton) ||
+			ButtonRelease(DownButton) || ButtonRelease(UpButton) ){
+			DisplayAntiRecoilMenu(0);
+		}
+		if(ButtonPress(SwapButton)){
+			if(get_ival(AdsButton)){
+				antirecoilMenuIndex --;
+				if(antirecoilMenuIndex < 0) antirecoilMenuIndex = 3;
+			}else{
+				antirecoilMenuIndex ++;
+				if(antirecoilMenuIndex > 3) antirecoilMenuIndex = 0;
+			}
+			DisplayAntiRecoilMenu(0);
+		}
+		AdjustRecoilValue();
+		if(ButtonRelease(SelectButton)){
+			saveIndex = FindSaveBucket();
+			if(saveIndex == 99) saveIndex = FindOpenBucket();
+			if(saveIndex == 99) DisplayMod(GAME_MOD);
+			else{
+				yesNoIndex = TRUE;
+				currentMod = SAVE_AR_MOD;
+			}			
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(CONFIG_MOD);
+		Unset(UpButton);
+		Unset(DownButton);
+		Unset(LeftButton);
+		Unset(RightButton);
+		Unset(SelectButton);
+		Unset(CrouchButton);
+		Unset(SwapButton);
+	}
+	else if(currentMod == SAVE_AR_MOD){
+		DisplaySaveAR();
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)) yesNoIndex = !yesNoIndex;
+		if(ButtonRelease(SelectButton)){
+			if(yesNoIndex) SaveAR();
+			DisplayMod(GAME_MOD);				
+		}
+		if(ButtonRelease(CrouchButton))DisplayMod(GAME_MOD);
+	}
+	else if(currentMod == GUN_SELECTION_MOD){	
+		gunIndex[activeGun] = EditValues(gunIndex[activeGun], 1, gunCount[activeGun]);
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)) DisplayGunSelection();
+		if(ButtonRelease(SelectButton)){
+			saveIndex = FindSaveBucket();
+			if(saveIndex == 99) saveIndex = FindOpenBucket();
+			if(saveIndex == 99){
+				DisplayMod(GAME_MOD);
+			}else{
+				yesNoIndex = TRUE;
+				currentMod = SAVE_AR_MOD;
+			}			
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(CONFIG_MOD);	
+		UnsetAllButtons();
+	}	
+	else if(currentMod == CHANGE_SLOT_MOD){
+		if(slotNumber == 0){
+			arVal = EditValues(arVal, 1, 8);
+			DisplayEnterSlotNumber();
+			if(ButtonRelease(SelectButton)){
+				set_pvar(SPVAR_60, arVal);
+				UnsetAllButtons();
+				combo_run(SAVE);
+				slotNumber = arVal;
+			}
+		}else load_slot(slotNumber);
+		UnsetAllButtons();
+	}	
+	else if(currentMod == QUICK_TOGGLE_MOD){
+		toggleIndex = EditValues(toggleIndex, 0, 6);
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)) DisplayQuickToggles();
+		if(ButtonRelease(SelectButton)){
+			Unset(SelectButton);
+			DisplayMod(QUICK_TOGGLE_EDIT_MOD);
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(CONFIG_MOD);
+		UnsetAllButtons();
+	}
+	else if(currentMod == QUICK_TOGGLE_EDIT_MOD){
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)){
+			if(toggleIndex == 0) crouchSpamSpeed 	= EditValues(crouchSpamSpeed, 	1, 127);
+			if(toggleIndex == 1) autoLeanSpeed 		= EditValues(autoLeanSpeed, 	1, 127);
+			if(toggleIndex == 2) strafeSpeed 		= EditValues(strafeSpeed, 		1, 200);
+			if(toggleIndex == 3) leanSpamSpeed 		= EditValues(leanSpamSpeed, 	1, 127);
+			if(toggleIndex == 4) tBagSpeed 			= EditValues(tBagSpeed, 		1, 127);
+			if(toggleIndex == 5) rapidFireSpeed 	= EditValues(rapidFireSpeed, 	1, 127);
+			DisplayQuickTogglesEdit();
+		}
+		if(ButtonRelease(SelectButton)){
+			SaveSettings();
+			DisplayMod(GAME_MOD);
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(QUICK_TOGGLE_MOD);
+		UnsetAllButtons();	
+	}
+	else DisplayScrollMode();	
+}
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		 Script Specific 			║
+╚═══════════════════════════════════╝
+*/	
+function CheckAbilityOff(){
+	if(abilityTimeCheck){				
+		abilityCountDown += get_rtime();
+		if(abilityCountDown >= abilityReleasingTime) {
+			CloseAvility();
+			return;
+		}
+	}
+	if(operatorIndex == 4)/*DOC	*/{ 
+		if(ButtonRelease(SwapButton)){
+			abilityReleasing = TRUE;
+			CloseAvility();
+		}
+	}
+	if(operatorIndex == 12)/*CAVEIRA */{ 	
+		if(ButtonRelease(TacticalButton)) 	CloseAvility();
+		if(ButtonRelease(DownButton)) 		CloseAvility();
+		if(ButtonRelease(SwapButton)) 		CloseAvility();
+		if(ButtonRelease(AbilityButton)){
+			abilityReleasing = TRUE;
+			CloseAvility();
+		}
+	}
+	if(operatorIndex == 13)/*ECHO */{ 
+		if(abilityDeployCount > 0 && ButtonPress(DownButton)){
+			CloseAvility();
+			return;
+		}
+		if(ButtonPress(DownButton) || ButtonPress(CrouchButton)){
+			if(inAbilityCams){
+				inAbilityCams = FALSE;
+			}else{
+				CloseAvility();
+				return;
+			}
+		}
+	}
+	if(operatorIndex == 18)/*MAESTRO*/{
+		if(ButtonPress(DownButton) 		&& inAbilityCams){
+			inAbilityCams = FALSE;
+			return;
+		}
+		if(ButtonPress(DownButton) 		&& !abilityDeploying){
+			CloseAvility();
+			return;
+		}
+		if(ButtonPress(CrouchButton) 	&& !abilityDeploying){
+			CloseAvility();
+			inAbilityCams = FALSE;
+			abilityDeploying = FALSE;
+		}
+		if(ButtonPress(SwapButton)		&& abilityDeploying){
+			activeGun	= !activeGun;
+			CloseAvility()
+		}
+		if(ButtonHold(ReloadButton) 	&& get_ptime(ReloadButton) > 1700){
+			if(abilityDeployCount < 2){
+				abilityDeployCount ++;
+				abilityDeploying = FALSE;
+				CloseAvility();
+			}
+		}
+		if(ButtonPress(AbilityButton) 	&& abilityDeployCount < 2 && !inAbilityCams){
+			abilityReleasing = TRUE;
+			abilityDeploying = FALSE;
+			CloseAvility();
+		}
+	} 
+	if(operatorIndex == 20)/*CLASS*/{
+		if(ButtonRelease(TacticalButton) 	|| 
+			ButtonPress(DownButton)){  
+			abilityReleasing = TRUE;
+			CloseAvility();
+		}
+		if(ButtonRelease(AbilityButton)){ 
+			abilityReleasing = TRUE;
+			CloseAvility();
+		}
+		if(ButtonRelease(SwapButton)){ 			
+			CloseAvility();
+		}
+		
+	}	
+}
+function DisplayAbility(){ 
+	if(abilityReleasing){
+		abilityReleasing = FALSE;
+		return;
+	}
+	if(operatorIndex == 4)/*DOC	*/{ 
+		if(ButtonRelease(AbilityButton)){
+			PrintAvilityName(10);
+			abilityActive = TRUE;
+		}
+	}
+	if(operatorIndex == 12)/*CAVEIRA */{ 	
+		if(ButtonRelease(AbilityButton) || ButtonRelease(DownButton)){
+			if(activeGun != GUN_SECONDARY){
+				 activeGun	= !activeGun;
+				 DisplaySwitchGun();
+			}
+			PrintAvilityName(2);
+			abilityActive 			= TRUE;
+			abilityReleasingTime 	= 12500;
+			abilityCountDown		= 0;
+			abilityTimeCheck		= TRUE;
+			abilityFocus			= TRUE;
+			
+		}
+	}
+	if(operatorIndex == 13)/*ECHO */{ 
+		if(ButtonPress(AbilityButton) && !inAbilityCams){
+			if(abilityDeployCount < 2){
+				abilityDeployCount ++:
+			}else{
+				PrintAvilityName(4);
+				abilityActive = TRUE;
+			}
+		}
+		if(abilityDeployCount > 0 && ButtonPress(DownButton)){
+			PrintAvilityName(4);
+			abilityActive = TRUE;
+		}
+		if(abilityDeployCount > 0 && ButtonPress(SwapButton)){
+			PrintAvilityName(4);
+			abilityActive = TRUE;
+		}
+		if(abilityDeployCount == 0 && ButtonPress(DownButton)){
+			inAbilityCams = TRUE;
+		}
+	}
+	if(operatorIndex == 18)/*MAESTRO*/{ 
+		if(ButtonPress(AbilityButton)){
+			PrintAvilityName(6);
+			abilityActive = TRUE;
+			if(abilityDeployCount < 2) abilityDeploying = TRUE;
+		}
+		if(abilityDeployCount > 0 && ButtonPress(DownButton)){
+			PrintAvilityName(6);
+			abilityActive = TRUE;
+		}
+		if(abilityDeployCount == 0 && ButtonPress(DownButton)){
+			inAbilityCams = TRUE;
+		}
+	}
+	if(operatorIndex == 20)/*CLASH -*/{
+		if(ButtonRelease(AbilityButton)){
+			PrintAvilityName(8);
+			abilityActive 	= TRUE;		
+		}
+		if(ButtonRelease(SwapButton)){
+			PrintAvilityName(8);
+			abilityActive 	= TRUE;	
+		}
+	}
+}
+function LoadPrimaryGunInfo(){
+	gunCount[0] 		= 2;
+	if(operatorIndex == 0)/*SMOKE*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 43,43, 30, 5,5, 10);
+		}else{	
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 1)/*MUTE*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 46,46, 30, -2,-2, 30);
+		}else{	
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 2)/*CASTLE*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -2,-1, 30);
+		}else{
+			ConfigureGunInfo(0, 25,25, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 3)/*PULSE*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 30, 29, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 4)/*DOC*/{ 
+		gunCount[0] = 3;
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 40, 40, 30, -2,10, 20);
+		}else if(gunIndex[GUN_PRIMARY] == 2){
+			ConfigureGunInfo(0, 39,39, 30, -3,-3, 30);
+		}else  if(gunIndex[GUN_PRIMARY] == 3){
+			ConfigureGunInfo(0, 25, 25, 30, 0,0, 30);  
+		}
+		return;
+	}
+	if(operatorIndex == 5)/*ROOK*/{ 
+		gunCount[0] = 3;
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else if(gunIndex[GUN_PRIMARY] == 2){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else  if(gunIndex[GUN_PRIMARY] == 3){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);  
+		}
+		return;
+	}
+	if(operatorIndex == 6)/*KAPKAN*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}else{	
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 7)/*TACHANKA*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}else{	
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 8)/*JAGER*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 38,38, 30, -3,-3, 30);
+		}else{	
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 9)/*BANDIT*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 45,42, 15, 3,10, 15);
+		}else{	
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	//══▶Year 1
+	if(operatorIndex == 10)/*FROST*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 17, 1,3, 17);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 11)/*VALKYRIE*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 12)/*CAVEIRA*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 13)/*ECHO*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	//══▶Year 2
+	if(operatorIndex == 14)/*MIRA*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 15)/*LESION*/{ 			
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 16)/*Ela*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 48,47, 30, 6,14, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 17)/*VIGIL*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	//══▶Year 3
+	if(operatorIndex == 18)/*MAESTRO*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}		
+	if(operatorIndex == 19)/*ALIBI*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 20)/*CLASH*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 21)/*KAID*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 37,35, 15, -3,5, 15);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	//══▶Year 4
+	if(operatorIndex == 22)/*MOZZIE*/{
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 23)/*WARDEN*/{ 				
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 24)/*GOYO*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 25)/*WAMAI*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30); 
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	//══▶Year 5
+	if(operatorIndex == 26)/*ORYX*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 27)/*Melusi*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 38,38, 30, -4,-4, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	//══▶Year 6
+	if(operatorIndex == 28)/*ARUNI*/{
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 29)/*THUNDERBIRD*/{
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(0, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+}
+function LoadSecondaryGunInfo(){
+	gunCount[1] 		= 2;
+	if(operatorIndex == 0)/*SMOKE*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 55,55, 30, -2,-2, 30);						
+		}else{	
+			ConfigureGunInfo(1, 25,25, 30, 2,2, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 1)/*MUTE*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 29,29, 30, 0,0, 30); 
+		}else{	
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}	
+		return;
+	}
+	if(operatorIndex == 2)/*CASTLE*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 25, 25, 30, 0,0, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 3)/*PULSE*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 24, 24, 30, 0, 0, 30); 
+		}else{
+			ConfigureGunInfo(1, 31,31, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 4)/*DOC*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 22,22, 30, 0,0, 30);
+		}else{
+			ConfigureGunInfo(1, 57,57, 30, 0,0, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 5)/*ROOK*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 6)/*KAPKAN*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{	
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 7)/*TACHANKA*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{	
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 8)/*JAGER*/{ 
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 28,28,30,3,3, 30);				
+		return;
+	}
+	if(operatorIndex == 9)/*BANDIT	*/{ 
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 30, 30, 30, -3,-3, 30);				
+		return;
+	}
+	//══▶Year 1
+	if(operatorIndex == 10)/*FROST**/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 27,27, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 11)/*VALKYRIE*/{ 
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		return;
+	}
+	if(operatorIndex == 12)/*CAVEIRA*/{ 
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);	
+		return;
+	}
+	if(operatorIndex == 13)/*ECHO*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	//══▶Year 2
+	if(operatorIndex == 14)/*MIRA*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 15)/*LESION*/{ 			
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);	
+		return;
+	}
+	if(operatorIndex == 16)/*Ela*/{ 
+		gunCount[1] = 1;		
+		ConfigureGunInfo(1, 27,27, 30, 6, 20, 10);
+		return;
+	}
+	if(operatorIndex == 17)/*VIGIL*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	//══▶Year 3
+	if(operatorIndex == 18)/*MAESTRO*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 19)/*ALIBI*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 20)/*CLASH*/{ 
+		if(gunIndex[GUN_PRIMARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 21)/*KAID*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 50,50, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	//══▶Year 4
+	if(operatorIndex == 22)/*MOZZIE*/{
+		gunCount[1] = 1; 
+		ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 	
+		return;
+	}
+	if(operatorIndex == 23)/*WARDEN*/{ 				
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	if(operatorIndex == 24)/*GOYO*/{ 
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		return;
+	}
+	if(operatorIndex == 25)/*WAMAI*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30); 
+		}
+		return;
+	}
+	//══▶Year 5
+	if(operatorIndex == 26)/*ORYX*/{ 
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}
+		return;
+	}
+	if(operatorIndex == 27)/*Melusi*/{ 
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 40,40, 30, 3,3, 30); 	
+		return;
+	}
+	//══▶Year 6
+	if(operatorIndex == 28)/*ARUNI*/{
+		gunCount[1] = 1;
+		ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+	}
+	if(operatorIndex == 29)/*THUNDERBIRD*/{
+		if(gunIndex[GUN_SECONDARY] == 1){
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}else{
+			ConfigureGunInfo(1, 35,35, 30, -3,-3, 30);
+		}
+	}
+}
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		Main Functions				║
+╚═══════════════════════════════════╝
+*/
+function ActivateOperator(){
+	combo_run(ToggleOn);
+	displayOperatorTypeScrollOn	= FALSE;
+	displayOperatorScrollOn		= FALSE;
+	LoadPrimaryGunInfo();
+	LoadSecondaryGunInfo();
+	saveIndex = FindSaveBucket();
+	if(saveIndex != 99) LoadARInfo();
+	DisplayGunInfo();
+	DisplayMod(GAME_MOD);
+	abilityDeployCount = 0;
+	UnsetAllButtons();
+}
+int arVal;
+function AdjustRecoilValue(){
+	arVal = 0;
+	if(ButtonPress(LeftButton)) 	arVal = 1;
+	if(ButtonPress(RightButton)) 	arVal = 2;
+	if(ButtonPress(UpButton)) 		arVal = 3;
+	if(ButtonPress(DownButton)) 	arVal = 4;
+	if(arVal == 0) return;
+	if(antirecoilMenuIndex == 0){
+		if(arVal < 3) HorizontalStart[activeGun] 	= EditARValues(HorizontalStart[activeGun], -127, 127);
+		if(arVal > 2) VerticalStart[activeGun]		= EditARValues(VerticalStart[activeGun], 0, 99);
+	}else if(antirecoilMenuIndex == 1){
+		if(arVal < 3) HorizontalEnd[activeGun] 		= EditARValues(HorizontalEnd[activeGun], -127, 127);
+		if(arVal > 2) VerticalEnd[activeGun] 		= EditARValues(VerticalEnd[activeGun], 0, 99);
+	}else if(antirecoilMenuIndex == 2){
+		if(arVal < 3) VerticalTime[activeGun] 		= EditARValues(VerticalTime[activeGun],10, 99);
+	}else if(antirecoilMenuIndex == 3){
+		if(arVal > 2) HorizontalTime[activeGun] 	= EditARValues(HorizontalTime[activeGun],10, 99);
+	}
+	DisplayAntiRecoilMenu(arVal);
+}
+function ConfigureGunInfo(arIndex, vStart, vEnd, vDuration, hStart, hEnd, hDuration){
+	VerticalStart[arIndex] 		= vStart;
+	VerticalEnd[arIndex] 		= vEnd;
+	VerticalTime[arIndex] 		= vDuration;
+	HorizontalStart[arIndex] 	= hStart;
+	HorizontalEnd[arIndex] 		= hEnd;
+	HorizontalTime[arIndex]		= hDuration;
+}
+function CloseAvility(){
+	abilityReleasingTime 	= 0;
+	abilityCountDown		= 0;
+	abilityTimeCheck		= FALSE;
+	abilityActive			= FALSE;
+	DisplaySwitchGun();	
+}
+function DisplayAntiRecoilMenu(charIndex){
+	ClearScroll(LINE_TOP);
+	DisplayFrame();
+	
+	DisplayAntiRecoilDirectionMenu(charIndex);
+
+	if(antirecoilMenuIndex < 2){
+		putc_oled(1, 86);
+		puts_oled(20, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);
+		putc_oled(1, 72);
+		puts_oled(100, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);
+	}
+	
+	printf(CenterText(antirecoildMenu[antirecoilMenuIndex + 1] - antirecoildMenu[antirecoilMenuIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, antirecoildMenu[antirecoilMenuIndex]);
+	if(antirecoilMenuIndex == 0){
+		NumberToString(VerticalStart[activeGun], FindDigits(VerticalStart[activeGun]), 15, LINE_CENTER);
+		NumberToString(HorizontalStart[activeGun], FindDigits(HorizontalStart[activeGun]), 90, LINE_CENTER);
+	}else if(antirecoilMenuIndex == 1){
+		NumberToString(VerticalEnd[activeGun], FindDigits(VerticalEnd[activeGun]), 15, LINE_CENTER);
+		NumberToString(HorizontalEnd[activeGun], FindDigits(HorizontalEnd[activeGun]), 90, LINE_CENTER);
+	}else if(antirecoilMenuIndex == 2){
+		NumberToString(VerticalTime[activeGun] * 100, FindDigits(VerticalTime[activeGun] * 100), CenterText(FindDigits(VerticalTime[activeGun] * 100), OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM - 10);	
+	}else if(antirecoilMenuIndex == 3){
+		NumberToString(HorizontalTime[activeGun] * 100, FindDigits(HorizontalTime[activeGun] * 100), CenterText(FindDigits(HorizontalTime[activeGun] * 100), OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM - 10);	
+	}
+}	
+function DisplayAntiRecoilDirectionMenu(charIndex){
+	if(antirecoilMenuIndex > 1) return;
+	if(charIndex != 1){
+		putc_oled(1, 133);
+		puts_oled(50, 35, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+	if(charIndex != 2){
+		putc_oled(1, 134);
+		puts_oled(70, 35, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+	if(charIndex != 3){
+		putc_oled(1, 131);
+		puts_oled(60, 25, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+	if(charIndex != 4){
+		putc_oled(1, 132);
+		puts_oled(60, 45, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+}
+function DisplayConfiguration(){
+	displayOperatorTypeScrollOn	= FALSE;
+	displayOperatorScrollOn		= FALSE;
+
+	DisplayFrame();	
+	if(currentConfigModIndex == 4){
+		printf(CenterText(configuration[currentConfigModIndex + 1] - configuration[currentConfigModIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, configuration[currentConfigModIndex]);
+		printf(CenterText(toggleStatus[QTEnabled + 1] - toggleStatus[QTEnabled] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 5, OLED_FONT_MEDIUM, OLED_WHITE, toggleStatus[QTEnabled]);
+	}else{
+		printf(CenterText(sizeof(configurationText) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, configurationText[0]);
+		printf(CenterText(configuration[currentConfigModIndex + 1] - configuration[currentConfigModIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER , OLED_FONT_MEDIUM, OLED_WHITE, configuration[currentConfigModIndex]);
+	}
+	
+	DisplayLeftRight();		    	
+	LED(RED);
+}
+function DisplayEnterSlotNumber(){
+	displayOperatorTypeScrollOn	= FALSE;
+	displayOperatorScrollOn		= FALSE;
+	DisplayFrame();
+	
+	printf(CenterText(enterSlotMsg[0 + 1] - enterSlotMsg[0] - 1, OLED_FONT_SMALL_WIDTH), LINE_TOP, 		OLED_FONT_SMALL, OLED_WHITE, enterSlotMsg[0]);
+	printf(CenterText(enterSlotMsg[1 + 1] - enterSlotMsg[1] - 1, OLED_FONT_SMALL_WIDTH), LINE_TOP + 10, OLED_FONT_SMALL, OLED_WHITE, enterSlotMsg[1]);
+	printf(CenterText(enterSlotMsg[2 + 1] - enterSlotMsg[2] - 1, OLED_FONT_SMALL_WIDTH), LINE_TOP + 20, OLED_FONT_SMALL, OLED_WHITE, enterSlotMsg[2]);
+	NumberToString(arVal, FindDigits(arVal), CenterText(FindDigits(arVal), OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM);	
+}
+function DisplayGameMode(){
+	DisplaySwitchGun();
+}			
+function DisplayGunSelection(){	
+	DisplayFrame();
+	DisplayGunIndex();
+	DisplayLeftRight();
+	DisplayGunInfo();
+}
+function DisplayGunIndex(){
+	ClearScroll(LINE_TOP);
+	if(activeGun == GUN_PRIMARY){
+		printf(CenterText(gunIndexMsg[0 + 1] - gunIndexMsg[0] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, gunIndexMsg[0]);
+	}else{
+		printf(CenterText(gunIndexMsg[1 + 1] - gunIndexMsg[1] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, gunIndexMsg[1]);
+	}
+}
+function DisplayGunInfo(){
+
+	printf(CenterText(GunName[GunInfoIdex() + 1] - GunName[GunInfoIdex()] - 1 , OLED_FONT_MEDIUM_WIDTH), LINE_CENTER, OLED_FONT_MEDIUM, OLED_WHITE, GunName[GunInfoIdex()]);	
+
+	if(currentMod == GUN_SELECTION_MOD) return;
+	
+	printf(CenterText(GunTypeName[GunTypeIdex() + 1] - GunTypeName[GunTypeIdex()] - 1 , OLED_FONT_SMALL_WIDTH), LINE_BOTTOM, OLED_FONT_SMALL, OLED_WHITE, GunTypeName[GunTypeIdex()]);
+	
+	printf(CenterText(GunTypeName[GunTypeIdex() + 1] - GunTypeName[GunTypeIdex()] - 1 , OLED_FONT_SMALL_WIDTH), LINE_BOTTOM, OLED_FONT_SMALL, OLED_WHITE, GunTypeName[GunTypeIdex()]);
+	
+	gunRapidFire = GunRFIdex();
+}
+function DisplayMod(modIndex){	
+   	currentMod 	 =  modIndex;
+	UnsetAllButtons();
+   	if(modIndex == OPERERATOR_TYPE_MOD) 	DisplayOperatorType();
+   	if(modIndex == OPERATOR_SELECTION_MOD) 	DisplayOperatorSelection();
+   	if(modIndex == ANTIRECOIL_MOD){
+   		antirecoilMenuIndex = 0;
+   		DisplayAntiRecoilMenu(0);
+   	}
+   	if(modIndex == GUN_SELECTION_MOD)		DisplayGunSelection();
+   	if(modIndex == CONFIG_MOD)				DisplayConfiguration();
+   	if(modIndex == RESET_MOD)				ResetOperator(); 	
+   	if(modIndex == GAME_MOD)				DisplayGameMode(); 
+   	if(modIndex == QUICK_TOGGLE_EDIT_MOD)	DisplayQuickTogglesEdit();    	
+    if(modIndex == QUICK_TOGGLE_MOD){
+    	DisplayQuickToggles();
+    }
+}
+function DisplayOperatorType(){
+	displayOperatorTypeScrollOn	= TRUE;
+	displayOperatorScrollOn		= FALSE;
+	ClearScroll(LINE_TOP);
+	DisplayFrame();
+ 	printf(5,25,OLED_FONT_MEDIUM, !operatorType, attackers[0]);		
+	putc_oled(1,131);
+	puts_oled(5,25,OLED_FONT_MEDIUM,OLED_FONT_MEDIUM_WIDTH, !operatorType);	
+	printf(5,45,OLED_FONT_MEDIUM, operatorType, defenders[0]);	
+	putc_oled(1,132);
+	puts_oled(5,45,OLED_FONT_MEDIUM,OLED_FONT_MEDIUM_WIDTH, operatorType);
+	ClearScroll(LINE_TOP);
+} 	
+function DisplayOperatorSelection(){
+	if(operatorType == OPERERATOR_TYPE_DEFENDERS){
+		currentMod = CHANGE_SLOT_MOD;
+		DisplayEnterSlotNumber();
+	}else{
+		displayOperatorTypeScrollOn	= FALSE;
+		displayOperatorScrollOn		= TRUE;
+		DisplayFrame();	
+		DisplayLeftRight();
+		PrintOperatorName(LINE_CENTER);
+		ClearScroll(LINE_TOP);
+	}
+}
+function DisplayOperatorByYear(){
+	displayOperatorTypeScrollOn	= FALSE;
+	displayOperatorScrollOn		= FALSE;	
+	DisplayFrame();
+	operatorIndex				= operatorsByYear[operatorsByYearIndex];
+	
+	printf(CenterText(operationName[operatorsByYearIndex + 1] - operationName[operatorsByYearIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, operationName[operatorsByYearIndex]);
+	printf(CenterText(operationName2[operatorsByYearIndex + 1] - operationName2[operatorsByYearIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER, OLED_FONT_MEDIUM, OLED_WHITE, operationName2[operatorsByYearIndex]);
+	printf(CenterText(operationYear[operatorsByYearIndex + 1] - operationYear[operatorsByYearIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_WHITE, operationYear[operatorsByYearIndex]);	
+}
+function DisplaySaveAR(){
+	ClearScroll(LINE_BOTTOM);
+	DisplayFrame();
+	DisplayYesNo();
+	printf(CenterText(sizeof(saveChanges)  - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP - 5, OLED_FONT_MEDIUM, OLED_WHITE, saveChanges[0]);
+	printf(CenterText(sizeof(saveChanges02)  - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER - 5, OLED_FONT_MEDIUM, OLED_WHITE, saveChanges02[0]);
+}
+function DisplaySwitchGun(){
+	DisplayFrame();	
+	printf(CenterText(operatorName[operatorIndex + 1] - operatorName[operatorIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, operatorName[operatorIndex]);		
+	DisplayGunInfo();
+	if(activeGun == GUN_PRIMARY){
+		LED(GREEN);
+	}else{
+		LED(BLUE);
+	}
+}
+function DisplayScrollMode(){
+	if(displayOperatorTypeScrollOn)	DisplayOperatorTypeScroll();
+	if(displayOperatorScrollOn)		DisplayOperatorSelectionScroll();
+}
+function DisplayOperatorTypeScroll(){
+	messageColumCount --;
+	messageSize = sizeof(operatorTypeMsg)/sizeof(operatorTypeMsg[0]);
+	for (messageArrayLine = 0; messageArrayLine < messageSize; messageArrayLine++){
+		if(messageColumCount + (10 * messageArrayLine ) > 0 && messageColumCount + (10 * messageArrayLine ) < 127){
+			putc_oled(1, operatorTypeMsg[messageArrayLine]);
+			puts_oled(messageColumCount + (10 * messageArrayLine ), LINE_TOP - 5, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);		
+		}
+	}
+
+	if(messageColumCount + (10 * messageArrayLine ) < 0 ){
+		messageColumCount = 127;
+	}
+	line_oled(1, 1 , 1 , 22 , 1 , 1 );	
+}
+function DisplayOperatorSelectionScroll(){
+	messageColumCount --;
+	messageSize = sizeof(operatorSelMsg)/sizeof(operatorSelMsg[0]);
+	for (messageArrayLine = 0; messageArrayLine < messageSize; messageArrayLine++){
+		if(messageColumCount + (10 * messageArrayLine ) > 0 && messageColumCount + (10 * messageArrayLine ) < 127){
+			putc_oled(1, operatorSelMsg[messageArrayLine]);
+			puts_oled(messageColumCount + (10 * messageArrayLine ), LINE_TOP - 5, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);
+		}
+	}
+
+	if(messageColumCount + (10 * messageArrayLine ) < 0 ){
+		messageColumCount = 127;
+	}
+	line_oled(1, 1 , 1 , 22 , 1 , 1 );	
+}
+function DisplayQuickToggles(){
+	DisplayFrame();
+	printf(CenterText(toggleValuesMsg[toggleIndex + 1] - toggleValuesMsg[toggleIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER - 10, OLED_FONT_MEDIUM, OLED_WHITE, toggleValuesMsg[toggleIndex]);
+	DisplayLeftRight();		    	
+	LED(RED);
+}
+function DisplayQuickTogglesEdit(){
+	DisplayFrame();
+	printf(CenterText(toggleValuesMsg[toggleIndex + 1] - toggleValuesMsg[toggleIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, toggleValuesMsg[toggleIndex]);
+	
+	if(toggleIndex == 0) NumberToString(crouchSpamSpeed, 	FindDigits(crouchSpamSpeed), 	CenterText(FindDigits(crouchSpamSpeed), OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10);
+	if(toggleIndex == 1) NumberToString(autoLeanSpeed, 		FindDigits(autoLeanSpeed), 		CenterText(FindDigits(autoLeanSpeed), 	OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10);
+	if(toggleIndex == 2) NumberToString(strafeSpeed, 		FindDigits(strafeSpeed), 		CenterText(FindDigits(strafeSpeed), 	OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10);
+	if(toggleIndex == 3) NumberToString(leanSpamSpeed, 		FindDigits(leanSpamSpeed), 		CenterText(FindDigits(leanSpamSpeed), 	OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10);
+	if(toggleIndex == 4) NumberToString(tBagSpeed, 			FindDigits(tBagSpeed), 			CenterText(FindDigits(tBagSpeed), 		OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10);
+	if(toggleIndex == 5) NumberToString(rapidFireSpeed, 	FindDigits(rapidFireSpeed), 	CenterText(FindDigits(rapidFireSpeed), 	OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10);	
+		
+	LED(RED);
+}
+function DisplayLeftRight(){
+	ClearScroll(LINE_BOTTOM);
+	putc_oled(1, 133);
+	puts_oled(10, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	putc_oled(1, 134);
+	puts_oled(111,LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	line_oled(1, 1 , 1 , LINE_BOTTOM + 10 , 1 , 1 );
+}
+function DisplayFrame(){
+	cls_oled(0);
+	rect_oled(1,1,127,63,0,1);
+}
+function DisplayYesNo(){
+	putc_oled(1, 131);
+	puts_oled(50, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	putc_oled(1, 132);
+	puts_oled(70,LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	line_oled(1, 1 , 1 , LINE_BOTTOM + 10 , 1 , 1 );
+	printf(10, 40, OLED_FONT_MEDIUM, !yesNoIndex, yes[0]);
+	printf(95, 40, OLED_FONT_MEDIUM, yesNoIndex, no[0]);
+}
+function GunInfoIdex() { return (5 * operatorIndex) + (activeGun * 3) + (gunIndex[activeGun] - 1)}
+function GunTypeIdex() { return GunType[GunInfoIdex()]}
+function GunRFIdex()   { return GunRapidFire[GunInfoIdex()]}
+function LoadARInfo(){
+	if(saveIndex == 99) return;
+	//Vertical Primary
+	saveVar = (-32768 - (6 * saveIndex)) * -1;
+	pval_data = get_pvar(saveVar, -32767, 32767, 0);
+	VerticalStart[0] 	= unpack_int16_to_int8(pval_data, 0)
+	VerticalEnd[0]   	= unpack_int16_to_int8(pval_data, 1)
+	//Horizontal Primary
+	saveVar = (-32768 - (6 * saveIndex) - 1) * -1;	
+    pval_data = get_pvar(saveVar, -32767, 32767, 0);
+    HorizontalStart[0] 	= unpack_int16_to_int8(pval_data, 0)
+	HorizontalEnd[0]   	= unpack_int16_to_int8(pval_data, 1)
+    //Horizontal Secondary
+    saveVar = (-32768 - (6 * saveIndex) - 2) * -1;
+	pval_data = get_pvar(saveVar, -32767, 32767, 0);
+  	VerticalStart[1] 	= unpack_int16_to_int8(pval_data, 0)
+	VerticalEnd[1]   	= unpack_int16_to_int8(pval_data, 1)
+  	//Horizontal Secondary
+  	saveVar = (-32768 - (6 * saveIndex) - 3) * -1;
+	pval_data = get_pvar(saveVar, -32767, 32767, 0);
+	HorizontalStart[1] 	= unpack_int16_to_int8(pval_data, 0)
+	HorizontalEnd[1]   	= unpack_int16_to_int8(pval_data, 1)
+    //Vertical Time, Horizontal Time, Gun Index --- Primary	    
+	saveVar = (-32768 - (6 * saveIndex) - 4) * -1;
+    pval_data = get_pvar(saveVar, -32767, 32767, 0);   
+    VerticalTime[0]  	= (pval_data / 100) % 100;
+	HorizontalTime[0] 	= pval_data % 100;
+	gunIndex[0]			= (pval_data / 10000) + 1;
+	
+    //Vertical Time, Horizontal Time, Gun Index --- Secondary
+    saveVar = (-32768 - (6 * saveIndex) - 5) * -1;
+	pval_data = get_pvar(saveVar, -32767, 32767, 0);
+  	VerticalTime[1]  	= (pval_data / 100) % 100;
+	HorizontalTime[1] 	= pval_data % 100;
+	gunIndex[1]			= (pval_data / 10000) + 1;
+}
+function SaveAR(){
+	if(saveIndex == 99) return;
+	combo_run(SAVE)
+	
+	//Vertical Primary
+	saveVar = (-32768 - (6 * saveIndex)) * -1;	
+	pval_data = pack_int8_to_int16(VerticalStart[0], VerticalEnd[0]);
+	set_pvar(saveVar, pval_data); 
+	//Horizontal Primary
+	saveVar = (-32768 - (6 * saveIndex) - 1) * -1;	
+	pval_data = pack_int8_to_int16(HorizontalStart[0], HorizontalEnd[0]);
+	set_pvar(saveVar, pval_data); 
+	//Vertical Secondary
+	saveVar = (-32768 - (6 * saveIndex) - 2) * -1;	
+	pval_data = pack_int8_to_int16(VerticalStart[1], VerticalEnd[1]);
+	set_pvar(saveVar, pval_data); 
+	//Horizontal Secondary
+	saveVar = (-32768 - (6 * saveIndex) - 3) * -1;	
+	pval_data = pack_int8_to_int16(HorizontalStart[1], HorizontalEnd[1]);
+	set_pvar(saveVar, pval_data); 
+	//Vertical Time, Horizontal Time, Gun Index --- Primary
+	tempPack[0] = (gunIndex[GUN_PRIMARY] - 1) * pow(10, 2) + VerticalTime[0];
+	tempPack[0] = tempPack[0] * pow(10, 2) + HorizontalTime[0];
+	saveVar = (-32768 - (6 * saveIndex) - 4) * -1;
+	set_pvar(saveVar, tempPack[0]); 
+	//Vertical Time, Horizontal Time, Gun Index --- Secondary
+	tempPack[1] = (gunIndex[GUN_SECONDARY] - 1) * pow(10, 2) + VerticalTime[1];
+	tempPack[1] = tempPack[1] * pow(10, 2) + HorizontalTime[1];
+	saveVar = (-32768 - (6 * saveIndex) - 5) * -1;	
+	set_pvar(saveVar, tempPack[1]);
+
+	saveMatix[saveIndex] = operatorIndex + 1;
+	//Build matix
+	pval_data = pack_int8_to_int16(saveMatix[0], saveMatix[1]);
+	set_pvar(SPVAR_55, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[2], saveMatix[3]);
+	set_pvar(SPVAR_56, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[4], saveMatix[5]);
+	set_pvar(SPVAR_57, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[6], saveMatix[6]);
+	set_pvar(SPVAR_58, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[8], saveMatix[9]);
+	set_pvar(SPVAR_59, pval_data);
+}
+function LoadSaveMatrix(){
+	//Build matix
+	
+	pval_data = get_pvar(SPVAR_55, -32767, 32767, 0);  
+	saveMatix[0]     = unpack_int16_to_int8(pval_data, 0);    
+    saveMatix[1]     = unpack_int16_to_int8(pval_data, 1); 
+    
+    pval_data = get_pvar(SPVAR_56, -32767, 32767, 0);  
+	saveMatix[2]     = unpack_int16_to_int8(pval_data, 0);    
+    saveMatix[3]     = unpack_int16_to_int8(pval_data, 1); 
+    
+    pval_data = get_pvar(SPVAR_57, -32767, 32767, 0);  
+	saveMatix[4]     = unpack_int16_to_int8(pval_data, 0);    
+    saveMatix[5]     = unpack_int16_to_int8(pval_data, 1); 
+    
+    pval_data = get_pvar(SPVAR_58, -32767, 32767, 0);  
+	saveMatix[6]     = unpack_int16_to_int8(pval_data, 0);    
+    saveMatix[7]     = unpack_int16_to_int8(pval_data, 1); 
+    
+    pval_data = get_pvar(SPVAR_59, -32767, 32767, 0);  
+	saveMatix[8]     = unpack_int16_to_int8(pval_data, 0);    
+    saveMatix[9]     = unpack_int16_to_int8(pval_data, 1); 
+}
+function FindSaveBucket(){
+	for(forIndex = 0; forIndex < 9 ; forIndex++)
+	{
+		if(saveMatix[forIndex] == operatorIndex + 1) return forIndex;
+	}
+	return 99;
+}
+function FindOpenBucket(){
+	for(forIndex = 0; forIndex < 9 ; forIndex++)
+	{
+		if(saveMatix[forIndex] == 0){
+			return forIndex;
+		}
+	}
+	return 99;
+}
+function LoadSlotNumber(){
+	pval_data  = get_pvar(SPVAR_60, 0, 8,0); 
+   	slotNumber = pval_data;
+   	Set(TRACE_1, slotNumber);
+}
+function LoadSettings(){
+	pval_data			= get_pvar(SPVAR_61, 1, 32767, 1473);
+    tBagOn 				= unpack_usigned(pval_data, 0, 1);
+	crouchSpamOn		= unpack_usigned(pval_data, 1, 1);
+	leanSpamOn 			= unpack_usigned(pval_data, 2, 1);
+	pronShotOn 			= unpack_usigned(pval_data, 3, 1);	
+	rf4AllOn 			= unpack_usigned(pval_data, 4, 1);
+	autoLeanOn 			= unpack_usigned(pval_data, 5, 1);
+	rapidFireOn 		= unpack_usigned(pval_data, 6, 1);
+	QTEnabled 			= unpack_usigned(pval_data, 7, 1);
+	autoScanOn			= unpack_usigned(pval_data, 8, 1);
+	pinOnShotOn			= unpack_usigned(pval_data, 9, 1);
+	perfectGrenadeOn	= unpack_usigned(pval_data, 10, 1);
+	
+	pval_data			= get_pvar(SPVAR_62, 1, 32767, 7740);
+	crouchSpamSpeed 	= unpack_int16_to_int8(pval_data, 0)
+	autoLeanSpeed   	= unpack_int16_to_int8(pval_data, 1)
+	
+	pval_data			= get_pvar(SPVAR_63, 1, 32767, 24520);
+	strafeSpeed 		= unpack_int16_to_int8(pval_data, 0)
+	leanSpamSpeed   	= unpack_int16_to_int8(pval_data, 1)
+	if(strafeSpeed < 0) strafeSpeed = 128 + abs(strafeSpeed );
+	
+	pval_data			= get_pvar(SPVAR_64, 1, 32767, 7710);
+	tBagSpeed 			= unpack_int16_to_int8(pval_data, 0)
+	rapidFireSpeed   	= unpack_int16_to_int8(pval_data, 1)
+}
+function PrintAvilityName(position){
+	DisplayFrame();
+	printf(CenterText(avilityName[position + 1] - avilityName[position] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER - 10, OLED_FONT_MEDIUM, OLED_WHITE, avilityName[position]);
+	printf(CenterText(avilityName[position + 2] - avilityName[position + 1] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10, OLED_FONT_MEDIUM, OLED_WHITE, avilityName[position + 1]);
+}
+function PrintOperatorName(line){
+	printf(CenterText(operatorName[operatorIndex + 1] - operatorName[operatorIndex] - 1, OLED_FONT_MEDIUM_WIDTH), line, OLED_FONT_MEDIUM, OLED_WHITE, operatorName[operatorIndex]);
+}
+function ResetOperator(){
+	saveIndex = FindSaveBucket();
+	if(saveIndex == 99) return;
+	saveMatix[saveIndex] = 0;
+	
+	//Build matix
+	pval_data = pack_int8_to_int16(saveMatix[0], saveMatix[1]);
+	set_pvar(SPVAR_55, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[2], saveMatix[3]);
+	set_pvar(SPVAR_56, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[4], saveMatix[5]);
+	set_pvar(SPVAR_57, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[6], saveMatix[6]);
+	set_pvar(SPVAR_58, pval_data); 
+	pval_data = pack_int8_to_int16(saveMatix[8], saveMatix[9]);
+	set_pvar(SPVAR_59, pval_data);
+	saveIndex = 99;
+	gunIndex[0] = 1;
+	gunIndex[1] = 1;
+	ActivateOperator();
+	DisplayMod(GAME_MOD);
+}
+function SaveSettings(){
+  	pval_data = pack_usigned(pval_data, tBagOn,   			0, 1);
+	pval_data = pack_usigned(pval_data, crouchSpamOn,   	1, 1);
+	pval_data = pack_usigned(pval_data, leanSpamOn,   		2, 1);
+	pval_data = pack_usigned(pval_data, pronShotOn,   		3, 1);	
+	pval_data = pack_usigned(pval_data, rf4AllOn,   		4, 1);
+	pval_data = pack_usigned(pval_data, autoLeanOn,   		5, 1);
+	pval_data = pack_usigned(pval_data, rapidFireOn,   		6, 1);
+	pval_data = pack_usigned(pval_data, QTEnabled,   		7, 1);
+	pval_data = pack_usigned(pval_data, autoScanOn,   		8, 1);
+	pval_data = pack_usigned(pval_data, pinOnShotOn,   		9, 1);
+	pval_data = pack_usigned(pval_data, perfectGrenadeOn,	10, 1);
+	set_pvar(SPVAR_61,	pval_data);
+	
+	pval_data = pack_int8_to_int16(crouchSpamSpeed, autoLeanSpeed);
+	set_pvar(SPVAR_62,	pval_data);
+	pval_data = pack_int8_to_int16(strafeSpeed, leanSpamSpeed);
+	
+	set_pvar(SPVAR_63,	pval_data);
+	pval_data = pack_int8_to_int16(tBagSpeed, rapidFireSpeed);
+	set_pvar(SPVAR_64,	pval_data);
+}
+function EditValues(value, min, max){
+	if(event_press(UpButton) || event_press(RightButton)){
+		if(get_ival(AdsButton)) value += 10;
+		else value ++; 
+		if(currentMod == CHANGE_SLOT_MOD){
+			if(value == get_slot()) value ++;
+		}
+		if(value > max ) value = min;
+	}
+	if(event_press(DownButton) || event_press(LeftButton)){
+		if(get_ival(AdsButton)) value -= 10;
+		else value --; 
+		if(currentMod == CHANGE_SLOT_MOD){
+			if(value == get_slot()) value --;
+		}
+		if(value < min) value = max;
+	}
+
+	return value;
+}
+	//Progressive AR functions
+function p_complete() { 
+
+    i_cnt++;
+    if(i_cnt > VerticalTime[activeGun] * 10) 
+    {
+        i_cnt = VerticalTime[activeGun] * 10;
+        return 1;
+    }    
+    return 0;
+}  
+function p_val() { 
+
+    i_num++;
+    if(i_num == i_pnt) 
+    {
+        i_num = 0;
+        ar_y += i_val;
+    }
+    return ar_y;
+}  
+int tempv;
+function y_val() { 
+
+    tempv = get_val(10);
+    
+    if(abs(tempv) < 10)
+        tempv = 0;
+        
+    if(abs(tempv) > ar_y + 5)
+        return tempv;
+        
+    return tempv + ar_y;           
+}
+function p_complete_x() { 
+    i_cnt_h++;
+    if (i_cnt_h > HorizontalTime[activeGun] * 10) 
+    {
+        i_cnt_h = HorizontalTime[activeGun] * 10 ;
+        return 1;
+    }
+    return 0;
+}   
+function p_val_x() {
+    i_num_h++;
+    if(i_num_h == i_pnt_h) 
+    {
+    	i_num_h = 0;
+    	ar_x += i_val_h;
+    }
+    return ar_x;
+} 
+function x_val() {
+	v_x = get_val(PS4_RX);
+	if(abs(v_x) < 10)
+		v_x = 0;
+	if(abs(v_x) > abs(ar_x + 5))
+		return v_x;
+	return v_x + ar_x;   	    
+}
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║			Combos					║
+╚═══════════════════════════════════╝
+*/
+combo AutoScan{
+	Set(SwapButton, 100);
+	wait(1280);
+	Unset(SwapButton);
+	wait(100);
+}
+combo PinOnShot{
+	Set(UpButton, 100);
+	wait(40);
+	Unset(UpButton);
+	wait(40);
+}
+combo RapidFire {
+    set_val(FireButton, 100);
+    wait(40);
+    set_val(FireButton, 0);
+    wait(40);
+    set_val(FireButton, 0);
+    wait(rapidFireSpeed);
+} 
+combo TeaBag(){ 
+    Set(CrouchButton, 100);
+	wait(40);
+	Set(CrouchButton, 0);
+	wait(tBagSpeed);
+	Set(CrouchButton, 100);
+	wait(40);
+	Set(CrouchButton, 0);
+	wait(tBagSpeed);
+}
+combo CrouchSpam{
+    Set(CrouchButton, 100);
+	wait(40);
+	Set(CrouchButton, 0);
+	wait(crouchSpamSpeed);
+	Set(CrouchButton, 100);
+	wait(40);
+	Set(CrouchButton, 0);
+	wait(crouchSpamSpeed);
+}
+combo LeanSpam{
+	set_val(MeleeButton, 100);
+	wait(100);
+	set_val(MeleeButton, 0);
+	wait(leanSpamSpeed);
+	set_val(SprintButton, 100);
+	wait(100);
+	set_val(SprintButton, 0);
+	wait(leanSpamSpeed);
+}
+combo ToggleOn{
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait(150);
+	reset_rumble();
+}
+combo ToggleOff {
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait (150);
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait(150);
+    reset_rumble();
+}
+combo QuickToggleNotify{ 	
+   	cls_oled(0);	
+   	printf(CenterText(toggleMessage[toggleIndex + 1] - toggleMessage[toggleIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER - 10, OLED_FONT_MEDIUM, OLED_WHITE, toggleMessage[toggleIndex]);
+   	printf(CenterText(toggleStatus[toggleValue + 1] - toggleStatus[toggleValue] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER + 10, OLED_FONT_MEDIUM, OLED_WHITE, toggleStatus[toggleValue]);
+   	wait(450);
+   	SaveSettings();
+   	DisplaySwitchGun();
+	if(activeGun == GUN_PRIMARY){
+		LED(GREEN);
+	}else{
+		LED(BLUE);
+	}
+}
+combo SAVE { 	
+   	cls_oled(0);						
+   	printf(CenterText(sizeof(saveMessage) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER , OLED_FONT_MEDIUM, OLED_WHITE, saveMessage[0]);
+   	call(ToggleOn);
+   	wait(250);
+   	DisplaySwitchGun();
+	if(activeGun == GUN_PRIMARY){
+		LED(GREEN);
+	}else{
+		LED(BLUE);
+	}
+}
+combo Strafe{
+	set_val(LxButton, -40); 
+	wait(strafeSpeed); 
+	set_val(LxButton, 40);
+	wait(strafeSpeed);
+}
+combo FastPickLeft{
+	Set(SprintButton, 100);
+	wait(100);
+	Set(LxButton, -100); 
+	wait(200);
+	Set(LxButton, 0);
+	wait(10);
+	Set(FireButton, 100); 
+	wait(5);
+	Set(FireButton, 0); 
+	wait(5);
+	Set(LxButton, 100);	
+	wait(249);
+	Set(LxButton, 0);
+	wait(10);
+	Set(SprintButton, 100);
+	wait(100);
+}
+combo FastPickRight{
+	Set(MeleeButton, 100);
+	wait(100);
+	Set(LxButton, 100); 
+	wait(200);
+	Set(LxButton, 0);
+	wait(10);
+	Set(FireButton, 100); 
+	wait(5);
+	Set(FireButton, 0); 
+	wait(5);
+	Set(LxButton, -100);	
+	wait(249);
+	Set(LxButton, 0);
+	wait(10);
+	Set(MeleeButton, 100);
+	wait(100);
+}
+combo FastPickUp{
+	Set(CrouchButton, 100);
+	wait(100);
+	Set(CrouchButton, 0); 
+	wait(200);
+	Set(FireButton, 100); 
+	wait(5);
+	Set(FireButton, 0); 
+	wait(5);
+	Set(CrouchButton, 100);
+	wait(50);
+	Set(CrouchButton, 0); 
+	wait(5);
+}
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║	    Utilities functions			║
+╚═══════════════════════════════════╝
+*/
+	//Information functions	
+int c_val, chr_val;
+function EditARValues(value, min, max){
+	if(event_press(UpButton) || event_press(LeftButton)){
+		if(get_ival(AdsButton)) value -= 10;
+		else value --;                           
+ 		if(value < min) value = min;   	               	            
+	}
+	if(event_press(DownButton) || event_press(RightButton)){
+		if(get_ival(AdsButton)) value += 10;
+		else value ++;
+		if(value > max) value = max; 	        
+	}
+	return value;
+}
+function VerifyMinMax(value, min, max){
+	if(event_press(LeftButton)){
+		value --;
+		if(value < min) value = max; 	        
+	}
+	if(event_press(RightButton)){
+		value ++;
+		if(value > max) value = min; 	        
+	}
+	return value;
+}
+function ClearScroll(scrollLine){
+	for (forIndex = 0; forIndex < 127; forIndex++) {		 
+		PrintCharacter(32, forIndex, scrollLine);
+	}
+}	
+	//Buttons funntions
+function UnsetAllButtons(){
+	Unset(MenuButton);
+	Unset(ReloadButton);
+    Unset(SwapButton);
+    Unset(UpButton);
+	Unset(DownButton);
+	Unset(CrouchButton);
+    Unset(SelectButton);
+    Unset(LeftButton);
+    Unset(RightButton);
+    Unset(AdsButton);
+    Unset(TacticalButton);
+    Unset(ModsButton);
+}
+function ButtonPress(button){
+	return event_press(button);
+} 
+function ButtonRelease(button){return event_release(button);}
+function ButtonHold(button){
+	return get_val(button);
+} 	
+function DoubleTab(button) { 
+	if(event_press(button) && get_brtime(button) < 300) return TRUE;                                     
+	return 0;                                        
+}  
+function Set(id,val){set_val(id, val);} 
+function Unset(id){set_val(id, 0);}
+	//Utilities functions
+function CenterText(f_chars,f_font) {                                                         
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); 
+}   
+function NumberToString(f_val,f_dgts, x_val,y_val) {
+ 
+	i_val = 1;  chr_val = 10000;
+    
+	if(f_val < 0){          
+         putc_oled(i_val,45);    
+         i_val += 1;
+         f_val = abs(f_val);
+	} 
+	for(c_val = 5; c_val >= 1; c_val--){
+	    if(f_dgts >= c_val) {
+            putc_oled(i_val, (f_val / chr_val) + 48);
+            f_val = f_val % chr_val;
+            i_val +=  1; 
+            if(c_val == 4){
+                putc_oled(i_val,44);   
+                i_val += 1;
+            }
+        }
+        chr_val /= 10;
+    }  
+
+    puts_oled(x_val, y_val, 1,i_val - 1, 1);    
+} 
+function PrintCharacter(character, column, scrollLine){
+	if(column > 0 && column < 127){
+		putc_oled(1,character);
+		puts_oled(column, scrollLine, 0, 1, 1);
+	}
+}	
+function FindDigits(digits) {                         
+	//  FindDigits(value)                                
+	//        return Number of Digits in Value Passed     		                                                      
+    digits = abs(digits);                               
+    if(digits / 10000 > 0) return 5;                   
+    if(digits /  1000 > 0) return 4;                   
+    if(digits /   100 > 0) return 3;                   
+    if(digits /    10 > 0) return 2;                   
+                          return 1;                  
+}
+function LED(Colour) {
+    set_led(LED_1,duint8(Colour*4));
+    set_led(LED_2,duint8((Colour*4) + 1));
+    set_led(LED_3,duint8((Colour*4) + 2));
+    set_led(LED_4,duint8((Colour*4) + 3));
+}
+int pval_data, ret, mask;
+//position range [0..1]   |  ret range = [-127..127]
+function pack_int8_to_int16(int var1, int var2){
+	ret = 0;
+	
+	if(var1 < 0)
+  	{
+   		var1 = abs(var1) | 0x80;
+  	}
+
+	ret = (abs(var2)<<8)|var1;
+	
+	if(var2<0)
+		ret *= -1;
+	
+	return ret;
+}
+//position range [0..1]   |  ret range = [-127..127]
+function unpack_int16_to_int8(int pvar, int var){
+	ret = 0;
+	
+	if(var == 0)
+	{	 
+		ret = 0x80 & abs(pvar) ;
+		ret = ret >> 7;
+		ret = ((-2) * ret) + 1;
+		ret = ( abs(pvar) & 0x7F) * ret;
+	}
+	else
+	{
+		ret = pvar>>8;
+
+	    if(pvar<0)
+	    {
+			ret += 1;
+		}
+	}
+	
+	return ret;
+}
+//position range [0..15]
+function pack_usigned(int pvar, int ret, int position, int number_of_bits){
+	for(i_val = position; i_val< (number_of_bits + position); i_val++)
+	{
+		pvar = pvar & (~(1 << i_val));
+	}
+	
+	pvar = pvar | (ret<<position);
+	
+	return pvar;
+}
+//position range [0..15]
+function unpack_usigned(int pvar, int position, int number_of_bits){
+	mask = 0;
+	ret = 0;
+	
+	for(i_val = 0; i_val< number_of_bits ; i_val++)
+	{
+		mask = mask | (1 << i_val);
+	}
+	
+	mask = mask <<position
+	ret = (pvar & mask) >> position;
+	
+	return ret;
+}

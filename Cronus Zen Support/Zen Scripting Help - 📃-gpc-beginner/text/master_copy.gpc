@@ -1,0 +1,710 @@
+define Floor = XB1_RB;
+define Ramp = XB1_LT;
+define Roof = XB1_LB;
+define Trap = XB1_X;
+define ADS = XB1_LT;
+define Fire  = XB1_RT;
+define PY = POLAR_RY;
+define Wall = XB1_RT;
+define AimX  = PS4_RX;
+define AimY  = PS4_RY;
+define Off     = FALSE;
+define On    = TRUE;
+define PX      = POLAR_RX;
+define PS = POLAR_RS;
+define RumA = RUMBLE_A;
+define RumB  = RUMBLE_B;
+define Pickaxe = PS4_SQUARE;
+define Edit  = PS4_L3 ;
+define Confirm = PS4_CIRCLE;
+define Build = PS4_CROSS ;
+int NoVibrations = TRUE;
+int DelayReducer = -9;
+int cAAlostRecoilReducer = TRUE;
+int VerticalStrength = 27;
+int HorizontalStrength = 0;
+int cAAlostBloomReducer = TRUE;
+int BloomReducerDelay = 50;
+int cAAlostAA8 = TRUE;
+int Sum = 8;
+int ThreeTimes = 6;
+int OneThird = 2;
+int DeadZone = 12;
+int cAAlostAA7 = TRUE;
+int cAAlostAA7HipFire = TRUE;
+int cAAlostAA7Time = 1000;
+int cAAlostAA7Delay = 70;
+int cAAlostAA7Power = 4;
+int cAAlostAA7Power2 = 5;
+int cAAlostPolarAA4 = TRUE;
+int cAAlostPolarAA4Speed = 30;
+int cAAlostPolarAA4Power = 5;
+int cAAlostConstantAA = TRUE;
+define cAAlostConstantAssistPower = 4;
+define cAAlostConstantAP = cAAlostConstantAssistPower;
+int cAAlostConstantAssistDelay = 10;
+int cAAlostPolarAA3 = TRUE;
+int cAAlostPolarAA3Range = 5;
+int cAAlostPolarAA3Speed = 21;
+int cAAlostTracking = TRUE;
+int cAAlostTrackingSpeed = 100;
+int cAAlostAA6 = TRUE;
+int cAAlostAA6Power = 4;
+int cAAlostAA6PowerPlusOne = 5;
+int cAAlostAA6Speed = 100;
+int cAAlostAA5 = TRUE;
+int cAAlostAA5Power = 4;
+int cAAlostAA5Delay = 20;
+int cAAlostAA5Limit = 40;
+int cAAlostAA5Range = 5;
+int cAAlostAA5Speed = 30;
+int cAAlostShapeBoosts = FALSE;
+int cAAlostShapeSpeed = 30;
+int cAAlostShapeRange = 4;
+int cAAlostShapeRangeMin = 2;
+int cAAlostShapeSpeedBoost = 0;
+int cAAlostShapeRangeBoost = 0;
+int cAAlostShape = Helix;
+int cAAlostAA4 = TRUE;
+int cAAlostAA4Power = 5;
+int cAAlostAA3 = TRUE;
+int cAAlostAA3Power = 4;
+int cAAlostAA3Delay = 10;
+int cAAlostAA3Limit = 45;
+int cAAlostPolarAA2 = TRUE;
+int cAAlostPolarAA2Range = 4;
+int cAAlostPolarAA2Range2 = 5;
+int cAAlostPolarAA2Speed = 30;
+int cAAlostPolarAA2Speed2 = 30;
+int cAAlostPolarAA = TRUE;
+int cAAlostPolarAAHipFire = TRUE;
+int cAAlostPolarAATimed = FALSE;
+int cAAlostPolarAAPower = 1;
+int cAAlostPolarAATime = 5000;
+int cAAlostAA2 = TRUE;
+int cAAlostAA2HipFire = TRUE;
+int cAAlostAA2Power = 4;
+int cAAlostAA2Delay = 10;
+int cAAlostAA = TRUE;
+int cAAlostAAHipFire = TRUE;
+int cAAlostAAPower = 5;
+int cAAlostAADelay = 10;
+int cAAlostAAIntervals = 1;
+
+int BuildTracker = TRUE;
+define BuildSyncTime = 6000;
+int BuildTrack,BuildCount;
+main {
+	if(get_val(Build)) {
+		combo_run(ActivatedcalostEditTracker);
+			}
+	if(get_val(Edit)) {
+		combo_run(ActivatedcalostEditTracker);
+			}
+	if(get_val(Pickaxe)) {
+		combo_run (NonActivatedcalostEditTracker);
+			}
+	if(get_val(Confirm)) {
+		combo_run (NonActivatedcalostEditTracker);
+			}
+			
+		if(BuildTracker) {
+  if(event_press(Build)) { BuildTrack = !BuildTrack;}
+  if(BuildTrack) { Â¡BuildCount += get_rtime();
+  if(event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0;}
+  if(get_ival(XB1_LB) || get_ival(XB1_LT) || get_ival(XB1_RT) || get_ival(XB1_RB) || get_ival(XB1_X)) BuildCount = 0;
+   }
+}
+  if(!BuildTrack) {
+	stick_input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+	if(cAAlostPolarAA3) {
+		if(get_ival(PS4_L2) || (get_ival(PS4_R2))) {
+			if (stick_input <= cAAlostPolarAA3Range) {
+				rnd = random(mn, mx);
+				RS_Gradient = (RS_Gradient + cAAlostPolarAA3Speed) % 360;
+				set_polar(POLAR_RS, RS_Gradient, (cAAlostPolarAA3Range * rnd));
+							}
+					}
+			}
+	if(cAAlostPolarAA4) {
+		if (get_ival(ADS) || get_ival(Fire)) {
+			YRAxisX  = isqrt(abs(get_ival(AimX)) * abs(get_ival(AimX)));
+			YRAxisY  = isqrt(abs(get_ival(AimY)) * abs(get_ival(AimY)));
+			if (cAAlostPolarAA4) {
+				YRAngle = YRSpeed;
+				Radius = cAAlostPolarAA4Power;
+				YRSpeed = YRSpeed + cAAlostPolarAA4Speed;
+				if (YRSpeed < 0) YRSpeed += 360;
+				YRSpeed = YRSpeed % 360;
+							}
+			else {
+				YRAngle = Off;
+				cAAlostPolarAA4Power = Off;
+							}
+			if(cAAlostRecoilReducer) {
+				if (get_ival(ADS) && get_ival(Fire)) {
+					if (YRAxisX <= abs(HorizontalStrength)) {
+						YRValueX = HorizontalStrength;
+											}
+					else {
+						YRValueX = Off;
+											}
+					if (YRAxisY <= abs(VerticalStrength)) {
+						YRValueY = VerticalStrength;
+											}
+					else {
+						YRValueY = Off;
+											}
+									}
+				else {
+					YRValueY = Off;
+					YRValueX = Off;
+									}
+							}
+			calostPolarity(YRAngle,Radius);
+					}
+			}
+	if(cAAlostAA3){
+		if (get_ival(ADS)){
+			combo_run(cAAlostAA3);
+			Polar();
+					}
+		if (abs(get_ival(AimX)) > cAAlostAA3Limit || abs(get_ival(AimY)) > cAAlostAA3Limit) {
+			combo_stop(cAAlostAA3);
+					}
+			}
+	X = get_ival(RX);
+	Y = get_ival(RY);
+	M = isqrt(pow(X, 2) + pow(Y, 2));
+	MaxM = (M < 100);
+	if (!(Time++ % cAAlostAAIntervals)) {
+		Angle += cAAlostPolarAA2Speed2;
+			}
+	Angle = Angle % 360;
+	Sin = cAAlostPolarArray[Angle % 360];
+	Cos = cAAlostPolarArray[(Angle + 270) % 360];
+	Cos = (Cos * cAAlostPolarAA2Range) / 100;
+	Sin = (Sin * cAAlostPolarAA2Range) / 100;
+	if((cAAlostPolarAA2 && get_ival(ADS)) || (cAAlostPolarAAHipFire && get_ival(Fire))) {
+		if (M <= cAAlostPolarAA2Range) {
+			Sin -= Y;
+			Cos -= X;
+					}
+		else {
+			Sin = (Sin * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MaxM;
+			Cos = (Cos * (200 - ((abs(X) + M) / 10) * 10) / 200) * MaxM;
+					}
+		set_val(RX, clamp(X + Cos, -100, 100));
+		set_val(RY, clamp(Y + Sin, -100, 100));
+			}
+	if(cAAlostAA2) {
+		if (get_ival(ADS) || (cAAlostAA2HipFire && get_ival(Fire))) {
+			combo_run(cAAlostAA2);
+					}
+		else {
+			combo_stop(cAAlostAA2);
+					}
+			}
+	if(cAAlostAA8) {
+		if (event_press(ADS)) {
+			Power = On;
+					}
+		else if (!get_ival(ADS) && event_press(Fire)) {
+			Power = On;
+					}
+		if (get_ival(ADS) || get_ival(Fire)) {
+			AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));
+			if (Sum == 1)AimAssist(ThreeTimes,OneThird);
+					}
+		else {
+			CountPower = 0;
+			power = Off;
+					}
+			}
+	if(cAAlostPolarAA) {
+		if (cAAlostPolarAATimed) {
+			if (get_ival(ADS) && get_ptime(ADS) <= cAAlostPolarAATime || cAAlostPolarAAHipFire && get_ival(Fire) && get_ptime(Fire) <= cAAlostPolarAATime) {
+				AimAssistY();
+							}
+					}
+		else if (get_ival(ADS)|| cAAlostPolarAAHipFire && get_ival(Fire)) {
+			AimAssistY();
+					}
+		if (!get_ival(ADS) && !get_ival(Fire)) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+
+
+			}
+	if(cAAlostTracking){
+		if(get_val(XB1_LT) && get_val(XB1_RT)){
+			sensitivity(XB1_RX,43,cAAlostTrackingSpeed);
+			sensitivity(XB1_RY,43,cAAlostTrackingSpeed);
+					}
+			}
+	if(cAAlostConstantAA){
+		if(!get_val(Fire) || get_val(ADS) && get_val(Fire)){
+			combo_run(cAAlostAA4);
+			if(abs(get_val(AimY)) > 36 || abs(get_val(AimX)) > 36 ){
+				combo_stop(cAAlostAA4);
+							}
+					}
+			}
+	if(cAAlostAA6){
+		if(get_val(ADS)> 1){
+			combo_run(cAAlostAA6);
+			AA1Shake();
+					}
+		if(abs(get_val(9)) > 36 || abs(get_val(10)) > 36) {
+			combo_stop(cAAlostAA6);
+					}
+			}
+	if(cAAlostAA4){
+		if(get_val(Fire)> 1){
+			combo_run(cAAlostAA8);
+					}
+		if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) {
+			combo_stop(cAAlostAA8);
+					}
+			}
+	if(cAAlostAA7){
+		if ((get_ival(ADS)) || (get_ival(Fire) && cAAlostAA7HipFire)) {
+			if (abs(get_ival(RX)) <= cAAlostAA7Time && abs(get_ival(RY)) <= cAAlostAA7Time) {
+				combo_run(cAAlostAA7);
+							}
+					}
+		else {
+			combo_stop(cAAlostAA7);
+					}
+			}
+	if(cAAlostAA5){
+		if (get_ival(ADS)){
+			combo_run(cAAlostAA5);
+			P();
+					}
+		if (abs(get_ival(AimX)) > cAAlostAA5Limit || abs(get_ival(AimY)) > cAAlostAA5Limit) {
+			combo_stop(cAAlostAA5);
+					}
+			}
+	if(cAAlostAA) {
+		if (get_ival(ADS) || (cAAlostAAHipFire && get_ival(Fire))) {
+			combo_run(cAAlostPolarAssist3);
+					}
+		else {
+			combo_stop(cAAlostPolarAssist3);
+					}
+			}
+	if(cAAlostShape) {
+		RXT = get_val(RX);
+		RYT = get_val(RY);
+		ActualMagnitude = isqrt(pow(RXT,2) + pow(RYT,2));
+		MaxMagnitude = (ActualMagnitude < 100);
+		angle += cAAlostShapeSpeed + Angle;
+		angle = angle % 360;
+		CosAngle = cAAlostPolarArray[(angle + 270) % 360];
+		SinAngle = cAAlostPolarArray[angle % 360];
+		if (cAAlostShapeBoosts) {
+			if (get_ival(Fire)) {
+				SmartRumble = get_rumble(RumbleToUse());
+				Angle = cAAlostShapeSpeedBoost;
+				if (SmartRumble > 10 && SmartRumble < 90) {
+					PolarStrength = (cAAlostShapeRange + cAAlostShapeRangeBoost + cAAlostShapeSpeedBoost + SmartRumble / 4);
+					SmartRumble   = Off;
+									}
+							}
+					}
+		if (get_ival(ADS) || get_ival(Fire)) {
+			if (ActualMagnitude < cAAlostShapeRange) {
+				SinAngle -= RYT;
+				CosAngle -= RXT;
+							}
+			else {
+				SinAngle = (SinAngle * (200 - ((abs(RYT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(RXT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+							}
+			if (!get_rumble(RumbleToUse())) GetShapes(cAAlostShapeRange);
+			else GetShapes(PolarStrength);
+					}
+		PolarStrength = On;
+		SmartRumble   = On;
+			}
+	} 
+combo NonActivatedcalostEditTracker {
+	cAAlostPolarAA2     = TRUE;
+	cAAlostPolarAAHipFire = TRUE;
+	cAAlostAA2          = TRUE;
+	cAAlostAA2HipFire     = TRUE;
+	cAAlostAA8          = TRUE;
+	cAAlostPolarAA        = TRUE;
+	cAAlostPolarAATimed = FALSE;
+	cAAlostBloomReducer   = TRUE;
+	cAAlostAA3          = TRUE;
+	cAAlostConstantAA     = TRUE;
+	cAAlostAA4          = TRUE;
+	cAAlostAA6            = TRUE;
+	cAAlostTracking     = TRUE;
+	cAAlostRecoilReducer  = TRUE;
+	cAAlostPolarAA4     = TRUE;
+	cAAlostPolarAA3       = TRUE;
+	cAAlostAA7          = TRUE;
+	cAAlostAA7HipFire     = TRUE;
+	cAAlostAA           = TRUE;
+	cAAlostAAHipFire      = TRUE;
+	cAAlostAA5          = TRUE;
+	cAAlostShapeBoosts    = FALSE;
+	}
+combo ActivatedcalostEditTracker {
+	cAAlostPolarAA2         = FALSE;
+	cAAlostPolarAAHipFire = FALSE;
+	cAAlostAA2              = FALSE;
+	cAAlostAA2HipFire     = FALSE;
+	cAAlostAA8              = FALSE;
+	cAAlostPolarAA        = FALSE;
+	cAAlostPolarAATimed     = FALSE;
+	cAAlostBloomReducer   = FALSE;
+	cAAlostAA3              = FALSE;
+	cAAlostConstantAA     = FALSE;
+	cAAlostAA4              = FALSE;
+	cAAlostAA6            = FALSE;
+	cAAlostTracking         = FALSE;
+	cAAlostRecoilReducer  = FALSE;
+	cAAlostPolarAA4         = FALSE;
+	cAAlostPolarAA3       = FALSE;
+	cAAlostAA7              = FALSE;
+	cAAlostAA7HipFire     = FALSE;
+	cAAlostAA               = FALSE;
+	cAAlostAAHipFire      = FALSE;
+	cAAlostAA5              = FALSE;
+	cAAlostShapeBoosts = FALSE;
+	wait(100);
+	}
+function RumbleToUse() {
+	if (get_rumble(RumA) >= get_rumble(RumB)) return RumA;
+	if (get_rumble(RumA) < get_rumble(RumB)) return RumB;
+	return Off;
+	}
+function GetShapes(f_var) {
+	if (!SpiralPosition1) {
+		InnerSpiral -= 1;
+		if (InnerSpiral < cAAlostShapeRangeMin)SpiralPosition1 = On;
+			}
+	else {
+		InnerSpiral += 1;
+		if (InnerSpiral > f_var)SpiralPosition1 = Off;
+			}
+	if (!SpiralPosition2) {
+		OuterSpiral -= 1;
+		if (OuterSpiral < cAAlostShapeRangeMin)SpiralPosition2 = On;
+			}
+	else {
+		OuterSpiral += 1;
+		if (OuterSpiral > f_var)SpiralPosition2 = Off;
+			}
+	if (cAAlostShape == Circular) {
+		RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+		RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+			}
+	if (cAAlostShape == TallOval) {
+		RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+		RXT = (get_val(RX)) + ((CosAngle * cAAlostShapeRangeMin))/100;
+			}
+	if (cAAlostShape == WideOval) {
+		RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+		RYT = (get_val(RY)) + ((SinAngle * cAAlostShapeRangeMin))/100;
+			}
+	if (cAAlostShape == Spiral) {
+		RYT = (get_val(RY)) + ((SinAngle * InnerSpiral))/100;
+		RXT = (get_val(RX)) + ((CosAngle * OuterSpiral))/100;
+			}
+	if (cAAlostShape == Helix) {
+		if (PositionT <= 1) {
+			RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+					}
+		if (PositionT > 1) {
+			RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+					}
+		PositionT++;
+		if (PositionT == 4) PositionT = Off;
+			}
+	set_val(RX,RXT);
+	set_val(RY,RYT);
+	}
+function AxisRelease(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= cAAlostAAPower) return AxisVal;
+	return get_ival(AxisXY);
+	}
+combo cAAlostPolarAssist3 {
+	set_val(RY,AxisRelease(RY,cAAlostAAPower));
+	wait(cAAlostAADelay);
+	set_val(RX,AxisRelease(RX,cAAlostAAPower));
+	wait(cAAlostAADelay);
+	set_val(RY,AxisRelease(RY,inv(cAAlostAAPower)));
+	wait(cAAlostAADelay);
+	set_val(RX,AxisRelease(RX,inv(cAAlostAAPower)));
+	wait(cAAlostAADelay);
+	}
+combo cAAlostAA5 {
+	set_val(AimY,cAAlostAA5Power);
+	wait(cAAlostAA5Delay);
+	set_val(AimX,cAAlostAA5Power);
+	wait(cAAlostAA5Delay);
+	set_val(AimY,cAAlostAA5Power * -1);
+	wait(cAAlostAA5Delay);
+	set_val(AimX,cAAlostAA5Power * -1);
+	wait(cAAlostAA5Delay);
+	}
+function P() {
+	cAAlostPolarAA2Speed2 = (cAAlostPolarAA2Speed2 + cAAlostAA5Speed) % 360;
+	SP(cAAlostPolarAA2Speed2,cAAlostAA5Range);
+	}
+function SP(cAAlostAA5Speed,cAAlostAA5Range){
+	RX = AimX;
+	RY = AimY;
+	if(cAAlostAA5Speed < 0) cAAlostAA5Speed = 360 + (cAAlostAA5Speed % 360);
+	cAAlostAA5Speed = (cAAlostAA5Speed + 90) % 360;
+	cAAlostAA5Range = clamp(cAAlostAA5Range, 0, 100);
+	Sin = cAAlostPolarArray[cAAlostAA5Speed];
+	Cos = cAAlostPolarArray[(cAAlostAA5Speed + 90) % 360];
+	Sv(RX,inv(cAAlostAA5Range * Cos / 100));
+	Sv(RY,inv(cAAlostAA5Range * Sin / 100));
+	return;
+	}
+function Sv(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+function SV(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+combo cAAlostAA7 {
+	SV(RY,cAAlostAA7Power);
+	wait(cAAlostAA7Delay);
+	SV(RX,cAAlostAA7Power2);
+	SV(RY,cAAlostAA7Power * -1);
+	wait(cAAlostAA7Delay);
+	SV(RX,cAAlostAA7Power2 * -1);
+	wait(cAAlostAA7Delay);
+	}
+function calostPolarV3 (Current,Received) {
+	YROutput = Current / 10 + Received / 10;
+	if(YROutput <= -3276) return -32768;
+	if(YROutput >=  3276) return  32767;
+	return Current + Received;
+	}
+function calostPolarity (Rotation,Radial) {
+	set_polar(PS,Rotation,Radial * 327);
+	set_val(PX,calostPolarV3(get_val(PX) + YRValueX * 327,get_ival(PX)));
+	set_val(PY,calostPolarV3(get_val(PY) + YRValueY * 327,get_ival(PY)));
+	}
+combo cAAlostAA6 {
+	set_val(10, (cAAlostAA6Power));
+	wait(10)set_val(9, (cAAlostAA6Power));
+	wait(10)set_val(10, cAAlostAA6Power * -1);
+	wait(10)set_val(9, cAAlostAA6Power * -1);
+	wait(10)
+}
+function AA1Shake() {
+	Angle1 = (Angle1 + cAAlostAA6Speed) % 360;
+	Set_polar(2,Angle1, cAAlostAA6PowerPlusOne);
+	}
+combo cAAlostAA8 {
+	set_val(10, (cAAlostAA4Power));
+	wait(10)set_val(9, (cAAlostAA4Power));
+	wait(10)set_val(10, cAAlostAA4Power * -1);
+	wait(10)set_val(9, cAAlostAA4Power * -1);
+	wait(10)
+}
+function Set_polar(stick, angle, cAAlostPolarAA2Range){
+	x_stick = 8 + stick;
+	y_stick = 9 + stick;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	cAAlostPolarAA2Range = clamp(cAAlostPolarAA2Range, 0, 100);
+	sin_angle = cAAlostPolarArray[angle];
+	cos_angle = cAAlostPolarArray[(angle + 90) % 360];
+	offset(x_stick, inv(cAAlostPolarAA2Range * cos_angle / 100));
+	offset(y_stick, inv(cAAlostPolarAA2Range * sin_angle / 100));
+	return;
+	}
+function offset(int axis, int offset_val) {
+	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return
+}
+combo cAAlostAA4 {
+	set_val(AimY,xy_val(AimY, cAAlostConstantAP));
+	wait(cAAlostConstantAssistDelay);
+	set_val(AimX,xy_val(AimX, cAAlostConstantAP));
+	wait(cAAlostConstantAssistDelay);
+	set_val(AimY,xy_val(AimY, cAAlostConstantAP * -1));
+	wait(cAAlostConstantAssistDelay);
+	set_val(AimX,xy_val(AimX, cAAlostConstantAP * -1));
+	wait(cAAlostConstantAssistDelay);
+	}
+function xy_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (cAAlostConstantAP + 1))  return f_val;
+	return get_val(f_axis);
+	}
+combo cAAlostAA3 {
+	set_val(AimY,cAAlostAA3Power);
+	wait(cAAlostAA3Delay);
+	set_val(AimX,cAAlostAA3Power);
+	wait(cAAlostAA3Delay);
+	set_val(AimY,cAAlostAA3Power * -1);
+	wait(cAAlostAA3Delay);
+	set_val(AimX,cAAlostAA3Power * -1);
+	wait(cAAlostAA3Delay);
+	}
+function Polar() {
+	cAAlostPolarAA2Speed2 = (cAAlostPolarAA2Speed2 + cAAlostPolarAA2Speed) % 360;
+	Set_polarA(cAAlostPolarAA2Speed2,cAAlostPolarAA2Range2);
+	}
+function Set_polarA(angle,cAAlostPolarAA2Range){
+	RX = AimX;
+	RY = AimY;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	cAAlostPolarAA2Range = clamp(cAAlostPolarAA2Range, 0, 100);
+	Sin = cAAlostPolarArray[angle];
+	Cos = cAAlostPolarArray[(angle + 90) % 360];
+	sV(RX,inv(cAAlostPolarAA2Range * Cos / 100));
+	sV(RY,inv(cAAlostPolarAA2Range * Sin / 100));
+	return;
+	}
+combo cAAlostBloomReducer {
+	set_val(XB1_LX,-35);
+	wait(BloomReducerDelay);
+	set_val(XB1_LX, 35);
+	wait(BloomReducerDelay);
+	if(BloomReducerDelay < 160){
+		BloomReducerDelay = BloomReducerDelay + 10;
+			}
+	else {
+		BloomReducerDelay = 100;
+			}
+	}
+combo cAAlostAA2 {
+	set_val(AimY,AxisR(AimY,cAAlostAA2Power));
+	wait(cAAlostAA2Delay);
+	set_val(AimX,AxisR(AimX,cAAlostAA2Power));
+	wait(cAAlostAA2Delay);
+	set_val(AimY,AxisR(AimY,inv(cAAlostAA2Power)));
+	wait(cAAlostAA2Delay);
+	set_val(AimX,AxisR(AimX,inv(cAAlostAA2Power)));
+	wait(cAAlostAA2Delay);
+	}
+function AimAssist (Strength,Step) {
+	if (Power) {
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+			}
+	if (!power) {
+		Xpower += Increment;
+		Ypower -= Increment;
+			}
+	else {
+		Xpower -= Increment;
+		Ypower += Increment;
+			}
+	CountPower ++;
+	if (CountPower >= (Strength / Increment)) {
+		power = !power;
+		CountPower = 0;
+			}
+	if (AxisXY > DeadZone) {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2) + get_ival(RY));
+			set_val(RX,(Xpower - Strength / 2 * -1) + get_ival(RX));
+					}
+			}
+	else {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+			}
+	}
+function AimAssistY() {
+	AAT += get_rtime();
+	if (!Axis) sV(RY,AAT * cAAlostPolarAAPower / 10);
+	if (Axis == 1) sV(RX,AAT * cAAlostPolarAAPower / 10);
+	if (Axis == 2) sV(RY,inv(AAT * cAAlostPolarAAPower / 10));
+	if (Axis == 3) {
+		sV(RX,inv(AAT * cAAlostPolarAAPower / 10));
+		if (AAT > 50) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+	else if (AAT > 50) {
+		AAT = 0;
+		Axis += 1;
+			}
+	}
+function sV(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+	return;
+	}
+function AxisR(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= Power) return AxisVal;
+	return get_ival(AxisXY);
+	}
+const int8 cAAlostPolarArray [] = {
+	100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}
+;
+int angle,RXT,RYT,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,x_stick,y_stick,cos_angle,sin_angle,Angle1,RX,RY,Time,Angle,Cos,Sin,X,Y,M,MaxM,AAT,Axis,power,Ypower,Xpower,Power,CountPower,AxisXY,Increment,YRSpeed,YROutput,YRValueX,YRValueY,YRAxisX,YRAxisY,YRAngle,Radius,PolarStrength,PositionT,CosAngle,SinAngle;
+int inc = 1, dec, color[3];
+init{
+	color = 255;
+	}
+main {
+	combo_run(cAAlostRGBFlow);
+	}
+combo cAAlostRGBFlow {
+	wait(1);
+	set_rgb(color, color[1], color[2]);
+	color[dec] -= 1;
+	color[inc] += 1;
+	if(!color[dec]) {
+		inc = (inc + 1) % 3;
+		dec = (dec + 1) % 3;
+			}
+	}
+define Reducer = On;
+init{
+	cls_oled(0);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,Script_Text[0]);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Script_Text1[0]);
+	}
+const string Script_Text[] = {
+	"Discord.GG/",""
+}
+;
+const string Script_Text1[] = {
+	"cAAlost, Kyzer",""
+}
+;
+function center_x(f_chars,f_font){
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+	}
+define Circular= 1;
+define TallOval= 2;
+define WideOval= 3;
+define Spiral= 4;
+define Helix= 5;
+int RS_Gradient,stick_input,rnd;
+int mn = 326, mx = 328;
+                                                                                                                                                                                                                                                                                                                              //fwnfwinfmewnmfebnfnewaesfnmkwmfqnwknfiwnqmfnqwnrfnqweifnqojknbfuiowqnmfikqwnmfiojnqwmcmqwinffowmfqnfouibneonfinefinminefianeifwemifnefbneifnweinfi0weong9wojefgiwhnegwiengesfamwefqwafwfqwfqwkfnmlmefgijnwiejgwengoinweohgnbuionwenoignionvinasdupio gknma0weihj0ijnefmwemfiohjw0ijgomSD0IH80IHJNPKGMWEOPKLNMG0IHNW0EIJNMG0IOWEJNM0IFHS890IHEODGJMOGWEEGWGrgherdtherdtherrhergherherhreherhrwehehreherghergegegegegeggegeerggrgegggggggggggergrgegrgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeJM0WOEHJN90WHJagrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrreeeeeeergggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggffgggggggggggggggggggggggggggggggggggggggggggggggggggggggg0OGJMWE0IVHN0=WEign ú¸Œ´Œ¸¾ˆ¾Œ¾ˆ¼Š½

@@ -1,0 +1,424 @@
+/*
+Define your buttons for the menu - mods etc 
+*/
+define AdsBtn		  = PS4_L2;
+define FireBtn		  = PS4_R2;
+define CrouchBtn 	  = PS4_R3;  
+define JumpBtn  	  = PS4_L1;
+define SprintBtn	  = PS4_L3;
+define PingBtn		  = PS4_UP; 
+
+/*
+Use the enum because this is a smarter way to track all numbering in the script 
+This enum is for the mod menu - when you change your menu all you do is edit the enum 
+*/
+enum {  
+legacyAR,rumbleAR,advancedAR, // Category Anti Recoil  - Legacy AR   = 0 , advanced AR = 2 
+taylorAA,battsAA,             // Category Aim Assist   - Aim Assist1 = 3 , AimAssist2  = 4 
+rapidRF,strafeRF              // Category Fire Mods    - RF          = 5 , StrafeShot  = 6
+} 
+// So instead of doing it with numbers - you can do it like this below in the array - 
+// I will show you an alternative way and you will see the differences 
+/*
+const uint8 mainMenuInfo[][]= { 
+{ 0  , 2 },
+{ 3  , 4 },
+{ 5  , 6 }
+}
+
+So as you can see using numbers make it more difficult to track , so instead you use an enum like below
+*/
+const uint8 mainMenuInfo[][]= { 
+{ legacyAR     , advancedAR             },
+{ taylorAA     , battsAA                },
+{ rapidRF      , strafeRF               }
+}
+/*
+This enum below is used for the edit menu , this is where you can use this to limit what values you see per mod 
+*/
+enum { 
+vertStrength,horizStrength,                                       // Legacy AR and Rumble AR Both Share the Same variables valName 0 to 1 
+startVert,midVert,endVert,timeVert,startHoriz,endHoriz,timeHoriz, // Advanced AR  = valName 2  to 8 
+aaShape,aaRadius,aaSpeed,aaLRMode,aaTracking,aaTSize,aaTspeed,    // AimAssist1   = valName 9  to 15
+battsSize,battsSpeed,                                             // AimAssist2   = valName 16 to 17 
+rfRPS,                                                            // RapidFire    = valName 18 to 18 
+ssStrength,ssTime                                                 // StrafeShot   = valName 19 to 20
+// IF you wanted to add more adjustable values to your mods , just simply add them in order in the enum
+} 
+// This array " limitValues[][] " we can limit what values are available via each mod and by using the enum 
+// we can easily track which numbers these mods are. 
+const uint8 limitValues[][] = { 
+{vertStrength  , horizStrength },
+{vertStrength  , horizStrength },
+{startVert     , timeHoriz     },
+{aaShape       , aaTspeed      },
+{battsSize     , battsSpeed    },
+{rfRPS         , rfRPS         },
+{ssStrength    , ssTime        }
+} 
+/* Below are the strings for Main Menu - Mod Menu - Edit Menu 
+*/
+const string MainMenuId[]  = {"Antirecoil","Aim Assist","Fire Mods","HGun Settings","Misc Mods","Controller Config","Profiles","Quick Toggles","Mod Activation",""};
+const string modNames[] = {
+"Legacy AR","Rumble AR","Advanced AR",
+"AA 1","AA 2",
+"RF","StrafeShot",
+""};  
+const string valNames[] = {
+"Vert Strength","Horiz Strength",
+"Start Vertical","Mid Vertical","End Vertical","Vertical Time","Start Horizontal","End Horizontal","Horizontal Time",
+"Shape","Radius","Speed","Long Range Mode","Tracking","Tracking Size","Tracking Speed",
+"Strength","Time",
+"RPS",
+"Strength","Time",
+""}; 
+const string Toggle  []              = {"Off","On"};
+const string misc[]                  = {"Competitor 3.0","Competitor EVO 1.1",""}; 
+int mainMenu,modMenu,editMenu; 
+int mainNameIdx,modNameIdx,valNameIdx;
+int screenSaver,blankScreen;
+int displayTitle = TRUE;
+int updateDisplay;
+
+/* 
+=================================
+Toggle Variables For Mod Menu 
+=================================
+*/
+int toggleOne;
+int toggleTwo;
+int toggleThree;
+int toggleFour;
+
+/*
+==================================
+Edit Value Variables For Edit Menu
+==================================
+*/
+int val1;
+int val2;
+int val3;
+
+main { 
+    
+	if(get_ival(AdsBtn)){ 
+		if(event_press(PS4_OPTIONS)){ 
+			getMenuStatus(TRUE,TRUE,FALSE,FALSE,FALSE)
+			if(!mainMenu){ 
+				getMenuStatus(FALSE,FALSE,FALSE,FALSE,TRUE)
+		    } 
+		}
+		set_val(PS4_OPTIONS,0);
+	}
+	if(!displayTitle){ 
+		if(mainMenu){ 
+			vm_tctrl(0);
+			mainNameIdx = menuNavigation(mainNameIdx,0,8);
+		} 
+		if(modMenu){
+			vm_tctrl(0);
+			// This is our menu navigation - mainMenuInfo[][] < This array is used to limit each mods to the category on the main menu 
+			modNameIdx = menuNavigation(modNameIdx,mainMenuInfo[mainNameIdx][0],mainMenuInfo[mainNameIdx][1]);
+			// menuNavigation ( modName , min Mod Per Catefory column 0 , max Mod Per Category column 1 in the array 
+			
+			// toggleSwitch(modNameNumber - minToggle - maxToggle ) 
+			toggleOne   = toggleSwitch(toggleOne  ,0,0,1); // Legacy AR
+			toggleTwo   = toggleSwitch(toggleTwo  ,1,0,1); // Rumble AR
+			toggleThree = toggleSwitch(toggleThree,2,0,1); // Adv    AR
+			toggleFour  = toggleSwitch(toggleFour ,3,0,1); // AA      1 
+			// and so on etc....
+		} 
+		if(editMenu){ 
+			vm_tctrl(0);
+			valNameIdx = menuNavigation(valNameIdx,limitValues[modNameIdx][0],limitValues[modNameIdx][1]);
+			
+			val1              = editValues(val1,0, 0, 99); 
+	        val2              = editValues(val2,1, 0, 99); 
+	        val3              = editValues(val3,2, 0, 99); 
+		}
+		if(updateDisplay){ 
+			rect_oled(2,3,127,50,1,0);
+			rect_oled(0,0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+			line_oled(0,50,127 , 50, 1, 1); 
+			if(editMenu){ 
+				print(centerPosition(getStringLength(valNames[valNameIdx]) ,OLED_FONT_SMALL_WIDTH), 4  ,OLED_FONT_SMALL , OLED_WHITE , valNames[valNameIdx]);
+			}
+			else if(modMenu) {
+				print(centerPosition(getStringLength(modNames[modNameIdx]) ,OLED_FONT_SMALL_WIDTH), 4  ,OLED_FONT_SMALL , OLED_WHITE , modNames[modNameIdx]);
+			}
+			else { 
+			    rect_oled(2,3,127,50,1,0);
+				rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+				rect_oled(2,16,125,18,1,1); 
+				line_oled(0, 50,127 , 50, 1, 1);
+				
+				displayMainIdx(0,8,1);
+				displayMainIdx(1,0,2);
+				displayMainIdx(2,1,3);
+				displayMainIdx(3,2,4);
+				displayMainIdx(4,3,5);
+				displayMainIdx(5,4,6);
+				displayMainIdx(6,5,7);
+				displayMainIdx(7,6,8);
+				displayMainIdx(8,7,0);
+				
+			} 
+			updateDisplay = FALSE; 
+		}
+	} 
+	if(!mainMenu && !modMenu && !editMenu){
+		if(displayTitle){ 
+			cls_oled(0);
+			displayTitle = FALSE;
+	   	    screenSaver  = TRUE;
+	   	    rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE);
+			print(centerPosition(getStringLength(misc[2]) ,OLED_FONT_SMALL_WIDTH), 20  ,OLED_FONT_SMALL, OLED_WHITE , misc[2]);
+		}
+		if(screenSaver){  
+    		blankScreen += get_rtime();
+    	
+			if(blankScreen >= 10000)
+			{
+				cls_oled(OLED_BLACK);
+				blankScreen = 0;
+				screenSaver = FALSE;
+	    	} 
+	    }				
+	} 
+}
+function menuNavigation(indexVar,fMin,fMax){ 
+	if(mainMenu){ 
+    	if(event_press(PS4_UP)){
+           indexVar -= 1;
+           	updateDisplay = TRUE;
+    	}
+    	if(event_press(PS4_DOWN)){
+        	indexVar += 1;
+            updateDisplay = TRUE; 
+    	}
+    }
+	if(!get_ival(AdsBtn)){ 
+		if(event_press(PS4_RIGHT)){ 
+			indexVar  += 1;
+			updateDisplay = TRUE;
+		}
+		if(event_press(PS4_LEFT)){ 
+			indexVar  -= 1;
+			updateDisplay = TRUE;
+		}
+	}
+	if(event_release(PS4_CROSS)){
+    	if(mainMenu){
+    		modNameIdx = mainMenuInfo[ mainNameIdx ][ 0 ];
+			getMenuStatus(TRUE,FALSE,TRUE,FALSE,FALSE)
+			cls_oled(OLED_BLACK);	
+    	}
+    }
+	if(event_press(PS4_CROSS)){ 
+		if(modMenu){ 
+			getMenuStatus(TRUE,FALSE,FALSE,TRUE,FALSE)
+			valNameIdx  = limitValues[modNameIdx][0];	 	 		
+		}
+	} 
+	if(event_press(PS4_CIRCLE)){ 
+		if(mainMenu){ 
+			getMenuStatus(FALSE,FALSE,FALSE,FALSE,TRUE)
+		} 
+		else if(modMenu){ 
+			getMenuStatus(TRUE,TRUE,FALSE,FALSE,FALSE)
+		}
+		else if(editMenu){ 
+			getMenuStatus(TRUE,FALSE,TRUE,FALSE,FALSE)
+		}
+	} 
+	if(mainMenu || modMenu || editMenu){ 
+		BlockButtonPress ();
+	}
+	indexVar = rotateVar(indexVar,fMin,fMax);
+	return indexVar;
+}
+function toggleSwitch(fVar,fIdx,fMin,fMax){ 
+	if(modNameIdx == fIdx){ 
+		if(event_press(PS4_UP)){ 
+			fVar = rotateVar(fVar + 1,fMin,fMax);  
+			updateDisplay = TRUE;
+			
+			if(!fVar)
+				combo_run(rumbleOff);
+			else
+				combo_run(rumbleOn); 
+		}
+		if(event_press(PS4_DOWN)){ 
+			fVar = rotateVar(fVar - 1,fMin,fMax);  
+			updateDisplay = TRUE;
+			
+			if(!fVar)
+				combo_run(rumbleOff);
+			else
+				combo_run(rumbleOn); 
+		}
+		else { 
+			
+			if(fVar == 1)
+				print(centerPosition(getStringLength(Toggle[1]),OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,Toggle[1])	
+			else
+				print(centerPosition(getStringLength(Toggle[0]),OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,Toggle[0])	
+		}
+	}
+	return fVar; 
+} 
+
+function editValues(fVar,fIdx,fMin,fMax){ 
+	if(valNameIdx == fIdx){ 
+		if(get_ival(AdsBtn)){ 
+			if(event_press(PS4_RIGHT)){ 
+				fVar += 1
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_LEFT)){ 
+				fVar -= 1
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_UP)){ 
+				fVar += 10
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_DOWN)){ 
+				fVar -= 10
+				updateDisplay = TRUE;
+			}
+		}
+		fVar = clamp(fVar,fMin,fMax);
+		
+		if(valNameIdx == timeVert  || valNameIdx == timeHoriz){ 
+			NumberToString(fVar * 100,FindDigits(fVar * 100));   
+		}
+		else { 
+			NumberToString(fVar,FindDigits(fVar)); 
+		} 		
+	}
+	return fVar;
+}
+
+
+combo rumbleOn {
+set_ledx(2, 2);
+set_rumble(RUMBLE_B, 50);
+wait(200);
+reset_rumble();
+wait(200);
+set_rumble(RUMBLE_B, 50);
+wait(800);
+reset_rumble();
+}
+combo rumbleOff {						
+set_ledx(1, 1);
+set_rumble(RUMBLE_A, 50);
+wait(400);
+reset_rumble();
+wait(600);
+}
+function displayMainIdx(activeString,previousString,nextString){
+	if(mainNameIdx == activeString){ 
+		print(centerPosition(getStringLength(MainMenuId[activeString]),OLED_FONT_SMALL_WIDTH),21,OLED_FONT_SMALL,OLED_BLACK,MainMenuId[activeString])
+		print(centerPosition(getStringLength(MainMenuId[nextString]),OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,MainMenuId[nextString])
+		print(centerPosition(getStringLength(MainMenuId[previousString]),OLED_FONT_SMALL_WIDTH),4,OLED_FONT_SMALL,OLED_WHITE,MainMenuId[previousString])
+	} 
+} 
+function getMenuStatus(fUpdate,fMainMenu,fModMenu,fEditMenu,fDisplayTitle){ 	
+	
+	updateDisplay    = fUpdate;
+	mainMenu         = fMainMenu;
+	modMenu          = fModMenu;
+	editMenu         = fEditMenu;
+	displayTitle     = fDisplayTitle;
+	
+} 
+function rotateVar(Value,Min,Max){  
+    if(Value > Max) 
+    	return Min;	 	
+    if(Value < Min)
+    	return Max;     
+    
+    return Value;    
+}
+int stringLength;
+function getStringLength(offset) { 
+    stringLength = 0;
+    do { 
+        offset++;
+        stringLength++;
+    } while (duint8(offset));
+    return stringLength;
+ } 
+/*
+============================================================================================================================================
+ Center X Function (Made By Batts) 
+============================================================================================================================================
+*/
+function centerPosition(f_chars,f_font) {
+
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+/*
+============================================================================================================================================
+  NumberToString () (Made By Batts)                                                                                                                     
+============================================================================================================================================
+*/   
+int bufferIndex;
+int charIndex,digitIndex;
+function NumberToString(f_val,f_digits) {
+    bufferIndex = 1;  
+    digitIndex = 10000;
+    if(f_val < 0) {                    //--neg numbers
+         putc_oled(bufferIndex,45);    //--add leading "-"
+         bufferIndex += 1;
+         f_val = abs(f_val);
+    } 
+    for(charIndex = 5; charIndex >= 1; charIndex--) {
+        if(f_digits >= charIndex) {
+            putc_oled(bufferIndex,(f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex ++; 
+            if(charIndex == 4) {
+                putc_oled(bufferIndex,44);//--add ","
+                bufferIndex ++;
+            }
+        }
+        digitIndex /= 10;
+    } 
+    puts_oled(centerPosition(bufferIndex - 1,OLED_FONT_MEDIUM_WIDTH),26,OLED_FONT_MEDIUM,bufferIndex - 1,OLED_WHITE);  
+} 
+int logVal;
+function FindDigits(num) {
+   logVal = 0;
+   do {
+      num /= 10;
+      logVal++;
+   } while (num);
+   return logVal;
+}
+int i;  
+   /*
+============================================================================================================================================
+  Block Buttons()                                                                                                                      
+============================================================================================================================================
+*/
+ const uint8 BlockButtons [] = {  
+  PS4_L2,PS4_OPTIONS,PS4_LEFT, PS4_RIGHT,PS4_UP,PS4_DOWN,PS4_CROSS,PS4_CIRCLE,PS4_SQUARE,PS4_TRIANGLE,PS4_L1,PS4_R1,PS4_R2};
+  
+ function BlockButtonPress (){  
+    for(i = 0; i < 13; i++){
+    	if(get_ival(BlockButtons[i]) || event_press(BlockButtons[i])){
+        	set_val(BlockButtons[i],0);
+        }    
+    }
+}
+
+
+	
+
+	
+	
+
+ úÃ÷ÅõÍúÂôÃ÷ÆðÂó·

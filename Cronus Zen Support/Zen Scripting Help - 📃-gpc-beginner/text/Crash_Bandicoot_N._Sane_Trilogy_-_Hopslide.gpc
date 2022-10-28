@@ -1,0 +1,46 @@
+int continue_hopslide;
+
+
+
+main {
+
+  if(event_press(XB1_LB))
+    combo_run(Hopslide_Setup);
+
+  if(event_release(XB1_LB)) {
+    continue_hopslide = FALSE;
+    combo_stop(Hopslide_Setup);
+  }
+
+  if(continue_hopslide)
+    combo_run(Continous_Hopslide);
+
+}
+
+
+
+combo Hopslide_Setup {
+  set_val(XB1_B,100);
+  wait(20);
+  wait(20);
+  set_val(XB1_X,100);
+  wait(20);
+  wait(20);
+  set_val(XB1_A,100);
+  wait(20);
+  // Delay to prevent "jump slam"
+  wait(400);
+  continue_hopslide = TRUE;
+}
+
+
+
+combo Continous_Hopslide {
+  set_val(XB1_B,100);
+  wait(20);
+  wait(20);
+  set_val(XB1_X,100);
+  wait(20);
+  // Delay to prevent "crawling"
+  wait(80 - get_rtime());
+}

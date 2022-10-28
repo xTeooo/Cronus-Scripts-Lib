@@ -1,0 +1,620 @@
+// GPC Online Library
+// battlefield_v_-_power_script_for_all_consoles!_-_for_cronusmax.gpc
+
+
+
+/*
+*V2.8
+Built for CronusMax / works with all consoles
+ __       ___ ___       ___  ___    ___       __          
+|__)  /\   |   |  |    |__  |__  | |__  |    |  \    \  / 
+|__) /~~\  |   |  |___ |___ |    | |___ |___ |__/     \/  
+
+	 __ 	 A GPC Power Script By 	                                       
+	/   __ _ __     _ |V| _       | | _  _  __ 
+	\__ | (_)| ||_|_> | |(_|>< ___|_|_> (/_ | 
+
+ 		
+--------------------------------------------------------------------------------------------------------
+                                                                     ,---------------------------.
+  INSTRUCTIONS: https://tinyurl.com/scriptinstructions        __@  ' | READ THE INSTRUCTIONS !!! |
+                                                             ( ..)  -_)--------------------------'
+---------------------------------------------------------ooO--(_)--Ooo----------------------------------
+	!!To read the intructions you need to open the link above in your internet browser!!
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |U|S|E|R| |C|O|N|F|I|G|U|R|A|T|I|O|N| | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+       
+       IN THE USER CONFIG SECTION YOU CAN SET THE DEFAULT SETTINGS 
+       FOR YOUR SCRIPT, SO WHICH MODS SHOULD BE LOADED BY DEFAULT  
+       AND WHICH NOT. CHANGE "TRUE" TO "FALSE" AND VICE VERSA.     
+       "TRUE" MEANS ON BY DEFAULT, "FALSE" MEANS OFF BY DEFAULT. 
+       
+//--/ START USER CONFIG--*/
+define AIM__INVERTED			=	FALSE;		// IF YOU PLAY WITH AIM INVERTED SET "TRUE;"
+define SWAP_BUMPERS				=   FALSE;		// IF YOU WANT TO SWAP BUMPERS WITH TRIGGERS [LT/L2 <-> LB/L1] & [RT/R2 <-> RB/R1]
+define EASY__RUN				=	TRUE;		// EASY RUN 
+define RUN__SENS				=	-75; 		// SENSITIVITY WHEN EASY RUN SHOULD ACTIVATE 
+define EASY__SLIDE_DROP			=	TRUE;		// TAP PRONE (RIGHT STICK CLICK) FOR CROUCH, PRESS PRONE FOR 1 SEC TO DROP / SLIDE
+define EASY__MELEE				=	TRUE;		// MELEE IS UNDER LEFT STICK CLICK
+define CNCL__RELOAD				=	TRUE;		// AUTO CANCEL RELOAD-> IF YOU PRESS FIRE IT WILL CANCEL RELOAD
+define RELOAD__TIME				=	2000;		// SET LONGEST RELOAD TIME IN YOUR SCRIPT
+define SWAP						=	TRUE;		// THIS SWAPS THE STICKS SO THAT YOU HAVE MELEE AND PRONE UNDER YOUR THUMBS 
+define SPOT__TRIGGER			=	TRUE;		// WHEN TRUE, AUTO SPOT WILL ONLY RUN WHEN YOU PRESS AND HOLD AIM
+define turbo__trigger			=	TRUE;		// HAIR TRIGGERS ON BOTH ADS & FIRE
+int    AUTO__MODS				=	TRUE;		// AUTO MODS - WHEN SWITCHED TO ON, AUTO MODS CAN BE TOGGLED DURING THE GAME 
+int	   NO__RECOIL				=	FALSE;		// ANTI RECOIL
+int	   Q_shot					=	FALSE;		// QUICKSHOT (WILL ONLY WORK IN SNIPER MODE, TOGGLE TO SWICTH ON / OFF IN THE INSTRUCTIONS)
+int    QS_t						= 	400;		// QUICKSHOT TIME (IS DIFFERENT PER SNIPER RIFLE). IF YOU THE QUICK SCOPE IS NOT WORKING YOU NEED TO ADJUST THIS VALUE (TRY 350, 450, 300, ETC ETC)
+int    AIM__CORRECT				=	FALSE;		// AIM CORRECTIONS (VARIOUS OPTIONS FOR SENSITIVITY TO AVOID WEAPON SWAY. YOU CAN SET THE AIM CORRECTION SENSITIVITY VALUES BELOW
+
+/*     AIM CORRECTION SENSITIVITY VALUES:
+       ADS SENS = SENS WHEN AIMING
+       GEN SENS = GENERAL STICK SENS
+       HIP SENS = SENS WHEN HIP FIRING
+       ADS FIRE SENS = SENS WHEN AIMING AND FIRING WEAPON
+       DO NOT CHANGE MIDPOINT
+*/
+int ADS_SENS=90, GEN_SENS=100, HIP_SENS=100, ADS_FIRE_SENS=80, Use_sens, midpoint=50;
+
+//-/ END USER CONFIG
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |C|O|N|T|R|O|L|S| |D|E|F|A|U|L|T| |B|T|N| |L|A|Y|O|U|T| | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+define HOME=0;			//PS4_PS / XB1_XBOX
+define VIEW_reset=1;	//PS4_SHARE / XB1_VIEW
+define MENU_save=2;		//PS4_OPTIONS / XB1_MENU
+define SPOT=3;			//PS4_R1 / XB1_RB
+define FIRE=4;			//PS4_R2 / XB1_RT
+define MELEE=5;			//PS4_R3 / XB1_RS
+define TACTICAL=6;		//PS4_L1 / XB1_LB
+define ADS=7;			//PS4_L2 / XB1_LT
+define SPRINT=8;		//PS4_L3 / XB1_LS 
+define RX=9;			//PS4_RX / XB1_RX
+define RY=10;			//PS4_RY / XB1_RY
+define LX=11;			//PS4_LX / XB1_LX
+define LY=12;			//PS4_LY / XB1_LY
+define UP=13;			//PS4_UP / XB1_UP
+define DOWN=14;			//PS4_DOWN / XB1_DOWN
+define LEFT=15;			//PS4_LEFT / XB1_LEFT
+define RIGHT=16;		//PS4_RIGHT / XB1_RIGHT
+define SW_WEAPON=17;	//PS4_TRIANGLE / XB1_Y
+define PRONE=18;		//PS4_CIRCLE / XB1_B
+define JUMP=19;			//PS4_CROSS / XB1_A
+define RELOAD=20;		//PS4_SQUARE / XB1_X
+define GYROX_PR1=24;	//PS4_GYROX / XB1_PR1
+define GYROY_PR2=25;	//PS4_GYROY / XB1_PR2
+define GYROZ_PL1=26;	//PS4_GYROZ / XB1_PL1
+define TOUCH_PL2=27;	//PS4_TOUCH / XB1_PL2
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |L|E|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+define Off=0;
+define Green=1;
+define Blue=2;
+define Pink=3;
+define Red=4;
+define SkyBlue=5;
+define Yellow=6;
+define White=7;
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |D|A|T|A| | | | | | | | | | | | | | | | | | | | | | || | | | | | || | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+data(
+0,0,0,0,//Off
+0,0,2,0,//Green
+2,0,0,0,//Blue
+0,0,0,2,//Pink
+0,2,0,0,//Red
+2,0,2,0,//SkyBlue
+0,2,2,0,//Yellow
+2,2,2,2//White
+);
+/* 
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |V|A|R|I|A|B|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+int    q;
+int    double__tap[30];
+int    recoil__y, recoil__x; 
+int    NO__RECOIL__Y, NO__RECOIL__X;
+int    G__M=TRUE; 
+int    hold_time=35;
+int    rest_time=35;
+int    PrimaryWeapon=TRUE;
+int    RF_KS=FALSE;
+int    R2F_K2S=TRUE;
+int    Burst=FALSE;
+int    SNIPE=FALSE;
+int    b_reload;
+int    Secondary=TRUE; 
+int	   LedTime=650;
+int    HOLD__BURST=450; // Burst hold (increase for weapons with low fire rate)
+int    REST__BURST=150; // Burst Rest (time between burst)
+int    T__B__P=200;
+int    auto_spot;
+int    auto_heal;
+int    auto_heal_medic;
+int    TimelimitA=1000; // 1 timer
+int    TimerA=0;
+
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |I|N|I|T| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+init {
+    while(q < 30) {
+        double__tap[q] = -1;       
+        q++;
+    }    
+    NO__RECOIL__Y 	= get_pvar(SPVAR_8,-100,+100,+31);  
+    NO__RECOIL__X 	= get_pvar(SPVAR_9,-100,+100,0);
+    HOLD__BURST		= get_pvar(SPVAR_1, 10,800,450);
+    REST__BURST		= get_pvar(SPVAR_2, 10,600,150);
+    
+} 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {
+                                              
+//////////////////////////////////////////////////////////////////////
+// DEAD ZONE CORECTION : RIGHT STICK                                 
+    if(abs(get_val(RY)) < 12 && abs(get_val(RX)) < 12 ){         
+    	set_val(RY,0);                                                 
+    	set_val(RX,0);                                                
+    }   
+if (SWAP_BUMPERS) {
+swap(3, 4); swap (6, 7);
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |L|O|A|D| |M|O|D|E|S| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+  if(get_val(DOWN)) {//HOLD DOWN
+	if (double_click(2)) { //DOUBLE TAP PS4_OPTIONS / XB1_MENU
+        G__M = !G__M;
+         if (G__M) combo_run (Rumb);
+         if (!G__M) combo_run (RumbTwo);
+    }
+    set_val(2,0);
+    }
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | |M|E|N|U| |A|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+if(get_val(ADS) &&(G__M)){//hold ADS button
+
+//--RESET EPROM TO DEFAULT VALUES
+
+	if(get_val(VIEW_reset)&&get_ptime(VIEW_reset)>600){
+		RESET_Defaults();
+	}
+//--RAPID FIRE ON SECONDARY
+	if(event_press(UP)){//D-pad UP 
+		PrimaryWeapon=TRUE;
+		RF_KS=FALSE;
+		R2F_K2S=TRUE;
+		Secondary=TRUE;
+		Burst=FALSE;
+		SNIPE=FALSE;
+}
+//--RAPID FIRE OFF 
+	if(event_press(DOWN)){//D-pad DOWN
+		PrimaryWeapon=TRUE;
+		RF_KS=FALSE;
+		R2F_K2S=FALSE;
+		Secondary=FALSE;
+		Burst=FALSE;
+		SNIPE=FALSE;
+}
+//--RAPID FIRE ON
+	if(event_press(RIGHT)){//D-pad RIGHT
+		PrimaryWeapon=TRUE;
+		RF_KS=TRUE;
+		R2F_K2S=TRUE ;
+		Secondary=FALSE;
+		Burst=FALSE;
+		SNIPE=FALSE;
+}
+//--SNIPER MODE ON
+	if(event_press(2)){//PS4_OPTIONS / XB1_MENU
+		PrimaryWeapon=TRUE;
+		RF_KS=FALSE;
+		R2F_K2S=TRUE ;
+		Secondary=TRUE;
+		Burst=FALSE;
+		SNIPE=TRUE;
+}
+//--BURST FIRE ON
+	if(event_press(LEFT)){//D-pad LEFT
+		PrimaryWeapon=TRUE;
+		RF_KS=FALSE;
+		R2F_K2S=TRUE;
+		Secondary=TRUE;
+		Burst=TRUE;
+		SNIPE=FALSE;
+}
+	set_val(1,0); set_val(2,0); set_val(13,0); set_val(14,0); set_val(15,0); set_val(16,0); 
+}
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |T|O|G|G|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+ if(get_val(DOWN) &&(G__M)){
+ 	if (double_click(19)){//TAP A
+ 		NO__RECOIL = !NO__RECOIL; 
+ 			if (NO__RECOIL) combo_run (RumbTwo);
+ 				if (!NO__RECOIL) combo_run (Rumb);} 		
+ 		set_val(19,0); 	
+ 	if (double_click(18)){//TAP B
+ 		AIM__CORRECT = !AIM__CORRECT; 
+ 		 	if (AIM__CORRECT) combo_run (RumbTwo);
+ 				if (!AIM__CORRECT) combo_run (Rumb);}
+ 	set_val (18,0);	 	
+ 	if (double_click(20)){//TAP X
+		AUTO__MODS = !AUTO__MODS;
+			if (AUTO__MODS) combo_run (RumbTwo);
+ 				if (!AUTO__MODS) combo_run (Rumb);}
+ 	set_val (20,0); 
+	if (double_click(FIRE)){ //FIRE BTN / RT / R1
+		Q_shot = !Q_shot;
+			if (Q_shot) combo_run (RumbTwo);
+ 				if (!Q_shot) combo_run (Rumb);}
+	 set_val(FIRE,0);
+ }	
+if (SWAP){
+	swap(8, 5);
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |S|L|I|D|E| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+if(EASY__SLIDE_DROP){
+if (event_release(PRONE) && get_ptime(PRONE)< T__B__P){ 
+        combo_run(EasySlide);
+    }
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |S|P|O|T| |T|R|I|G|G|E|R| | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+if (SPOT__TRIGGER && !auto_spot && get_val(ADS)) combo_run (AutoSpot);
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|U|T|O| |M|O|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+if (AUTO__MODS){
+   if (event_release (SPOT)&& get_ptime(SPOT)> 500){
+    	set_val(SPOT, 0);
+     	auto_spot = !auto_spot;
+     		if (auto_spot) combo_run (RumbTwo);
+ 				if (!auto_spot) combo_run (Rumb);}
+     }
+    if (event_release (UP)&& get_ptime(UP)> 500){
+     set_val(UP,0);
+     auto_heal = !auto_heal; 
+    	if (auto_heal) combo_run (RumbTwo);
+ 				if (!auto_heal) combo_run (Rumb);}
+     
+     
+     if (event_release (LEFT)&& get_ptime(LEFT)> 500){
+      set_val (LEFT,0);
+      auto_heal_medic = !auto_heal_medic;
+       	if (auto_heal_medic) combo_run (RumbTwo);
+ 				if (!auto_heal_medic) combo_run (Rumb);}
+ 	if (auto_spot){    
+     combo_run(AutoSpot);               
+     block(SPOT, 200);            
+     } 
+	 if (auto_heal && event_release (FIRE)) {TimerA=TimelimitA;}
+ 	if (TimerA>0)
+     {
+     TimerA=TimerA - get_rtime();
+     if (TimerA<=1000 && event_press (RELOAD)&&!get_val(ADS)){ combo_run (AutoHeal);}
+      }  
+     
+	if (auto_heal_medic &&!get_val(ADS)){
+ 		combo_run (AutoHeal_Medic);
+ 	}
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |M|E|L|E|E| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if (EASY__MELEE) {      
+      if (get_val(SPRINT)) set_val(PRONE, 100); 
+  } 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |T|U|R|B|O| |B|T|N| |A|.|K|.| |H|A|I|R| |T|R|I|G|G|E|R|S| | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+turbo(FIRE);
+turbo(ADS); 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|I|M| | |C|O|R|R|E|C|T|I|O|N|S| | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+if(AIM__CORRECT){   
+  if(get_val(FIRE) && get_val(ADS)) { 
+	Use_sens = ADS_FIRE_SENS;
+  }
+  if(get_val(FIRE) && !get_val(ADS)) { 
+	Use_sens = HIP_SENS;
+  }
+  if(!get_val(FIRE) && !get_val(ADS)) {
+	Use_sens = GEN_SENS;
+  }
+  if(!get_val(FIRE) && get_val(ADS)) {
+	Use_sens = ADS_SENS;
+  } 
+	sensitivity(9, midpoint ,Use_sens);
+	sensitivity(10, midpoint ,Use_sens);
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|N|T|I| |R|E|C|O|I|L| | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+ 
+if (event_press(UP))	{NO__RECOIL__Y = +44; NO__RECOIL__X = -4; LedTime= 100;}
+       
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|O|D|E| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/        
+ P__M(G__M);  
+ /*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |R|U|N| | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if (EASY__RUN){ 
+ if (get_val(LY)<=RUN__SENS &&!get_val(ADS)){ combo_run(EASY_RUN); } 
+ }
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |R|A|P|I|D| |F|I|R|E| |&| |J|I|T|T|E|R| | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+//-- RF PRIMARY  
+
+if (PrimaryWeapon){
+	if (RF_KS && get_val(FIRE)){combo_run (RAPID_FIRE);}
+	if (Burst && get_val(FIRE)){combo_run (BURST);}
+	}
+  
+//- RF SECONDARY 
+ 
+ if(!PrimaryWeapon && R2F_K2S)   
+  if(get_val(FIRE)) { 
+  	combo_run (RAPID_FIRE);
+} 
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |H|O|L|D| |B|R|E|A|T|H| |S|N|I|P|E|R| |M|O|D|E| | |Q|S|C|O|P|E| | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+
+   if(SNIPE) {  
+   		if(get_val(ADS))
+           { set_val(SPRINT, 100); }  
+      	if(event_release(ADS) && get_ptime(ADS)< 200 && Q_shot)combo_run(QUICK_SHOT);
+       } 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |R|E|S|E|T| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+if(event_release(RELOAD) && get_ptime(RELOAD)> 200 &&(Secondary) && !get_val(DOWN)){ PrimaryWeapon = TRUE;  combo_run (Rumb);} 
+
+if (Secondary){ 
+	if(event_release(SW_WEAPON)&& get_ptime(SW_WEAPON)< 200  && !get_val (14)){  
+  	PrimaryWeapon = !PrimaryWeapon;  combo_run (RumbTwo);  
+  }
+}
+ /*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|A|N|C|E|L| |R|E|L|O|A|D| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+ 
+ if (CNCL__RELOAD) {
+ 	if(event_press(FIRE)  && b_reload){combo_run(CANCEL_RLD); }
+ 	if(event_press(ADS)  && b_reload){combo_run(CANCEL_RLD);}
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |L|E|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+PLAY__LEDS ();
+}
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo RAPID_FIRE { 
+	set_val(FIRE,100);
+	wait(hold_time); 
+	set_val(FIRE,  0); 
+	wait(rest_time);
+}
+combo BLINK_AR {
+    wait(LedTime);
+    color_led(Off);
+    wait(650);
+    reset_leds ();
+}
+combo Rumb{
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+     wait(150);
+     reset_rumble();
+}
+combo RumbTwo {
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait (150);
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait(150);
+    reset_rumble();
+}
+combo CANCEL_RLD {
+	set_val(SW_WEAPON, 100);
+	wait(30);
+	set_val(SW_WEAPON, 0);
+	wait(20);
+	set_val(SW_WEAPON, 100);
+	wait(30);
+	set_val(SW_WEAPON, 0);
+	wait(20);
+	b_reload=FALSE;
+}
+combo AutoSpot { 
+    set_val(SPOT, 100); 
+    wait(40);                 
+    set_val(SPOT, 0);   
+    wait(960); 
+}
+combo AutoHeal_Medic {
+if (!get_val(FIRE))
+    set_val(LEFT, 100);
+    wait(200);
+    if (!get_val(FIRE))
+    set_val (UP, 100);
+    wait(200);
+}
+combo AutoHeal{
+wait (2000);
+if (!get_val(FIRE))
+    set_val (UP, 100);
+    wait(200);
+    wait(960);
+}
+combo BURST {
+ set_val(FIRE, 100); 
+   wait(HOLD__BURST);      
+   set_val(FIRE,0);   
+   wait(REST__BURST);      
+}  
+combo EasySlide{
+    set_val(PRONE, 100);
+    wait(700);
+    set_val(PRONE, 0);
+    wait(50);
+    set_val(SPRINT, 100);
+    wait(60);
+    set_val(SPRINT, 0);
+    wait(50);    
+}
+combo QUICK_SHOT {     
+	set_val(ADS,   90); 
+	set_val(SPRINT,100);
+	set_val(FIRE,    0); 
+	wait(QS_t);             
+	set_val(ADS,   90);  
+	set_val(SPRINT,100);
+	set_val(FIRE,  100); 
+	wait(60);   
+}
+combo EASY_RUN {
+	set_val(SPRINT,100); 
+	wait(30);   
+	wait(100); 
+} 
+function P__M(program__mode) {
+    if (program__mode) return;
+        if (get_val(DOWN)) {
+		NO__RECOIL__Y = Variable__Var(NO__RECOIL__Y, -100, 100, 3, 4);
+		NO__RECOIL__X = Variable__Var(NO__RECOIL__X, -100, 100, 6, 7);
+		HOLD__BURST = Variable__Var(HOLD__BURST, 10, 800, 19, 18);
+		REST__BURST = Variable__Var(REST__BURST, 10, 600, 20, 17);
+		
+		} 
+		set_val (3,0); set_val (4,0); set_val (6,0); set_val (19,0);
+		set_val (18,0); set_val(20,0); set_val(17,0); set_val (7,0);
+		save_pvars();
+}
+
+function Variable__Var(var__val, min_val, max_val, btn_up, btn_down) {
+    if(event_press(btn_up) && var__val < max_val) {
+        var__val++;
+       combo_run (Rumb);
+    }        
+    if(event_press(btn_down) && var__val > min_val) {
+        var__val--;
+        combo_run (Rumb);
+    }
+    return var__val;
+}
+function RESET_Defaults () {
+	combo_run (Rumb);
+    NO__RECOIL__Y       = 31; 
+    NO__RECOIL__X       = 0;
+    HOLD__BURST	= 450;
+    REST__BURST = 150;
+    save_pvars();
+}
+function turbo(btn) {
+    if (!turbo__trigger || !get_val(btn)) return; 
+    set_val(btn, 100);
+    }
+function No__recoil(recoil__y, recoil__x) {
+    if (get_val(FIRE)) {
+        recoil__y = get_val(10) + NO__RECOIL__Y;      
+        if (recoil__y > 100) recoil__y = 100;     
+        set_val(10, recoil__y);                      
+        recoil__x = get_val(9) + NO__RECOIL__X; 
+        if(recoil__x > 100) recoil__x = 100; 
+        set_val(9, recoil__x);    
+ }
+ }
+function double_click(button) {        
+    if (double__tap[button] >= 0) {                    
+        double__tap[button] += get_rtime(); 
+        if (double__tap[button] > 450)
+            double__tap[button] = -1;                                                                                       
+    }           
+    if (event_release(button) && get_ptime(button) <= 200) { 
+        if (double__tap[button] < 0) {                    
+            double__tap[button] = 0;                        
+        } else {             
+            double__tap[button] = -1;                       
+            return 1;                                   
+        }                                                     
+    }                                                  
+    return 0;
+    }
+function PLAY__LEDS (){
+	if(PrimaryWeapon) color_led (Blue); 
+	if (!PrimaryWeapon && R2F_K2S) color_led (Red);
+	if(PrimaryWeapon && RF_KS) color_led (White);
+	if(AIM__CORRECT && get_val (FIRE)) color_led(Pink); 
+	if(PrimaryWeapon && SNIPE) color_led (SkyBlue);
+	if(NO__RECOIL) combo_run (BLINK_AR);
+	if(PrimaryWeapon && Burst && !get_val(FIRE)) color_led (Green);
+}
+function save_pvars() { 
+    set_pvar(SPVAR_8, NO__RECOIL__Y);
+    set_pvar(SPVAR_9, NO__RECOIL__X);
+    set_pvar(SPVAR_1, HOLD__BURST);
+    set_pvar(SPVAR_2, REST__BURST);
+    }
+function color_led(colour) {
+	set_led(LED_1, dbyte(colour * 4));
+	set_led(LED_2, dbyte((colour * 4) + 1));
+	set_led(LED_3, dbyte((colour * 4) + 2));
+	set_led(LED_4, dbyte((colour * 4) + 3));
+}

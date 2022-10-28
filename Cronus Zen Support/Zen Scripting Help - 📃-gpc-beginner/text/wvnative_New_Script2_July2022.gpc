@@ -1,0 +1,58 @@
+define INITIAL_STATE = FALSE; 
+ 
+int mode2_is_on = INITIAL_STATE;
+int mode3_is_on = INITIAL_STATE;
+
+main
+{
+        set_ps4_lbar(0, 255, 0);
+
+        if(ps4_touchpad(PS4T_P1)){
+		if(ps4_touchpad(PS4T_P1X) < 0){
+			set_val(PS4_L3,100);
+		}
+		else if(ps4_touchpad(PS4T_P1X) > 0) {
+			set_val(PS4_R3,100);
+	    }
+    }
+        
+    if(get_val(PS4_L1) && event_press(PS4_PS)) { 
+       mode2_is_on = !mode2_is_on;
+    }
+    if(get_val(PS4_L2) && event_press(PS4_PS)) { 
+       mode3_is_on = !mode3_is_on;
+    }
+    if(mode2_is_on) {
+        set_ps4_lbar(255, 0, 0);
+    }
+    if(mode3_is_on) {
+        set_ps4_lbar(0, 0, 255);
+    }
+    if(mode2_is_on){
+        combo_run(Mode2);
+    } else if(combo_running(Mode2)) {
+        combo_stop(Mode2); 
+    }
+    if(mode3_is_on){
+        combo_run(Mode3);
+    } else if(combo_running(Mode3)) {
+        combo_stop(Mode3); 
+    }
+     if(get_val(PS4_PS) && get_val(PS4_R2)){
+            combo_stop(Mode2);
+            combo_stop(Mode3);
+            set_val(PS4_PS, 0);
+            set_val(PS4_L2, 0);
+                set_val(PS4_OPTIONS, 100);
+                    set_val(PS4_SHARE, 100);
+                    }
+}
+
+combo Mode2 {
+    swap(PS4_SHARE, PS4_TOUCH);
+}
+combo Mode3 {
+    swap(PS4_SHARE, PS4_TOUCH);
+    swap(PS4_R1, PS4_R2);
+    swap(PS4_L1, PS4_L2);
+}

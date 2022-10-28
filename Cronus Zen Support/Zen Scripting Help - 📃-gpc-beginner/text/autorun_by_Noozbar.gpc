@@ -1,0 +1,37 @@
+//this is the autorun I use for GTA and RDR
+//push the stick forward to walk, tap once on CROSS to run (it holds CROSS), tap a second time to sprint (it spam CROSS), 
+//release the stick or tap a third time to walk again
+
+
+int run;
+
+main {
+    if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) >= 20)
+    {
+        // walk -> run -> sprint -> walk
+        if(event_press(PS4_CROSS))
+            run += 1;
+        if(run > 2)
+            run = 0;
+            
+        if(!get_ival(PS4_CROSS))
+        {
+        // run
+            if(run == 1) 
+                set_val(PS4_CROSS, 100);
+        // sprint
+            if(run == 2)
+                combo_run(SPAM);
+        }
+    }
+    // reset
+    else
+        run = 0;
+}
+
+combo SPAM { 
+    set_val(PS4_CROSS, 100);
+    wait(80);
+    set_val(PS4_CROSS, 0);
+    wait(70);
+}

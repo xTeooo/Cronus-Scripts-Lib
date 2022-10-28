@@ -1,0 +1,367 @@
+const string Misc[] = { "MC'z", "On", "Off","" }; 
+const string ModNames[] = { "AR","Ping", "Slidez",""}; 
+const string ValNames[] = { "Vertical","Horizonatal",""};
+
+
+define MwSlideDelay   = 180;
+int Inverted          =  1;   // If you play Inverted change to " -1 "
+
+
+define AdsBtn		  = PS4_L2;
+define FireBtn		  = PS4_R2;
+define CrouchBtn 	  = PS4_R3;  
+define JumpBtn  	  = PS4_CROSS;
+define SprintBtn	  = PS4_L3;
+define PingBtn		  = PS4_UP; 
+ 
+int DisplayTitle = TRUE; 
+int ScreenSaver,BlankScreen,ModMenu,DisplayMenu,ModNameIdx,Toggle,PixelScreenSaver,EditMenu,ValNameIdx;
+int Xpos1,Ypos1,Xpos2,Ypos2;
+int Colour = 1;
+int Vertical;
+int Horizontal;
+int ToggleAntiRecoil; 
+int ToggleSlideCancel; 
+int ToggleAutoPing; 
+define AmountOfValues = 1; 
+int AntirecoilVertical,AntirecoilHorizontal ;
+
+
+main { 
+        
+        if(get_ival(AdsBtn)) 
+        {
+        	if(event_press(PS4_OPTIONS))
+        	{
+        		ModMenu     = TRUE;
+        		DisplayMenu = TRUE;
+        		EditMenu    = FALSE; 
+        		PixelScreenSaver = FALSE; 
+        		
+        		if(!ModMenu)
+        	    	DisplayTitle = TRUE;
+        	}
+        	set_val(PS4_OPTIONS,0); 
+        }
+        if(!DisplayTitle) 
+        {
+	        if(ModMenu) 
+	        { 
+	        	ModNameIdx        = MenuNavigation(ModNameIdx,0,2);
+	        	
+	        	ToggleAntiRecoil  = ToggleSwitch(ModNameIdx == 0,ToggleAntiRecoil);
+	        	ToggleAutoPing    = ToggleSwitch(ModNameIdx == 1,ToggleAutoPing);
+	        	ToggleSlideCancel = ToggleSwitch(ModNameIdx == 2,ToggleSlideCancel);
+	        }
+	        if(EditMenu) 
+	        {
+	        	ValNameIdx        = MenuNavigation(ValNameIdx,0,2);
+	        	
+	        	Vertical          = EditValues(ValNameIdx , 0,Vertical          , 0, 99); 
+	            Horizontal        = EditValues(ValNameIdx , 1,Horizontal        , 0, 99); 
+	            
+	            if(ModNameIdx == 0) ValNameIdx = cycle(ValNameIdx,0,1);	
+	        }
+	    } 
+        if(DisplayMenu)
+        {
+        	cls_oled(OLED_BLACK); 
+        	
+        	if(EditMenu) 
+        	{
+        		printf(center_x(get_valName_chars(ValNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ValNames[ValNameIdx]);
+        	} 
+        	else if(ModMenu)
+        	{
+        		printf(center_x(get_modName_chars(ModNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ModNames[ModNameIdx]);
+        	
+        	    if(Toggle == 1)  
+    				printf(center_x(get_misc_chars(1), OLED_FONT_MEDIUM_WIDTH),48,OLED_FONT_MEDIUM,OLED_WHITE,Misc[1]);	
+           		else if(Toggle == 0)
+            		printf(center_x(get_misc_chars(2), OLED_FONT_MEDIUM_WIDTH),48,OLED_FONT_MEDIUM,OLED_WHITE,Misc[2]);
+        	}
+        	Toggle = FALSE;
+        	DisplayMenu = FALSE;
+        }
+        if(!ModMenu && !EditMenu)
+        {
+			if(DisplayTitle) 
+			{
+				cls_oled(OLED_BLACK); 
+				PixelScreenSaver = FALSE; 
+				printf(center_x(get_misc_chars(0), OLED_FONT_LARGE_WIDTH),7,OLED_FONT_LARGE,OLED_WHITE,Misc[0]);
+				DisplayTitle = FALSE;
+        		ScreenSaver  = TRUE; 
+			}
+			if(ScreenSaver) 
+    		{
+       			BlankScreen += get_rtime();
+        	
+    			if(BlankScreen >= 10000)
+    			{
+    				cls_oled(OLED_BLACK);
+    				BlankScreen = 0;
+    				ScreenSaver = TRUE; 
+    				PixelScreenSaver = FALSE; 
+        		} 
+    		}
+    		if(PixelScreenSaver) 
+    		{
+    			pixel_oled(Xpos1,Ypos1,Colour)  
+                pixel_oled(Xpos2,Ypos2,Colour)      
+    			combo_run(RacePixel);
+    		} 
+    	}
+    	if(ToggleAntiRecoil)
+        {
+        	if(get_val(PS4_R2)) 
+                combo_run(Antirecoil);
+                
+            if(abs(get_val(PS4_RY)) > Vertical + 2 || abs(get_val(PS4_RX)) > Vertical + 2) 
+                combo_run(Antirecoil);
+             
+        }
+    	if(ToggleAutoPing) 
+    	{
+    		if(get_ival(FireBtn))
+    			combo_run(AutoPing)	
+    	}
+    	if(ToggleSlideCancel)
+    	{
+			if((get_val(PS4_LY) < -80) || (get_val(PS4_LY) > 80) || (get_val(PS4_LX) < -80) || (get_val(PS4_LX) > 80))
+			{
+				if(event_release(CrouchBtn))
+					combo_run(CancelSlideMW)
+						
+				if(combo_running(CancelSlideMW) && (get_val(AdsBtn) && event_release(CrouchBtn)))
+	                combo_stop(CancelSlideMW)
+			}
+		}
+    }
+combo Antirecoil {
+// Vertical
+   AntirecoilVertical = get_val(PS4_RY) + Vertical;  
+   if(AntirecoilVertical > 100) AntirecoilVertical = 100;
+   if(abs(get_val(PS4_RY)) < abs(Vertical) +  5)
+   set_val(PS4_RY, (AntirecoilVertical * Inverted));
+// Horizontal
+   AntirecoilHorizontal = get_val(PS4_RX) + Horizontal;
+   if(AntirecoilHorizontal > 100) AntirecoilHorizontal = 100;
+   if(abs(get_val(PS4_RX)) < abs(Horizontal)  + 5)
+   set_val(PS4_RX, AntirecoilHorizontal);
+}
+combo AutoPing {
+set_val(PingBtn,100);
+wait(24)
+set_val(PingBtn,0);
+wait(24)
+set_val(PingBtn,100);
+wait(24)
+set_val(PingBtn,0); 
+wait(1700); 
+}
+combo CancelSlideMW {
+set_val(CrouchBtn, 100);
+wait(MwSlideDelay ); 
+set_val(CrouchBtn, 0);
+wait(60);
+set_val(CrouchBtn, 100);
+wait(50);
+set_val(CrouchBtn, 100);
+set_val(JumpBtn, 100);
+wait(60);
+set_val(CrouchBtn, 0);
+set_val(JumpBtn, 100);
+wait(10);
+set_val(JumpBtn, 0);
+}
+combo RacePixel {
+  Xpos1 = random(1,120); // RANDOM FUNCTION WILL GIVE A RANDOM NUMBER BETWEEN THE VALUES YOU SET HERE IT IS 1 TO 128
+  Ypos1 = random(1,64);
+  Xpos2 = random(1,128);
+  Ypos2 = random(1,64);
+}
+function MenuNavigation(f_modorval,f_min,f_max) { 
+
+	if(!get_val(AdsBtn))
+	{
+		if(event_press(PS4_RIGHT))  
+		{     
+	        f_modorval = cycle(f_modorval + 1, f_min , f_max  );
+	        DisplayMenu = TRUE;   
+   		}     
+		if(event_press(PS4_LEFT)) 
+		{  
+	        f_modorval = cycle(f_modorval - 1, f_min , f_max  );
+	        DisplayMenu = TRUE;
+		} 
+        set_val(PS4_RIGHT,0); set_val(PS4_LEFT,0);  
+	}
+	if(f_modorval == 0) 
+	{
+		if(event_press(PS4_SQUARE)) 
+    	{ 
+        	ValNameIdx  = AmountOfValues + 1;
+        	EditMenu    = TRUE;
+        	ModMenu     = FALSE;
+        	DisplayMenu = TRUE;
+    	}
+    	set_val(PS4_SQUARE,0); 
+    }
+    if(ModMenu) 
+    {
+    	if(event_press(PS4_CIRCLE)) 
+    	{    
+        	DisplayTitle = TRUE;
+        	ModMenu      = FALSE; 
+        	DisplayMenu  = FALSE; 
+        	combo_run(RumbleOff);     
+    	} 
+    	set_val(PS4_CIRCLE,0); 
+    }
+    if(EditMenu) 
+    {
+    	if(event_press(PS4_CIRCLE)) 
+    	{       
+        	EditMenu     = FALSE; 
+       		ModMenu      = TRUE;
+        	DisplayMenu  = TRUE;   	
+    	}
+    	set_val(PS4_CIRCLE,0); 
+    } 
+    return f_modorval; 
+} 
+function ToggleSwitch(f_name,f_val) { 
+	
+    if(f_name) 
+    {       
+		if(event_press(PS4_CROSS))
+		{
+			f_val =! f_val;
+			DisplayMenu = TRUE;
+			combo_run(ToggleVibrate);
+		}
+		Toggle = f_val
+		set_val(PS4_CROSS,0); 
+    }
+    return f_val;
+}
+function EditValues(f_idx,f_num,ValueIndex,ValueIndexMin,ValueIndexMax) {  
+    if(f_num == f_idx) 
+    { 
+        if(get_ival(AdsBtn))  
+        {
+            if(event_press(PS4_RIGHT)) 
+            {
+                ValueIndex = cycle(ValueIndex + 1, ValueIndexMin,ValueIndexMax); 
+                DisplayMenu = TRUE; 
+            }
+            if(event_press(PS4_LEFT))  
+            {
+                ValueIndex = cycle(ValueIndex - 1, ValueIndexMin,ValueIndexMax); 
+                DisplayMenu = TRUE; 
+            }
+            set_val(PS4_RIGHT,0); set_val(PS4_LEFT,0);
+        }
+        number_to_string(ValueIndex,find_digits(ValueIndex)); 
+    }
+    return ValueIndex;                
+ } 
+combo ToggleVibrate {
+if(Toggle)
+set_ledx(2, 2);
+set_rumble(RUMBLE_B, 50);
+wait(150);
+reset_rumble();
+wait(100);
+set_rumble(RUMBLE_B, 50);
+wait(150);
+reset_rumble();
+reset_leds();
+if(!Toggle) 
+set_ledx(1, 1);
+set_rumble(RUMBLE_A, 50);
+wait(300);
+reset_rumble();
+wait(400);
+reset_leds();
+}
+combo RumbleOff {						
+set_ledx(1, 1);
+set_rumble(RUMBLE_A, 50);
+wait(300);
+reset_rumble();
+wait(400);
+reset_leds();
+}
+function cycle(f_val, f_lo, f_hi) {
+	if(f_val > f_hi) return f_lo;
+	if(f_val < f_lo) return f_hi;
+	return f_val;
+}
+function get_misc_chars(f_idx){
+	if (Misc[f_idx + 1] != -1) 
+		return Misc[f_idx + 1] - Misc[f_idx] - 1;
+	return sizeof(Misc) - Misc[f_idx];		
+}
+function get_modName_chars(f_idx){
+	if (ModNames[f_idx + 1] != -1) 
+		return ModNames[f_idx + 1] - ModNames[f_idx] - 1;
+	return sizeof(ModNames) - ModNames[f_idx];		
+}
+function get_valName_chars(f_idx){
+	if (ValNames[f_idx + 1] != -1) 
+		return ValNames[f_idx + 1] - ValNames[f_idx] - 1;
+	return sizeof(ValNames) - ValNames[f_idx];		
+}
+function center_x(f_chars,f_font) {
+
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+function number_to_string(value,f_digits){
+
+    i = 1;  c_val = 10000;
+    
+	if(value < 0) 
+	{          
+         putc_oled(i,45);    
+         i += 1;
+         value = abs(value);
+	} 
+	for(c = 5; c >= 1; c--) 
+	{
+	    if(f_digits >= c) 
+	    {
+            putc_oled(i,ASCII_NUM[value / c_val]);
+            value = value % c_val;
+            i +=  1; 
+            if(c == 4) 
+            {
+                putc_oled(i,44);   
+                i += 1;
+            }
+        }
+        c_val /= 10;
+    }   
+    puts_oled(center_x(i - 1,OLED_FONT_LARGE_WIDTH),39,OLED_FONT_LARGE,i - 1,OLED_WHITE); 
+}  
+function find_digits(f_num) {
+    f_num = abs(f_num);
+    if(f_num / 10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /   100 > 0) return 3;
+    if(f_num /    10 > 0) return 2;
+                          return 1;
+}
+// Constant bytes - Convert numbers array - ASCII_NUM[column number]
+	const uint8 ASCII_NUM[] = 
+//	  0  1  2  3  4  5  6  7  8  9  (column numbers)
+  	{48,49,50,51,52,53,54,55,56,57};
+// Variables for function number_to_string()\\ 
+	int i;
+	int c,c_val;
+data(
+//  0 Blue    1 Pink   2 SkyBlue  3 Green         
+    1,0,0,0,  0,0,0,1,  1,0,1,0,  0,0,1,0,
+//  4 Yellow  5 White   6 Red      7 OFF         
+    0,1,1,0,  1,1,1,0,  0,1,0,0,  0,0,0,0 );

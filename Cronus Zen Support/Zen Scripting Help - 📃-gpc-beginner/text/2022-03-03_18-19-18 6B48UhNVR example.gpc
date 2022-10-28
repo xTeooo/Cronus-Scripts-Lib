@@ -1,0 +1,124 @@
+int Start_On;			
+int minutes, seconds;		
+int seconds2, milliseconds;	
+int RumA;					
+int GateKeeper;				
+int Only1;				
+int Arm;
+int TimerMS;
+
+
+init{				
+	Start_On = TRUE;		
+	Arm = FALSE;		
+	Only1 = FALSE;		
+	GateKeeper = 0;			
+	}
+
+
+
+main{
+	
+	RumA = get_rumble(RUMBLE_A);	
+	set_val(TRACE_1, RumA);			
+	if(!Arm == TRUE){
+						set_val(TRACE_2, -50);		
+						}
+					else set_val(TRACE_2, 50);
+	
+	set_val(TRACE_3, TimerMS);
+	set_val(TRACE_4, seconds);		
+	set_val(TRACE_5, seconds2);	
+	set_val(TRACE_6, GateKeeper);
+		
+	  
+	
+	if(event_press(XB1_PR2)){					
+							Start_On = !Start_On;	
+							Only1 = TRUE;		
+							}
+	
+	if(Only1 == TRUE && !Start_On){							
+									combo_run(MYCOMBO);	
+									Only1 = FALSE;		   
+									}
+
+	
+	
+	if(Start_On){						
+				set_rgb(255, 0, 0);		
+				combo_run(Time);	
+				seconds = 0;			
+				seconds2 = 0;			
+				minutes = 0;			
+				milliseconds = 0;		
+				GateKeeper = 0;			
+				Only1 = TRUE;
+				}
+	
+	
+	if(!Start_On){						
+				set_rgb(0, 255, 0);		
+				}						
+	
+	
+	if(!Start_On){
+				milliseconds += get_rtime();								  
+				TimerMS += get_rtime();
+     						if (milliseconds >= 1000) {						
+     													seconds ++;			
+     													seconds2 ++;		
+     													milliseconds = 0;	
+     													}					
+     						if (seconds >= 60){								
+         										minutes++;					
+         										seconds = 0;				
+         										}							
+         		}															
+	
+	
+	
+	if(minutes == 1 && milliseconds == 10){					
+											minutes = 0;	
+											}				
+	
+	
+	
+	if(RumA >= 80 && !Start_On){					
+								Arm = TRUE		
+								TimerMS = 0;	
+								}				
+			
+	
+	
+	if(Arm == TRUE && TimerMS == 1750){
+									combo_run(MYCOMBO);
+									}
+	
+				
+
+	
+	if(RumA < 5 && minutes == 1){
+				GateKeeper = GateKeeper + 1;
+				if(GateKeeper == 3){
+								Start_On = TRUE;
+								combo_run(Time);
+								cls_oled(0);
+								}
+				}
+				else if(RumA > 5){
+								GateKeeper = 0;
+								}
+
+
+}		
+	
+
+
+combo Time{							
+			combo_(MYCOMBO);
+				}
+
+combo MYCOMBO{
+			
+	}

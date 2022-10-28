@@ -1,0 +1,153 @@
+// GTA V Online - Auto fill / purchase your garages full of a specific vehicle
+// v1.0
+
+// Setup: Use the D-Pad to hover over the purchase button + set the garage sizes and amount below in the array (only supports one empty garage in a row)
+
+// Created by Fadexz
+
+
+
+int
+current_apt_idx,
+current_garage_idx,
+selected_apt_idx,
+selected_garage_idx,
+garage_menu;
+
+
+
+const uint8 garage_slots[] = {
+
+  0,
+
+// Note: Store the amount of garages and slot sizes here
+/*1*/  10,
+/*2*/  10,
+/*3*/  10,
+/*4*/  0,
+/*5*/  10,
+/*6*/  10,
+/*7*/  10,
+/*8*/  10
+
+}
+
+main {
+
+
+  if(get_ptime(XB1_RS) < 300) {
+    if(event_release(XB1_RS))
+      if(current_apt_idx) {
+        current_apt_idx = 0;
+        current_garage_idx = 0;
+        selected_apt_idx = 0;
+        selected_garage_idx = 0;
+        garage_menu = FALSE;
+        combo_stop_all();
+      }
+      else current_apt_idx = 1;
+    set_val(XB1_RS,0);
+  }
+
+
+  if(current_apt_idx) {
+
+    // Purchase vehicle first
+    if(!selected_apt_idx)
+      combo_run(Press_A);
+
+    // Press DOWN until the selected apartment is not less than current
+    if(selected_apt_idx && selected_apt_idx < current_apt_idx)
+      combo_run(DOWN);
+
+    // Currently on the current apartment
+    if(selected_apt_idx == current_apt_idx)
+      if(garage_menu) {
+        // Press DOWN until the selected garage is the same as the current
+        if(selected_garage_idx < current_garage_idx)
+          combo_run(DOWN);
+        // Otherwise finish the purchase
+        else combo_run(Complete_Purchase);
+      }
+      // Run 'A' press (enables 'garage_menu')
+      else combo_run(Press_A);
+  }
+
+
+  // Debug
+  set_val(TRACE_1,selected_apt_idx);
+  set_val(TRACE_2,selected_garage_idx + 1);
+  set_val(TRACE_3,current_apt_idx);
+  set_val(TRACE_4,current_garage_idx + 1);
+
+
+}
+
+
+
+combo Press_A {
+
+  set_val(XB1_A,100);
+  wait(50);
+  wait(250);
+  // Start at the first apt (if not already)
+  if(!selected_apt_idx)
+    selected_apt_idx = 1;
+  // (Second A press) if now at the current apt and entered enable 'garage_menu'
+  else if(selected_apt_idx == current_apt_idx)
+    garage_menu = TRUE;
+
+}
+
+
+
+combo DOWN  {
+
+  set_val(XB1_DOWN,100)
+  wait(50);
+  wait(100);
+  // If not at the current apparent yet increment the selected index
+  if(selected_apt_idx < current_apt_idx)
+    selected_apt_idx ++;
+  // (Pressed DOWN) If already at the current apt index increment the garage selection index 
+  else selected_garage_idx ++;
+
+}
+
+
+
+combo Complete_Purchase {
+
+  set_val(XB1_A,100);
+  wait(50);
+  wait(250);
+  set_val(XB1_A,100);
+  wait(50);
+  wait(250);
+  set_val(XB1_B,100);
+  wait(50);
+  wait(250);
+  set_val(XB1_B,100);
+  wait(50);
+  wait(250);
+  // Not the last apt
+  if(current_apt_idx < sizeof(garage_slots)) {
+    // Finished garage (next apt - skips empty)
+    if(current_garage_idx + 1 >= garage_slots[current_apt_idx]) {
+      current_apt_idx += (garage_slots[current_apt_idx + 1] == 0) + 1;
+      current_garage_idx = 0;
+    }
+    // Continue garage
+    else current_garage_idx ++;
+  }
+  else {
+    // Finished all apts
+    current_apt_idx = 0;
+    current_garage_idx = 0;
+  }
+  // Reset remaining variables for next loop
+  selected_apt_idx = 0;
+  selected_garage_idx = 0;
+  garage_menu = FALSE;
+
+}

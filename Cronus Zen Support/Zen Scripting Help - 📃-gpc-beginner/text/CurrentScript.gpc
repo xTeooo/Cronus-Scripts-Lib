@@ -1,0 +1,378 @@
+/* *
+* GPC SCRIPT
+*
+*  GPC is a scripting language with C-like syntax.
+*  To learn more access GPC Language Reference on Help menu.
+* *********************************************************** */
+
+int aa = 150;
+int ab = 200;
+int ac = 300;
+int aaa = 1000;
+int bb = 1500;
+int bc = 7000;
+int cc = 8000;
+int xx = 4000;
+int yy = 6000;
+int zz = 3000;
+int bbb = 5000;
+int ee = 500;
+int ef = 400;
+int ff = 600;
+int gg = 2000;
+int hh = 50;
+int ii = 70;
+int first;
+int second;
+int win;
+int damage;
+
+int rndVVS; //.05 to .07 seconds
+int rndVS; //.15 to .2 seconds
+int rndS;  //1 to 1.5 seconds
+int rndMS; //2 to 3 seconds
+int rndM;  //3 to 4 seconds
+int rndML; //5 to 6 seconds
+int rndL;  //7 to 8 seconds
+int rndSS; //.5 to .6 seconds
+int rndKS; //.2 to .3 seconds
+
+int LB = XB1_LB;
+int A = XB1_A;
+int X = XB1_X;
+int Y = XB1_Y;
+int D = XB1_DOWN;
+int B = XB1_B;
+int R = XB1_RIGHT;
+int U = XB1_UP;
+
+main {
+rndS = random(aaa,bb);
+rndL = random(bc,cc);
+rndVS = random(aa,ab);
+rndM = random(zz,xx);
+rndML = random(bbb,yy);
+rndMS = random(gg,zz);
+rndSS = random(ee,ff);
+rndVVS = random(hh,ii);
+rndKS = random(ab,ac);
+
+if(event_press(XB1_RS)) {
+        combo_run(maxcmb) combo_run(rumble);
+    }
+if(event_press(XB1_LS)) {
+        combo_stop_all(maxcmb) combo_run(rumble);
+    }
+if(event_press(XB1_LT)) {
+            combo_suspend_all(maxcmb) combo_run(rumble);
+    }
+if (event_press(XB1_RT)) {
+    	   combo_resume_all(maxcmb) combo_run(rumble);
+    }
+if(get_val(XB1_VIEW) && event_press(XB1_UP)) {
+        win+=5 combo_run(rumble);
+    }
+if(get_val(XB1_VIEW) && event_press(XB1_DOWN)) {
+        win-=5 combo_run(rumble);
+    }
+if(get_val(XB1_VIEW) && event_press(XB1_MENU)) {
+        win=0 combo_run(rumble);
+    }
+}
+combo rumble {
+	set_rumble(RUMBLE_B, 50);
+	wait(ee);
+	reset_rumble();
+	wait(ee);
+	}
+combo maxcmb {
+//Start on main button Button
+	set_val(A, 100);
+	wait(rndVS);
+	wait(rndML);
+	combo_run(firstaction);
+	}
+	
+combo firstaction {
+	wait(rndMS);
+	set_val(B, 100);
+	wait(rndVS);  
+	set_val(LB, 100);
+	wait(rndVVS);    
+	set_val(LB, 100) set_val(B, 100);
+	wait(rndVS);       
+	set_val(A, 100);
+	wait(100);
+	first ++;
+	if (get_rumble(RUMBLE_B) == 0 && second <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(secondactionshort)
+	}
+	else {combo_run(endaction)}
+	}
+	
+	combo firstactionshort {
+	wait(rndVS);
+	set_val(B, 100);
+	wait(rndVS);  
+	set_val(LB, 100);
+	wait(rndVVS);    
+	set_val(LB, 100) set_val(B, 100);
+	wait(rndVS);       
+	set_val(A, 100);
+	wait(100);
+	first ++;
+	if (get_rumble(RUMBLE_B) == 0 && second <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(secondactionshort)
+	}
+	else if  (get_rumble(RUMBLE_B) == 0 && second > 1 && get_rumble(RUMBLE_A) == 0) {combo_run(endactionshort)
+	}
+	else {combo_run(endaction)
+	}
+	}
+	
+	combo secondactionshort {
+	wait(rndVS);
+	set_val(B, 100);
+	wait(rndVS);
+	set_val(LB, 100);
+	wait(rndVVS);     
+	set_val(LB, 100) set_val(A, 100);
+	wait(rndVS);      
+	set_val(A, 100);
+	wait(100);
+	second ++;
+	if (get_rumble(RUMBLE_B) == 0 && first <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(firstactionshort)
+	}
+	else if  (get_rumble(RUMBLE_B) == 0 && first > 1 && get_rumble(RUMBLE_A) == 0) {combo_run(endactionshort)
+	}
+	else {combo_run(endaction)
+	}
+	}
+
+combo elseaction {
+	wait(rndVS);
+	set_val(B, 100);
+	wait(rndVS);
+	set_val(LB, 100);
+	wait(rndVVS);     
+	set_val(LB, 100) set_val(Y, 100);
+	wait(rndVS);      
+	set_val(A, 100);
+	wait(100);
+	if (get_rumble(RUMBLE_B) == 0 && first <= 1 && get_rumble(RUMBLE_A) == 0 ) {combo_run(firstactionshort)
+	}
+	else if  (get_rumble(RUMBLE_B) == 0 && first > 1 && second <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(secondactionshort)
+	}
+	else if  (get_rumble(RUMBLE_B) == 0 && first > 1 && second > 1 && get_rumble(RUMBLE_A) == 0) {combo_run(endactionshort)
+	}
+	else {combo_run(endaction)
+	}
+	}
+		
+combo endaction {
+	wait(rndM);
+	set_val(B, 100);
+	wait(rndVS);
+	set_val(LB, 100);
+	wait(rndVVS);      
+	set_val(LB, 100) set_val(X, 100);
+	wait(rndVS);     
+	set_val(A, 100);
+	wait(100);
+	if(get_rumble(RUMBLE_B) == 0 && second <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(secondactionshort) damage++
+	}
+	else if(get_rumble(RUMBLE_B) == 0 && first <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(firstactionshort) damage++
+	}
+	else if(get_rumble(RUMBLE_B) == 0 && first > 1  && second > 1 && damage > 5 && get_rumble(RUMBLE_A) == 0) {combo_run(backout) first=0 second=0 damage=0
+	}
+	else if(get_rumble(RUMBLE_B) == 0 && first > 1  && second > 1 && damage <= 5 && get_rumble(RUMBLE_A) == 0) {combo_run(elseaction) damage++
+	}
+	else if(get_rumble(RUMBLE_B) != 0 && win < 50) {combo_run(matchend) first=0 second=0 win++ damage=0
+	}
+	else if(get_rumble(RUMBLE_B) != 0 && win >= 50 && win <= 65){combo_run(backout) first=0 second=0 damage=0
+	}
+	else if(get_rumble(RUMBLE_B) != 0 && win > 65){combo_run(matchend) first=0 second=0 win=0 damage=0
+	}
+	}
+
+combo endactionshort {
+	wait(rndVS);
+	set_val(B, 100);
+	wait(rndVS);
+	set_val(LB, 100);
+	wait(rndVVS);      
+	set_val(LB, 100) set_val(X, 100);
+	wait(rndVS);     
+	set_val(A, 100);
+	wait(100);
+	if(get_rumble(RUMBLE_B) == 0 && second <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(secondactionshort) damage++
+	}
+	else if(get_rumble(RUMBLE_B) == 0 && first <= 1 && get_rumble(RUMBLE_A) == 0) {combo_run(firstactionshort) damage++
+	}
+	else if(get_rumble(RUMBLE_B) == 0 && first > 1  && second > 1 && damage > 5 && get_rumble(RUMBLE_A) == 0) {combo_run(backout) first=0 second=0 damage=0
+	}
+	else if(get_rumble(RUMBLE_B) == 0 && first > 1  && second > 1 && damage <= 5 && get_rumble(RUMBLE_A) == 0) {combo_run(elseaction) damage++
+	}
+	else if(get_rumble(RUMBLE_B) != 0 && win < 50) {combo_run(matchend) first=0 second=0 win++ damage=0
+	}
+	else if(get_rumble(RUMBLE_B) != 0 && win >= 50 && win <= 65){combo_run(backout) first=0 second=0 damage=0
+	}
+	else if(get_rumble(RUMBLE_B) != 0 && win > 65){combo_run(matchend) first=0 second=0 win=0 damage=0
+	}
+	}
+
+combo matchend {
+	wait(rndM) 
+	wait(rndSS)
+	//match end
+	set_val(B, 100);
+	wait(rndVS);      
+	wait(rndSS);		
+	set_val(B, 100);
+	wait(rndVS);           
+	wait(rndSS);	
+	//main menu	
+	set_val(A, 100);
+	wait(rndVS);    
+	wait(rndSS);   
+	set_val(D, 100);
+	wait(rndSS);    
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);     
+	wait(rndKS);
+	set_val(D, 100);
+	wait(rndSS);     
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);     
+	wait(rndKS);
+	set_val(D, 100);
+	wait(rndSS);     
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);     
+	wait(rndKS);
+	set_val(D, 100);
+	wait(rndSS);     
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);     
+	wait(rndKS);
+	set_val(D, 100);
+	wait(rndSS);     
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);     
+	wait(rndKS);
+	combo_run(restart)
+	}
+	
+combo restart {
+	combo_restart(maxcmb);
+	wait(10);
+	}
+	
+combo backout {
+	//backs out if stuck on menu
+	wait(rndM)
+	set_val(B, 100);
+	wait(rndVS);      
+	wait(rndKS);		
+	set_val(B, 100);
+	wait(rndVS);           
+	wait(rndKS);	
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	//actually back out of match
+	wait(rndKS);
+	set_val(XB1_MENU, 100);
+	wait(rndVS);
+	wait(rndKS);
+	set_val(A, 100);
+	wait(rndVS);
+	wait(rndKS);
+	set_val(R, 100);
+	wait(rndS);
+	wait(rndVS);
+	set_val(A, 100);
+	wait(rndVS);
+	wait(rndKS);
+	set_val(A, 100);
+	wait(rndVS);
+	wait(rndKS);
+	//back to main menu
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds 
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds 
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds 
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds 
+	//hourly check
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);		//.5 to .6 seconds 
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);	
+	set_val(B, 100);
+	wait(rndVS);      //.1 to .2 seconds 
+	wait(rndKS);	//.5 to .6 seconds 
+	//back into matches
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds
+	wait(rndKS);   
+	set_val(R, 100);
+	wait(rndS);      //.1 to .2 seconds
+	wait(rndVS);   
+	set_val(U, 100);
+	wait(rndS);      //.1 to .2 seconds
+	wait(rndVS);
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds
+	wait(rndKS); 
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds
+	wait(rndKS);  
+	set_val(D, 100);
+	wait(rndSS);      //.1 to .2 seconds
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds
+	wait(rndKS);
+	set_val(D, 100);
+	wait(rndSS);      //.1 to .2 seconds
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds
+	wait(rndKS);
+	set_val(D, 100);
+	wait(rndSS);      //.1 to .2 seconds
+	wait(rndVS);   
+	set_val(A, 100);
+	wait(rndVS);      //.1 to .2 seconds
+	wait(rndKS);  
+	combo_run(restart)
+	}

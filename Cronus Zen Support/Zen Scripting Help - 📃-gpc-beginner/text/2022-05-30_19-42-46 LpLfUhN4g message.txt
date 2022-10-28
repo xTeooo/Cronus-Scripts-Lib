@@ -1,0 +1,32 @@
+```c
+function read_spvar(min, max, _default) {
+    spvar_current_value = read_spvar_slot(spvar_current_slot); // Load the value so we always have it where we need it to be
+    spvar_bits = get_bit_count2(min, max); // Set min to be the bits we're going to need to store this value
+    TotalSpvarBits += spvar_bits;
+    SpvarCount = get_spvar_count_from_bits(TotalSpvarBits);
+    spvar_current_value = pack_u(spvar_current_value >> spvar_current_bit, spvar_bits); // Shift our bits into position
+    
+    if (spvar_bits > MAX_BITS - spvar_current_bit) { // if the value doesn't fit in this variable, we need to fetch the next value aswell and merge them accordingly
+        spvar_current_slot++; // Move to the next slot
+        spvar_tmp = read_spvar_slot(spvar_current_slot); // load the new slot into a temporary variable
+        spvar_tmp = pack_u(spvar_tmp, spvar_bits - (MAX_BITS - spvar_current_bit)); // Get the bits we need
+        spvar_tmp = spvar_tmp << (MAX_BITS - spvar_current_bit); // Shift the bits into their correct position
+        spvar_current_value = pack_u(spvar_current_value, MAX_BITS - spvar_current_bit);
+        spvar_current_value = spvar_current_value | spvar_tmp; // put all bits together again
+        spvar_current_bit = spvar_current_bit - MAX_BITS; // Reset the bit position so we get the correct position next
+    }    
+    spvar_current_bit += spvar_bits; // move to the next variable position
+    if (spvar_current_bit >= MAX_BITS) {
+        spvar_current_bit -= MAX_BITS; // We went beyond the end here, this is too big apparently
+        spvar_current_slot++;
+    }    
+    spvar_current_value = pack_u(spvar_current_value, spvar_bits); // Extract all bits included for this value
+    if (is_signed2(min, max)) { // Check if we have a sign bit
+        spvar_current_value = unpack_i(spvar_current_value, spvar_bits); // Restore signed value
+    }
+    if (spvar_current_value < min || spvar_current_value > max) { // Check if the value is below our specified min or above our specified max, if so - return the default value instead
+        return _default;
+    }
+    return spvar_current_value;
+}
+```

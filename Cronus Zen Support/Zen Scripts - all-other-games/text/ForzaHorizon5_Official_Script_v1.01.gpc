@@ -1,0 +1,256 @@
+/*
+__________                                    ___ ___                   __                            _______
+\_   _____/  ____  _______ _____________     /   |   \   ____  _______ |__|________  ____    ____    |   ____/
+ |    __)   /  _ \ \_  __ \\___   /\__  \   /    ~    \ /  _ \ \_  __ \|  |\___   / /  _ \  /    \   |____  \ 
+ |     \   (  <_> ) |  | \/ /    /  / __ \_ \    Y    /(  <_> ) |  | \/|  | /    / (  <_> )|   |  \  /       \
+ \___  /    \____/  |__|   /_____ \(____  /  \___|_  /  \____/  |__|   |__|/_____ \ \____/ |___|  / /______  /
+     \/                          \/     \/         \/                            \/             \/         \/ 
+
+Script Author  = Taylordrift21 ( Credits To Batts For Inspiration/Code In Making Some of These Mods) 
+Script Version = Version 1.1
+Tested With    = Xbox Elite Series 2 Controller (Used with Shortest Hairtriggers)
+
+=======================================================================================================================================
+F E A T U R E S . . . 
+=======================================================================================================================================
+A S S I S T E D  B R A K E S 
+
+Turn Off ABS in GAME ) This will prevent your brakes locking up when braking without ABS in Game.
+=======================================================================================================================================
+T R A C T I O N  C O N T R O L 
+
+This will help you from Burning Out Too Much when taking off ) 
+=======================================================================================================================================
+A U T O  C L U T C H 
+
+Switch To Manual Shifting With Clutch , and when changing Gears the AutoClutch kicks in ) ( Built In Shifter Limiter)
+
+When Changing Gears, in the script it set up for 7 gears ( minus Reverse )  
+
+If you want to go back to the first Gear/Reverse ( Double tap Gear Down Button for quickness ) 
+=======================================================================================================================================
+S E M I  A U T O  S H I F T I N G
+
+For Automatic Shifting Enable this Mod, be aware that when you find yourself off road the Semi Auto Shifting will disble, 
+
+Once you're back on the main road, Double Tap Clutch to enable Semi Auto Shifting. 
+
+When you use Brake In game this will change gears down...  
+
+You can manually Override changing the gears if you need to change down or up...  
+=======================================================================================================================================
+L A U N C H  C O N T R O L 
+
+When you want to use Launch control - Make sure you are stationary and it will do the rest...
+
+When you are ready for take off... Press Accelerator!! 
+=======================================================================================================================================
+
+T O G G L E  T H E  M O D S  I F  Y O U  W A N T  T O  U S E  T H E M
+======================================================================*/
+int AssistedBrakes   = TRUE;
+int TractionControl  = TRUE;
+int AutoClutch       = TRUE;
+int SemiAutoShifting = TRUE;
+int LaunchControl    = TRUE;
+
+// I G N O R E  B E L O W \\ 
+
+const int8 Throttle[] = {
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,
+30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,
+57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,
+84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,100};
+
+const int8 ABS[] = {
+0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,
+30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,
+57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,75};
+
+const int16 TIME [] = { 100 , 100 , 1200};
+const int8 DrivingControls[] = { PS4_R2, PS4_L2,PS4_CIRCLE , PS4_SQUARE , PS4_L1 , PS4_CROSS}; 
+
+const uint8 GearsMinMax [][] = { 
+{ 0 , 7 }}; 
+
+int AccelerationValue;
+int BrakePressure;
+int GearIdx,GearUp,GearDown,Clutch,Accelerator,BrakePedal,HandBrake,ActivateThrottle;
+int AutoShifting; 
+int incs = 1, dec, colors[3];
+int Intro;
+int RunRgb = TRUE;
+
+init { 
+
+    Accelerator = DrivingControls[0];
+    BrakePedal  = DrivingControls[1];
+	GearUp      = DrivingControls[2];
+	GearDown    = DrivingControls[3];
+	Clutch      = DrivingControls[4];
+	HandBrake   = DrivingControls[5];
+	
+	colors  = 255;
+    Intro = 1;
+} 
+main { 
+	if(RunRgb){
+		combo_run(rgb);
+	} 
+	if(Intro){
+		combo_run(intro);
+	}
+    if(AssistedBrakes) { 
+    	BrakePressure = ABS[clamp(BrakePressure,0,sizeof(ABS))];
+		if(get_rumble(RUMBLE_LT) && !get_ival(Accelerator)){
+			BrakePressure++
+			set_val(BrakePedal,BrakePressure);
+		} 
+		if(event_release(BrakePedal)){
+			BrakePressure = 0;
+		} 
+	} 
+	if(TractionControl){ 
+		AccelerationValue = Throttle[clamp(AccelerationValue,0,sizeof(Throttle))]; 
+		if(get_rumble(RUMBLE_RT) >= 0){
+			if(get_ival(Accelerator)){ 
+				AccelerationValue ++ 	
+			}
+			set_val(Accelerator,AccelerationValue);
+			
+			if(event_release(Accelerator)){ 
+				AccelerationValue = 0;
+			} 
+		} 
+	}
+	if(AutoClutch){ 
+		if(event_press(GearUp)){ 
+			GearIdx = clamp(GearIdx + 1,GearsMinMax[0][0],GearsMinMax[0][1]);
+			combo_run(Clutch);
+		}
+		if(event_press(GearDown)){ 
+			GearIdx = clamp(GearIdx - 1,GearsMinMax[0][0],GearsMinMax[0][1]);
+			combo_run(Clutch);
+		}
+		if(GearIdx == GearsMinMax[0][1]){ 
+			if(event_press(GearUp)){ 
+				combo_stop(Clutch);
+			}
+		} 
+		if(get_ival(GearDown) && get_ptime(GearDown) == (get_rtime() * 40)){ 
+			GearIdx = 0;
+		} 
+		if(event_press(GearDown) && get_brtime(GearDown) <= 200){ 
+			GearIdx = 0;
+		}
+	}
+	if(LaunchControl){ 
+		if(event_press(HandBrake)){
+			combo_run(Launch);
+			GearIdx = 0;
+		} 
+		if(ActivateThrottle){ 
+			set_val(Accelerator,100);
+			set_val(HandBrake,100);
+		} 
+		if(get_ival(Accelerator)){
+			ActivateThrottle = FALSE;
+			combo_run(Delay); 
+		}
+	} 
+	if(SemiAutoShifting){ 
+		AutoShifting = get_rumble(RUMBLE_B);
+		if(AutoShifting >= 5 && !get_ival(BrakePedal) && get_rumble(RUMBLE_A) >= 1 && !event_press(GearDown)){ 
+			set_val(GearUp,100); 
+		} 
+		if(get_rumble(RUMBLE_LT) >= 10){ 
+			set_val(GearDown,100);
+		} 
+	} 
+	if(get_rumble(RUMBLE_A) >= 4 && get_rumble(RUMBLE_RT) >= 4 && get_rumble(RUMBLE_B) >= 5){ 
+		SemiAutoShifting = FALSE;
+	} 
+	if(event_press(Clutch) && get_brtime(Clutch) <= 200){
+		SemiAutoShifting = TRUE;
+	} 
+		
+	set_val(TRACE_1,SemiAutoShifting);
+	set_val(TRACE_2,TractionControl);
+    set_val(TRACE_3,ActivateThrottle);
+    set_val(TRACE_4,GearIdx);
+    
+} 
+combo Clutch {
+set_val(Accelerator,0);
+wait(TIME[0]);
+set_val(Clutch,100) 
+set_val(Accelerator,0);
+wait(TIME[1]);
+}
+combo Launch { 
+set_val(GearUp,100);
+wait(TIME[1]); 
+set_val(GearDown,100);
+wait(TIME[1]);
+TractionControl = FALSE;
+ActivateThrottle = TRUE;
+} 
+combo Delay { 
+wait(TIME[2]);
+TractionControl = TRUE;
+} 
+combo intro {
+cls_oled(0);
+wait(20);
+draw_picture(0, 0, 0);
+printf(34,55,OLED_FONT_SMALL,OLED_WHITE,HORIZON[0]);
+wait(2000)
+cls_oled(0);
+Intro = FALSE;
+} 	    
+const string HORIZON = "Horizon 5"
+const int16 picture[] = {99, 52, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x07FF, 0xFFFF, 0xFFF0, 0x0000, 0x0000, 0x0000, 0x03FF, 0xFFFF, 0xFFFC, 0x0000, 0x0000, 0x0000, 0x01FF, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x007F, 0xFFFF, 0xFFFF, 0xE000, 0x0000, 0x0000, 0x000F, 0xFFFF, 0xFFFF, 0xF800, 0x0000, 0x0000, 0x0003, 0xFFFF, 0xFFFF, 0xFE00, 0x0000, 0x0000, 0x0000, 0xFFFF, 0xFFFF, 0xFF00, 0x0000, 0x0000, 0x0000, 0x1FFF, 0xFFFF, 0xFF80, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x3FFF, 0xFFFC, 0xFE7F, 0x0000, 0x0000, 0x0000, 0x003F, 0xFFFF, 0x1F9F, 0xC000, 0x0000, 0x0000, 0x0000, 0x1FFF, 0xE7F3, 0xF000, 0x0000, 0x0000, 0x0000, 0x401F, 0xF9FC, 0xFE00, 0x0000, 0x0000, 0x0000, 0x1FC0, 0x7F3F, 0x3F80, 0x0000, 0x0000, 0x0000, 0x07FF, 0x9FCF, 0xE7F0, 0x0000, 0x0000, 0x0000, 0x00FF, 0xE3F3, 0xF9FC, 0x0000, 0x0000, 0x0000, 0x003F, 0xFCFE, 0x7E7F, 0x0000, 0x0000, 0x0000, 0x0007, 0xFF3F, 0x9FCE, 0x0000, 0x0000, 0x0000, 0x0001, 0xFFE7, 0xE7C0, 0x0000, 0x0000, 0x0000, 0x0000, 0x7FF9, 0xF800, 0x0000, 0x0000, 0x0000, 0x0000, 0x0FFE, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x03FF, 0xC000, 0x0000, 0x0000, 0x0000, 0x0000, 0x00FF, 0xF000, 0x0000, 0x0000, 0x0000, 0x0000, 0x001F, 0xFC00, 0x0000, 0x0000, 0x0000, 0x0000, 0x0007, 0xFF80, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0xFF00, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x3000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0xFF01, 0xF00F, 0xE00F, 0xF007, 0x0000, 0x0000, 0x3FE0, 0xFF01, 0xFF03, 0xFC01, 0xE000, 0x0000, 0x0600, 0x3870, 0x3060, 0x0300, 0x3E00, 0x0000, 0x00C0, 0x0606, 0x060C, 0x00E0, 0x0CC0, 0x0000, 0x001F, 0xE0C0, 0xC0C1, 0x8038, 0x018C, 0x0000, 0x0003, 0xFC18, 0x181B, 0xE00E, 0x007F, 0x8000, 0x0000, 0x6003, 0x8303, 0x3801, 0x800F, 0xF800, 0x0000, 0x0C00, 0x3FC0, 0x6380, 0x7F83, 0x8300, 0x0000, 0x0180, 0x03F0, 0x0C18, 0x1FF0, 0x6070};
+int __pictureWidth, __pictureX, __pictureHeight, __pictureY, __pictureBit, __pictureOffset, __pictureData;
+int __pictureX2, __pictureY2;
+function draw_picture(x, y, invert) {
+	__pictureOffset = 1; // Reset the starting point
+	__pictureBit = 0; // Reset bit flag
+	__pictureWidth = picture[0]; // Fetch the width of what to draw
+	__pictureHeight = picture[1]; // Fetch the height of what to draw
+	for (__pictureY = 0; __pictureY < __pictureHeight; __pictureY++) { // Loop the Y axis
+		__pictureY2 = y + __pictureY;
+		if (__pictureY2 < 0 || __pictureY2 >= 64) {
+			__pictureY2 -= 64;
+		}
+		for (__pictureX = 0; __pictureX < __pictureWidth; __pictureX++) { // Loop the X axis
+			if (!__pictureBit) { // Check if we've already handled the last bit
+				__pictureBit = 16; // Reset the bit flag
+				__pictureOffset++; // Move to the next value
+				__pictureData = picture[__pictureOffset]; // Fetch the value
+			}
+			__pictureBit--; // Decrement the bit flag, we're moving to the next bit
+			__pictureX2 = x + __pictureX;
+			if (__pictureX2 < 0 || __pictureX2 >= 128) {
+				__pictureX2 -= 128;
+			}
+			if (test_bit(__pictureData, __pictureBit)) {
+				pixel_oled(__pictureX2, __pictureY2, !invert);
+			}
+			else {
+				pixel_oled(__pictureX2, __pictureY2, invert);
+			}
+		}
+	}
+}
+combo rgb {
+  wait(1);
+  set_rgb(colors, colors[1], colors[2]);
+  colors[dec] --; colors[incs] ++;
+  if(!colors[dec]) { incs = (incs + 1) % 3; dec = (dec + 1) % 3; }
+}
+ 
+
+
+
+	
+

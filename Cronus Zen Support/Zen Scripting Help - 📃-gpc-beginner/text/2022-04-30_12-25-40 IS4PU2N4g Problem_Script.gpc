@@ -1,0 +1,1110 @@
+unmap XB1_LY;
+unmap XB1_LX;
+unmap XB1_LB;
+
+
+
+int forward = XB1_RIGHT;
+int back = XB1_LEFT;
+int switch_;
+int CH
+int counterhit = 0;
+
+
+
+///////////// Copy and pasties ///////// KBD SSF SSB iWR
+
+main {
+
+
+  vm_tctrl(-9);
+
+
+  ///////////////
+
+  if(combo_running(ch1)) {
+    set_val(back, 0);
+    combo_stop(KBD);
+  }
+
+  if(get_val(XB1_B)) {
+    set_val(back, 0);
+    set_val(XB1_B, 0);
+    set_val(XB1_LEFT, 0);
+    set_val(XB1_RIGHT, 0);
+  }
+
+
+  //////////////////////////////////////////// THIS IS WHERE THE PROBLEM IS /////////////
+
+  if(get_ival(XB1_B)) {
+    set_val(back, 0);
+    combo_run(ch1);
+    combo_stop(KBD);
+  }
+  else combo_stop(ch1);
+
+  if(get_val(XB1_RX) <= -80)
+    combo_run(RAGERD);
+  else combo_stop(RAGERD);
+
+  if((get_val(XB1_RY) < -80) && get_brtime(back) > 175) {
+    combo_run(ju);
+    set_val(back, 0)
+  }
+  else combo_stop(ju);
+
+  if(get_ival(XB1_RT))
+    combo_run(RTCOMBO);
+  else combo_stop(RTCOMBO);
+
+  if(get_ival(XB1_RB))
+    combo_run(RBCOMBO);
+  else combo_stop(RBCOMBO);
+
+  if(get_ival(XB1_A))
+    combo_run(acombo);
+  else combo_stop(acombo);
+
+  if(get_ival(XB1_LT))
+    combo_run(LTCOMBO);
+  else combo_stop(LTCOMBO);
+
+  if(event_press(XB1_LB))
+    combo_run(LBCOMBO);
+
+  if(event_release(XB1_LB))
+    combo_stop(LBCOMBO);
+
+
+  /////////////////////////////////////////////////////////////////////// Wakeup, Stomp, Taunt ///////////////////////////////
+
+  if(get_val(XB1_VIEW))
+    combo_run(taunt);
+
+  if(get_val(XB1_RX) >= 80)
+    combo_run(Throw1);
+
+  ////////////////
+
+
+  if(get_val(XB1_RY) >= 80)
+    combo_run(wakeup);
+  if(get_val(XB1_LY) < -80)
+    combo_run(punchies);
+
+  if(event_press(XB1_X))
+    combo_run(jabs);
+
+  set_val(XB1_X, 0);
+
+  if(event_release(XB1_X))
+    combo_stop(jabs);
+
+  if(event_press(XB1_Y))
+    combo_run(YA);
+
+  if(event_release(XB1_Y))
+    combo_stop(YA);
+
+
+  //////////////////// counterhitstuff/ //////////////
+
+  if(get_val(XB1_LX) >= 80)
+    combo_run(counterhit);
+
+
+  ///////////////////// Movement Stuff//////////////
+
+  set_val(XB1_RB, 0);
+
+  if(get_val(XB1_UP)) {
+    set_val(XB1_UP, 0);
+    combo_run(SSB);
+  }
+
+  if(get_val(XB1_DOWN)) {
+    set_val(XB1_DOWN, 0)
+    combo_run(SSF);
+  }
+
+
+  //////////////////////////////////////////////// Switch ///////////////////
+
+  // Combo facing Right
+  if(event_press(XB1_LS)) {
+    forward = XB1_RIGHT;
+    back = XB1_LEFT;
+  }
+
+  // Combo facing Left
+  if(event_press(XB1_RS)) {
+    forward = XB1_LEFT;
+    back = XB1_RIGHT;
+  }
+
+  if(get_val(XB1_LS))
+    switch_ = TRUE;
+  else if(get_val(XB1_RS))
+    switch_ = FALSE;
+
+  /////////////////////////////////////////////////
+
+
+  if(get_ival(XB1_DOWN) && get_val(back)) {
+    combo_stop(SSF);
+    combo_stop(KBD);
+    combo_run(iWD);
+    set_val(XB1_DOWN, 100);
+    set_val(back, 100);
+  }
+
+  //////////////
+
+
+  if(get_ival(XB1_DOWN) && get_ival(forward)) {
+    set_val(forward, 0);
+    set_val(XB1_DOWN, 0);
+    combo_stop(SSF);
+    combo_stop(iWR);
+    combo_run(LPCOMBO);
+  }
+  else if(event_release(XB1_DOWN)) {
+    combo_stop(LPCOMBO);
+  }
+
+  if(combo_running(LPCOMBO)) {
+    set_val(forward, 0);
+    combo_stop(SSF);
+    set_val(XB1_DOWN, 0);
+  }
+
+  //////////////
+
+
+  if(switch_) {
+    set_val(XB1_LEFT, 0);
+    if(get_lval(XB1_LEFT))
+      combo_run(KBD);
+    if(get_lval(forward))
+      combo_run(iWR);
+  }
+  else {
+    set_val(XB1_RIGHT, 0);
+    if(get_lval(XB1_LEFT))
+      combo_run(iWR);
+    if(get_lval(XB1_RIGHT))
+      combo_run(KBD);
+  }
+
+  if(get_ival(XB1_LT)) {
+    combo_stop(KBD);
+    combo_stop(SSF);
+    combo_stop(SSB);
+    combo_stop(iWR);
+    set_val(back, 0);
+    set_val(forward, 0);
+    set_val(XB1_LEFT, 0);
+    set_val(XB1_RIGHT, 0);
+    set_val(XB1_DOWN, 0);
+    set_val(XB1_UP, 0);
+  }
+
+  if(get_ival(XB1_LB)) {
+    combo_stop(KBD);
+    combo_stop(SSF);
+    combo_stop(SSB);
+    combo_stop(iWR);
+    set_val(back, 0);
+    set_val(forward, 0);
+    set_val(XB1_LEFT, 0);
+    set_val(XB1_RIGHT, 0);
+    set_val(XB1_DOWN, 0);
+    set_val(XB1_UP, 0);
+  }
+
+  if(get_ival(XB1_RB)) {
+    combo_stop(KBD);
+    combo_stop(SSF);
+    combo_stop(SSB);
+    combo_stop(iWR);
+    set_val(back, 0);
+    set_val(forward, 0);
+    set_val(XB1_LEFT, 0);
+    set_val(XB1_RIGHT, 0);
+    set_val(XB1_DOWN, 0);
+    set_val(XB1_UP, 0);
+  }
+
+
+}
+
+
+
+combo RBCOMBO {
+  set_val(XB1_DOWN, 100);
+  set_val(XB1_RIGHT, 100);
+  wait(150);
+  set_val(XB1_DOWN, 0);
+  wait(20);
+  set_val(XB1_Y, 100);
+  wait(130);
+  set_val(XB1_Y, 0);
+  wait(80);
+  wait(10);
+  set_val(forward, 100);
+  set_val(XB1_Y, 100);
+  wait(1290);
+  set_val(forward, 0);
+  set_val(XB1_Y, 100);
+  //////////////////
+  wait(250);
+  set_val(forward, 100); // forward
+  wait(30);
+  set_val(forward, 100); // forward
+  set_val(XB1_Y, 100);
+  wait(60);
+  set_val(forward, 0); // forward
+  set_val(XB1_Y, 100);
+  wait(50);
+  set_val(XB1_Y, 0);
+  wait(70);
+  set_val(XB1_X, 100);
+  wait(90);
+  set_val(XB1_X, 0);
+  wait(130);
+  set_val(XB1_B, 100);
+  wait(1140);
+  set_val(XB1_B, 0)
+  //////////
+  set_val(back, 100);
+  wait(90);
+  set_val(back, 0);
+  wait(80);
+  set_val(back, 100);
+  wait(260);
+  set_val(back, 0);
+  wait(10);
+  set_val(forward, 100);
+  wait(20);
+  /////////////////
+  set_val(forward, 100);
+  set_val(XB1_A, 100);
+  wait(130);
+  set_val(forward, 0);
+  set_val(XB1_A, 100);
+  wait(10);
+  set_val(XB1_A, 0);
+  wait(115);
+  set_val(back, 100);
+  wait(120);
+  set_val(back, 0);
+  wait(200);
+  set_val(XB1_B, 100);
+  wait(130);
+  set_val(XB1_B, 0);
+  wait(160);
+  set_val(XB1_X, 100);
+  wait(120);
+  set_val(XB1_X, 0);
+  wait(380);
+  set_val(XB1_Y, 100);
+  wait(60);
+  set_val(XB1_Y, 0);
+}
+
+
+
+combo LBCOMBO {
+  set_val(XB1_DOWN, 100);
+  set_val(forward, 100);
+  set_val(XB1_A, 100);
+  wait(940);
+  /////////////
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(50);
+  set_val(forward, 100);
+  set_val(XB1_A, 100);
+  wait(40);
+  set_val(forward, 0);
+  set_val(XB1_A, 100);
+  wait(1000);
+  set_val(XB1_A, 0);
+  //////
+  wait(100);
+  set_val(forward, 100);
+  wait(80);
+  set_val(forward, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(100);
+  //////
+  set_val(XB1_Y, 100);
+  set_val(XB1_X, 100);
+  wait(100);
+  set_val(XB1_Y, 0);
+  set_val(XB1_X, 0);
+  wait(110);
+  set_val(XB1_X, 100);
+  wait(80);
+  set_val(XB1_Y, 0);
+  /////////
+  wait(800);
+  set_val(XB1_X, 100);
+  wait(400);
+  ////////////////
+  set_val(back, 100);
+  set_val(XB1_A, 100);
+  wait(110);
+  set_val(back, 0);
+  set_val(XB1_A, 100);
+  wait(40);
+  set_val(XB1_A, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(130);
+  set_val(forward, 0);
+  wait(200);
+  set_val(XB1_B, 100);
+  wait(120);
+  set_val(XB1_B, 0);
+  wait(40);
+  set_val(XB1_B, 100);
+  wait(120);
+  set_val(XB1_B, 0);
+}
+
+
+
+combo LTCOMBO {
+  set_val(XB1_DOWN, 100);
+  wait(30);
+  set_val(XB1_DOWN, 100);
+  set_val(back, 100);
+  wait(50);
+  set_val(XB1_DOWN, 0);
+  set_val(back, 100);
+  wait(10);
+  set_val(back, 100);
+  set_val(XB1_B, 100);
+  wait(70);
+  set_val(back, 0);
+  set_val(XB1_B, 100);
+  wait(50);
+  set_val(XB1_B, 0);
+  /////////////
+  wait(650);
+  set_val(XB1_Y, 100);
+  set_val(XB1_X, 100);
+  wait(100);
+  set_val(XB1_Y, 0);
+  set_val(XB1_X, 0);
+  wait(110);
+  set_val(XB1_X, 100);
+  wait(80);
+  set_val(XB1_Y, 0);
+  ///////////////
+  wait(750);
+  set_val(XB1_B, 100);
+  wait(120);
+  set_val(XB1_B, 100);
+  set_val(XB1_A, 100);
+  wait(50);
+  set_val(XB1_B, 0);
+  set_val(XB1_A, 100);
+  wait(80);
+  set_val(XB1_A, 0);
+  wait(120);
+  set_val(XB1_B, 100);
+  wait(120);
+  set_val(XB1_B, 0);
+  wait(1075);
+  //////////////////
+  set_val(forward, 100);
+  wait(40);
+  set_val(forward, 0);
+  wait(71);
+  set_val(forward, 100);
+  wait(205);
+  set_val(forward, 0);
+  wait(15);
+  set_val(back, 100);
+  wait(15);
+  ////////////////
+  set_val(back, 100);
+  set_val(XB1_A, 100);
+  wait(110);
+  set_val(back, 0);
+  set_val(XB1_A, 100);
+  wait(40);
+  set_val(XB1_A, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(130);
+  set_val(forward, 0);
+  wait(200);
+  set_val(XB1_Y, 100);
+  wait(130);
+  set_val(XB1_Y, 0);
+  wait(40);
+  set_val(XB1_X, 100);
+  wait(120);
+  set_val(XB1_X, 0);
+}
+
+
+
+combo RTCOMBO {
+  set_val(XB1_UP, 100);
+  set_val(forward, 100);
+  wait(20);
+  set_val(XB1_UP, 100);
+  set_val(forward, 100);
+  set_val(XB1_B, 100);
+  wait(160);
+  set_val(XB1_UP, 100);
+  set_val(forward, 100);
+  set_val(XB1_B, 0);
+  wait(20);
+  set_val(XB1_UP, 0);
+  set_val(forward, 0);
+  wait(330);
+  set_val(XB1_DOWN, 100);
+  wait(100);
+  set_val(XB1_DOWN, 0);
+  wait(150);
+  /////////////////
+  set_val(XB1_DOWN, 100);
+  wait(90);
+  set_val(XB1_DOWN, 100);
+  set_val(forward, 100);
+  wait(40);
+  set_val(XB1_DOWN, 0);
+  set_val(forward, 100);
+  set_val(XB1_A, 100);
+  wait(110);
+  set_val(forward, 0);
+  set_val(XB1_A, 100);
+  wait(10);
+  set_val(XB1_A, 0);
+  wait(50);
+  set_val(XB1_B, 100);
+  wait(130);
+  set_val(XB1_B, 0);
+  /////////////////
+  wait(680);
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(80);
+  set_val(XB1_X, 100);
+  wait(400);
+  /////////
+  set_val(back, 100);
+  set_val(XB1_A, 100);
+  wait(200);
+  wait(40);
+  set_val(XB1_A, 0);
+  wait(90);
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 100);
+  set_val(XB1_B, 100);
+  wait(110);
+  set_val(forward, 0);
+  set_val(XB1_B, 100);
+  wait(40);
+  set_val(XB1_B, 0);
+  wait(50);
+  set_val(XB1_B, 100);
+  wait(100);
+  set_val(XB1_X, 100);
+  wait(300);
+  set_val(XB1_B, 100);
+  wait(280);
+  wait(1000);
+  //////////
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 0);
+  wait(90);
+  set_val(forward, 100);
+  wait(440);
+  set_val(forward, 0);
+  /////////
+  wait(50);
+  set_val(XB1_DOWN, 100);
+  set_val(XB1_A, 100);
+  wait(50);
+  set_val(XB1_Y, 100);
+  wait(300);
+}
+
+////////////////////////////
+
+
+
+combo ju {
+  set_val(forward, 100);
+  wait(20);
+  set_val(forward, 0);
+  wait(20);
+  set_val(back, 100);
+  wait(20);
+  set_val(back, 100);
+  set_val(XB360_Y, 100);
+  wait(20);
+  set_val(back, 0);
+  set_val(XB360_Y, 100);
+  wait(15);
+  set_val(XB360_Y, 0);
+  ////////////////
+  wait(590);
+  /////////////
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 0);
+  wait(70);
+  set_val(forward, 100);
+  wait(120);
+  //////////////////
+  set_val(XB360_DOWN, 100);
+  wait(30);
+  set_val(XB360_DOWN, 100);
+  set_val(forward, 100);
+  wait(30);
+  set_val(XB360_DOWN, 0);
+  set_val(forward, 100);
+  wait(30);
+  set_val(forward, 100);
+  set_val(XB360_A, 100);
+  wait(40);
+  set_val(forward, 0);
+  set_val(XB360_A, 100);
+  wait(40);
+  set_val(XB360_A, 0);
+  wait(30);
+  set_val(XB360_B, 100);
+  wait(30);
+  set_val(XB360_B, 0);
+  ////////////////////////
+  wait(770);
+  //////////////////
+  set_val(back, 100);
+  wait(55);
+  set_val(back, 100);
+  set_val(XB360_Y, 100);
+  wait(50);
+  set_val(back, 100);
+  set_val(XB360_Y, 100);
+  wait(10);
+  set_val(back, 100);
+  set_val(XB360_Y, 0);
+  wait(150)
+  set_val(back, 0);
+  set_val(XB360_B, 100);
+  wait(50);
+  set_val(XB360_B, 0);
+  ////////////////////////
+  wait(1100);
+  //////////////////
+  /////////////
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 0);
+  wait(70);
+  set_val(forward, 100);
+
+  wait(280);
+  //////////////////
+  set_val(back, 100);
+  wait(20);
+  set_val(back, 100);
+  set_val(XB1_A, 100);
+  wait(110);
+  set_val(back, 0);
+  set_val(XB1_A, 100);
+  wait(40);
+  set_val(XB1_A, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(130);
+  set_val(forward, 0);
+  wait(200);
+  set_val(XB1_B, 100);
+  wait(120);
+  set_val(XB1_B, 0);
+  wait(40);
+  set_val(XB1_B, 100);
+  wait(120);
+  set_val(XB1_B, 0);
+  wait(30);
+  set_val(XB1_X, 100);
+  wait(140);
+  set_val(XB1_Y, 100);
+  //////////////////
+  wait(4000);
+}
+
+/////////////////////
+
+
+
+/////////////////////////////////////////////// Non Combos ///////////////////
+
+combo KBD {
+  set_val(back, 100);
+  wait(20);
+  wait(20);
+  set_val(back, 100);
+  wait(190);
+  set_val(back, 100);
+  set_val(XB1_DOWN, 100);
+  wait(20);
+  wait(20);
+}
+
+
+
+combo SSF {
+  set_val(back, 100);
+  wait(20);
+  set_val(XB1_DOWN, 100);
+  wait(20);
+  wait(200);
+}
+
+
+
+combo SSB {
+  set_val(back, 100);
+  wait(20);
+  set_val(XB1_UP, 100);
+  wait(20);
+  wait(200);
+}
+
+
+
+combo iWR {
+  set_val(forward, 100);
+  wait(20);
+  wait(20);
+  set_val(forward, 100);
+  wait(20);
+  wait(20);
+  set_val(forward, 100);
+  wait(20);
+  wait(20);
+}
+
+
+
+combo iWD {
+  set_val(XB1_DOWN, 100);
+  set_val(back, 100);
+}
+
+
+
+combo taunt {
+  set_val(back, 100);
+  wait(20);
+  set_val(XB1_DOWN, 100);
+  wait(20);
+  wait(100);
+  set_val(back, 100);
+  wait(20);
+  set_val(XB1_UP, 100);
+  wait(20);
+  wait(100);
+
+}
+
+
+
+combo jabs {
+  set_val(forward, 100);
+  set_val(XB1_X, 100);
+  wait(20);
+  set_val(XB1_X, 0);
+  wait(90);
+  set_val(XB1_Y, 100);
+  wait(90);
+  set_val(XB1_Y, 0);
+  wait(90);
+  set_val(XB1_Y, 100);
+  wait(110);
+  set_val(XB1_Y, 0);
+  set_val(XB1_A, 100);
+  wait(50);
+}
+
+
+
+combo wakeup {
+  set_val(XB1_B, 100);
+  set_val(XB1_A, 100);
+  wait(90);
+  set_val(XB1_B, 0);
+  set_val(XB1_A, 0);
+}
+
+
+
+combo rage {
+  set_val(XB1_RB, 100);
+  wait(20);
+  set_val(XB1_RB, 0);
+}
+
+
+
+combo Stomp {
+  set_val(XB1_DOWN, 100);
+  set_val(XB1_B, 100);
+  set_val(XB1_A, 100);
+  wait(200);
+}
+
+
+
+combo acombo {
+  set_val(XB1_A, 100);
+  wait(50);
+  set_val(XB1_Y, 100);
+  set_val(XB1_A, 100);
+  wait(100);
+  set_val(XB1_Y, 100);
+  set_val(XB1_A, 0);
+  wait(50);
+  set_val(XB1_Y, 0);
+  wait(350);
+  set_val(XB1_X, 100);
+  wait(100);
+  set_val(XB1_X, 0);
+  wait(50);
+  set_val(XB1_B, 100);
+  wait(130);
+  set_val(XB1_B, 0);
+}
+
+/////////////////////////////
+
+
+
+combo Throw1 {
+  set_val(XB1_X, 100);
+  set_val(XB1_A, 100);
+  wait(100);
+}
+
+
+
+combo Throw2 {
+  set_val(XB1_Y, 100);
+  set_val(XB1_B, 100);
+
+}
+
+
+
+combo LPCOMBO {
+  set_val(XB1_DOWN, 100);
+  set_val(forward, 100);
+  wait(580);
+
+  wait(30);
+  wait(40);
+  set_val(XB1_DOWN, 100);
+  wait(120);
+  set_val(XB1_DOWN, 100);
+  set_val(forward, 100);
+  wait(70);
+  set_val(XB1_DOWN, 0);
+  set_val(forward, 100);
+  set_val(XB1_A, 100);
+  wait(200);
+  set_val(forward, 0);
+  set_val(XB1_B, 100);
+  wait(10);
+  set_val(XB1_B, 100);
+  set_val(XB1_A, 0);
+  wait(60);
+  set_val(XB1_B, 0);
+  wait(800);
+  ////////////////
+  set_val(XB1_B, 100);
+  wait(110);
+  set_val(XB1_B, 0);
+  set_val(XB1_A, 100);
+  wait(120);
+  set_val(XB1_A, 0);
+  wait(40);
+  set_val(XB1_B, 100);
+  wait(90);
+  set_val(XB1_B, 0);
+  //////////
+  wait(1170);
+  set_val(forward, 100);
+  wait(20);
+  wait(40);
+  set_val(forward, 100);
+  wait(250);
+  set_val(forward, 0);
+  wait(40);
+  //////////////////
+  set_val(XB1_LEFT, 100);
+  wait(20);
+
+  set_val(XB1_LEFT, 100);
+  set_val(XB1_A, 100);
+  wait(150);
+  set_val(XB1_LEFT, 0);
+  set_val(XB1_A, 0);
+  wait(90);
+  set_val(forward, 100);
+  wait(120);
+  set_val(forward, 0);
+  wait(160);
+  set_val(XB1_Y, 100);
+  wait(130);
+  set_val(XB1_Y, 0);
+  wait(110);
+  set_val(XB1_X, 100);
+  wait(100);
+  set_val(XB1_X, 0);
+
+}
+
+
+
+combo YA {
+  wait(50);
+  set_val(XB1_A, 100);
+  wait(50);
+}
+
+
+
+/////////////////// Rage drive combos/////////////
+
+combo RAGERD {
+  set_val(back, 100);
+  wait(20);
+  set_val(back, 100);
+  set_val(XB360_Y, 100);
+  set_val(XB360_X, 100);
+  wait(140);
+  set_val(back, 0);
+  set_val(XB360_Y, 100);
+  set_val(XB360_X, 100);
+  wait(10);
+  set_val(XB360_Y, 0);
+  set_val(XB360_X, 100);
+  wait(10);
+  set_val(XB360_X, 0);
+  wait(1390);
+  set_val(forward, 100);
+  wait(70);
+  set_val(forward, 0);
+  wait(110);
+  set_val(forward, 100);
+  wait(30);
+  set_val(forward, 100);
+  set_val(XB360_A, 100);
+  wait(600);
+  set_val(forward, 0);
+  set_val(XB360_A, 100);
+  wait(30);
+  set_val(XB360_A, 0);
+  wait(490);
+  //////////
+  set_val(forward, 100);
+  wait(40);
+  set_val(forward, 0);
+  wait(60);
+  set_val(forward, 100);
+  wait(120);
+  set_val(forward, 0);
+  ///////
+  set_val(XB360_DOWN, 100);
+  wait(60);
+  set_val(XB360_DOWN, 100);
+  set_val(forward, 100);
+  wait(50);
+  set_val(XB360_DOWN, 0);
+  set_val(forward, 100);
+  wait(100);
+  set_val(forward, 0);
+  set_val(XB1_A, 100);
+  wait(50);
+  set_val(XB1_A, 0);
+  wait(580);
+  /////////////////////////
+  set_val(XB360_DOWN, 100);
+  wait(20);
+  set_val(XB360_DOWN, 100);
+  set_val(forward, 100);
+  wait(30);
+  set_val(XB360_DOWN, 0);
+  set_val(forward, 100);
+  wait(20);
+  set_val(forward, 100);
+  set_val(XB360_A, 100);
+  wait(50);
+  set_val(forward, 100);
+  set_val(XB360_B, 100);
+  wait(20);
+  set_val(forward, 100);
+  set_val(XB360_B, 100);
+  set_val(XB360_A, 0);
+  wait(30);
+  set_val(forward, 0);
+  set_val(XB360_B, 0);
+  /////////////////////////
+  wait(835);
+  /////////////
+  set_val(forward, 100);
+  wait(52);
+  set_val(forward, 0);
+  wait(100);
+  set_val(forward, 100);
+  wait(60);
+  set_val(forward, 100);
+  set_val(XB360_Y, 100);
+  wait(50);
+  set_val(forward, 0);
+  set_val(XB360_Y, 100);
+  wait(100);
+  set_val(XB360_Y, 0);
+
+  wait(1000);
+}
+
+
+
+///////////////////// Counterhit combos ./////////////////////////
+
+combo counterhit {
+  set_val(XB1_A, 100);
+  set_val(XB1_Y, 100);
+  set_val(XB1_X, 100);
+  set_val(XB1_B, 100);
+  counterhit = 1;
+}
+
+
+
+combo ch1 {
+  set_val(XB1_B, 100);
+  wait(30);
+  wait(570);
+  /////////////////////
+  set_val(XB1_DOWN, 100);
+  wait(20);
+  set_val(XB1_DOWN, 100);
+  set_val(back, 100);
+  wait(20);
+  set_val(back, 100);
+  set_val(XB1_Y, 100);
+  wait(20);
+  set_val(XB1_Y, 0);
+  wait(20);
+  set_val(XB1_B, 100);
+  wait(40);
+  set_val(XB1_B, 0);
+  /////////////
+  wait(1050);
+  //////////////
+
+  set_val(forward, 100);
+  wait(40);
+  set_val(forward, 0);
+  wait(70);
+  set_val(forward, 100);
+  wait(200);
+  set_val(forward, 0);
+  wait(15);
+  set_val(back, 100);
+  wait(15);
+  ////////////////
+  set_val(back, 100);
+  set_val(XB1_A, 100);
+  wait(20);
+  set_val(forward, 100);
+  wait(20);
+  wait(500);
+  ////////////////
+  set_val(XB1_UP, 100);
+  wait(20);
+  wait(80);
+  /////////////
+  set_val(forward, 100);
+  set_val(XB1_X, 100);
+  ////////////
+  wait(400);
+  ////////////
+  set_val(back, 100);
+  set_val(XB1_A, 100);
+  wait(20);
+  set_val(forward, 100);
+  wait(500);
+  set_val(XB1_Y, 100)
+  wait(200);
+  set_val(XB1_X, 100);
+  wait(20);
+  wait(2000);
+}
+
+
+
+combo punchies {
+  set_val(forward, 100);
+  wait(30);
+  set_val(forward, 0);
+  wait(50);
+  set_val(forward, 100);
+  wait(30);
+  set_val(forward, 100);
+  set_val(XB360_Y, 100);
+  wait(50);
+  set_val(forward, 0);
+  set_val(XB360_Y, 100);
+  wait(410);
+  set_val(XB360_Y, 0);
+  wait(300);
+}
+
+
+
+function block_all_input() {
+  set_val(PS4_UP, 0);
+  set_val(PS4_DOWN, 0);
+  set_val(PS4_LEFT, 0);
+  set_val(PS4_RIGHT, 0);
+  set_val(PS4_CROSS, 0);
+  set_val(PS4_CIRCLE, 0);
+  set_val(PS4_SQUARE, 0);
+  set_val(PS4_TRIANGLE, 0);
+  set_val(PS4_L1, 0);
+  set_val(PS4_R1, 0);
+  set_val(PS4_L3, 0);
+  set_val(PS4_R3, 0);
+  set_val(PS4_OPTIONS, 0);
+  set_val(PS4_SHARE, 0);
+  set_val(PS4_TOUCH, 0);
+  set_val(PS4_PS, 0);
+  set_val(PS4_LX, 0);
+  set_val(PS4_LY, 0);
+  set_val(PS4_RX, 0);
+  set_val(PS4_RY, 0);
+  set_val(PS4_L2, 0);
+  set_val(PS4_R2, 0);
+}

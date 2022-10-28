@@ -1,0 +1,150 @@
+int toggle_afk;
+int toggle_auction1;
+int toggle_buy;
+int random_num;
+int varlow;
+int varhigh;
+
+main {
+// RB + A = RACE 
+ if(get_ival(XB1_RB) && event_press(XB1_B))
+  toggle_afk = !toggle_afk;
+ if(toggle_afk){
+  combo_run(AFK);
+  }
+  else combo_stop(AFK);
+
+
+
+// RB + Y = AUCTION SCAN
+ if(get_ival(XB1_RB) && event_press(XB1_Y))
+  toggle_auction1 = !toggle_auction1;
+ if(toggle_auction1)
+  {
+  combo_stop(BUY);
+  combo_run(SCAN);
+  }
+  else combo_stop(SCAN);
+  
+// RB + X = AUCTION SCAN AND BUY  
+ if(get_ival(XB1_RB) && event_press(XB1_X))
+  toggle_buy = !toggle_buy;
+ if(toggle_buy)
+  {
+  combo_stop(SCAN);
+  combo_run(BUY);
+  }
+  else combo_stop(BUY);
+ }
+
+combo AFK {
+ varlow = 98;
+ varhigh = 101;
+ wait(40);
+ set_val(XB1_A, 100);
+ wait(40);
+ random_num=random(varlow,varhigh);
+ set_val(XB1_RT, random_num);
+ wait(10000);
+ random_num=random(varlow,varhigh);
+ set_val(XB1_RT, random_num);
+ wait(10000);
+ random_num=random(varlow,varhigh);
+ set_val(XB1_RT, random_num);
+ wait(10000);
+ random_num=random(varlow,varhigh);
+ set_val(XB1_RT, random_num);
+ wait(10000);
+ random_num=random(varlow,varhigh);
+ set_val(XB1_RT, random_num);
+ wait(12000);
+ set_val(XB1_RT, 0);
+ wait(40);
+ set_val(XB1_X, 100);
+ wait(40);
+ wait(1000);
+ set_val(XB1_A, 100);
+ wait(40);
+ wait(6000);
+}
+
+combo SCAN {
+ wait(300);
+ 
+// A - SEARCH AUCTIONS
+  set_val(XB1_A, 100);
+   wait(100);
+    set_val(XB1_A, 0);
+     wait(300);
+
+// A - SEARCH FILTER
+  set_val(XB1_A, 100);
+   wait(100); 
+    set_val(XB1_A, 0);
+     wait(3000);
+
+// B - TO BACK OUT TO INISITAL SEARCH SCREEN
+  set_val(XB1_B, 100);
+   wait(100);
+    set_val(XB1_B, 0);
+     wait(500);
+}
+
+combo BUY {
+
+ wait(300);
+ 
+// A - SEARCH AUCTIONS
+  set_val(XB1_A, 100);
+   wait(100);
+    set_val(XB1_A, 0);
+     wait(300);
+
+// A - SEARCH FILTER
+  set_val(XB1_A, 100);
+   wait(100); 
+    set_val(XB1_A, 0);
+     wait(3000);
+
+// Y - BRING UP THE AUCTION MENU
+  set_val(XB1_Y, 100);
+   wait(100);
+    set_val(XB1_Y, 0);
+     wait(300);
+
+// DOWN - TO SELECT THE BUY IT NOW OPTION
+  set_val(XB1_DOWN, 100);
+   wait(100);
+    set_val(XB1_DOWN, 0); 
+     wait(300);
+
+// A - TO CLICK BUY IT NOW
+  set_val(XB1_A, 100);
+   wait(100); 
+    set_val(XB1_A, 0);
+     wait(300);
+
+// A - TO CLICK BUY IT NOW CONFIRM
+  set_val(XB1_A, 100);
+   wait(100); 
+    set_val(XB1_A, 0);
+     wait(5000);
+
+// A - BUYOUT SUCCESSFUL
+  set_val(XB1_A, 100);
+   wait(100); 
+    set_val(XB1_A, 0);
+     wait(300);
+     
+// on successful buy you need to press back or down and A to collect car
+
+// B - TO BACK OUT TO INISITAL SEARCH SCREEN
+  set_val(XB1_B, 100);
+   wait(100);
+    set_val(XB1_B, 0);
+     wait(500);
+
+// END FUNCTION
+// combo_stop(BUY);
+}
+

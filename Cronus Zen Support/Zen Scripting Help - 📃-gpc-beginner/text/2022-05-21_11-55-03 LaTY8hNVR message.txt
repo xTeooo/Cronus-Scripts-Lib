@@ -1,0 +1,83 @@
+```
+   if (AutoSwap) {
+                        if (GameIDX == 1) {
+                                if (get_ival(FIRE)) {
+                                        if (get_rumble(RUMBLE_A) > 0 && !Rumble_Wait_Timer) {
+                                                Rumble_Wait_Timer = TRUE;
+                                        }
+                                        if (Rumble_Wait_Timer) {
+                                                Rumble_Timer += get_rtime();
+
+                                                if (get_rumble(RUMBLE_A) > 0)
+
+                                                        Cur_Rumble = get_rumble(RUMBLE_A) * 255 / 100;
+
+                                                if (Cur_Rumble > Old_Rumble) {
+                                                        Old_Rumble = Cur_Rumble;
+                                                        Rumble_Timer = 0;
+                                                } else if (Cur_Rumble < Old_Rumble)
+
+                                                        Old_Rumble = Cur_Rumble;
+
+                                                if (Rumble_Timer >= Fire_Rate_Timer)
+
+                                                        rapid_fire_timer = TRUE;
+                                        }
+                                        if (rapid_fire_timer) {
+                                                Secondary_WPN = TRUE;
+                                                Rapid_Fire = TRUE;
+                                        } else {
+                                                Rapid_Fire = FALSE;
+                                                Secondary_WPN = FALSE;
+                                        }
+                                        if (Rapid_Fire) {
+                                                if (Akimbo) {
+                                                        combo_run(AKIMBO);
+                                                } else {
+                                                        combo_run(RAPID_FIRE);
+                                                }
+                                        }
+                                }
+                                if (event_release(FIRE)) {
+                                        rapid_fire_timer = FALSE;
+                                        combo_stop(RAPID_FIRE);
+                                        Rumble_Timer = 0;
+                                        Rumble_Wait_Timer = FALSE;
+                                        Old_Rumble = 0;
+                                }
+                        } // → end AutoSwap Cold War
+                        if (GameIDX == 3) {
+                                if (get_ival(FIRE)) {
+                                        R_C_1 = get_rumble(RUMBLE_RT);
+                                        R_C_2 = get_rumble(RUMBLE_B);
+                                        R_C = (R_C_1 + R_C_2);
+
+                                        if (R_C >= 20) {
+                                                Rapid_Fire = FALSE;
+                                                Secondary_WPN = FALSE;
+                                                combo_stop(AKIMBO);
+                                                combo_stop(RAPID_FIRE);
+
+                                        }
+                                        if (R_C <= 16) {
+                                                Rapid_Fire = TRUE;
+                                                Secondary_WPN = TRUE;
+                                                if (Rapid_Fire) {
+                                                        if (Akimbo) {
+                                                                combo_run(AKIMBO);
+                                                        } else {
+                                                                combo_run(RAPID_FIRE);
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                        if (GameIDX == 2) {
+                                if (get_ival(FIRE)) {
+                                        R_C_1 = get_rumble(RUMBLE_RT);
+                                        R_C_2 = get_rumble(RUMBLE_B);
+                                        R_C = (R_C_1 + R_C_2);
+
+                                        if (R_C >= 12) {
+                                                Rapid_Fire = FALSE;
+   

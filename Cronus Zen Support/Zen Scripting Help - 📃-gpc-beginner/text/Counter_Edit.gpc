@@ -1,0 +1,108 @@
+const string Numbers[] = {
+  "0",
+  //"0",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5",
+  "6",
+  "7",
+  "8",
+  "9"
+}
+
+const string Dot = ".";
+
+int Start;
+int Count;
+int Num1;
+int Num2;
+int Num3;
+int Num4;
+int Num5;
+int Num6;
+
+init {
+
+  cls_oled(OLED_BLACK);
+  DisplayCounter();
+
+}
+
+main {
+
+  if(Start) {
+    combo_run(Count);
+    // Stop the Count
+    if(event_press(PS4_CIRCLE)) {
+      Start = FALSE;
+    }
+  }
+  else {
+    combo_stop(Count);
+    // Start Counter
+    if(event_press(PS4_CROSS)) {
+      Start = TRUE;
+    }
+  }
+
+  // Reset the Counter
+  if(event_press(PS4_TRIANGLE)) {
+    Count = 0;
+    Num1 = 0;
+    Num2 = 0;
+    Num3 = 0;
+    Num4 = 0;
+    Num5 = 0;
+    Num6 = 0;
+    DisplayCounter();
+  }
+
+}
+
+combo Count {
+
+  Count += get_rtime();
+  if(Count >= 40) {
+    Num1 ++;
+    Count -= 40;
+  }
+  if(Num1 == 10) {
+    Num2 ++;
+    Num1 = 0;
+  }
+  if(Num2 == 10) {
+    Num3 ++;
+    Num2 = 0;
+  }
+  if(Num3 == 10) {
+    Num4 ++;
+    Num3 = 0;
+  }
+  if(Num4 == 10) {
+    Num5 ++;
+    Num4 = 0;
+  }
+  if(Num5 == 10) {
+    Num6 ++;
+    Num5 = 0;
+  }
+  DisplayCounter();
+  wait(1);
+
+  // Place Youre combo you want to count here
+
+}
+
+function DisplayCounter() {
+
+  print(30, 25, OLED_FONT_SMALL, OLED_WHITE, Numbers[Num6]);
+  print(38, 25, OLED_FONT_SMALL, OLED_WHITE, Numbers[Num5]);
+  print(46, 25, OLED_FONT_SMALL, OLED_WHITE, Numbers[Num4]);
+  print(54, 25, OLED_FONT_SMALL, OLED_WHITE, Dot[0]);
+  print(62, 25, OLED_FONT_SMALL, OLED_WHITE, Numbers[Num3]);
+  print(70, 25, OLED_FONT_SMALL, OLED_WHITE, Numbers[Num2]);
+  print(78, 25, OLED_FONT_SMALL, OLED_WHITE, Numbers[Num1]);
+
+}

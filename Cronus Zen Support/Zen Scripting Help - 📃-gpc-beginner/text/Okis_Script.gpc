@@ -1,0 +1,194 @@
+// GPC Online Library
+// dogzthefighter_anti_recoil,_aim_assist_+_polar_v3_(zen_only).gpc
+
+//Sticky Aim Assist
+define sticky_aim_assist = 1; //[0 = OFF / 1 = ON] strongest aim assist for COD 
+define _v = 22,21;               //If your screen shakes whilst using aim assist - lower this value (try 22, 20)
+
+//HAIR TRIGGERS ON L2 & R2 (REGISTER AT 100% INSTANTLY WHEN TOUCHED)
+int HairTriggers = TRUE; 
+
+//Rapid Fire (L2 + LEFT)
+int Rapid_Fire = FALSE;
+
+//Dropshot (L2 + RIGHT)
+int DropShot = FALSE; 
+int DropShotSpeed = 30; 
+
+// NO NEED TO ALTER BELOW HERE
+define RX         = PS4_RX;  
+define RY         = PS4_RY;  
+define LX         = PS4_LX;  
+define LY         = PS4_LY;     
+define PLX		  = POLAR_LX;
+define PRX		  = POLAR_RX;
+define PRY		  = POLAR_RY;
+define RS         = POLAR_RS;
+define VIB_A      = RUMBLE_A;
+
+int POLAR_BOOST_FIRE = TRUE;//BOOST POLAR AIM ASSIST ON FIRE(WHEN AIMING & SHOOTING)
+int POLAR_SHAKE_FIRE = TRUE;//SHAKE POLAR AIM ASSIST ON FIRE(WHEN AIMING & SHOOTING)
+int POLAR_ON_FIRE    = TRUE;//POLAR ASSIST (ON FIRE BUTTON) 
+int POLAR_ON_ADS     = TRUE;//POLAR ASSIST (ON ADS BUTTON)
+int POLAR_ASSIST     = TRUE;//POLAR AIM ASSIST
+int DoGz_AIM_ASSIST  = TRUE;//DOGZ AIM ASSIST
+int DoGz_ANTIRECOIL  = TRUE;//DOGZ ANTI RECOIL
+int VM               = TRUE;//VM SPEED
+
+int RADIUS          =   8; //POLAR RADIUS //MAIN SETTING
+int ANGLE           =  20; //POLAR ANGLE  //MAIN SETTING
+int POLAR_BOOST     =   6; //POLAR BOOST  //SECONDARY SETTING
+int POLAR_SHAKE     =  20; //POLAR SHAKE  //SECONDARY SETTING
+int A_B_S           =   2; //ACTUAL INPUT DIVIDE
+int POLAR_RELEASE   =  15; //POLAR RELEASE
+int D___AS          =   7; //DOGZ AIMASSIST +
+int D_AS1           =  -7; //DOGZ AIMASSIST -
+int D__AS1          =   8; //DOGZ AIMASSIST INVERT
+int DASR            =  50; //DOGZ AIMASSIST RELEASE
+int VMC             =   0; //VIRTUAL MACHINE ZEN SPEED TIME 
+define VMCR         =   0; // VIRTUAL MACHINE TIME 
+define CUT_OUT      = 500; //DOGZ AA CUTOUT TIME
+int ARC_VAL         =  40; //DOGZ RECOIL VALUE
+int ARC___VAL       =  50; //DOGZ RECOIL INVERT VALUE
+int DIVIDE          =   3; //DOGZ RECOIL DIVIDE 
+int RECOIL_RELEASE  =  40; //RECOIL_RELEASE
+
+int ARC,ARC_V,ARC__VAL,ARC____VAL;
+int POLAR_RADIUS,POLAR_ANGLE;
+int D_AS,D__AS,SPEED,CUT;
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/   	
+main {
+   if(get_val(PS4_L2)) combo_run(STICKY_AIM);
+        else combo_stop(STICKY_AIM);
+
+if(get_val(PS4_L2) && event_press(PS4_LEFT)) {
+        combo_run (vibrate);
+        Rapid_Fire=!Rapid_Fire;}
+        if (Rapid_Fire) {
+   if(get_val(PS4_R2)) {
+        combo_run (Rapiid_Fire);}}
+   
+   if(get_val(PS4_L2) && event_press(PS4_RIGHT)) {
+        combo_run (vibrate);
+        DropShot=!DropShot;}
+        if (DropShot) {
+   if(get_val(PS4_R2)) {
+        combo_run (DroppShott);}}
+        
+        if(HairTriggers) {
+      deadzone(PS4_L2,PS4_R2,100,100); }
+
+	CUT += get_rtime();
+	if (CUT > 1000) CUT = 0;
+	POLAR_RADIUS = RADIUS;
+	POLAR_ANGLE  = ANGLE;
+
+if (POLAR_ASSIST && POLAR_ON_ADS  && get_ival(PS4_L2)  && abs(get_ival(PS4_RX)) <= POLAR_RELEASE && abs(get_ival(PS4_RY)) <= POLAR_RELEASE ||
+	POLAR_ASSIST && POLAR_ON_FIRE && get_ival(PS4_R2) && abs(get_ival(PS4_RX)) <= POLAR_RELEASE && abs(get_ival(PS4_RY)) <= POLAR_RELEASE) {
+
+if (POLAR_BOOST_FIRE && get_ival(PS4_R2)) {
+	POLAR_RADIUS = POLAR_RADIUS + POLAR_BOOST;
+	}
+	else {
+	POLAR_RADIUS = POLAR_RADIUS;
+	}
+if (POLAR_SHAKE_FIRE && get_ival(PS4_R2)) {
+	POLAR_ANGLE = POLAR_ANGLE + POLAR_SHAKE;
+	}
+	else {
+	POLAR_ANGLE = POLAR_ANGLE;
+	}    
+    set_polar(RS,SPEED = (SPEED + POLAR_ANGLE) % 360,abs(get_ival(PRX)) / A_B_S + POLAR_RADIUS * 328);
+}
+
+if (DoGz_AIM_ASSIST && abs(get_ival(PS4_RX)) < DASR && abs(get_ival(PS4_RY)) < DASR) {
+if (get_ival(PS4_L2) > 98 && get_ptime(PS4_L2) &&  CUT >= CUT_OUT) { 
+	D_AS = TRUE;
+	AIM();
+	}
+}
+
+if (DoGz_ANTIRECOIL) {
+if (get_ival (PS4_L2) && get_ival (PS4_R2) && abs(get_ival(PS4_RY)) <= RECOIL_RELEASE && abs(get_ival(PS4_RX)) <= RECOIL_RELEASE && get_rumble(VIB_A)) {
+	ARC = TRUE;
+	DoGz_ARC();
+	}
+if (event_release(PS4_L2) || event_release(PS4_R2)) {
+	ARC = FALSE;
+		}
+	}
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo vibrate {     
+set_rumble(RUMBLE_A, 85);      
+wait(220);                         
+reset_rumble();                    
+}                                      
+combo Rapiid_Fire {
+	set_val(PS4_R2, 100); 
+	wait(35);
+	set_val(PS4_R2, 0); 
+	wait(25);
+}
+combo DroppShott {
+	set_val(PS4_CIRCLE,100);
+	wait(40);
+	wait(DropShotSpeed);
+	set_val(PS4_CIRCLE,100);
+}
+combo STICKY_AIM {
+	set_val(PS4_RY,xy_val(PS4_RY, _v));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v));
+	set_val(PS4_LX,xy_val(PS4_LX, _v));
+	wait(20);
+	set_val(PS4_RY,xy_val(PS4_RY, _v * -1));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v * -1));
+	set_val(PS4_LX,xy_val(PS4_LX, _v * -1));
+	wait(20);
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+function xy_val(f_axis,f_val) {
+if(abs(get_val(f_axis)) < (_v + 1))  
+return f_val;    
+return get_val(f_axis);
+}
+function AIM() {
+if (D_AS) {
+if (D_AS && VM) {
+	vm_tctrl(VMC);
+	}
+	D__AS ++;
+if (D__AS >= D___AS)  D__AS = D__AS1;
+	D__AS1 --;
+if (D__AS1 <= D_AS1)  D__AS1 = D__AS;
+	D__AS ++;
+if(get_ival(PS4_L2)) {	
+	set_val (PS4_RX,get_ival(PS4_RX) + D__AS);
+	set_val (PS4_RY,get_ival(PS4_RY) + D__AS);
+	}
+if(get_ival(PS4_R2)) {	
+	set_val (PS4_RX,get_ival(PS4_RX) + D__AS);
+	set_val (PS4_RY,get_ival(PS4_RY) + D__AS);
+		}
+	}
+}
+function DoGz_ARC () {
+if (ARC){
+	ARC__VAL   = ARC_VAL / DIVIDE;
+	ARC____VAL = ARC_VAL / DIVIDE;
+	ARC_VAL ++;
+if (ARC_VAL + ARC_V >= ARC___VAL + ARC_V)  ARC_VAL = ARC__VAL;
+	ARC__VAL --;
+if (ARC__VAL <= ARC____VAL)  ARC__VAL = ARC_VAL;
+	ARC_VAL ++;
+	set_val (PS4_RY,get_ival(PS4_RY) + ARC_VAL + ARC_V);
+	}
+}

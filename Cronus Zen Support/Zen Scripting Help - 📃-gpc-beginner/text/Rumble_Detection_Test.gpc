@@ -1,0 +1,140 @@
+const string matched_str = "Close Match!";
+
+
+
+int rec_rumble_array[20];
+int rec_record_mode;
+int rec_run_capture;
+int rec_shoot_time;
+int rec_rumble_count;
+int i;
+
+int check_rumble_array[20];
+int check_check_mode;
+int check_run_capture;
+int check_shoot_time;
+int check_rumble_count;
+int check_i;
+int check_match_count;
+int check_compare_i;
+int check_done_count;
+
+
+
+init {
+
+
+  cls_oled(OLED_BLACK);
+
+
+}
+
+
+
+main {
+
+
+  // Record
+
+  if(event_press(XB1_UP)) {
+    rec_record_mode = !rec_record_mode;
+    if(rec_record_mode) {
+      set_ledx(LED_2,255);
+      for(i = 0; i < 19; i ++) {
+        rec_rumble_array[i] = 101;
+      }
+      rec_run_capture = 0;
+      rec_shoot_time = 0;
+      rec_rumble_count = 0;
+    }
+  }
+
+  if(get_ival(XB1_RT) && rec_record_mode) {
+    if(get_rumble(RUMBLE_B))
+      rec_run_capture = TRUE;
+    if(rec_run_capture) {
+      if(rec_shoot_time <= 0) {
+        rec_rumble_array[rec_rumble_count] = get_rumble(RUMBLE_B);
+        rec_rumble_count ++;
+        if(rec_rumble_count == 19)
+          rec_record_mode = FALSE;
+        rec_shoot_time += 100;
+      }
+      rec_shoot_time -= get_rtime();
+    }
+  }
+
+
+  // Check
+
+  if(event_press(XB1_DOWN)) {
+    check_check_mode = !check_check_mode;
+    if(check_check_mode) {
+      set_hsb(110,100,75);
+      for(i = 0; i < 19; i ++) {
+        check_rumble_array[i] = 101;
+      }
+      check_run_capture = 0;
+      check_shoot_time = 0;
+      check_rumble_count = 0;
+      check_match_count = 0;
+      check_done_count = 0;
+    }
+  }
+
+  if(get_ival(XB1_RT) && check_check_mode) {
+    if(get_rumble(RUMBLE_B))
+      check_run_capture = TRUE;
+    if(check_run_capture) {
+      if(check_shoot_time <= 0) {
+        check_rumble_array[check_rumble_count] = get_rumble(RUMBLE_B);
+        for(check_i = 0; check_i < 19; check_i ++) {
+          if(check_rumble_array[check_i] < 101)
+            check_done_count ++;
+        }
+        if(check_done_count >= 19) {
+          check_check_mode = FALSE;
+          set_val(TRACE_6,111);
+        }
+        if(!check_check_mode) {
+          for(check_compare_i = 0; check_compare_i < 19; check_compare_i ++) {
+            if(check_rumble_array[check_compare_i] <= rec_rumble_array[check_compare_i] + 2 && check_rumble_array[check_compare_i] >= rec_rumble_array[check_compare_i] - 2)
+              check_match_count ++;
+          }
+          if(check_match_count >= 12)
+            combo_run(Pattern_Matched);
+        }
+        check_shoot_time += 100;
+        check_rumble_count ++;
+      }
+      check_shoot_time -= get_rtime();
+    }
+  }
+
+
+  if(!(rec_record_mode || check_check_mode || combo_running(Pattern_Matched)))
+    set_hsb(60,100,75);
+
+
+  set_val(TRACE_1,check_shoot_time);
+
+  set_val(TRACE_2,check_match_count);
+  
+  set_val(TRACE_3,check_rumble_array[5]);
+  
+  set_val(TRACE_4,check_rumble_array[15]);
+  
+  set_val(TRACE_5,check_done_count);
+
+
+}
+
+
+
+combo Pattern_Matched {
+  print(20,30,OLED_FONT_SMALL,OLED_WHITE,matched_str[0]);
+  set_ledx(LED_4,255);
+  wait(1);
+  wait(2000);
+  cls_oled(OLED_BLACK);
+}

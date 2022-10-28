@@ -1,0 +1,52 @@
+// GPC Online Library
+// minecraft_autoclicker.gpc
+
+// Rapid Fire
+int    RapidFireToggle = TRUE;
+define RapidFireSpeed  =    1;  // Increasing the number will multiply the time per tap making it slower. So Higher Values = Slower and Lower = Faster. 1 Seems to be the fastest
+
+int WaitTimeCorrection;
+
+init {
+    if(RapidFireSpeed > 1)
+        WaitTimeCorrection = -10;
+}
+
+main {
+    if(get_val(PS4_DOWN) && event_press(PS4_DOWN))
+    {
+        RapidFireToggle = !RapidFireToggle;
+        combo_run(cVibrate);
+    }
+        if(RapidFireToggle && get_val(PS4_R2))
+            combo_run(Rapid_Fire);
+        else
+            combo_stop(Rapid_Fire)
+     
+}
+
+combo cVibrate {
+    set_rumble(RUMBLE_A, 85);
+    wait(225);
+    reset_rumble();
+}
+
+combo Rapid_Fire {
+    set_val(PS4_R2, 10000);
+    wait(20 * RapidFireSpeed);
+    set_val(PS4_R2, 0);
+    wait(10 * RapidFireSpeed - WaitTimeCorrection);
+    set_val(PS4_R2, 0); 
+  
+
+}
+
+main {
+if(get_ival(PS4_R2) > 10)
+     set_val(PS4_R2, 100);
+if(get_ival(PS4_L2) > 10)
+     set_val(PS4_L2, 100);
+     
+     
+     }
+    

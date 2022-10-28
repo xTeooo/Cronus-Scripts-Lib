@@ -1,0 +1,272 @@
+// GPC Online Library
+// apex_legends_easy_script_.gpc
+
+// GPC Online Library
+// apex_legends_FlappyBird_XD_ultimate_script.gpc
+
+/*
+      Credits  
+ ==================                         
+ === ItzSnack   ===
+ === Batts      ===
+ === Noozbar    ===
+ === Noflydelay ===
+ === Fadexz     ===
+ === Mrorion    ===
+ === AD37-      ===
+ ==================
+ 
+ ===================================================================================                                                        
+ ===                                   FEATURES                                  ===
+ ===================================================================================
+ ===                                   Aim Assist                                ===
+ ===                                   Anti Recoil                               ===
+ ===                                   Hair Trigger                              ===
+ ===                                   Speed Boost                               ===
+ ===                                   Ez Grenade                                ===
+ ===                                   Auto Strafe                               ===
+ ===================================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                           ===
+ ===================================================================================
+ ===================================================================================
+ ===               Hold L2/LT And Press D-PAD Left For Auto Strafe               ===
+ ===================================================================================
+ === Hold L2/LT And Press D-PAD DOWN to switch between Low and High Anti-Recoil  ===
+ ===                   Rumbles 1 = Low (Green) 2 = High (Pink)                   ===         
+ ===================================================================================
+ ===================================================================================
+ ===                 Double Tap CIRCLE/B To Activate Speed Boost                 ===
+ ===                           Sprint Before Activating                          ===
+ ===  Make sure to hold LY Forward if you let go it will automatically disable   ===
+ ===================================================================================
+*/
+ 
+ 
+ 
+    int R1L1_onoff    = TRUE;  //Flipped - Change to TRUE if user wants to play with flipped bumpers/triggers
+    int Strafe_On_Off = FALSE;
+    int d_tap;
+    int speed_onoff;
+    int strafeLeft, strafeRight;
+    int Rand = 32767;
+ 
+ 
+    define FIRE_BTN   = 4;
+    define ADS_BTN    = 7;
+    define R_X        = 9;
+    define R_Y        = 10;
+    define D_UP       = 13;
+    define DOWN       = 14;
+    define Off        = 0;
+ 
+    data(0,0,3,0,0,0,0,3);
+ 
+    const byte AR_T[][] =
+    {{10,50,140},
+     {10,90,150}};
+    const byte AR_V[][] =
+    {{35,20,10},
+     {37,22,15}};
+ 
+
+    int v,i,ar_y;
+    int ar_idx;
+    int rumble = -1;
+    int rumble_t;
+    //Aim Assist Values
+    int aa_p  = 24; 
+    int aa_n = -24; 
+    int aa_delay  = 17;
+ 
+init{
+    led_color(ar_idx);
+}
+
+
+
+main {
+ vm_tctrl(+7);  // 17ms update time
+ 
+//Double Tap Timer
+    if(d_tap)
+        d_tap -= get_rtime();
+ 
+ 
+//Flipped Bumbers/Triggers
+    if(R1L1_onoff) {
+        swap(3, 4); 
+        swap(6, 7);
+    }    
+    
+    
+    //Speed Boost
+    //CIRCLE pressed and LS is forward        
+    if(event_press(PS4_CIRCLE)) {
+        //Double Tap occured
+        if(d_tap && get_val(PS4_LY) < -95) 
+            speed_onoff = TRUE;
+        else
+            d_tap = 306;
+     }
+     //Run Combo
+     if(speed_onoff)  
+         combo_run(SPEED);
+     else
+         combo_stop(SPEED);
+     //LS is less than 50%
+     if(get_val(PS4_LY) > -50) 
+         speed_onoff = FALSE;
+ 
+ 
+ 
+ //EZ GRENADE 
+    if(event_press(PS4_RIGHT))
+        combo_run(Ez_Grenade);
+ 
+ 
+ 
+ //AIM ASSIST
+    if(get_val(ADS_BTN) && !get_val(FIRE_BTN)) 
+        combo_run(AA_XY);
+    else 
+        combo_stop(AA_XY);             
+ 
+ 
+ 
+ //ANTI-RECOIL
+    //Toggle
+    if(get_val(ADS_BTN) && event_press(DOWN)) {
+        ar_idx = !ar_idx;
+        rumble = ar_idx;
+        led_color(ar_idx);
+    }
+ 
+    if(get_val(ADS_BTN) && get_val(FIRE_BTN)) {
+        //Anti-Recoil Values
+        if(get_ptime(FIRE_BTN) >= AR_T[ar_idx][0])    
+            ar_y =  AR_V[ar_idx][0];
+        if(get_ptime(FIRE_BTN) >= AR_T[ar_idx][1] * 10)
+            ar_y = AR_V[ar_idx][1];
+        if(get_ptime(FIRE_BTN) >= AR_T[ar_idx][2] * 10)
+            ar_y = AR_V[ar_idx][2];
+ 
+        //CHECK PS4_RX
+        if(abs(get_val(PS4_RX)) < ar_y + 5)
+ 
+        //Set Anti-Recoil Values
+        set_val(R_Y,xy_val(R_Y,ar_y));
+    } 
+ 
+ 
+ 
+ 
+//AUTO STRAFE
+if(get_val(ADS_BTN) && event_press(PS4_LEFT)){Strafe_On_Off=!Strafe_On_Off;
+   if(Strafe_On_Off == TRUE){combo_run(notify_on);}
+      if(Strafe_On_Off == FALSE){combo_run(notify_off);}}
+         if(Strafe_On_Off) {
+          if((get_val(ADS_BTN)) && (get_val(FIRE_BTN))){        
+              combo_run(AutoStrafe);}
+ 
+    }
+ 
+ 
+//RUMBLE 2 = On, 1 = Off
+    if(rumble >= 0) {
+        if(!rumble_t)
+            set_rumble(RUMBLE_A,100);
+        rumble_t += get_rtime();
+        if(rumble_t ==  250)  
+            reset_rumble();
+        if(rumble_t == 400) {
+            rumble--;
+            rumble_t = 0;    
+         }
+     }
+}//End Of Main
+ 
+ 
+ 
+ 
+ combo AA_XY {
+    set_val(10,xy_val(10,aa_p));
+    wait(aa_delay)
+    set_val(9,xy_val(9,aa_p));
+    wait(aa_delay)
+    set_val(10,xy_val(10,aa_n));
+    wait(aa_delay)
+    set_val(9,xy_val(9,aa_n));
+    wait(aa_delay)
+}
+
+
+combo Ez_Grenade {
+ set_val(PS4_RIGHT, 100);
+ wait(90);
+ set_val(PS4_RIGHT, 0);
+ wait(770);
+ set_val(PS4_R2, 100);
+ wait(170);
+ set_val(PS4_R2, 0);
+}
+
+
+combo SPEED {
+   set_val(PS4_CIRCLE,100);
+   wait(15);
+   wait(15);
+}
+ 
+
+combo AutoStrafe {
+    strafeRight = Rand(500, 1000);
+    set_val(PS4_LX, 40);
+    wait(strafeRight);
+    strafeLeft = Rand(500, 1000);
+    set_val(PS4_LX, inv(40));
+    wait(strafeLeft);
+    set_val(PS4_LX, 40);
+}
+ 
+ combo notify_on {
+ set_rumble(RUMBLE_B, 100);
+ wait(300);
+ reset_rumble();
+ wait (1000);
+}
+ 
+combo notify_off {
+ set_rumble(RUMBLE_B, 100);
+ wait(300);
+ reset_rumble();
+ wait (300);
+ set_rumble(RUMBLE_B, 100);
+ wait(300);
+ reset_rumble();
+ wait(300);
+}
+ 
+ 
+function xy_val(f_axis,f_val) {
+    v = get_val(f_axis);
+    if(abs(v) < 10)
+        v = 0;
+    if(abs(v) < f_val + 5) 
+        return v + f_val;
+    return v;
+}
+ 
+ 
+function Rand(min,max){
+ Rand = Rand *8403 % 32767;
+ if (min>= Off && max >= Off)
+ return abs(min + (Rand && (max - min)));
+ return min + (Rand % (max - min));
+}
+ 
+ 
+function led_color(color) {
+   for(i = 0; i <= 3; i++) {
+     set_led(i,dbyte((color * 4) + i));
+   }
+}

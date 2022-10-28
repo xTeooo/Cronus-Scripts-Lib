@@ -1,0 +1,99 @@
+//THIS SCRIPT ONLY WORKS STARTING FROM FLUSH CYCLE 1 //
+	//The script resets when Right Trigger is released//
+	//so just keep the trigger button held down//
+	//If you know it will miss the flush cycle timing, release the trigger button before it flushes//
+
+int timer = 0;
+int timer2 = 0;
+int mode = 1;
+int cycle [5];
+
+
+init{
+   	//Timing for each cycle should be adjusted if consistenly misses on your setup//
+cycle[1]  = 450;
+cycle[2]  = 540;
+cycle[3]  = 370;
+cycle[4]  = 325;
+
+}
+
+
+define FIRE_BTN = 4;
+
+main {
+
+if(get_val(FIRE_BTN)) {
+            combo_run (RF_EE3); 
+        }
+ 
+}
+ 
+combo RF_EE3 {
+       set_val(FIRE_BTN, 100);
+       wait(60);
+       set_val(FIRE_BTN, 0);
+       wait(20);
+       set_val(FIRE_BTN, 0);
+ 
+    //
+    if(abs(get_val(XB1_LX)) > 70){
+        if(event_press(XB1_LS)) combo_run(ROLL);
+    }
+ 
+}
+ 
+ 
+combo ROLL {
+ 
+   set_val(XB1_B,100);
+   wait(50);
+   set_val(XB1_B,0);
+   wait(50);
+   set_val(XB1_B,100);
+   wait(50);
+ 
+ 
+set_val(TRACE_1,mode);
+set_val(TRACE_2,timer2/1000);
+
+if(event_release(XB1_RT)){
+mode = 1;
+combo_stop(FLUSH);
+timer = 0;
+
+}
+if(get_val(XB1_RT)){
+        combo_run(RAPID_FIRE);
+}
+
+if (get_val(XB1_RT)){timer = timer + get_rtime();
+}
+
+
+if(get_rumble(RUMBLE_B) >5) {
+timer = 0;
+}
+
+if(get_val(XB1_RT) && timer >= 450){combo_run(FLUSH)}
+}
+
+combo FLUSH{
+	wait(cycle[mode]);
+	set_val(XB1_X, 100);
+	wait(50);
+	set_val(XB1_X, 0);
+	wait(400);
+	if( mode < 4){mode = mode + 1;}
+	else{
+	combo_stop(FLUSH);
+}
+	}
+	
+combo RAPID_FIRE{
+   set_val(XB1_RT, 100);
+   wait(40);
+   set_val(XB1_RT, 0);
+   wait(30);
+   set_val(XB1_RT, 0);
+}
