@@ -1,0 +1,337 @@
+
+/*--  GTA_WHEEL_EDITION 
+=====================================
+
+BY Kingdom421
+
+
+ 
+         --------- DRIVING MODE AUTOMATICLY ACTIVE- WALK AROUND MODE PRESS L3&R3 TO ACTIVATE PRESS AGAIN TO DEACTIVATE----------
+ /*--------------------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+
+const string State_Strings[] = {
+  "DRIVING-MODE",
+  "WALKING-MODE"
+}
+
+   define LYA = PS4_UP;
+   int RUNFAST = TRUE;
+   int AIMABUSE = TRUE;
+   int runfast_toggle;
+   int walkaround_toggle;
+   int WALKAROUND = FALSE;
+   int walk_toggle;
+   int string_length;
+
+
+init {
+
+  print_state();
+
+}
+
+
+
+// VERSUS SCREEN SAVER by DoGzTheFiGhTeR\\\\\\\\
+
+int Timer,LineA,LineB,LineC,ii,jj,ll,oo,xx,TimeS;
+
+int Saver = TRUE;
+define TimeoutLimit = 200000; // Milliseconds (1000 = 1 second)
+
+
+
+init {
+	cls_oled(0);
+}
+
+
+main {
+
+      if (get_val(PS4_R3) &&event_press(PS4_L3)) { walkaround_toggle = !walkaround_toggle }
+    print_state();
+  
+  
+ 
+
+swap(PS4_RX, PS4_R2);
+if(get_val(PS4_RX) > 0) {set_val(PS4_R2, 100); }
+		set_val(PS4_RX, 0);
+
+if(get_val(PS4_LY) > 0) {set_val(PS4_L2, 100); }
+
+if(get_val(PS4_RY) > 0) {set_val(PS4_CROSS, 100); }
+        set_val(PS4_RY, 0);
+        
+if(get_val(PS4_R3) > 0) {set_val(PS4_TOUCH, 100); }
+        		
+
+    sensitivity(PS4_R2, 1, 327);
+	sensitivity(PS4_LX, 144, 327);
+	deadzone(PS4_LX, PS4_DOWN, DZ_CIRCLE, 59);
+	sensitivity(PS4_DOWN, 13, 1);
+	
+	
+	if (get_val(PS4_UP)) { set_val(PS4_LY, -100); }
+  else if (get_val(PS4_DOWN)) { set_val(PS4_LY, 100); }
+  else { set_val(PS4_L2, get_val(PS4_LY, 100)); }
+  set_val(PS4_UP, 0);
+  set_val(PS4_DOWN, 0);
+
+	
+	
+    ///////////////////////////THIS IS WALKAROUND FOR THE G29 WHEEL AND PEDALS.\\\\\\\\\\\\\\\\\\\\\\\\\\\
+   ///////////////////////////////// HAS AUTOWALK ON=CIRCLE OFF=TRIANGLE\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+  ///////////// AUTORUN ON=CROSS OFF=SQUARE, D-PAD UP/DOWN=LY, RIGHT/LEFT=WHEEL, AND HEADSHOT\\\\\\\\\\\\\\\
+       
+ if (walkaround_toggle) {
+  
+   
+   swap(PS4_L1, PS4_L2);
+          
+     swap(PS4_R1, PS4_R2);
+   if(get_val(PS4_R1) > 0) {set_val(PS4_R2, 100); }
+		
+   if(get_val(PS4_R3) > 0) {set_val(PS4_TOUCH, 100); }
+            set_val(PS4_R3, 0);
+
+          
+   
+                 swap(PS4_LX, PS4_RX);
+                 
+                 
+   if(get_val(PS4_UP) > 0) {set_val(PS4_LY, -100); }
+                
+                  
+       if (event_press(PS4_CIRCLE)) { walk_toggle = TRUE; }
+  if (event_press(PS4_TRIANGLE)) { walk_toggle = FALSE; }
+  if (walk_toggle) { combo_run(WALKAROUND); }
+  else { combo_stop(WALKAROUND); }           
+
+     
+      if (event_press(PS4_CROSS)) { runfast_toggle = TRUE; }
+  if (event_press(PS4_SQUARE)) { runfast_toggle = FALSE; }
+  if (runfast_toggle) { combo_run(RUNFAST); }
+  else { combo_stop(RUNFAST); }
+  
+    if(event_press(PS4_L1))
+        combo_run(AIMABUSE);
+    if(event_release(PS4_L1))
+        combo_stop(AIMABUSE);
+        
+       if(get_ival(PS4_L2) > 10)
+     set_val(PS4_L2, 100);  
+	if(get_ival(PS4_R2) > 10)
+     set_val(PS4_R2, 100); 
+     
+     
+     sensitivity(PS4_R2, 1, 327);
+	sensitivity(PS4_RX, 144, 327);
+	deadzone(PS4_RX, PS4_L2, DZ_CIRCLE, 59);
+	sensitivity(PS4_DOWN, 13, 1);
+	
+	 if (get_val(PS4_UP)) { set_val(PS4_LY, -100); }
+  else if (get_val(PS4_DOWN)) { set_val(PS4_LY, 100); }
+  set_val(PS4_UP, 0);
+  set_val(PS4_DOWN, 0);}
+         
+
+
+
+	
+	if (!Saver && event_press(PS4_CROSS)) {
+		cls_oled(0);
+		Saver = TRUE;
+	}
+	
+	if (Saver) { 
+        Timer += get_rtime();
+        Saver ();
+    } 
+	
+	if (Timer >= TimeoutLimit) {
+    	Saver = FALSE;
+    	Timer = 0;
+    	cls_oled(0);
+    }
+}
+
+ combo WALKAROUND {
+  set_val(PS4_LY, -100);
+  wait(50);
+  set_val(PS4_LY, -100);
+  wait(80);
+  }
+
+combo RUNFAST {
+  set_val(PS4_CROSS, 100);
+  wait(50);
+  set_val(PS4_CROSS, 0);
+  wait(80);
+}
+
+combo AIMABUSE {
+    wait(100);
+    set_val(PS4_RY,-100);
+    wait(250);
+    set_val(PS4_RX,0)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);
+    set_val(PS4_RX,-30)
+    wait(100);
+    set_val(PS4_RX,30)
+    wait(100);}
+
+	
+
+
+function print_state() {
+  cls_oled(OLED_BLACK);
+  print(center_text(string_len(State_Strings[walkaround_toggle]), OLED_FONT_SMALL_WIDTH), 30, OLED_FONT_SMALL, OLED_WHITE, State_Strings[walkaround_toggle]);
+}
+
+function string_len(f_index) {
+  string_length = 0;
+  do {
+    string_length ++;
+    f_index ++;
+  }
+  while(duint8(f_index));
+  return string_length;
+}
+
+function center_text(f_chars, f_font) {
+  return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+
+	
+
+function Saver () {
+    
+    if (Saver) { 
+
+		TimeS += get_rtime();
+
+    for(ii = 0; ii <= 10; ii++) { 
+        putc_oled(1,Saver_Scroll[0][ii]);
+        puts_oled(LineA + -30 + ii * 7, 2, 0,1,1);
+    }
+
+    for(jj = 0; jj <= 10; jj++) { 
+        putc_oled(1,Saver_Scroll[1][jj]);
+        puts_oled(LineA + 100 + jj * 7, 15, 0,1,1);
+    }
+    
+    for(ll = 0; ll <= 10; ll++) { 
+        putc_oled(1,Saver_Scroll[2][ll]);
+        puts_oled(LineB + -50 + ll * 7, 28, 0,1,1);
+    }
+    
+    for(oo = 0; oo <= 10; oo++) { 
+        putc_oled(1,Saver_Scroll[3][oo]);
+        puts_oled(LineC + 10 + oo * 7, 41, 0,1,1);
+    }
+    
+    for(xx = 0; xx <= 10; xx++) { 
+        putc_oled(1,Saver_Scroll[4][xx]);
+        puts_oled(LineC + 127 + xx * 7, 53, 0,1,1);
+    }
+    
+        if (TimeS == 50) {
+            LineA +=2;
+            LineB -=2;
+            LineC +=1;
+            TimeS = 0;
+        }
+    }
+}
+
+
+
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+const uint8 Saver_Scroll[][] = {/*
+    ¦¦  0      1      2       3       4       5       6       7       8        9       10    ¦¦*/
+    { SPACE ,  G  ,   T   ,   A   ,   V   , SPACE ,   W   ,   H   ,   E    ,   E    ,   L    },
+    { SPACE ,  E  ,   D   ,   I   ,   T   ,   I   ,   O   ,   N   ,   SPACE    ,   B   ,  Y  },
+    {   SPACE   ,   K   ,  I  ,   N   ,   G   ,   D   ,   O   , M ,   _4   ,   _2   ,   _1     },
+    {   L   ,  O  ,   G ,   I   ,   T   ,   E   ,   C   ,   H   ,   Z    ,   E    ,  N },
+    {   CIRCLE   ,  TRIANGLE  , SQUARE   ,   CROSS   , UP ,   LEFT   ,   DOWN   ,   RIGHT   ,   SPACE   ,   SPACE    , SPACE   }}; ����������������

@@ -1,0 +1,231 @@
+/*
+============================================================================================================================
+    Forza Horizon 5 - Farm Skill Point (as of 11/21/21) By Batts
+    Original post: https://www.cronusmax.com/forums/showthread.php/212194-FORZA-HORIZONS-5-Farm-Skill-Points
+    
+        This will probably be patched in the next update.
+        
+        Follow the setup here:  <a href="https://youtu.be/uGOgxBw5-IE" target="_blank">https://youtu.be/uGOgxBw5-IE</a> 
+        
+        Use this share code: 743 324 179
+        
+        To start the race:
+        At the START RACE EVENT menu screen, Start combo (RB/R1 + Dpad DOWN)
+        
+        To start buying cars:
+        At the Buy & Sell tab when Autoshow is selected, Start combo (LT/L2 + RS/R3)
+        
+        To start the automated Wheelspin:
+        After you run one Wheelspin, Start combo (RB/R1 + Dpad LEFT)
+        
+        To start the automated Super wheelspin:
+        After you run one Super Wheelspin, Start combo (RB/R1 + Dpad RIGHT)
+        
+        To decativate any of the combos above press B/CIRCLE or switch zen slot
+        
+============================================================================================================================
+    DO NOT EDIT THE SECION BELOW
+============================================================================================================================
+*/
+int toggle;
+int toggle2;
+int toggle3;
+int toggle4;
+int blockBtn;
+main {
+	if (get_val(XB1_RB) && event_press(XB1_DOWN)) {toggle = TRUE; blockBtn = XB1_DOWN;}// Activate
+    if (get_val(XB1_B)) toggle = FALSE; // Deactivate
+    
+    if (get_val(XB1_LT) && event_press(XB1_RS)) {toggle2 = TRUE; blockBtn = XB1_RS;}// Activate
+    if (get_val(XB1_B)) toggle2 = FALSE; // Deactivate
+    
+    if (get_val(XB1_RB) && event_press(XB1_LEFT)) {toggle3 = TRUE; blockBtn = XB1_LEFT;}// Activate
+    if (get_val(XB1_B)) toggle3 = FALSE; // Deactivate
+    
+    if (get_val(XB1_RB) && event_press(XB1_RIGHT)) {toggle4 = TRUE; blockBtn = XB1_RIGHT;}// Activate
+    if (get_val(XB1_B)) toggle4 = FALSE; // Deactivate
+    
+    if(toggle){combo_run(COMBO_RACE);}
+    else{combo_stop(COMBO_RACE);}
+    
+    if(toggle2){combo_run(COMBO_BUY);}
+    else{combo_stop(COMBO_BUY);}
+    
+    if(toggle3){combo_run(COMBO_WHEEL);}
+    else{combo_stop(COMBO_WHEEL);}
+    
+    if(toggle4){combo_run(COMBO_SUPERWHEEL);}
+    else{combo_stop(COMBO_SUPERWHEEL);}
+ 
+    if(blockBtn) {
+        if(event_release(blockBtn)) {
+            blockBtn = 0;
+        }else{
+            set_val(blockBtn,0);
+        }
+    }
+    block_rumble();
+}
+ 
+ /*
+============================================================================================================================
+    BEGIN OF BUTTON PRESSES AND TIMING SETTINGS   
+============================================================================================================================
+
+
+============================================================================================================================
+    TEN IN THIRTY
+============================================================================================================================
+*/
+const int16 RACE[][] = {
+//   Button  | Value | Duration | Time After Press
+    {XB1_A,     100,     150,          6000},
+    {XB1_RT,     50,    3000,             1},
+    {XB1_RT,     75,    1500,             1},
+    {XB1_RT,    100,    2000,             1},
+    {XB1_RT,    100,   26000,         14000},
+    {XB1_X,     100,     150,          1300},
+    {XB1_A,     100,     150,         10000} 
+}; 
+/*
+============================================================================================================================
+    WHEELSPIN
+============================================================================================================================
+*/
+const int16 WHEELSPIN[][] = {
+//   Button  | Value | Duration | Time After Press
+    {XB1_A,     100,     100,           500},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,           500},
+    {XB1_A,     100,     100,           700},
+    {XB1_A,     100,     100,          2700}
+};
+/*
+============================================================================================================================
+    SUPER WHEELSPIN
+============================================================================================================================
+*/
+const int16 SUPER_WHEELSPIN[][] = {
+//   Button  | Value | Duration | Time After Press
+    {XB1_A,     100,     100,           300},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,           300},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,           300},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,           500},
+    {XB1_A,     100,     100,           700},
+    {XB1_A,     100,     100,          3500}
+};
+
+/*
+============================================================================================================================
+    BUY CAR AND SPEND SKILLPOINTS
+============================================================================================================================
+*/
+const int16 BUY[] [] ={
+//   Button  | Value | Duration | Time After Press
+    {XB1_A,     100,     120,          1550},
+    {XB1_VIEW,  100,      80,           450},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_A,     100,     100,           500},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_DOWN,  100,     100,           500},
+    {XB1_A,     100,     100,          3100},
+    {XB1_Y,     100,     100,           500},
+    {XB1_A,     100,     100,           500},
+    {XB1_A,     100,     100,           500},
+    {XB1_A,     100,     100,         14000},
+    {XB1_B,     100,     100,          1000},
+    {XB1_RB,    100,     100,          1000},
+    {XB1_LEFT,  100,     100,            50},
+    {XB1_A,     100,     100,           500},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,          1000},
+    {XB1_A,     100,     100,          1000},
+    {XB1_UP,    100,     100,            50},
+    {XB1_A,     100,     100,           800},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,           800},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_A,     100,     100,           800},
+    {XB1_UP,    100,     100,            50},
+    {XB1_A,     100,     100,           800},
+    {XB1_UP,    100,     100,            50},
+    {XB1_A,     100,     100,           800},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_A,     100,     100,           800},
+    {XB1_B,     100,     100,          1000},
+    {XB1_B,     100,     100,          1000},
+    {XB1_LB,    100,     100,           500}
+};
+/*
+============================================================================================================================
+    END OF BUTTON PRESSES AND TIMING SETTINGS
+    DO NOT EDIT ANYTHING BELOW!
+============================================================================================================================
+*/
+ 
+int idx;
+ 
+combo COMBO_RACE {
+    set_val(RACE[idx][0],RACE[idx][1]);
+    wait(RACE[idx][2]);
+    wait(RACE[idx][3]);
+    idx++;
+    if(idx == sizeof(RACE) / sizeof(RACE[0])) {
+        idx = 0;
+    }
+}
+combo COMBO_BUY {
+    set_val(BUY[idx][0],BUY[idx][1]);
+    wait(BUY[idx][2]);
+    wait(BUY[idx][3]);
+    idx++;
+    if(idx == sizeof(BUY) / sizeof(BUY[0])) {
+        idx = 0;
+    }
+}
+combo COMBO_WHEEL {
+    set_val(WHEELSPIN[idx][0],WHEELSPIN[idx][1]);
+    wait(WHEELSPIN[idx][2]);
+    wait(WHEELSPIN[idx][3]);
+    idx++;
+    if(idx == sizeof(WHEELSPIN) / sizeof(WHEELSPIN[0])) {
+        idx = 0;
+    }
+}
+combo COMBO_SUPERWHEEL {
+    set_val(SUPER_WHEELSPIN[idx][0],SUPER_WHEELSPIN[idx][1]);
+    wait(SUPER_WHEELSPIN[idx][2]);
+    wait(SUPER_WHEELSPIN[idx][3]);
+    idx++;
+    if(idx == sizeof(SUPER_WHEELSPIN) / sizeof(SUPER_WHEELSPIN[0])) {
+        idx = 0;
+    }
+}

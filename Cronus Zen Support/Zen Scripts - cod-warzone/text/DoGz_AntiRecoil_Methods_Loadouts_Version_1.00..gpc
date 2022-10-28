@@ -1,0 +1,1309 @@
+/*
+    _______            ______                 ______  __    __ ________ ______        _______  ________  ______   ______  ______ __           
+   |       \          /      \               /      \|  \  |  \        \      \      |       \|        \/      \ /      \|      \  \          
+   | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________     |  ▓▓▓▓▓▓\ ▓▓\ | ▓▓\▓▓▓▓▓▓▓▓\▓▓▓▓▓▓      | ▓▓▓▓▓▓▓\ ▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\\▓▓▓▓▓▓ ▓▓          
+   | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \    | ▓▓__| ▓▓ ▓▓▓\| ▓▓  | ▓▓    | ▓▓  ______| ▓▓__| ▓▓ ▓▓__   | ▓▓   \▓▓ ▓▓  | ▓▓ | ▓▓ | ▓▓          
+   | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓    | ▓▓    ▓▓ ▓▓▓▓\ ▓▓  | ▓▓    | ▓▓ |      \ ▓▓    ▓▓ ▓▓  \  | ▓▓     | ▓▓  | ▓▓ | ▓▓ | ▓▓          
+   | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓     | ▓▓▓▓▓▓▓▓ ▓▓\▓▓ ▓▓  | ▓▓    | ▓▓  \▓▓▓▓▓▓ ▓▓▓▓▓▓▓\ ▓▓▓▓▓  | ▓▓   __| ▓▓  | ▓▓ | ▓▓ | ▓▓          
+   | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_     | ▓▓  | ▓▓ ▓▓ \▓▓▓▓  | ▓▓   _| ▓▓_       | ▓▓  | ▓▓ ▓▓_____| ▓▓__/  \ ▓▓__/ ▓▓_| ▓▓_| ▓▓_____     
+   | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \    | ▓▓  | ▓▓ ▓▓  \▓▓▓  | ▓▓  |   ▓▓ \      | ▓▓  | ▓▓ ▓▓     \\▓▓    ▓▓\▓▓    ▓▓   ▓▓ \ ▓▓     \    
+    \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓     \▓▓   \▓▓\▓▓   \▓▓   \▓▓   \▓▓▓▓▓▓       \▓▓   \▓▓\▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓\▓▓▓▓▓▓▓▓ 
+ __       __ ________ ________ __    __  ______  _______   ______       __        ______   ______  _______   ______  __    __ ________  ______                          
+|  \     /  \        \        \  \  |  \/      \|       \ /      \     |  \      /      \ /      \|       \ /      \|  \  |  \        \/      \   
+| ▓▓\   /  ▓▓ ▓▓▓▓▓▓▓▓\▓▓▓▓▓▓▓▓ ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\    | ▓▓     |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  | ▓▓\▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓\  
+| ▓▓▓\ /  ▓▓▓ ▓▓__      | ▓▓  | ▓▓__| ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓___\▓▓    | ▓▓     | ▓▓  | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓___\▓▓  
+| ▓▓▓▓\  ▓▓▓▓ ▓▓  \     | ▓▓  | ▓▓    ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓\▓▓    \     | ▓▓     | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓    \   
+| ▓▓\▓▓ ▓▓ ▓▓ ▓▓▓▓▓     | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓_\▓▓▓▓▓▓\    | ▓▓     | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓   _\▓▓▓▓▓▓\  
+| ▓▓ \▓▓▓| ▓▓ ▓▓_____   | ▓▓  | ▓▓  | ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓  \__| ▓▓    | ▓▓_____| ▓▓__/ ▓▓ ▓▓  | ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓  | ▓▓  |  \__| ▓▓  
+| ▓▓  \▓ | ▓▓ ▓▓     \  | ▓▓  | ▓▓  | ▓▓\▓▓    ▓▓ ▓▓    ▓▓\▓▓    ▓▓    | ▓▓     \\▓▓    ▓▓ ▓▓  | ▓▓ ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  | ▓▓   \▓▓    ▓▓  
+ \▓▓      \▓▓\▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓ \▓▓▓▓▓▓▓  \▓▓▓▓▓▓      \▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓\▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓    \▓▓    \▓▓▓▓▓▓   
+                          __     __ ________ _______   ______  ______  ______  __    __        __       ______   ______  
+                            \   |  \        \       \ /      \|      \/      \|  \  |  \     _/  \     /      \ /      \ 
+                           ▓▓   | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\\▓▓▓▓▓▓  ▓▓▓▓▓▓\ ▓▓\ | ▓▓    |   ▓▓    |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\
+                           ▓▓   | ▓▓ ▓▓__   | ▓▓__| ▓▓ ▓▓___\▓▓ | ▓▓ | ▓▓  | ▓▓ ▓▓▓\| ▓▓     \▓▓▓▓    | ▓▓▓\| ▓▓ ▓▓▓\| ▓▓
+                          \▓▓\ /  ▓▓ ▓▓  \  | ▓▓    ▓▓\▓▓    \  | ▓▓ | ▓▓  | ▓▓ ▓▓▓▓\ ▓▓      | ▓▓    | ▓▓▓▓\ ▓▓ ▓▓▓▓\ ▓▓
+                           \▓▓\  ▓▓| ▓▓▓▓▓  | ▓▓▓▓▓▓▓\_\▓▓▓▓▓▓\ | ▓▓ | ▓▓  | ▓▓ ▓▓\▓▓ ▓▓      | ▓▓    | ▓▓\▓▓\▓▓ ▓▓\▓▓\▓▓
+                            \▓▓ ▓▓ | ▓▓_____| ▓▓  | ▓▓  \__| ▓▓_| ▓▓_| ▓▓__/ ▓▓ ▓▓ \▓▓▓▓     _| ▓▓_ __| ▓▓_\▓▓▓▓ ▓▓_\▓▓▓▓
+                             \▓▓▓  | ▓▓     \ ▓▓  | ▓▓\▓▓    ▓▓   ▓▓ \\▓▓    ▓▓ ▓▓  \▓▓▓    |   ▓▓ \  \\▓▓  \▓▓▓\▓▓  \▓▓▓
+                              \▓    \▓▓▓▓▓▓▓▓\▓▓   \▓▓ \▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓     \▓▓▓▓▓▓\▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓▓ 
+
+
+  ¦¦¦¦ RECOIL MENU SYSTEM ¦¦¦¦
+
+* Enter Menu               = L2/LT + OPTIONS/MENU
+* Switch To Values + Times = CROSS/A
+* Return To Weapon Select  = CIRCLE/B
+* Exit AR Menu             = TRIANGLE/Y 
+
+* Next Weapon or Time/Value     = RIGHT
+* Previous Weapon or Time/Value = LEFT
+
+* Adjust Time/Value + = UP
+* Adjust Time/Value - = DOWN
+
+******* WEAPON ONE + TWO WILL AUTO SAVE ONLY DUE TO SIZE ISSUES *******  
+
+
+
+	¦¦¦¦ MOD TOGGLES ¦¦¦¦ 
+
+* Rapid Fire  = L2/LT + UP  (Fire Activates Combo)
+
+* Anti Recoil = L2/LT + DOWN (Ads + Fire Runs Function)
+
+* Anti Recoil Method Selector = L2/LT + LEFT 
+
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+* Recoil Method 1 *
+
+	Progression = Sets Of Six Profiles
+	
+	* Axis RY X 6 Steps With X 6 Time Profiles
+	* Axis RX X 6 Steps With X 6 Time Profiles
+
+	Time Is Used To Increase/Decrease Value Until Next Step 
+	(The Lower The Time The Quicker It Will Hit The Next Step)
+	(The Longer The Time The Slower It Will Hit The Next Step)
+	
+	* ONCE THE LAST STEP HAS REACHED THE END THE VALUE WILL REMAIN ON THAT VALUE UNTIL YOU RELEASE ADS or FIRE
+
+
+* Recoil Method 2 *
+
+	Progression = Sets Of Six Profiles
+	
+	* Axis RY X 6 Steps With X 6 Time Profiles
+	* Axis RX X 6 Steps With X 6 Time Profiles
+
+	Time Is Used To Set The Axis Value Until The Time Is Reached For That Step 
+	(The Lower The Time The Quicker It Will Hit The Next Step)
+	(The Longer The Time The Slower It Will Hit The Next Step)
+	
+	* ONCE THE LAST STEP HAS REACHED THE END THE STEPS WILL REPEAT AT PRESENT
+	
+	*** NOTE WEAPON 1 + 2 RX VALUES WILL BE ZERO THE FIRST TIME THE SLOT IS LOADED REGARDLESS OF THE COMPILER VALUES ***
+	
+	* DUE TO SAVE/LOAD FUNCTION
+	******* WEAPON ONE + TWO WILL AUTO SAVE ONLY DUE TO SIZE ISSUES ******* 
+
+
+    *****  NOTE *****  ALL TIMES AND VALUES NEED TO BE SET UP AS I'VE ONLY TESTED WHILE CREATING !!!!!!!!
+*/
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"","Enabled","Disabled","Mod Toggle On/Off","-Rapid Fire Mod-","-Anti-Recoil Mod-","-AntiRecoil Set-","-AntiRecoil Prog-","SAVED","LOADED"};
+const string Weapons [] = {"","Weapon 1","Weapon 2","Weapon 3","Weapon 4","Weapon 5","Weapon 6"};
+const string Label [] = {"","RY Axis 1","RY Axis 2","RY Axis 3","RY Axis 4","RY Axis 5","RY Axis 6",
+							"RY Time 1","RY Time 2","RY Time 3","RY Time 4","RY Time 5","RY Time 6",
+							"RX Axis 1","RX Axis 2","RX Axis 3","RX Axis 4","RX Axis 5","RX Axis 6",
+							"RX Time 1","RX Time 2","RX Time 3","RX Time 4","RX Time 5","RX Time 6"};
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              Used In Script Buttons                )Do Not Touch
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Up     = PS4_UP;
+define Down   = PS4_DOWN;
+define Left   = PS4_LEFT;
+define Right  = PS4_RIGHT;
+define Cross  = PS4_CROSS;
+define Circle = PS4_CIRCLE;
+define On     = TRUE;
+define Off    = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               In Game Buttons/Sticks               )Match To Your Buttons / Aim Stick
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;                                                                                       
+define Ads      = PS4_L2;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              Menu Enter/Exit Buttons               )Select Your Chosen Menu Buttons
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define WeaponSelectHold  = PS4_L2;
+define WeaponSelectPress = PS4_OPTIONS;
+define WeaponSelectExit  = PS4_TRIANGLE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define AntiRecoilHold    = PS4_L2;
+define AntiRecoilPress   = PS4_DOWN;
+
+define RecoilMethodHold  = PS4_L2;
+define RecoilMethodPress = PS4_LEFT;
+
+define RapidFireHold     = PS4_L2;
+define RapidFirePress    = PS4_UP;
+
+/*=================================================================================================
+								DO NOT ALTER ANYTHING BELOW !!!!!!!!
+=================================================================================================*/
+define One   = 1;
+define Two   = 2;
+define Three = 3;
+define Four  = 4;
+define Five  = 5;
+define Six   = 6;
+int Position,WeaponVal,YAxis,MoveY,MovementY,XAxis,MoveX,MovementX,i,xT,vT,vP,xP,xTime,vTime,Start,Loaded;
+int ToggleT,ToggleTime,ToggleName,Modled,WeaponMenu,Print,v,h,Shunt,WeaponM,MenuT,Count,Saved,Save,Number = 1;
+int antiRecoil,verticalOne,verticalTwo,verticalThree,verticalFour,verticalFive,verticalSix;
+int recoilYTimeOne,recoilYTimeTwo,recoilYTimeThree,recoilYTimeFour,recoilYTimeFive,recoilYTimeSix;
+int horizontalOne,horizontalTwo,horizontalThree,horizontalFour,horizontalFive,horizontalSix;
+int recoilXTimeOne,recoilXTimeTwo,recoilXTimeThree,recoilXTimeFour,recoilXTimeFive,recoilXTimeSix;
+/*=================================================================================================
+								DO NOT ALTER ANYTHING ABOVE !!!!!!!!
+=================================================================================================*/
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Weapon Times n Values                )Set Them Up Below Or In Game Via The Zen
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*   DO NOT ALTER THE DESIGN LAYOUT !!!
+/*==============================================================
+		              WEAPON ONE
+==============================================================*/
+int weaponOne;
+int verticalOneW1      = 20; 	// Vertical Value 1 (Weapon 1)
+int verticalTwoW1      = 25; 	// Vertical Value 2 (Weapon 1)
+int verticalThreeW1    = 30; 	// Vertical Value 3 (Weapon 1)
+int verticalFourW1     = 25; 	// Vertical Value 4 (Weapon 1)
+int verticalFiveW1     = 20; 	// Vertical Value 5 (Weapon 1) 
+int verticalSixW1      = 10; 	// Vertical Value 6 (Weapon 1)
+
+int recoilYTimeOneW1   = 100;	// Vertical Time 1 (Weapon 1)
+int recoilYTimeTwoW1   = 200;   // Vertical Time 2 (Weapon 1)
+int recoilYTimeThreeW1 = 300;   // Vertical Time 3 (Weapon 1)
+int recoilYTimeFourW1  = 250;   // Vertical Time 4 (Weapon 1)
+int recoilYTimeFiveW1  = 500;   // Vertical Time 5 (Weapon 1)
+int recoilYTimeSixW1   = 350;   // Vertical Time 6 (Weapon 1)
+
+int horizontalOneW1    = -10;	// Horizontal Value 1 (Weapon 1)
+int horizontalTwoW1    = 6;     // Horizontal Value 2 (Weapon 1)
+int horizontalThreeW1  = -2;    // Horizontal Value 3 (Weapon 1)
+int horizontalFourW1   = -8;    // Horizontal Value 4 (Weapon 1)
+int horizontalFiveW1   = -2;    // Horizontal Value 5 (Weapon 1)
+int horizontalSixW1    = 8;     // Horizontal Value 6 (Weapon 1)
+
+int recoilXTimeOneW1   = 100;	// Horizontal Time 1 (Weapon 1)
+int recoilXTimeTwoW1   = 250;   // Horizontal Time 2 (Weapon 1)
+int recoilXTimeThreeW1 = 440;   // Horizontal Time 3 (Weapon 1)
+int recoilXTimeFourW1  = 600;   // Horizontal Time 4 (Weapon 1)
+int recoilXTimeFiveW1  = 500;   // Horizontal Time 5 (Weapon 1)
+int recoilXTimeSixW1   = 850;   // Horizontal Time 6 (Weapon 1)
+/*==============================================================
+		              WEAPON TWO
+==============================================================*/
+int weaponTwo;
+int verticalOneW2      = 30; 	// Vertical Value 1 (Weapon 2)
+int verticalTwoW2      = 35; 	// Vertical Value 2 (Weapon 2)
+int verticalThreeW2    = 20; 	// Vertical Value 3 (Weapon 2)
+int verticalFourW2     = 45; 	// Vertical Value 4 (Weapon 2)
+int verticalFiveW2     = 53; 	// Vertical Value 5 (Weapon 2) 
+int verticalSixW2      = 10; 	// Vertical Value 6 (Weapon 2)
+
+int recoilYTimeOneW2   = 250;	// Vertical Time 1 (Weapon 2)
+int recoilYTimeTwoW2   = 600;   // Vertical Time 2 (Weapon 2)
+int recoilYTimeThreeW2 = 300;   // Vertical Time 3 (Weapon 2)
+int recoilYTimeFourW2  = 200;   // Vertical Time 4 (Weapon 2)
+int recoilYTimeFiveW2  = 200;   // Vertical Time 5 (Weapon 2)
+int recoilYTimeSixW2   = 450;   // Vertical Time 6 (Weapon 2)
+
+int horizontalOneW2    = -12;	// Horizontal Value 1 (Weapon 2)
+int horizontalTwoW2    = 16;    // Horizontal Value 2 (Weapon 2)
+int horizontalThreeW2  = -5;    // Horizontal Value 3 (Weapon 2)
+int horizontalFourW2   = -3;    // Horizontal Value 4 (Weapon 2)
+int horizontalFiveW2   = -8;    // Horizontal Value 5 (Weapon 2)
+int horizontalSixW2    = 10;    // Horizontal Value 6 (Weapon 2)
+
+int recoilXTimeOneW2   = 200;	// Horizontal Time 1 (Weapon 2)
+int recoilXTimeTwoW2   = 350;   // Horizontal Time 2 (Weapon 2)
+int recoilXTimeThreeW2 = 540;   // Horizontal Time 3 (Weapon 2)
+int recoilXTimeFourW2  = 400;   // Horizontal Time 4 (Weapon 2)
+int recoilXTimeFiveW2  = 200;   // Horizontal Time 5 (Weapon 2)
+int recoilXTimeSixW2   = 350;   // Horizontal Time 6 (Weapon 2)
+/*==============================================================
+		              WEAPON THREE
+==============================================================*/
+int weaponThree;
+int verticalOneW3      = 10; 	// Vertical Value 1 (Weapon 3)
+int verticalTwoW3      = 20; 	// Vertical Value 2 (Weapon 3)
+int verticalThreeW3    = 30; 	// Vertical Value 3 (Weapon 3)
+int verticalFourW3     = 40; 	// Vertical Value 4 (Weapon 3)
+int verticalFiveW3     = 30; 	// Vertical Value 5 (Weapon 3) 
+int verticalSixW3      = 20; 	// Vertical Value 6 (Weapon 3)
+
+int recoilYTimeOneW3   = 100;	// Vertical Time 1 (Weapon 3)
+int recoilYTimeTwoW3   = 300;   // Vertical Time 2 (Weapon 3)
+int recoilYTimeThreeW3 = 400;   // Vertical Time 3 (Weapon 3)
+int recoilYTimeFourW3  = 400;   // Vertical Time 4 (Weapon 3)
+int recoilYTimeFiveW3  = 400;   // Vertical Time 5 (Weapon 3)
+int recoilYTimeSixW3   = 450;   // Vertical Time 6 (Weapon 3)
+
+int horizontalOneW3    = -1;	// Horizontal Value 1 (Weapon 3)
+int horizontalTwoW3    = 6;     // Horizontal Value 2 (Weapon 3)
+int horizontalThreeW3  = -12;   // Horizontal Value 3 (Weapon 3)
+int horizontalFourW3   = -6;    // Horizontal Value 4 (Weapon 3)
+int horizontalFiveW3   = -2;    // Horizontal Value 5 (Weapon 3)
+int horizontalSixW3    = 5;     // Horizontal Value 6 (Weapon 3)
+
+int recoilXTimeOneW3   = 150;	// Horizontal Time 1 (Weapon 3)
+int recoilXTimeTwoW3   = 350;   // Horizontal Time 2 (Weapon 3)
+int recoilXTimeThreeW3 = 540;   // Horizontal Time 3 (Weapon 3)
+int recoilXTimeFourW3  = 200;   // Horizontal Time 4 (Weapon 3)
+int recoilXTimeFiveW3  = 300;   // Horizontal Time 5 (Weapon 3)
+int recoilXTimeSixW3   = 450;   // Horizontal Time 6 (Weapon 3)
+/*==============================================================
+		              WEAPON FOUR
+==============================================================*/
+int weaponFour;
+int verticalOneW4      = 50; 	// Vertical Value 1 (Weapon 4)
+int verticalTwoW4      = 55; 	// Vertical Value 2 (Weapon 4)
+int verticalThreeW4    = 60; 	// Vertical Value 3 (Weapon 4)
+int verticalFourW4     = 75; 	// Vertical Value 4 (Weapon 4)
+int verticalFiveW4     = 63; 	// Vertical Value 5 (Weapon 4) 
+int verticalSixW4      = 80; 	// Vertical Value 6 (Weapon 4)
+
+int recoilYTimeOneW4   = 200;	// Vertical Time 1 (Weapon 4)
+int recoilYTimeTwoW4   = 200;   // Vertical Time 2 (Weapon 4)
+int recoilYTimeThreeW4 = 200;   // Vertical Time 3 (Weapon 4)
+int recoilYTimeFourW4  = 300;   // Vertical Time 4 (Weapon 4)
+int recoilYTimeFiveW4  = 300;   // Vertical Time 5 (Weapon 4)
+int recoilYTimeSixW4   = 150;   // Vertical Time 6 (Weapon 4)
+
+int horizontalOneW4    = -7;	// Horizontal Value 1 (Weapon 4)
+int horizontalTwoW4    = 7;     // Horizontal Value 2 (Weapon 4)
+int horizontalThreeW4  = -6;    // Horizontal Value 3 (Weapon 4)
+int horizontalFourW4   = -2;    // Horizontal Value 4 (Weapon 4)
+int horizontalFiveW4   = 6;     // Horizontal Value 5 (Weapon 4)
+int horizontalSixW4    = 8;     // Horizontal Value 6 (Weapon 4)
+
+int recoilXTimeOneW4   = 200;	// Horizontal Time 1 (Weapon 4)
+int recoilXTimeTwoW4   = 350;   // Horizontal Time 2 (Weapon 4)
+int recoilXTimeThreeW4 = 640;   // Horizontal Time 3 (Weapon 4)
+int recoilXTimeFourW4  = 200;   // Horizontal Time 4 (Weapon 4)
+int recoilXTimeFiveW4  = 300;   // Horizontal Time 5 (Weapon 4)
+int recoilXTimeSixW4   = 550;   // Horizontal Time 6 (Weapon 4)
+/*==============================================================
+		              WEAPON FIVE
+==============================================================*/
+int weaponFive;
+int verticalOneW5      = 10; 	// Vertical Value 1 (Weapon 5)
+int verticalTwoW5      = 20; 	// Vertical Value 2 (Weapon 5)
+int verticalThreeW5    = 30; 	// Vertical Value 3 (Weapon 5)
+int verticalFourW5     = 40; 	// Vertical Value 4 (Weapon 5)
+int verticalFiveW5     = 30; 	// Vertical Value 5 (Weapon 5) 
+int verticalSixW5      = 20; 	// Vertical Value 6 (Weapon 5)
+
+int recoilYTimeOneW5   = 100;	// Vertical Time 1 (Weapon 5)
+int recoilYTimeTwoW5   = 300;   // Vertical Time 2 (Weapon 5)
+int recoilYTimeThreeW5 = 400;   // Vertical Time 3 (Weapon 5)
+int recoilYTimeFourW5  = 400;   // Vertical Time 4 (Weapon 5)
+int recoilYTimeFiveW5  = 400;   // Vertical Time 5 (Weapon 5)
+int recoilYTimeSixW5   = 450;   // Vertical Time 6 (Weapon 5)
+
+int horizontalOneW5    = -1;	// Horizontal Value 1 (Weapon 5)
+int horizontalTwoW5    = 6;     // Horizontal Value 2 (Weapon 5)
+int horizontalThreeW5  = -12;   // Horizontal Value 3 (Weapon 5)
+int horizontalFourW5   = -6;    // Horizontal Value 4 (Weapon 5)
+int horizontalFiveW5   = -2;    // Horizontal Value 5 (Weapon 5)
+int horizontalSixW5    = 5;     // Horizontal Value 6 (Weapon 5)
+
+int recoilXTimeOneW5   = 150;	// Horizontal Time 1 (Weapon 5)
+int recoilXTimeTwoW5   = 350;   // Horizontal Time 2 (Weapon 5)
+int recoilXTimeThreeW5 = 540;   // Horizontal Time 3 (Weapon 5)
+int recoilXTimeFourW5  = 200;   // Horizontal Time 4 (Weapon 5)
+int recoilXTimeFiveW5  = 300;   // Horizontal Time 5 (Weapon 5)
+int recoilXTimeSixW5   = 450;   // Horizontal Time 6 (Weapon 5)
+/*==============================================================
+		              WEAPON SIX
+==============================================================*/
+int weaponSix;
+int verticalOneW6      = 50; 	// Vertical Value 1 (Weapon 6)
+int verticalTwoW6      = 55; 	// Vertical Value 2 (Weapon 6)
+int verticalThreeW6    = 60; 	// Vertical Value 3 (Weapon 6)
+int verticalFourW6     = 75; 	// Vertical Value 4 (Weapon 6)
+int verticalFiveW6     = 63; 	// Vertical Value 5 (Weapon 6) 
+int verticalSixW6      = 80; 	// Vertical Value 6 (Weapon 6)
+
+int recoilYTimeOneW6   = 200;	// Vertical Time 1 (Weapon 6)
+int recoilYTimeTwoW6   = 200;   // Vertical Time 2 (Weapon 6)
+int recoilYTimeThreeW6 = 200;   // Vertical Time 3 (Weapon 6)
+int recoilYTimeFourW6  = 300;   // Vertical Time 4 (Weapon 6)
+int recoilYTimeFiveW6  = 300;   // Vertical Time 5 (Weapon 6)
+int recoilYTimeSixW6   = 150;   // Vertical Time 6 (Weapon 6)
+
+int horizontalOneW6    = -7;	// Horizontal Value 1 (Weapon 6)
+int horizontalTwoW6    = 7;     // Horizontal Value 2 (Weapon 6)
+int horizontalThreeW6  = -6;    // Horizontal Value 3 (Weapon 6)
+int horizontalFourW6   = -2;    // Horizontal Value 4 (Weapon 6)
+int horizontalFiveW6   = 6;     // Horizontal Value 5 (Weapon 6)
+int horizontalSixW6    = 8;     // Horizontal Value 6 (Weapon 6)
+
+int recoilXTimeOneW6   = 200;	// Horizontal Time 1 (Weapon 6)
+int recoilXTimeTwoW6   = 350;   // Horizontal Time 2 (Weapon 6)
+int recoilXTimeThreeW6 = 640;   // Horizontal Time 3 (Weapon 6)
+int recoilXTimeFourW6  = 200;   // Horizontal Time 4 (Weapon 6)
+int recoilXTimeFiveW6  = 300;   // Horizontal Time 5 (Weapon 6)
+int recoilXTimeSixW6   = 550;   // Horizontal Time 6 (Weapon 6)
+/*==============================================================
+==============================================================*/
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(       Default State / Methods / Default Weapon     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+// Anti-Recoil Settings
+int AntiRecoil        = On;     // Master Toggle For AntiRecoil ( Both Methods Require This To Be ON )
+int RecoilSet         = Off;	// Choose Method Either = ( RecoilSet or RecoilProgression )
+int RecoilProgression = On;		// Choose Method Either = ( RecoilProgression or RecoilSet )
+int Weapon            = One;	// Starting Weapon Set Either = ( One,Two,Three,Four,Five,Six )
+
+// Rapid Fire Settings
+int RapidFire     = Off;  		// Rapid Fire Toggle
+int RapidHoldTime = 30;   		// Rapid Fire Hold Time Ms
+int RapidWaitTime = 30;   		// Rapid Fire Release Time Ms
+
+init {
+	
+	LoadSettings(); // Weapon 1 And 2 Only !!!
+	
+	if (RecoilSet && RecoilProgression) { 
+		RecoilSet = Off;
+	}
+}
+
+main {
+
+	if (AntiRecoil) {
+	
+	    if (event_press(Ads) || event_press(Fire)) {
+	    	
+	    	Start = On;
+	    }
+	    
+	    if (get_ival(Ads) && get_ival(Fire)) {
+	    	
+	    	antiRecoil();
+	    }
+	}
+	
+	if (RapidFire) {
+                
+    	if (get_ival(Fire)) {
+                
+        	combo_run(RapidFire);
+        } 
+            else {
+	        	
+	        	combo_stop(RapidFire);
+	        }
+    }
+    
+	if (get_ival(WeaponSelectHold) && event_press(WeaponSelectPress)) {
+		
+		Shunt = WeaponSelectPress;
+		combo_stop(Settings);
+		WeaponVal = On;
+		WeaponM = On;
+		WeaponMenu = On;
+		ToggleTime = Off;
+		Print = On;
+	}
+	
+	if (WeaponMenu) {
+		
+		MenuT += get_rtime();
+		WeaponMenu();
+		
+		if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(Cross) || event_press(Circle)) {
+
+			MenuT = Off;
+		}
+		
+		if (event_press(WeaponSelectExit) || MenuT >= 30000) {
+			
+			Shunt = WeaponSelectExit;
+			cls_oled(0);
+			SaveSettings();
+			MenuT = Off;
+			WeaponMenu = Off;
+			
+		}
+		
+		set_val(Up,0);set_val(Down,0);set_val(Left,0);
+		set_val(Right,0);set_val(Cross,0);set_val(Circle,0);
+	}
+	
+	if (!WeaponMenu) {
+	
+	    if (get_ival(RapidFireHold) && event_press(RapidFirePress)) {
+	        
+	        Shunt = RapidFirePress;
+	    	RapidFire = !RapidFire;
+	        ToggleName = On;
+	        Toggle(RapidFire,MiscString[4]);
+	    }
+	    
+	    if (get_ival(AntiRecoilHold) && event_press(AntiRecoilPress)) {
+	        
+	        Shunt = AntiRecoilPress;
+	    	AntiRecoil = !AntiRecoil;
+	        ToggleName = On;
+	        Toggle(AntiRecoil,MiscString[5]);
+	    }
+	    
+	    if (get_ival(RecoilMethodHold) && event_press(RecoilMethodPress)) {
+	        
+	        Shunt = RecoilMethodPress;
+	    
+	    if (RecoilSet || RecoilProgression) {	
+	    	
+	    	RecoilSet = !RecoilSet;
+	        RecoilProgression = !RecoilProgression;
+	    }
+	    	
+	    	else {
+	    		
+	    		RecoilProgression = On;
+	    	}
+	        
+	        ToggleName = On;
+	    
+	    if (RecoilSet)    
+	        
+	        Toggle(RecoilSet,MiscString[6]);
+	    
+	    if (RecoilProgression)    
+	        
+	        Toggle(RecoilProgression,MiscString[7]);    
+	    	Start = On;
+	    }
+	}
+	
+	if (ToggleTime) {
+        
+        TimeToggle();
+    }
+    
+	if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        }
+            
+            else {
+                
+                set_val (Shunt,Off);
+            }
+    }
+}
+
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidHoldTime);
+    set_val(Fire,0);
+    wait(RapidWaitTime);
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    }    
+        
+        else {
+            
+            set_rgb(255,0,0);
+            set_rumble(RUMBLE_B,15);
+        }
+     	
+     	wait(150);
+    	set_rgb(0,0,0);
+    	wait(150);
+    	reset_rumble();    
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+        else
+            
+            set_rgb(255,0,0);
+	
+		wait(150);
+		reset_leds();
+}
+
+combo Settings {
+ 		
+ 		Save = On;
+ 	
+ 	if (Save) {
+ 		
+ 		cls_oled(0);
+	    rect_oled(1,1,127,63,0,1);
+	
+	if (Saved)
+	    
+	    printf(39,25,1,1,MiscString[8]);
+	
+	if (Loaded)
+	    
+	    printf(34,25,1,1,MiscString[9]);
+	    Save = Off;
+	}
+		wait(500);
+		Saved = Off;
+		Loaded = Off;
+		wait(2500);
+		cls_oled(0);
+}
+
+function WeaponMenu () {
+
+	if (Print) {
+		
+		cls_oled(0);
+		Border ();
+		Start = On;
+	
+	    if (WeaponM == 1) {	
+	    	
+	    	printf(22,20,1,1,Weapons[Weapon]);
+	    }
+	    
+	    if (WeaponM == 2) {
+	    	
+	    	printf(38,5,0,1,Weapons[Weapon]);
+	    	printf(36,50,0,1,Label[WeaponVal]);
+	    
+	        if (Weapon == One) {
+	        	
+	        	FindDigit(weaponOne[WeaponVal],DigitValue(weaponOne[WeaponVal]));
+	        }
+	        
+	        if (Weapon == Two) {
+	        	
+	        	FindDigit(weaponTwo[WeaponVal],DigitValue(weaponTwo[WeaponVal]));
+	        }
+	        
+	        if (Weapon == Three) {
+	        	
+	        	FindDigit(weaponThree[WeaponVal],DigitValue(weaponThree[WeaponVal]));
+	        }
+	        
+	        if (Weapon == Four) {
+	        	
+	        	FindDigit(weaponFour[WeaponVal],DigitValue(weaponFour[WeaponVal]));
+	        }
+	        
+	        if (Weapon == Five) {
+	        	
+	        	FindDigit(weaponFive[WeaponVal],DigitValue(weaponFive[WeaponVal]));
+	        }
+	        
+	        if (Weapon == Six) {
+	        	
+	        	FindDigit(weaponSix[WeaponVal],DigitValue(weaponSix[WeaponVal]));
+	        }
+	    }
+	    	Print = Off;
+	}
+
+	if (WeaponM == One) {
+	
+	    if (event_press(Left)) {
+	    	
+	    	Weapon = clamp(Weapon--,1,6);		
+	    	Print = On;
+	    }
+	    
+	    if (event_press(Right)) {
+	    	
+	    	Weapon = clamp(Weapon++,1,6);		
+	    	Print = On;
+	    }
+	    
+	    if (event_press(Cross)) {
+	    	
+	    	WeaponVal = 1;
+	    	WeaponM = Two;
+	    	Print = On;
+	    }
+	}
+	
+	if (WeaponM == Two) {
+	
+		if (event_press(Left)) {
+	    	
+	    	WeaponVal = clamp(WeaponVal--,1,24);		
+	    	Print = On;
+	    }
+	    
+	    if (event_press(Right)) {
+	    	
+	    	WeaponVal = clamp(WeaponVal++,1,24);		
+	    	Print = On;
+	    }
+		
+		if (WeaponVal <= 6) {
+		    
+		    if (event_press(Up) || get_ival(Up) && get_ptime(Up) > 350) {
+	            
+	            if (Weapon == One) {	
+	            	
+	            	weaponOne[WeaponVal] = clamp(weaponOne[WeaponVal] + 1,1,100);		
+	            }
+	            
+	            if (Weapon == Two) {	
+	            	
+	            	weaponTwo[WeaponVal] = clamp(weaponTwo[WeaponVal] + 1,1,100);		
+	            }
+	            
+	            if (Weapon == Three) {	
+	            	
+	            	weaponThree[WeaponVal] = clamp(weaponThree[WeaponVal] + 1,1,100);		
+	            }
+	            
+	            if (Weapon == Four) {	
+	            	
+	            	weaponFour[WeaponVal] = clamp(weaponFour[WeaponVal] + 1,1,100);		
+	            }
+	            
+	            if (Weapon == Five) {	
+	            	
+	            	weaponFive[WeaponVal] = clamp(weaponFive[WeaponVal] + 1,1,100);		
+	            }
+	            
+	            if (Weapon == Six) {	
+	            	
+	            	weaponSix[WeaponVal] = clamp(weaponSix[WeaponVal] + 1,1,100);		
+	            }
+	        	
+	        	Print = On;
+	        }
+		
+			if (event_press(Down) || get_ival(Down) && get_ptime(Down) > 350) {
+	            
+	            if (Weapon == One) {	
+	            	
+	            	weaponOne[WeaponVal] = clamp(weaponOne[WeaponVal] - 1,1,100);		
+	            }
+	            
+	            if (Weapon == Two) {	
+	            	
+	            	weaponTwo[WeaponVal] = clamp(weaponTwo[WeaponVal] - 1,1,100);		
+	            }
+	            
+	            if (Weapon == Three) {	
+	            	
+	            	weaponThree[WeaponVal] = clamp(weaponThree[WeaponVal] - 1,1,100);		
+	            }
+	            
+	            if (Weapon == Four) {	
+	            	
+	            	weaponFour[WeaponVal] = clamp(weaponFour[WeaponVal] - 1,1,100);		
+	            }
+	            
+	            if (Weapon == Five) {	
+	            	
+	            	weaponFive[WeaponVal] = clamp(weaponFive[WeaponVal] - 1,1,100);		
+	            }
+	            
+	            if (Weapon == Six) {	
+	            	
+	            	weaponSix[WeaponVal] = clamp(weaponSix[WeaponVal] - 1,1,100);		
+	            }
+	        	
+	        	Print = On;
+	        }
+		}
+		
+		if (WeaponVal >= 7 && WeaponVal <= 12 || WeaponVal >= 19 && WeaponVal <= 24) {
+		    
+		    if (event_press(Up) || get_ival(Up) && get_ptime(Up) > 350) {
+	            
+	            if (Weapon == One) {	
+	            	
+	            	weaponOne[WeaponVal] = clamp(weaponOne[WeaponVal] + 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Two) {	
+	            	
+	            	weaponTwo[WeaponVal] = clamp(weaponTwo[WeaponVal] + 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Three) {	
+	            	
+	            	weaponThree[WeaponVal] = clamp(weaponThree[WeaponVal] + 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Four) {	
+	            	
+	            	weaponFour[WeaponVal] = clamp(weaponFour[WeaponVal] + 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Five) {	
+	            	
+	            	weaponFive[WeaponVal] = clamp(weaponFive[WeaponVal] + 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Six) {	
+	            	
+	            	weaponSix[WeaponVal] = clamp(weaponSix[WeaponVal] + 10,20,5000);		
+	            }
+	        	
+	        	Print = On;
+	        }
+	        
+	        if (event_press(Down) || get_ival(Down) && get_ptime(Down) > 350) {
+	            
+	            if (Weapon == One) {	
+	            	
+	            	weaponOne[WeaponVal] = clamp(weaponOne[WeaponVal] - 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Two) {	
+	            	
+	            	weaponTwo[WeaponVal] = clamp(weaponTwo[WeaponVal] - 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Three) {	
+	            	
+	            	weaponThree[WeaponVal] = clamp(weaponThree[WeaponVal] - 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Four) {	
+	            	
+	            	weaponFour[WeaponVal] = clamp(weaponFour[WeaponVal] - 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Five) {	
+	            	
+	            	weaponFive[WeaponVal] = clamp(weaponFive[WeaponVal] - 10,20,5000);		
+	            }
+	            
+	            if (Weapon == Six) {	
+	            	
+	            	weaponSix[WeaponVal] = clamp(weaponSix[WeaponVal] - 10,20,5000);		
+	            }
+	        	
+	        	Print = On;
+	        }
+		}
+		
+		if (WeaponVal >= 13 && WeaponVal <= 18 ) {
+		    
+		    if (event_press(Up) || get_ival(Up) && get_ptime(Up) > 350) {
+	            
+	            if (Weapon == One) {	
+	            	
+	            	weaponOne[WeaponVal] = clamp(weaponOne[WeaponVal] + 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Two) {	
+	            	
+	            	weaponTwo[WeaponVal] = clamp(weaponTwo[WeaponVal] + 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Three) {	
+	            	
+	            	weaponThree[WeaponVal] = clamp(weaponThree[WeaponVal] + 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Four) {	
+	            	
+	            	weaponFour[WeaponVal] = clamp(weaponFour[WeaponVal] + 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Five) {	
+	            	
+	            	weaponFive[WeaponVal] = clamp(weaponFive[WeaponVal] + 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Six) {	
+	            	
+	            	weaponSix[WeaponVal] = clamp(weaponSix[WeaponVal] + 1,-100,100);		
+	            }
+	        	
+	        	Print = On;
+	        }
+		
+			if (event_press(Down) || get_ival(Down) && get_ptime(Down) > 350) {
+	            
+	            if (Weapon == One) {	
+	            	
+	            	weaponOne[WeaponVal] = clamp(weaponOne[WeaponVal] - 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Two) {	
+	            	
+	            	weaponTwo[WeaponVal] = clamp(weaponTwo[WeaponVal] - 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Three) {	
+	            	
+	            	weaponThree[WeaponVal] = clamp(weaponThree[WeaponVal] - 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Four) {	
+	            	
+	            	weaponFour[WeaponVal] = clamp(weaponFour[WeaponVal] - 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Five) {	
+	            	
+	            	weaponFive[WeaponVal] = clamp(weaponFive[WeaponVal] - 1,-100,100);		
+	            }
+	            
+	            if (Weapon == Six) {	
+	            	
+	            	weaponSix[WeaponVal] = clamp(weaponSix[WeaponVal] - 1,-100,100);		
+	            }
+	        	
+	        	Print = On;
+	        }
+		}
+		
+		if (event_press(Circle)) {
+		
+			WeaponM = One;
+	    	Print = On;
+		}
+	}
+}
+
+function Border () {
+  	
+  	for (v = 0; v < 64; v += 2) {
+    	
+    	pixel_oled(0,v,1);
+	 	pixel_oled(127,v,1);
+	}
+
+  	for (h = 0; h < 128; h += 2) {
+    	
+    	pixel_oled(h,0,1);
+	 	pixel_oled(h,63,1);
+	}
+}
+
+function antiRecoil () {
+   
+	if (Start) {
+		
+		xTime = Off;
+    	vTime = Off;
+    	MoveY = Off;
+    	MoveX = Off;
+    	MovementY = Off;
+    	MovementX = Off;
+    	vP = 1;
+    	vT = 7;
+    	xP = 13;
+    	xT = 19;
+    	
+    	if (Weapon == One) {
+	    	
+	    	for (i = 1; i <= 24; i++) {
+        		
+        		antiRecoil[i] = weaponOne[i];    
+        	} 
+	    }
+	    
+	    if (Weapon == Two) {
+	    	
+	    	for (i = 1; i <= 24; i++) {
+        		
+        		antiRecoil[i] = weaponTwo[i];    
+        	} 
+	    }
+	    
+	    if (Weapon == Three) {
+	    	
+	    	for (i = 1; i <= 24; i++) {
+        		
+        		antiRecoil[i] = weaponThree[i];    
+        	} 
+	    }
+	    
+	    if (Weapon == Four) {
+	    	
+	    	for (i = 1; i <= 24; i++) {
+        		
+        		antiRecoil[i] = weaponFour[i];    
+        	} 
+	    }
+	    
+	    if (Weapon == Five) {
+	    	
+	    	for (i = 1; i <= 24; i++) {
+        		
+        		antiRecoil[i] = weaponFive[i];    
+        	} 
+	    }
+	    
+	    if (Weapon == Six) {
+	    	
+	    	for (i = 1; i <= 24; i++) {
+        		
+        		antiRecoil[i] = weaponSix[i];    
+        	} 
+	    }
+		
+		Start = Off;
+	}
+/*================================================================*/	
+	if (RecoilSet) {
+	
+	    if (vTime <= antiRecoil[vT]) {
+	    	
+	    	set_Val(AimY,antiRecoil[vP]);
+	    }
+	    
+	    if (vTime >= antiRecoil[vT]) {
+	    
+	        if (get_ival(Ads) && get_ival(Fire)) {
+	        	
+	        	if (vT == 12 && vTime >= antiRecoil[vT]) {
+	        		vP = 0;
+	        		vT = 6;
+	        	}
+	        }
+	        
+	        vTime = Off;
+	        vP = clamp(vP++,1,6);
+	        vT = clamp(vT++,7,12);
+	    }
+	    
+	    if (xTime <= antiRecoil[xT]) {
+	    	
+	    	set_Val(AimX,antiRecoil[xP]);
+	    }
+	    
+	    if (xTime >= antiRecoil[xT]) {
+	        
+	        if (get_ival(Ads) && get_ival(Fire)) {
+	        	
+	        	if (xT == 24 && xTime >= antiRecoil[xT]) {
+	        		xP = 12;
+	        		xT = 18;
+	        	}
+	        }		
+	    	
+	    	xTime = Off;
+	    	xP = clamp(xP++,13,18);
+	    	xT = clamp(xT++,19,24);
+	    }		
+	}
+	
+	if (RecoilProgression) {
+	
+		if (!MovementY) {
+	
+			if (!MoveY)	
+				
+				YAxis = antiRecoil[vP];
+	
+			if (vTime >= antiRecoil[vT]) {
+				
+				MoveY = On;
+		
+			if (antiRecoil[vP] > antiRecoil[vP + 1]) 
+				
+				YAxis --;
+			
+			if (antiRecoil[vP] < antiRecoil[vP + 1]) 
+				
+				YAxis ++;
+				vTime = Off;
+		}
+		
+		if (YAxis == antiRecoil[vP + 1]) {
+			
+			MoveY = Off;
+			vP = clamp(vP++,1,6);
+	        vT = clamp(vT++,7,12);
+		}
+			else if (vP == 6) {
+				
+				MovementY = On;
+			}
+		}
+
+		if (!MovementX) {
+	
+			if (!MoveX)	
+				
+				XAxis = antiRecoil[xP];
+	
+			if (xTime >= antiRecoil[xT]) {
+				
+				MoveX = On;
+		
+			if (antiRecoil[xP] > antiRecoil[xP + 1]) 
+				
+				XAxis --;
+			
+			if (antiRecoil[xP] < antiRecoil[xP + 1]) 
+				
+				XAxis ++;
+				xTime = Off;
+		}
+		
+		if (XAxis == antiRecoil[xP + 1]) {
+			
+			MoveX = Off;
+			xP = clamp(xP++,13,18);
+	        xT = clamp(xT++,19,24);
+		}
+		else if (xP == 18) {
+			
+			MovementX = On;
+		}
+	}	
+		
+		set_Val(AimY,YAxis);
+		set_Val(AimX,XAxis);
+	}
+		xTime += get_rtime();
+    	vTime += get_rtime();
+}
+
+function set_Val(Input,Output) {
+
+      set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+      return; 
+}
+
+function Toggle(ModT,ModP) {
+    	
+    	combo_stop(Settings);
+    	Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+	    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[3]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[1]);    
+        }
+            
+            else {
+                
+                printf(36,38,0,1,MiscString[2]);
+            }
+                ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+        if (ToggleT >= 5000) {
+            
+            cls_oled(0);
+            ToggleTime = Off;
+            ToggleT = 0;
+    }
+}
+
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	}
+	
+		else  
+			
+			Count = 0;
+    
+	if (Digits == 5) {  
+		
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	}
+	
+	if (Digits >= 4) {
+		
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}
+	
+	if (Digits >= 3) { 
+		
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	} 
+	
+	if (Digits >= 2) { 
+		
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1),25,1,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		
+		return Position;
+}
+
+function LoadSettings () {
+
+    weaponOne[1] = get_pvar(SPVAR_1,1,100,weaponOne[1]);
+    weaponOne[2] = get_pvar(SPVAR_2,1,100,weaponOne[2]);
+    weaponOne[3] = get_pvar(SPVAR_3,1,100,weaponOne[3]);
+    weaponOne[4] = get_pvar(SPVAR_4,1,100,weaponOne[4]);
+    weaponOne[5] = get_pvar(SPVAR_5,1,100,weaponOne[5]);
+    weaponOne[6] = get_pvar(SPVAR_6,1,100,weaponOne[6]);
+    weaponOne[7] = get_pvar(SPVAR_7,20,5000,weaponOne[7]);
+    weaponOne[8] = get_pvar(SPVAR_8,20,5000,weaponOne[8]);
+    weaponOne[9] = get_pvar(SPVAR_9,20,5000,weaponOne[9]);
+    weaponOne[10] = get_pvar(SPVAR_10,20,5000,weaponOne[10]);
+    weaponOne[11] = get_pvar(SPVAR_11,20,5000,weaponOne[11]);
+    weaponOne[12] = get_pvar(SPVAR_12,20,5000,weaponOne[12]);
+    weaponOne[13] = get_pvar(SPVAR_13,-100,100,weaponOne[13]);
+    weaponOne[14] = get_pvar(SPVAR_14,-100,100,weaponOne[14]);
+    weaponOne[15] = get_pvar(SPVAR_15,-100,100,weaponOne[15]);
+    weaponOne[16] = get_pvar(SPVAR_16,-100,100,weaponOne[16]);
+    weaponOne[17] = get_pvar(SPVAR_17,-100,100,weaponOne[17]);
+    weaponOne[18] = get_pvar(SPVAR_18,-100,100,weaponOne[18]);
+    weaponOne[19] = get_pvar(SPVAR_19,20,5000,weaponOne[19]);
+    weaponOne[20] = get_pvar(SPVAR_20,20,5000,weaponOne[20]);
+    weaponOne[21] = get_pvar(SPVAR_21,20,5000,weaponOne[21]);
+    weaponOne[22] = get_pvar(SPVAR_22,20,5000,weaponOne[22]);
+    weaponOne[23] = get_pvar(SPVAR_23,20,5000,weaponOne[23]);
+    weaponOne[24] = get_pvar(SPVAR_24,20,5000,weaponOne[24]);
+    weaponTwo[1] = get_pvar(SPVAR_25,1,100,weaponTwo[1]);
+    weaponTwo[2] = get_pvar(SPVAR_26,1,100,weaponTwo[2]);
+    weaponTwo[3] = get_pvar(SPVAR_27,1,100,weaponTwo[3]);
+    weaponTwo[4] = get_pvar(SPVAR_28,1,100,weaponTwo[4]);
+    weaponTwo[5] = get_pvar(SPVAR_29,1,100,weaponTwo[5]);
+    weaponTwo[6] = get_pvar(SPVAR_30,1,100,weaponTwo[6]);
+    weaponTwo[7] = get_pvar(SPVAR_31,20,5000,weaponTwo[7]);
+    weaponTwo[8] = get_pvar(SPVAR_32,20,5000,weaponTwo[8]);
+    weaponTwo[9] = get_pvar(SPVAR_33,20,5000,weaponTwo[9]);
+    weaponTwo[10] = get_pvar(SPVAR_34,20,5000,weaponTwo[10]);
+    weaponTwo[11] = get_pvar(SPVAR_35,20,5000,weaponTwo[11]);
+    weaponTwo[12] = get_pvar(SPVAR_36,20,5000,weaponTwo[12]);
+    weaponTwo[13] = get_pvar(SPVAR_37,-100,100,weaponTwo[13]);
+    weaponTwo[14] = get_pvar(SPVAR_38,-100,100,weaponTwo[14]);
+    weaponTwo[15] = get_pvar(SPVAR_39,-100,100,weaponTwo[15]);
+    weaponTwo[16] = get_pvar(SPVAR_40,-100,100,weaponTwo[16]);
+    weaponTwo[17] = get_pvar(SPVAR_41,-100,100,weaponTwo[17]);
+    weaponTwo[18] = get_pvar(SPVAR_42,-100,100,weaponTwo[18]);
+    weaponTwo[19] = get_pvar(SPVAR_43,20,5000,weaponTwo[19]);
+    weaponTwo[20] = get_pvar(SPVAR_44,20,5000,weaponTwo[20]);
+    weaponTwo[21] = get_pvar(SPVAR_45,20,5000,weaponTwo[21]);
+    weaponTwo[22] = get_pvar(SPVAR_46,20,5000,weaponTwo[22]);
+    weaponTwo[23] = get_pvar(SPVAR_47,20,5000,weaponTwo[23]);
+    weaponTwo[24] = get_pvar(SPVAR_48,20,5000,weaponTwo[24]);
+    
+    Loaded = On;
+	combo_run(Settings);
+}    
+    
+function SaveSettings () {
+
+    set_pvar(SPVAR_1,weaponOne[1]);
+    set_pvar(SPVAR_2,weaponOne[2]);
+    set_pvar(SPVAR_3,weaponOne[3]);
+    set_pvar(SPVAR_4,weaponOne[4]);
+    set_pvar(SPVAR_5,weaponOne[5]);
+    set_pvar(SPVAR_6,weaponOne[6]);
+    set_pvar(SPVAR_7,weaponOne[7]);
+    set_pvar(SPVAR_8,weaponOne[8]);
+    set_pvar(SPVAR_9,weaponOne[9]);
+    set_pvar(SPVAR_10,weaponOne[10]);
+    set_pvar(SPVAR_11,weaponOne[11]);
+    set_pvar(SPVAR_12,weaponOne[12]);
+    set_pvar(SPVAR_13,weaponOne[13]);
+    set_pvar(SPVAR_14,weaponOne[14]);
+    set_pvar(SPVAR_15,weaponOne[15]);
+    set_pvar(SPVAR_16,weaponOne[16]);
+    set_pvar(SPVAR_17,weaponOne[17]);
+    set_pvar(SPVAR_18,weaponOne[18]);
+    set_pvar(SPVAR_19,weaponOne[19]);
+    set_pvar(SPVAR_20,weaponOne[20]);
+    set_pvar(SPVAR_21,weaponOne[21]);
+    set_pvar(SPVAR_22,weaponOne[22]);
+    set_pvar(SPVAR_23,weaponOne[23]);
+    set_pvar(SPVAR_24,weaponOne[24]);
+    set_pvar(SPVAR_25,weaponTwo[1]);
+    set_pvar(SPVAR_26,weaponTwo[2]);
+    set_pvar(SPVAR_27,weaponTwo[3]);
+    set_pvar(SPVAR_28,weaponTwo[4]);
+    set_pvar(SPVAR_29,weaponTwo[5]);
+    set_pvar(SPVAR_30,weaponTwo[6]);
+    set_pvar(SPVAR_31,weaponTwo[7]);
+    set_pvar(SPVAR_32,weaponTwo[8]);
+    set_pvar(SPVAR_33,weaponTwo[9]);
+    set_pvar(SPVAR_34,weaponTwo[10]);
+    set_pvar(SPVAR_35,weaponTwo[11]);
+    set_pvar(SPVAR_36,weaponTwo[12]);
+    set_pvar(SPVAR_37,weaponTwo[13]);
+    set_pvar(SPVAR_38,weaponTwo[14]);
+    set_pvar(SPVAR_39,weaponTwo[15]);
+    set_pvar(SPVAR_40,weaponTwo[16]);
+    set_pvar(SPVAR_41,weaponTwo[17]);
+    set_pvar(SPVAR_42,weaponTwo[18]);
+    set_pvar(SPVAR_43,weaponTwo[19]);
+    set_pvar(SPVAR_44,weaponTwo[20]);
+    set_pvar(SPVAR_45,weaponTwo[21]);
+    set_pvar(SPVAR_46,weaponTwo[22]);
+    set_pvar(SPVAR_47,weaponTwo[23]);
+    set_pvar(SPVAR_48,weaponTwo[24]);
+    
+    Saved = On;
+	combo_run(Settings);
+}    

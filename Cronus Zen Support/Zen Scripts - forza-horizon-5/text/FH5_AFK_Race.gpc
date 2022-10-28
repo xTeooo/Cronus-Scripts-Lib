@@ -1,0 +1,42 @@
+int double_tap_timer;
+int afk_toggle;
+
+
+
+main {
+
+
+  if(double_tap_timer)
+    double_tap_timer -= get_rtime();
+
+  if(event_press(XB1_LEFT))
+    if(double_tap_timer) {
+      afk_toggle = !afk_toggle;
+      if(afk_toggle) {
+        block_rumble();
+        cls_oled(OLED_BLACK);
+        set_hsb(119,100,50);
+      }
+      else reset_rumble();
+    }
+    else double_tap_timer = 250;
+
+  if(afk_toggle) {
+    block_all_inputs();
+    combo_run(FH5_AFK_Race);
+  }
+  else {
+    combo_stop(FH5_AFK_Race);
+    set_hsb(1,100,50);
+  }
+
+
+}
+
+
+
+combo FH5_AFK_Race {
+  set_val(XB1_RT,100);
+  wait(290000);
+  wait(80);
+}

@@ -1,0 +1,830 @@
+/*
+
+
+██╗░░██╗██╗░██████╗░██╗░░██╗░██╗░░░░░░░██╗░█████╗░████████╗███████╗██████╗░██╗░██████╗
+██║░░██║██║██╔════╝░██║░░██║░██║░░██╗░░██║██╔══██╗╚══██╔══╝██╔════╝██╔══██╗╚█║██╔════╝
+███████║██║██║░░██╗░███████║░╚██╗████╗██╔╝███████║░░░██║░░░█████╗░░██████╔╝░╚╝╚█████╗░
+██╔══██║██║██║░░╚██╗██╔══██║░░████╔═████║░██╔══██║░░░██║░░░██╔══╝░░██╔══██╗░░░░╚═══██╗
+██║░░██║██║╚██████╔╝██║░░██║░░╚██╔╝░╚██╔╝░██║░░██║░░░██║░░░███████╗██║░░██║░░░██████╔╝
+╚═╝░░╚═╝╚═╝░╚═════╝░╚═╝░░╚═╝░░░╚═╝░░░╚═╝░░╚═╝░░╚═╝░░░╚═╝░░░╚══════╝╚═╝░░╚═╝░░░╚═════╝░
+				
+					▄▀█ █▀█ █▀▀ ▀▄▀   █▀ █▀▀ █▀█ █ █▀█ ▀█▀
+					█▀█ █▀▀ ██▄ █░█   ▄█ █▄▄ █▀▄ █ █▀▀ ░█░
+									
+									v 1.3
+									
+							discord: highwater#0121
+									
+BIG THANKS to SS_Nikolai for their script, it was the base for this script.
+Also thanks to FATTO DA ANDRY 85 for thier script, used some elements here too.
+
+
+This script will be more helpful if you have mappable back buttons on your controller
+https://www.extremerate.com/  has a few DIY kits that are cheap and easy to install
+
+___________________________________________________________________________________________________
+											
+	
+	OLED screen indications: 
+                              ———————————————————————————
+		                      |       highwater's       |
+		                      |      apex script v2     |   
+		                      | < Current Weapon Name > |
+                              ———————————————————————————
+
+	KillSwitch: 
+                              ———————————————————————————
+                              |  OFF                    | 
+                              |                         | 
+                              |                         | 
+                              ———————————————————————————
+
+		
+	Kill Switch (disable everything, use while in lobby)
+		    - Turn ON to OFF or OFF to ON
+			- Hold L2 and tap SHARE  
+
+
+
+4 Profiles     - 1) Basic High/Low recoil - HOLD L2 and PRESS DOWN  on d-pad
+                 2) Primary and secondary - HOLD L2 and PRESS  UP   on d-pad
+                 3) Primary and secondary - HOLD L2 and PRESS RIGHT on d-pad
+                 4) Primary and secondary - HOLD L2 and PRESS LEFT  on d-pad
+                 
+Profile 1 (high/low) will require you to HOLD L2 + PRESS DOWN to cycle through high and low
+Profiles 2-4 have an auto switch between primary and secondary anytime you press weapon swap,
+if this de-syncs you can manually set primary    with  -  HOLD L2 + PRESS TRIANGLE
+									  secondary  with  -  HOLD L2 + PRESS CIRCLE
+
+The auto switch of primary/secondary while using profile 2-4 is smart enough to know when you holster
+and pull the weapon back out, should not unsync while putting weapon away or puling it back out
+This feature also allows you to unholster your weapon using L2 or R2
+
+
+Anti Recoil 	 
+Aim Assist 		 	
+Rapid Fire		- Automatically enabled for Semi-Auto guns
+ADS Enemy Ping	- only active while     ADS      and holding SQUARE
+Strafe Shot     - only active while  ADS + FIRE  and holding SQUARE
+Crouch Shot     - only active while     FIRE     and holding SQUARE
+
+Easy Heal		- while holding square press D-Pad    UP for pheonix
+													  RIGHT for battery
+													  LEFT for medkit 
+													  DOWN for syringe
+Auto Armor Swap - allows you to switch armors from loot boxes automatically with 
+				  HOLD SQUARE and PRESS L1   do not move anolog sticks while preforming this
+				  ** this is also dependent on the loot in the box, some boxes wont have enough
+				  loot to push the armor down far enough in the list. mid/late game shouldn't
+				  be an issue though
+
+____________________________________________________________________________________________________*/
+
+	// Text to display 
+	const string TITLE = "highwater's";
+	const string NAME  = "APEX script v1.3";
+	const string OFF   = "OFF";
+
+
+//--BUTTONS ( Customize To Your Layout ) ** CHANGING THESE VALUES HAS NOT BEEN TESTED TO WORK WITH ALL FEATURES
+	define FLIPPED				= FALSE; // Make TRUE If You Play Flipped	
+	define INVERTED				= FALSE; // Make TRUE If You Play Inverted
+    define LETHAL    			= PS4_R1;			define SPRINT    			= PS4_L3;
+    define MELEE     			= PS4_CIRCLE;		define SWAP      			= PS4_TRIANGLE;
+    define PRONE     			= PS4_R3;			define JUMP      			= PS4_L1;
+    define PING 				= PS4_R1;			define RELOAD    			= PS4_SQUARE;
+	define AIM_X	 			= PS4_RX;			define AIM_Y	 			= PS4_RY;
+	define STRAFE 	 			= PS4_LX;			define WALK 	 			= PS4_LY;
+	define TACTICAL  			= PS4_CROSS;
+
+//Block Rumble (Keep Ingame Rumble ON For Rumble Mods To Work Properly)
+	define Rumble_Block 		= TRUE;
+
+//--Aim Assist - Main Toggle
+	define Triple_Sticky    	= TRUE;
+	
+	int ADS_Size            	= 12;
+	int ADS_Wait_Value      	= 28;
+	int HIPFIRE_Size        	= 16;
+	int HIPFIRE_Wait_Value  	= 38;
+	int ADS_FIRE_Size       	= 16;
+	int ADS_FIRE_Wait_Value 	= 48;
+	int STRAFE_DELAY  			= 252;
+
+//--Script Variables (Leave Alone Or Risk Messing Up The Script)	
+	int Aim_Val, Wait_Val;
+	int _strafe;
+	int _strafe_index;
+	int _strafe_rand_1;
+	int _strafe_rand_2;
+	int ar_idx;
+	int aRY;
+	int aRX;
+	int inverted;
+	int v,i,a;
+	int ADS, FIRE;
+	int display_title = TRUE; 
+	int KillSwitch;
+    int count_black;
+    int profile = 0;
+    int secondary = FALSE;
+    int holster = FALSE;
+    int ignore_swap = FALSE;
+	
+	
+//--Adjust Anti-Recoil here
+	const int16 TIMES[][] 		= {
+	{ 12, 52, 80, 142 },     			//Low  Recoil Time  0
+    { 12, 52, 80, 152 },				//High Recoil Time  1
+    { 12, 56, 85, 121 },				//R301 Time         2
+    { 12, 56, 90, 110 },				//R99 Time          3
+    { 12, 52, 110, 190 },				//Flatline          4
+    { 12, 52, 80, 152 },				//Wingman           5
+    { 12, 52, 80, 152 },				//Hemlock           6
+    { 12, 52, 80, 152 },				//car-301           7
+    { 12, 52, 80, 152 },			    //Havoc             8
+    { 12, 190, 410, 652 },				//Rampage           9
+    { 12, 120, 260, 330 },				//Devoltion         10
+    { 12, 52, 80, 152 },				//ALternator        11
+    { 12, 52, 80, 152 },				//RE-45             12
+    { 12, 280, 490, 152 },				//Spitfire          13
+    { 12, 74, 135, 180 }				//Volt              14
+    };   		
+    // VERTICAL			 HORIZONTAL        
+	const int16 RECOILS[][] 		= {
+	{ 36, 23, 12, 12,    0, 0, 0, 0,        0},      	//Low  Recoil     0        
+    { 41, 24, 17, 17,    0, 0, 0, 0,        0},		    //high recoil     1 
+    { 36, 28, 24, 22,    -2, -2, 3, -3,     0},		    //R-301           2
+    { 58, 52, 30, 23,    -3, -5, -4, 1,     0},			//R99             3
+    { 38, 21, 17, 17,    7, -3, 30, -3,     0},			//Flatline        4
+    { 28, 24, 17, 17,    2, 0, 0, 0,        1},			//Wingman         5
+    { 41, 29, 19, 19,    0, 0, 0, 0,        1},			//Hemlock         6 <<<<<<< { 41, 29, 19 ,0, 0, 0, 1}, the "1" at the end will enable rapid fire
+    { 59, 35, 19, 19,    5, -1, 1, -1,      0},			//CAR-301         7                                  "0" for regular fire
+    { 58, 58, 43, 39,    10, -3, -6, 10,    0},			//Havoc           8
+    { 45, 41, 32, 28,    0, -9, 2, 6,       0},		    //Rampage         9 
+    { 38, 23, 12, 12,    3, 5, -3, 1,       0},		    //Devoltion       10
+    { 58, 41, 29, 28,    10, -2, 1, -2,     0},			//Alternator      11
+    { 38, 23, 12, 12,    10, 0, 0, 0,       0},			//RE-45		      12
+    { 38, 21, 13, 15,    10, -8, -10, -3,   0},		    //Spitfire        13
+    { 58, 36, 20, 20,    10, -1, -2, -3,    0}			//Volt            14
+	};    			
+    const string NAMES[]={ // Weapon Names Displayed On Title Screen;
+		"Low",    		// 0
+		"High",			// 1
+		"R301",			// 2
+		"R-99",			// 3
+		"Flatline",		// 4	
+		"Wingman",		// 5
+		"Hemlok",		// 6
+		"CAR-301",		// 7
+		"Havoc",		// 8
+		"Rampage",		// 9
+		"Devotion",		// 10
+		"Altrntr",	    // 11
+		"RE-45",		// 12
+		"Spitfire",		// 13
+		"Volt",			// 14
+		""				// leave blank
+		}; 
+	
+	data(
+//    Green     Red    SkyBlue    Blue         
+    0,0,1,0,  0,1,0,0,  1,0,1,0,  1,0,0,0,
+//   Yellow    White      Pink          
+    0,3,3,0,  3,3,3,0,  0,0,0,1 );
+	
+	//Default High/Low
+	int highlow = TRUE;
+	// Profile 1
+	int profile_prim1 = 2;     // CHANGE these numbers to match the weapon numbers listed above
+	int profile_seco1 = 7;	   //     in order to change out guns for different profiles
+	// Profile 2
+	int profile_prim2 = 6;
+	int profile_seco2 = 3;
+	//	// Profile 3
+	int profile_prim3 = 8;
+	int profile_seco3 = 3;
+
+init 
+{ 
+	Init_Script();
+}
+
+main {
+
+	if(abs(get_val(XB1_RY)) < 5 && abs(get_val(XB1_RX)) < 5 )
+	{         
+        set_val(XB1_RY,0);                                                 
+        set_val(XB1_RX,0); 
+    }  
+  
+  	if (get_val(XB1_X))
+  	{
+  
+  		set_val(XB1_DOWN,0);
+  		set_val(XB1_UP,0);
+  		set_val(XB1_RIGHT,0); 
+  		set_val(XB1_LEFT,0);
+   
+  		if(event_press(XB1_UP))
+   			combo_run(fenice);
+  		if(event_press(XB1_DOWN))
+   			combo_run(siringa);
+  		if(event_press(XB1_LEFT))
+   			combo_run(MEDIKIT);
+  		if(event_press(XB1_RIGHT))
+   			combo_run(BATTERY);
+	}
+	
+// Display Script Title    
+    if(display_title)
+    {
+    	cls_oled(0);	// clear OLED screen
+    	count_black = 0;// reset screen saver counter
+    	
+    	if(KillSwitch)
+    	{
+    		printf(2,8,OLED_FONT_LARGE,OLED_WHITE,OFF[0]);
+    		display_title = FALSE;
+		}
+    	else
+    	{
+    	    printf(5, 5, 1, 1, TITLE[0]);
+  		    printf(10, 27, 0, 1, NAME[0]);
+    	    printf(center_x(getNAMES(ar_idx), OLED_FONT_LARGE_WIDTH),39,OLED_FONT_LARGE,OLED_WHITE,NAMES[ar_idx]);
+    	    display_title = FALSE;
+    	}
+     
+   	} else
+   	{
+   		count_black += get_rtime();
+    	if(count_black >= 5000)
+    	{
+    		cls_oled(0);
+    		count_black = 0;
+    		combo_stop(Rumble);
+    	}
+	}
+
+// Killswitch toggle
+	if(get_val(ADS))
+	{
+		if(event_press(PS4_SHARE))
+		{
+			KillSwitch = !KillSwitch;
+			display_title = TRUE;
+		}
+		if(get_ival(PS4_SHARE))
+			set_val(PS4_SHARE, 0);
+	}
+			
+	if(!KillSwitch)    
+	{
+				   
+				if(Rumble_Block)
+					block_rumble();
+	
+				
+				// aim assist
+				if(Triple_Sticky)
+				{
+					if(get_ival(ADS) && !get_ival(FIRE))
+					{
+						combo_run(Sticky_AA);
+						Aim_Val  = ADS_Size;
+						Wait_Val = ADS_Wait_Value;
+					}
+					else if(get_ival(ADS) && get_ival(FIRE))
+					{
+						combo_run(Sticky_AA);
+						Aim_Val  = ADS_FIRE_Size;
+						Wait_Val = ADS_FIRE_Wait_Value;
+					}
+					else if(!get_ival(ADS) && get_ival(FIRE))
+					{
+						combo_run(Sticky_AA);
+						Aim_Val  = HIPFIRE_Size;
+						Wait_Val = HIPFIRE_Wait_Value;
+					}
+					else
+					{
+						combo_stop(Sticky_AA);
+					}
+				}
+				
+				// quick heal
+				if(abs(get_val(PS4_RY)) < 5 && abs(get_val(PS4_RX)) < 5 )
+				{         
+    	    			set_val(PS4_RY,0);                                                 
+    	    			set_val(PS4_RX,0); 
+    	    	}  
+  
+				    if (get_val(RELOAD))
+				    { 
+   
+  					if(event_press(PS4_UP))
+   						combo_run(fenice);
+  					if(event_press(PS4_DOWN))
+   						combo_run(siringa);
+  					if(event_press(PS4_LEFT))
+   						combo_run(MEDIKIT)
+  					if(event_press(PS4_RIGHT))
+   						combo_run(BATTERY);
+					}
+				
+				
+				// Crouch shot              -                   FIRE while holding SQUARE to activate
+	   			if(get_ival(PS4_SQUARE) && get_ival(PS4_R2) && !get_ival(PS4_L2))
+             		combo_run(CrouchShot);
+        		else 
+             		combo_stop(CrouchShot);
+    			
+
+    			// Strafe shot              -                   ADS + FIRE while holding SQUARE to activate
+				if(get_ival(FIRE) && get_val(ADS) && get_val(PS4_SQUARE))
+					combo_run(strafe);
+				else 
+					combo_stop(strafe); 
+
+				
+				
+				// set default profile					HOLD L2 and PRESS D-pad DOWN   REPEAT to cycle though HIGH and LOW 
+    			if(get_val(PS4_L2))
+				{	
+					if (event_press(PS4_DOWN))
+					{
+						profile = 0;
+						highlow=!highlow;
+						led_color(ar_idx);
+						display_title = TRUE;
+						combo_run(Rumble);
+					}
+					if(get_ival(PS4_DOWN))
+						set_val(PS4_DOWN, 0);
+				}
+    
+    			// set profile 1            -           HOLD L2 and PRESS D-pad UP
+				if(get_val(PS4_L2))
+				{	
+					if(event_press(PS4_UP))
+					{
+						set_val(PS4_UP,0);
+						profile = 1;
+						secondary = FALSE;
+						display_title = TRUE;
+						led_color(ar_idx);
+						combo_run(Rumble);
+					}
+					if(get_ival(PS4_UP))
+						set_val(PS4_UP, 0);
+				}
+    
+			    // set profile 2            -           HOLD L2 and PRESS D-pad RIGHT
+				if(get_val(PS4_L2))
+				{	
+					if(event_press(PS4_RIGHT))
+					{
+						set_val(PS4_RIGHT,0);
+						profile = 2;
+						secondary = FALSE;
+						display_title = TRUE;
+						led_color(ar_idx);
+						combo_run(Rumble);
+					}
+					if(get_ival(PS4_RIGHT))
+						set_val(PS4_RIGHT, 0);
+				}
+				
+				 // set profile 3            -           HOLD L2 and PRESS D-pad LEFT
+				if(get_val(PS4_L2))
+				{	
+					if(event_press(PS4_LEFT))
+					{
+						set_val(PS4_LEFT,0);
+						profile = 3;
+						secondary = FALSE;
+						display_title = TRUE;
+						led_color(ar_idx);
+						combo_run(Rumble);
+					}
+					if(get_ival(PS4_LEFT))
+						set_val(PS4_LEFT, 0);
+				}
+    
+			    // manually set primary                  HOLD L2 and PRESS triangle
+				if(get_ival(PS4_L2)) 
+				{
+  					if(event_press(PS4_TRIANGLE)) 
+  					{
+    					set_val(PS4_TRIANGLE,0);
+						secondary = FALSE;
+						combo_run(Rumble);
+						display_title = TRUE;
+  					}
+  					if(get_ival(PS4_TRIANGLE))
+    					set_val(PS4_TRIANGLE,0);
+ 			   }
+				
+				
+				// manually set secondary                 HOLD L2 and PRESS circle
+				if(get_ival(ADS)) 
+				{
+  					if(event_press(PS4_CIRCLE)) 
+  					{
+    					set_val(PS4_CIRCLE,0);
+						secondary = TRUE;
+						combo_run(Rumble);
+						display_title = TRUE;
+  					}
+  					if(get_ival(PS4_CIRCLE))
+    					set_val(PS4_CIRCLE,0);
+ 			   }
+				
+    
+			    // Switch Primary/secondary                  tap weapon swap 
+				if(event_release(SWAP)&& get_ptime(SWAP)<200 && !get_val(ADS) && profile != 0 && !holster && !ignore_swap)
+			    {
+ 			       secondary=!secondary; 
+			       display_title = TRUE;
+  			       led_color(ar_idx);
+			       combo_run(Rumble);
+			       holster = FALSE;
+    			} 
+    			
+    			// smart weapon swap					  PRESS ADS or FIRE while weapon is holstered to pull out weapon	
+    			if(get_ptime(SWAP)>300 && event_release(SWAP)) 
+    			{
+    				holster = TRUE;
+    				combo_run(Rumble);
+    			}
+    			if(holster)
+				{
+					if(get_val(ADS) || get_val(FIRE) || event_press(SWAP))
+    				{
+	    				set_val(SWAP,0);
+	   					ignore_swap = TRUE;
+					}
+					if(ignore_swap)
+					{
+						set_val(SWAP,0);
+						holster = FALSE;
+	    				display_title = TRUE;
+	    				combo_run(Rumble);   					
+						combo_run(pull_out);
+					}
+					
+    			}
+    
+ 			    if(profile == 0 && highlow)
+ 			   		ar_idx = 0;
+ 			    if(profile == 0 && !highlow)
+			    	ar_idx = 1;
+			    if(profile == 1 && !secondary)
+    				ar_idx = profile_prim1;
+   			    if(profile == 1 && secondary)
+    				ar_idx = profile_seco1;
+    			if(profile == 2 && !secondary)
+    				ar_idx = profile_prim2;
+    			if(profile == 2 && secondary)
+    				ar_idx = profile_seco2;
+				if(profile == 3 && !secondary)
+    				ar_idx = profile_prim3;
+    			if(profile == 3 && secondary)
+    				ar_idx = profile_seco3;
+				
+				//auto enable Rapid Fire for selected guns
+    			if(RECOILS[ar_idx][8] > 0 && get_val(FIRE))
+			    	combo_run(RAPID_FIRE);
+    			
+    			// ping while ADS'd                       HOLD L2 and PRESS square
+				if(get_ival(ADS) && get_ival(RELOAD)) 
+				{
+						combo_run(auto_ping);
+ 			   	}
+ 			   	
+ 			   	//auto armor swap 						  HOLD DOWN square + PRESS L1
+ 			   	if( get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) > 300 && !get_val(ADS) && !get_val(FIRE))
+ 			   	{
+ 			   		if(event_press(PS4_L1))
+ 			   		{
+ 			   			if(get_val(PS4_SQUARE))
+ 			   				combo_run(armor_swap);
+ 			   		}
+ 			   		if(get_ival(PS4_L1))
+    					set_val(PS4_L1,0);
+ 			   	}
+			 
+				// Anti - Recoil
+				if(get_val(ADS) && get_val(FIRE))
+				{
+					if(get_ptime(FIRE) >= TIMES[ar_idx][0])    
+						aRY =  RECOILS[ar_idx][0];
+						aRX =  RECOILS[ar_idx][0 + 4];
+
+					if(get_ptime(FIRE) >= TIMES[ar_idx][1] * 10)
+						aRY = RECOILS[ar_idx][1];
+						aRX =  RECOILS[ar_idx][1 + 4];
+
+					if(get_ptime(FIRE) >= TIMES[ar_idx][2] * 10)
+						aRY = RECOILS[ar_idx][2];
+						aRX =  RECOILS[ar_idx][2 + 4];
+					
+					if(get_ptime(FIRE) >= TIMES[ar_idx][3] * 10)
+						aRY = RECOILS[ar_idx][3];
+						aRX =  RECOILS[ar_idx][3 + 4];
+
+					if(abs(get_val(AIM_X)) < aRY + 5)
+						set_val(AIM_Y, XY_Value(AIM_Y, aRY));
+						set_val(AIM_X, XY_Value(AIM_X, aRX));
+				}
+					
+			} else
+			{  
+               combo_run(Rainbow_Flash);
+           	}
+	
+	
+}
+	
+//                COMBOS
+//___________________________________________________________________________________________________
+
+combo CrouchShot {
+	set_val(PS4_R3,100);
+	wait(50);
+	set_val(PS4_R3,0);
+	wait(20);
+	wait(150);
+}
+combo pull_out {
+	set_val(SWAP, 0);
+	wait(20);
+	set_val(SWAP, 100);
+	wait(20);
+	set_val(SWAP, 0);
+	wait(150);
+	ignore_swap = FALSE;
+}
+combo auto_ping
+{	
+	set_val(PING,100);
+	wait(20);
+	set_val(PING,0);
+	wait(20);
+	set_val(PING,100);
+	wait(20);
+	set_val(PING,0);
+	wait(200);
+}
+ combo armor_swap {
+ 	set_val(PS4_LX, 0);
+	set_val(PS4_RX, 0);
+ 	set_val(PS4_LY, 75);
+	set_val(PS4_RY, 50);
+	wait(300);
+ 	set_val(PS4_CROSS, 100);
+	wait(30);
+	set_val(PS4_CROSS, 0);
+	wait(1);
+	set_val(PS4_CROSS, 100);
+	wait(30);
+	set_val(PS4_CROSS, 0);
+	wait(1);
+	set_val(PS4_CROSS, 100);
+	wait(30);
+	set_val(PS4_CROSS, 0);
+	wait(1);
+	set_val(PS4_LY, 0);
+	set_val(PS4_RY, 0);
+	set_val(PS4_CIRCLE, 100);
+	wait(20);
+	set_val(PS4_CIRCLE, 0);
+ 	}
+combo RAPID_FIRE {
+    set_val(FIRE, 100);
+	wait(13);
+	set_val(FIRE, 0);
+	wait(13); 
+}
+combo Rainbow_Flash {
+    set_rgb(255, 0, 0);
+    wait(100);
+    set_rgb(255, 128, 0);
+    wait(100);
+    set_rgb(255, 255, 0);
+    wait(100);
+    set_rgb(0, 255, 0);
+    wait(100);
+    set_rgb(0, 0, 255);
+    wait(100);
+    set_rgb(212, 0, 255);
+    wait(100);
+}
+combo Rumble {
+	set_rumble(RUMBLE_A, 85);
+	wait(225);
+	reset_rumble();
+}
+combo Sticky_AA {
+	a = random(-13, 13)
+	set_val(AIM_Y,  get_ival (AIM_Y)  + Aim_Val);
+	wait(Wait_Val);
+	set_val(AIM_X,  get_ival (AIM_X)  + Aim_Val);
+	set_val(STRAFE, get_ival (STRAFE) + a);
+	wait(Wait_Val);
+	set_val(AIM_Y,  get_ival (AIM_Y)  + Aim_Val  * -1);
+	wait(Wait_Val);
+	set_val(AIM_X,  get_ival (AIM_X)  + Aim_Val  * -1);
+	set_val(STRAFE, get_ival (STRAFE) + a		 * -1);
+	wait(Wait_Val);
+}
+combo strafe {
+	if(_strafe_index == 0)
+	{
+		_strafe_rand_1 = 105;
+		_strafe_rand_2 = 205;
+	}
+		else
+	{
+		_strafe_rand_1 = 205;
+		_strafe_rand_2 = 105;
+	}
+
+	set_val(STRAFE, get_ival (STRAFE) + 0x64);
+
+	_strafe = random((STRAFE_DELAY - _strafe_rand_1), (STRAFE_DELAY + _strafe_rand_1));
+
+	wait(_strafe); 
+	wait(54); 
+	set_val(STRAFE, get_ival (STRAFE) + -100);
+
+	_strafe = random((STRAFE_DELAY - _strafe_rand_2), (STRAFE_DELAY + _strafe_rand_2));
+
+	wait(_strafe); 
+	wait(54);
+
+		_strafe_index++;
+
+	if(_strafe_index == 2)
+		_strafe_index = 0;
+}
+combo fenice {
+	wait(20);
+	set_val(XB1_UP, 100);
+	set_val(XB1_RY, 0);
+	wait(175);
+	set_val(XB1_RY, -50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RY, -100);
+	set_val(XB1_UP, 100);
+	wait(100);
+	set_val(XB1_RY, -50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RY, 0);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 100);
+	wait(75);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 0);
+	wait(45);
+	set_val(XB1_UP, 0);
+	wait(5);
+}
+combo siringa {
+	wait(25);
+	set_val(XB1_UP, 100);
+	set_val(XB1_RY, 0);
+	wait(175);
+	set_val(XB1_RY, 50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RY, 100);
+	set_val(XB1_UP, 100);
+	wait(100);
+	set_val(XB1_RY, 50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RY, 0);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 100);
+	wait(75);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 0);
+	wait(45);
+	set_val(XB1_UP, 0);
+	wait(5);
+}
+combo MEDIKIT {
+	wait(25);
+	set_val(XB1_UP, 100);
+	set_val(XB1_RY, 0);
+	wait(174);
+	set_val(XB1_RY, -50);
+	set_val(XB1_RX, -50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RX, -100);
+	set_val(XB1_UP, 100);
+	wait(100);
+	set_val(XB1_RY, -50);
+	set_val(XB1_RX, -50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RY, 0);
+	set_val(XB1_RX, 0);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 100);
+	wait(75);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 0);
+	wait(45);
+	set_val(XB1_UP, 0);
+	wait(5);
+}
+combo BATTERY {
+	wait(25);
+	set_val(XB1_UP, 100);
+	set_val(XB1_RY, 0);
+	wait(175);
+	set_val(XB1_RY, -50);
+	set_val(XB1_RX, 50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RX, 100);
+	set_val(XB1_UP, 100);
+	wait(100);
+	set_val(XB1_RY, -50);
+	set_val(XB1_RX, 50);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_RY, 0);
+	set_val(XB1_RX, 0);
+	set_val(XB1_UP, 100);
+	wait(10);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 100);
+	wait(75);
+	set_val(XB1_UP, 100);
+	set_val(XB1_A, 0);
+	wait(45);
+	set_val(XB1_UP, 0);
+	wait(5);
+}
+// Functions
+//___________________________________________________________________________________________________
+
+function XY_Value(f__Axis, f__Val) {
+		v = get_val(f__Axis);
+	if(abs(v) < 10)
+		v = 0;
+	if(abs(v) < f__Val + 5) 
+		return v + f__Val * inverted;
+			return v;
+}
+function led_color(color) {
+	for(i = 0; i <= 8; i++)
+	{
+		set_led(i, duint8((color * 4) + i));
+	}
+}
+function Init_Script() {
+	led_color(ar_idx); 
+
+	if(FLIPPED) {
+		ADS  = PS4_L1;
+		FIRE = PS4_R1;
+	} 
+	else 
+	{
+		ADS  = PS4_L2;
+		FIRE = PS4_R2;
+	}
+
+	if(INVERTED) {
+		inverted = -1;
+	}
+	else
+	{
+		inverted = 1;
+	}
+}
+
+function center_x( f_chars, f_font)
+{
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+function getNAMES(x)
+{
+    if (NAMES[x + 1] != -1)
+    return NAMES[x + 1] - NAMES[x] - 1;
+    return sizeof(NAMES) - NAMES[x];
+}
+

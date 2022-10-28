@@ -1,0 +1,71 @@
+// PRESS LEFT ON D-PAD TO TOGGLE ON / OFF
+int fortnite_afk = FALSE; // OFF BY DEFAULT
+define TOGGLE_BTN = PS4_SHARE; // CHOOSE YOUR ON/OFF BUTTON
+
+
+unmap TOGGLE_BTN;
+
+//COLOR IDENTIFICATION              
+define Blue = 1;
+define Red = 2;
+define Green = 3;
+define Pink = 4;
+define SkyBlue = 5;
+define Yellow = 6;
+define White = 7;
+define LightGreen = 8;
+define Null = 9;
+
+data(1,
+  2,0,0,0, //1. Blue
+  0,2,0,0, //2. Red
+  0,0,2,0, //3. Lime/Green
+  0,0,0,2, //4. Pink
+  2,0,2,0, //5. SkyBlue
+  0,2,2,0, //6. Yellow
+  2,2,2,2, //7. White
+  0,2,2,0, //8. LightGreen
+  0,0,0,0  //9. Null 
+);
+int Col_ind;
+
+
+    
+main {
+
+if(event_press(TOGGLE_BTN)){ // toggle on/off
+fortnite_afk = !fortnite_afk; 
+}
+
+if (!fortnite_afk) colourled(Null);
+if (fortnite_afk) colourled(Green);
+
+if(fortnite_afk){
+combo_run(afk_combo); }
+else { combo_stop (afk_combo); }
+
+
+}
+
+
+combo afk_combo {
+	set_val(PS4_UP, 50);
+	wait(100);
+        set_val(PS4_CROSS, 0);
+	wait(100);
+        set_val(PS4_CROSS, 50);
+	wait(100);
+	set_val(PS4_DOWN, 50);
+	wait(100);
+        set_val(PS4_CROSS, 0);
+	wait(100);
+        set_val(PS4_CROSS, 50);
+	wait(100);
+}
+    function colourled(Colour) {
+    Col_ind = (Colour * 4) - 3;
+    set_led(LED_1, dbyte(Col_ind));
+    set_led(LED_2, dbyte(Col_ind + 1));
+    set_led(LED_3, dbyte(Col_ind + 2));
+    set_led(LED_4, dbyte(Col_ind + 3));
+}

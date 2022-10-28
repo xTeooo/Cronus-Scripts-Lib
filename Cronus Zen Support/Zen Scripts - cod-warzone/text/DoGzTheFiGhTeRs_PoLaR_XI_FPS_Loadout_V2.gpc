@@ -1,0 +1,1604 @@
+/*
+ _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+|       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+| ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+| ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+| ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+| ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+| ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+| ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+ \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+                                  _______           __                _______       __    __ ______ 
+                                 |       \         |  \              |       \     |  \  |  \      \
+                                 | ▓▓▓▓▓▓▓\ ______ | ▓▓       ______ | ▓▓▓▓▓▓▓\    | ▓▓  | ▓▓\▓▓▓▓▓▓
+                                 | ▓▓__/ ▓▓/      \| ▓▓      |      \| ▓▓__| ▓▓     \▓▓\/  ▓▓ | ▓▓  
+                                 | ▓▓    ▓▓  ▓▓▓▓▓▓\ ▓▓       \▓▓▓▓▓▓\ ▓▓    ▓▓      >▓▓  ▓▓  | ▓▓  
+                                 | ▓▓▓▓▓▓▓| ▓▓  | ▓▓ ▓▓      /      ▓▓ ▓▓▓▓▓▓▓\     /  ▓▓▓▓\  | ▓▓  
+                                 | ▓▓     | ▓▓__/ ▓▓ ▓▓_____|  ▓▓▓▓▓▓▓ ▓▓  | ▓▓    |  ▓▓ \▓▓\_| ▓▓_ 
+                                 | ▓▓      \▓▓    ▓▓ ▓▓     \\▓▓    ▓▓ ▓▓  | ▓▓    | ▓▓  | ▓▓   ▓▓ \
+                                  \▓▓       \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓▓\▓▓   \▓▓     \▓▓   \▓▓\▓▓▓▓▓▓
+	    ________ _______   ______       __        ______   ______  _______   ______  __    __ ________      __     __  ______  
+       |        \       \ /      \     |  \      /      \ /      \|       \ /      \|  \  |  \        \    |  \   |  \/      \ 
+       | ▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\    | ▓▓     |  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  | ▓▓\▓▓▓▓▓▓▓▓    | ▓▓   | ▓▓  ▓▓▓▓▓▓\
+       | ▓▓__   | ▓▓__/ ▓▓ ▓▓___\▓▓    | ▓▓     | ▓▓  | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓       | ▓▓   | ▓▓\▓▓__| ▓▓
+       | ▓▓  \  | ▓▓    ▓▓\▓▓    \     | ▓▓     | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓        \▓▓\ /  ▓▓/      ▓▓
+       | ▓▓▓▓▓  | ▓▓▓▓▓▓▓ _\▓▓▓▓▓▓\    | ▓▓     | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓         \▓▓\  ▓▓|  ▓▓▓▓▓▓ 
+       | ▓▓     | ▓▓     |  \__| ▓▓    | ▓▓_____| ▓▓__/ ▓▓ ▓▓  | ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__/ ▓▓  | ▓▓          \▓▓ ▓▓ | ▓▓_____ 
+       | ▓▓     | ▓▓      \▓▓    ▓▓    | ▓▓     \\▓▓    ▓▓ ▓▓  | ▓▓ ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  | ▓▓           \▓▓▓  | ▓▓     \
+        \▓▓      \▓▓       \▓▓▓▓▓▓      \▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓\▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓    \▓▓            \▓    \▓▓▓▓▓▓▓▓
+                                                                                                                                                                                                                                                       
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+******    MASSIVE SHOUTOUT TO TAYLORDRIFT n CEORIN n C14H3R TEAM For All Their Help Recently LEGENDS !!!!!!!!!!!!  ******** 
+******    MASSIVE SHOUTOUT TO ALL THE STAFF IN THE NEW DISCORD Wizard's n King's Scripts + Apps !!!!!!!!!!!!!!!!!  ********
+
+   		¦¦¦¦¦ ANTI RECOIL  ¦¦¦¦¦
+
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦								     ---->> Anti-Recoil 10X Weapon Slots <<----                                        ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • Each weapon consists of 5x steps for each Axis [RY + RX]                                                     ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • Each STEP consists of a VALUE to set during that STEP for the Length of TIME set by user for that STEP       ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     Example                                                                                                        ¦¦¦
+¦¦¦        			    AXIS RY            AXIS RY TIME           AXIS RX              AXIS RX TIME                    ¦¦¦
+¦¦¦     STEP 1 ==>  valueRY1_1 = 24,     valueYT1_1 = 450,     valueRX1_1 = -4,     valueXT1_1 = 450;  <== STEP 1      ¦¦¦
+¦¦¦     STEP 2 ==>  valueRY1_2 = 34,     valueYT1_2 = 200,     valueRX1_2 =  4,     valueXT1_2 = 200;  <== STEP 2      ¦¦¦
+¦¦¦     STEP 3 ==>  valueRY1_3 = 26,     valueYT1_3 = 310,     valueRX1_3 = -8,     valueXT1_3 = 310;  <== STEP 3      ¦¦¦
+¦¦¦     STEP 4 ==>  valueRY1_4 = 32,     valueYT1_4 = 400,     valueRX1_4 =  6,     valueXT1_4 = 400;  <== STEP 4      ¦¦¦
+¦¦¦     STEP 5 ==>  valueRY1_5 = 28,     valueYT1_5 = 350,     valueRX1_5 = -4,     valueXT1_5 = 350;  <== STEP 5      ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • Aim Assist Will Pause while Anti-Recoil is RUNNNING! [At Present]                                            ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • Only one Weapon can be selected [At Present] (NO PRIMARY OR SECONDARY!)                                      ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • Weapon Selector can be done via a QUICK WEAPON SELECTOR MENU or via the MAIN MENU                            ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • SEE WEAPON MENU GUIDE BELOW FOR BUTTONS ETC                                                                  ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • USER TO SET-UP RECOIL FOR EACH GAME/WEAPON                                                                   ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • SHARE YOUR WORK IN THE DISCORD IF YOU LIKE WHICH I WILL ADD TO THE ADVANCED VERSION OF THE SCRIPT            ¦¦¦
+¦¦¦                                                                                                                    ¦¦¦
+¦¦¦     • INVERTED PLAYERS MUST SET THIS ON ==> define invertedRecoil = On;  ==> Line 426                              ¦¦¦
+¦¦¦																												       ¦¦¦
+¦¦¦     • WEAPON TABLES START AT ==> Line 172                                                                          ¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+		¦¦¦¦¦ AIM ASSIST  ¦¦¦¦¦
+
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦ 
+¦¦¦								---->> Aim Assist Boost ON FIRE Options <<----                                     				   ¦¦¦
+¦¦¦		OPTION 1.. Power Will Equal = ( Power + BoostPower ).. Speed Will Equal = ( Speed + BoostSpeed )	                       ¦¦¦
+¦¦¦                                                                                                                                ¦¦¦
+¦¦¦		OPTION 2.. Power Will Equal = ( Power - BoostPower ).. Speed Will Equal = ( Speed - BoostSpeed )                           ¦¦¦
+¦¦¦                                                                                                                                ¦¦¦
+¦¦¦		OPTION 3.. Power + Speed Will Go Into Progression Mode ( OPTION 4 + 5 Methods Will Be Applied )                            ¦¦¦
+¦¦¦	 	   			                                 																			   ¦¦¦
+¦¦¦		OPTION 4.. Power Will Increase By 1 Until Value Equals = ( Power + Boost ) -->                                             ¦¦¦
+¦¦¦		OPTION 4.. Power Will Then Decrease By 1 Until Value Equals = ( Power - Boost ) <--                                        ¦¦¦
+¦¦¦					( Speed Boost Will Be Applied But Remain Static ( Speed + BoostSpeed ))                                        ¦¦¦
+¦¦¦                                                                                                                                ¦¦¦
+¦¦¦		OPTION 5.. Speed Will Increase By 1 Until Value Equals = ( Speed + BoostSpeed ) -->                                        ¦¦¦
+¦¦¦		OPTION 5.. Power Will Then Decrease By 1 Until Value Equals = ( Speed - BoostSpeed ) <--                                   ¦¦¦
+¦¦¦					( Power Boost Will Be Applied But Remain Static( Power + BoostPower ))                                         ¦¦¦
+¦¦¦                                                                                                                                ¦¦¦
+¦¦¦		OPTION 6.. Power Will Remain At Base Power + Speed.. Power Will Equal = ( Power ).. Speed Will Equal = ( Speed )	       ¦¦¦
+¦¦¦                                                                                                                                ¦¦¦
+¦¦¦	    OPTIONAL.. ComboRYeffect Adds Effect To Over Ride The Boost On The Main Aim Assist On Fire (On The RY AXIS) [Mod 2 On/Off] ¦¦¦
+¦¦¦			       ComboRXeffect Adds Effect To Over Ride The Boost On The Main Aim Assist On Fire (On The RX AXIS) [Mod 3 On/Off] ¦¦¦
+¦¦¦			       * [Both USE Power Value] (Option [1-6] Polar Aim Assist Must ON )                                               ¦¦¦
+¦¦¦                                                                                                                                ¦¦¦
+¦¦¦		OPTION 7.. All Aim Assist Methods OFF                                                                                      ¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+	¦¦¦¦ MOD MENU SYSTEM ¦¦¦¦
+
+* Enter Menu   = L2/LT + OPTIONS/MENU
+* Switch Menu  = CROSS/A
+* Exit Menu    = TRIANGLE/Y            [Auto Timeout After 20 Seconds]
+
+* Next Mod     = RIGHT
+* Previous Mod = LEFT
+
+* Adjust +     = UP
+* Adjust -     = DOWN
+* Toggle ON    = UP
+* Toggle OFF   = DOWN
+
+	¦¦¦¦ ANTI-RECOIL - QUICK WEAPON MENU SYSTEM ¦¦¦¦
+
+* Enter Menu   = L2/LT + SHARE/VIEW
+* Exit Menu    = TRIANGLE/Y            [Auto Timeout After 8 Seconds]
+
+* Next Weapon     = UP or RIGHT
+* Previous Weapon = DOWN or LEFT
+
+  	¦¦¦¦ SHOW CURRENT SLOT IN USE ¦¦¦¦
+  
+* Show Slot    = R3/RS + LEFT
+
+	¦¦¦¦ KILL SWITCH TOGGLES ¦¦¦¦
+
+* Kill Switch  = L2/LT + PS/XBOX BUTTON
+
+	¦¦¦¦ SHOOTING/FIRE MOD TOGGLES ¦¦¦¦
+
+* Rapid Fire   = L2/LT + UP   
+* Crouch Shot  = L2/LT + LEFT
+* Jump Shot    = L2/LT + RIGHT
+
+  ¦¦¦¦ MOD ACTIVATION TRIGGERS ¦¦¦¦
+  
+* Rapid Fire       = Hold Fire
+* Crouch Shot      = Hold ADS + Fire
+* Jump Shot        = Hold Fire  ( L2/LT BLOCKS MOD ) (Repeatedly Jump While Holding Fire)
+
+	[Jump Shot + Crouch Shot Can Now Be On Together]
+
+* PS On Xbox -- PLAYSTATION CONTROLLER WILL SWAP TOUCHPAD AND SHARE WHEN ON PC Or XBOX
+* LED Rainbow -- Zen Eyes Will Cycle Through All Colours                                                                                                                        
+                                                                                                                                     
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Menu Arrays                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const uint8 FontSize [][]  = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits []  = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","DoGzTheFiGhTeR's","FPS LOADOUT V2","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off","Boost","Aim Assist"};
+const string ModToggle []  = {"","DoGz PoLaR AA XI","Add RY Effect 2AA","Add RX Effect 2AA"," Anti Recoil Mod"," Crouch Shot Mod","  Jump Shot Mod","  Rapid Fire Mod","LED Rainbow Flow","PS[DS4]On PC/XBOX"};
+const string ModValue []   = {"","PolarRadius/Power","BoostRadius/Power","Polar Angle/Speed","Boost Angle/Speed","Deadzone / Switch","AntiRecoilWeapon#","Crouch Shot Wait"," Jump Shot Delay"," Rapid Fire Time","LedFlowBrightness"};
+const string ModAimAssist [] = {""," Incline"," Decline","Prog Both","Prog Power","Prog Speed","Methods Off","   Off"};
+const int16 ModDigitMin [] = { 0 , 1  , 1  , 1  , 1  , 1  , 1  , 50  , 50  , 30  , 1  };
+const int16 ModDigitMax [] = { 0 , 40 , 40 , 60 , 60 , 30 , 10 , 500 , 200 , 100 , 50 };                     
+const int16 ModIncrement[] = { 0 , 1  , 1  , 1  , 1  , 1  , 1  , 10  , 10  , 10  , 1  };
+
+     /*==========================================================================================*
+     |                           ===>  ANTI-RECOIL WEAPON SETUP  <===                            |
+     |                                                                                           |
+     |           10X WEAPONS --- 5X STEPS [RY AXIS + TIME]  +  5X STEPS [RX AXIS + TIME]         |     
+     /*==========================================================================================*
+     |                                      WEAPON ONE                                           |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY1_1 = 24,     valueYT1_1 = 450,     valueRX1_1 = -4,     valueXT1_1 = 450;  // STEP 1   
+       define valueRY1_2 = 34,     valueYT1_2 = 200,     valueRX1_2 =  4,     valueXT1_2 = 200;  // STEP 2
+       define valueRY1_3 = 26,     valueYT1_3 = 310,     valueRX1_3 = -8,     valueXT1_3 = 310;  // STEP 3
+       define valueRY1_4 = 32,     valueYT1_4 = 400,     valueRX1_4 =  6,     valueXT1_4 = 400;  // STEP 4
+       define valueRY1_5 = 28,     valueYT1_5 = 350,     valueRX1_5 = -4,     valueXT1_5 = 350;  // STEP 5
+     /*==========================================================================================*	
+     |                                      WEAPON TWO                                           |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY2_1 = 14,     valueYT2_1 = 550,     valueRX2_1 = -2,     valueXT2_1 = 550;  // STEP 1
+       define valueRY2_2 = 24,     valueYT2_2 = 400,     valueRX2_2 =  2,     valueXT2_2 = 400;  // STEP 2
+       define valueRY2_3 = 16,     valueYT2_3 = 210,     valueRX2_3 = -4,     valueXT2_3 = 210;  // STEP 3
+       define valueRY2_4 = 22,     valueYT2_4 = 300,     valueRX2_4 =  5,     valueXT2_4 = 300;  // STEP 4
+       define valueRY2_5 = 18,     valueYT2_5 = 450,     valueRX2_5 = -3,     valueXT2_5 = 450;  // STEP 5
+     /*==========================================================================================*
+     |                                      WEAPON THREE                                         |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY3_1 = 42,     valueYT3_1 = 750,     valueRX3_1 = -9,     valueXT3_1 = 750;  // STEP 1
+       define valueRY3_2 = 38,     valueYT3_2 = 300,     valueRX3_2 =  9,     valueXT3_2 = 300;  // STEP 2
+       define valueRY3_3 = 32,     valueYT3_3 = 210,     valueRX3_3 = -5,     valueXT3_3 = 210;  // STEP 3
+       define valueRY3_4 = 45,     valueYT3_4 = 280,     valueRX3_4 =  3,     valueXT3_4 = 280;  // STEP 4
+       define valueRY3_5 = 31,     valueYT3_5 = 380,     valueRX3_5 = -1,     valueXT3_5 = 380;  // STEP 5
+     /*==========================================================================================*  
+     |                                      WEAPON FOUR                                          |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY4_1 = 14,     valueYT4_1 = 650,     valueRX4_1 = -2,     valueXT4_1 = 650;  // STEP 1
+       define valueRY4_2 = 21,     valueYT4_2 = 400,     valueRX4_2 =  2,     valueXT4_2 = 400;  // STEP 2
+       define valueRY4_3 = 24,     valueYT4_3 = 210,     valueRX4_3 = -1,     valueXT4_3 = 210;  // STEP 3
+       define valueRY4_4 = 27,     valueYT4_4 = 100,     valueRX4_4 =  1,     valueXT4_4 = 100;  // STEP 4
+       define valueRY4_5 = 36,     valueYT4_5 = 250,     valueRX4_5 = -5,     valueXT4_5 = 250;  // STEP 5
+     /*==========================================================================================*
+     |                                      WEAPON FIVE                                          |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY5_1 = 44,     valueYT5_1 = 680,     valueRX5_1 = -9,     valueXT5_1 = 680;  // STEP 1
+       define valueRY5_2 = 38,     valueYT5_2 = 150,     valueRX5_2 = -6,     valueXT5_2 = 150;  // STEP 2
+       define valueRY5_3 = 40,     valueYT5_3 = 160,     valueRX5_3 = -3,     valueXT5_3 = 160;  // STEP 3
+       define valueRY5_4 = 48,     valueYT5_4 = 280,     valueRX5_4 =  3,     valueXT5_4 = 280;  // STEP 4
+       define valueRY5_5 = 30,     valueYT5_5 = 510,     valueRX5_5 =  1,     valueXT5_5 = 510;  // STEP 5
+     /*==========================================================================================*	
+     |                                      WEAPON SIX                                           |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY6_1 = 14,     valueYT6_1 = 750,     valueRX6_1 = -3,     valueXT6_1 = 750;  // STEP 1
+       define valueRY6_2 = 18,     valueYT6_2 = 300,     valueRX6_2 = -5,     valueXT6_2 = 300;  // STEP 2
+       define valueRY6_3 = 21,     valueYT6_3 = 220,     valueRX6_3 =  8,     valueXT6_3 = 220;  // STEP 3
+       define valueRY6_4 = 18,     valueYT6_4 = 210,     valueRX6_4 =  6,     valueXT6_4 = 210;  // STEP 4
+       define valueRY6_5 = 16,     valueYT6_5 = 500,     valueRX6_5 = -1,     valueXT6_5 = 500;  // STEP 5
+     /*==========================================================================================*
+     |                                      WEAPON SEVEN                                         |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY7_1 = 62,     valueYT7_1 = 660,     valueRX7_1 = -8,     valueXT7_1 = 660;  // STEP 1
+       define valueRY7_2 = 56,     valueYT7_2 = 190,     valueRX7_2 =  8,     valueXT7_2 = 190;  // STEP 2
+       define valueRY7_3 = 53,     valueYT7_3 = 260,     valueRX7_3 = -8,     valueXT7_3 = 260;  // STEP 3
+       define valueRY7_4 = 51,     valueYT7_4 = 270,     valueRX7_4 =  8,     valueXT7_4 = 270;  // STEP 4
+       define valueRY7_5 = 48,     valueYT7_5 = 400,     valueRX7_5 = -8,     valueXT7_5 = 400;  // STEP 5
+     /*==========================================================================================*  
+     |                                      WEAPON EIGHT                                         |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY8_1 = 74,     valueYT8_1 = 550,     valueRX8_1 = -3,     valueXT8_1 = 550;  // STEP 1
+       define valueRY8_2 = 65,     valueYT8_2 = 100,     valueRX8_2 =  9,     valueXT8_2 = 100;  // STEP 2
+       define valueRY8_3 = 61,     valueYT8_3 = 110,     valueRX8_3 = -5,     valueXT8_3 = 110;  // STEP 3
+       define valueRY8_4 = 54,     valueYT8_4 = 180,     valueRX8_4 =  7,     valueXT8_4 = 180;  // STEP 4
+       define valueRY8_5 = 45,     valueYT8_5 = 650,     valueRX8_5 = -9,     valueXT8_5 = 650;  // STEP 5
+     /*==========================================================================================*
+     |                                      WEAPON NINE                                          |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY9_1 = 26,     valueYT9_1 = 670,     valueRX9_1 = -5,     valueXT9_1 = 670;  // STEP 1
+       define valueRY9_2 = 31,     valueYT9_2 = 280,     valueRX9_2 =  5,     valueXT9_2 = 280;  // STEP 2
+       define valueRY9_3 = 22,     valueYT9_3 = 270,     valueRX9_3 = -7,     valueXT9_3 = 270;  // STEP 3
+       define valueRY9_4 = 36,     valueYT9_4 = 220,     valueRX9_4 =  6,     valueXT9_4 = 220;  // STEP 4
+       define valueRY9_5 = 29,     valueYT9_5 = 900,     valueRX9_5 = -2,     valueXT9_5 = 900;  // STEP 5
+     /*==========================================================================================* 
+     |                                      WEAPON TEN                                           |
+     *===========================================================================================*
+     |			AXIS RY             AXIS RY TIME         AXIS RX             AXIS RX TIME        |
+     *===========================================================================================*/
+       define valueRY10_1 = 33,    valueYT10_1 = 850,    valueRX10_1 = -9,    valueXT10_1 = 850;  // STEP 1
+       define valueRY10_2 = 37,    valueYT10_2 = 320,    valueRX10_2 =  9,    valueXT10_2 = 320;  // STEP 2
+       define valueRY10_3 = 41,    valueYT10_3 = 270,    valueRX10_3 = -5,    valueXT10_3 = 270;  // STEP 3
+       define valueRY10_4 = 29,    valueYT10_4 = 180,    valueRX10_4 =  5,    valueXT10_4 = 180;  // STEP 4
+       define valueRY10_5 = 34,    valueYT10_5 = 290,    valueRX10_5 = -1,    valueXT10_5 = 290;  /* STEP 5
+     |============================================================================================|
+     |============================================================================================|
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Toggle Strings                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const string CrouchShotL = "Crouch Shot Mod";                                
+const string RapidFireL  = "Rapid Fire Mod";                        
+const string JumpShotL   = "Jump Shot Mod";
+const string KillSwitchL = "KillSwitch Mod";
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire   = PS4_R2;
+define Ads    = PS4_L2;
+define Jump   = PS4_CROSS;
+define Crouch = PS4_R3;
+define AimX   = PS4_RX;
+define AimY   = PS4_RY;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Script Buttons                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Up    = PS4_UP;
+define Down  = PS4_DOWN;
+define Left  = PS4_LEFT;
+define Right = PS4_RIGHT;
+define PY    = POLAR_RY;		// Right Analougue Used To Aim (If Left Used Set As [ POLAR_LY ] <===
+define PX    = POLAR_RX;		// Right Analougue Used To Aim (If Left Used Set As [ POLAR_LX ] <===
+define PS    = POLAR_RS;		// Right Analougue Used To Aim (If Left Used Set As [ POLAR_LS ] <===
+define On    = TRUE;
+define Off   = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define RapidFireHold   = PS4_L2;	    // RAPID FIRE HOLD TOGGLE
+define RapidFirePress  = PS4_UP;	    // RAPID FIRE PRESS TOGGLE
+									    
+define CrouchShotHold  = PS4_L2;        // CROUCH SHOT HOLD TOGGLE
+define CrouchShotPress = PS4_LEFT;      // CROUCH SHOT PRESS TOGGLE
+									    
+define JumpShotHold    = PS4_L2;        // JUMP SHOT HOLD TOGGLE
+define JumpShotPress   = PS4_RIGHT;     // JUMP SHOT PRESS TOGGLE
+									    
+define KillSwitchHold  = PS4_L2;        // KILL SWITCH HOLD TOGGLE
+define KillSwitchPress = PS4_PS;        // KILL SWITCH PRESS TOGGLE
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Main Menu Buttons                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define MenuEnterHold   = PS4_L2;
+define MenuEnterPress  = PS4_OPTIONS;
+define MenuExitPress   = PS4_TRIANGLE;
+define ChangeMenuPress = PS4_CROSS;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(         Quick Weapon Selector - Menu Buttons       )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define WeaponMenuHold  = PS4_L2;
+define WeaponMenuPress = PS4_SHARE;
+define WeaponMenuExit  = PS4_TRIANGLE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Show Slot Buttons                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define FindSlotHold  = PS4_R3;
+define FindSlotPress = PS4_LEFT;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define ScreenSaver = On;        // Screen Saver (Pipeflow) On/Off (Screen Will Be Blank (Black) If Off)
+define TimeoutLimit = 1;		// 1 Mins [Screensaver Timeout]
+define screenTime = 8000;		// 8 Seconds [Weapon Menu Timeout]
+define TimeoutLimitM = 20000;	// 20 Seconds [Main Menu Timeout]
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 9;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 10;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear,Shunt;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+define BoostIncline   = 1;
+define BoostDecline   = 2;
+define BoostProgBoth  = 3;
+define BoostProgPower = 4;
+define BoostProgSpeed = 5;
+define AAWithBoostOff = 6;
+define AimAssistOff   = 7;
+
+int Saver,Ms,Sec,Min,ScreenTime,TimeL,TimerP,TimerE,Length,X_POS1,Y_POS1,X_POS2,Y_POS2,Steps1,Steps2,XorY1,XorY2,Dir1,Dir2;
+int ToggleT,ToggleTime,ToggleName,Modled,LedDec,Rgb,LedInc,Colour[3];
+int Step,Output,AxisXY,Angle,Radius,sBoost,rBoost,DirectionP,DirectionS;
+int antiRecoilRY,antiRecoilRX,antiRecoilYT,antiRecoilXT,Oled,Render;
+int timeOut,ValY,ValX,TimeY,TimeX,timeX,timeY,KillSwitch,arRunning;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModDigit;
+int Power          =  6;    // ADS Base Power ( And Also Fire If All Boost Methods = Off ) 										[1 of 5]
+int BoostPower     =  2;    // Fire Boost Power ( Added To Base Power ) 														[2 of 5]
+int Speed          =  9; 	// ADS Base Speed ( And Also Fire If All Boost Methods = Off )  ( Value 18 = 20 Steps In Rotation ) [3 of 5]
+int BoostSpeed     =  4;	// Fire Boost Speed ( Added To Base Speed )                     ( Value 9  = 40 Steps In Rotation ) [4 of 5]
+int Deadzone       =  9;	// Value Which Aim Assist Changes States From Zen Polar To DoGz Polar 								[5 of 5]
+int recoilWeapon   =  1;    // AntiRecoil Starting weapon [1 to 10]
+int CrouchShotWait = 150;   // Crouch Shot Wait Time Before Next Jump Ms
+int JumpShotWait   = 550;   // Jump Shot Dleay Time Ms (Before You Jump After Firing)
+int RapidFireTime  = 30;    // Rapid Fire Hold + Wait Time Ms
+int LedBrightness  = 10;	// Brightness Of The Zen Eye
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+///////////////// (On or Off)  \\\\\\\\\\\\\\\\\\\\
+int ModSwitch;
+int BoostStyle = BoostDecline;//( [1]BoostIncline or [2]BoostDecline or [3]BoostProgBoth or [4]BoostProgPower or [5]BoostProgSpeed [6]AAWithBoostOff [7]AimAssistOff )[1 of 3]
+int ComboRYeffect   = Off;    // Adds Effect To Over Ride The Boost On The Main Aim Assist On Fire (On The RY AXIS) [USES Power Value] (Polar Aim Assist Must ON )    [2 of 3]
+int ComboRXeffect   = Off;    // Adds Effect To Over Ride The Boost On The Main Aim Assist On Fire (On The RX AXIS) [USES Power Value] (Polar Aim Assist Must ON )    [3 of 3]
+int antiRecoil      =  On;    // Anti Recoil
+int CrouchShot      =  On;    // Crouch Shot
+int JumpShot        =  On;    // Jump Shot	       
+int RapidFire       =  On;    // Rapid Fire      
+int LEDRainbowFlow  =  On;    // Led Rainbow (ZEN Eyes)
+int PSonXBOX        =  On;    // PS Controller On PC/XBOX
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Default State                   ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+//-- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off ) (MASTER TOGGLE ABOVE MUST BE ON)
+int RapidFireMod  =  On; // Rapid Fire 		[RapidFire    MUST BE On!]
+int CrouchShotMod =  On; // Crouch Shot  	[CrouchShot   MUST BE On!]   
+int JumpShotMod   =  On; // Jump Shot		[JumpShot     MUST BE On!]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Anti-Recoil Inverted                ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+define invertedRecoil = On; // If You Play Inverted Set [ On ]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+init {
+
+	combo_run(Boot);
+    LedInc = 1
+    Colour = 150;
+}
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+	
+	if (PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        
+        swap(PS4_TOUCH,PS4_SHARE);
+    }
+    
+    if (!MainMenu) {
+	
+		if (get_ival(KillSwitchHold)) {
+			
+			if (event_press(KillSwitchPress)) {
+        	
+        		Shunt = KillSwitchPress;
+        		KillSwitch = !KillSwitch;
+        		ToggleName = On;
+        		Toggle(KillSwitch,KillSwitchL[0]);
+    		}
+    		set_val(KillSwitchPress,0);	
+    	}
+	}
+				
+	if (!KillSwitch) {
+	
+		Weapon();
+		
+		if (!MainMenu) {
+	
+			if (RapidFire) {
+		   		
+		   		if (get_ival(RapidFireHold) && event_press(RapidFirePress)) {
+		       		
+		       		Shunt = RapidFirePress;
+		       		RapidFireMod = !RapidFireMod;
+		       		ToggleName = On;						
+		       		Toggle(RapidFireMod,RapidFireL[0]);     
+		   		}                                           
+			}
+			
+			if (CrouchShot) {
+			
+				if (get_ival(CrouchShotHold) && event_press(CrouchShotPress)) {
+		       		
+		       		Shunt = CrouchShotPress;
+		       		CrouchShotMod = !CrouchShotMod;
+		       		ToggleName = On;
+		       		Toggle(CrouchShotMod,CrouchShotL[0]);
+				}
+			}
+			
+		   	if (JumpShot) {
+		   	
+		   		if (get_ival(JumpShotHold) && event_press(JumpShotPress)) {
+	        
+	        		Shunt = JumpShotPress;
+	        		JumpShotMod = !JumpShotMod;
+	        		ToggleName = On;
+	        		Toggle(JumpShotMod,JumpShotL[0]);
+	   			}
+	   		}
+	   	}
+		
+		if (BoostStyle <= 6 && !arRunning) {
+	        
+	        if (get_ival(Ads) || get_ival(Fire)) {		
+	        	
+	        	AxisXY = isqrt(abs(get_ival(AimX)) * abs(get_ival(AimX)) + abs(get_ival(AimY)) * abs(get_ival(AimY)));
+	        	
+	        	Radius = (Power + rBoost);
+	        	Angle = Step;
+	            Step = (Step + Speed + sBoost);
+	            
+	            if (get_ival(Fire) && BoostStyle != 6) {
+	            
+	            	if (BoostStyle == BoostIncline) {
+	            		
+	            		rBoost = BoostPower;
+	            		sBoost = BoostSpeed;
+	            	}
+	            		
+	            	else if (BoostStyle == BoostDecline) {
+	            		
+	            		if (BoostSpeed == Speed) {	
+	            			
+	            			BoostSpeed = Speed / 2;
+	            		}
+	            		
+	            		if (BoostPower == Power) {	
+	            			
+	            			BoostPower = Power / 2;
+	            		}
+	            		
+	            		rBoost = inv(BoostPower);
+	            		sBoost = inv(BoostSpeed);
+	            		
+	            	}	        		
+	            	
+	            	else if (BoostStyle >= 3) {
+	            		
+	            		if (event_press(Fire)) {
+	            		
+	            			rBoost = BoostPower;
+	            			sBoost = BoostSpeed;
+	            			DirectionP = On;
+	            			DirectionS = On;
+	            		}
+	            			
+	            		if (BoostStyle == 3 || BoostStyle == 4) {
+	            			
+	            			if (DirectionP) {
+	            			    
+	            			    if (rBoost < (Power + BoostPower)) {
+	            			    	
+	            			    	rBoost++;
+	            			    }
+	            			    
+	            			    if (rBoost >= (Power + BoostPower)) {
+	            			    
+	            			        DirectionP = Off;
+	            			    }
+	            			}
+	            			
+	            			if (!DirectionP) {
+	            			
+	            			    if (rBoost > (Power - BoostPower)) {
+	            			    	
+	            			    	rBoost--;
+	            			    }	
+	            			    
+	            			    if (rBoost <= (Power - BoostPower)) {
+	            			    
+	            			        DirectionP = On;
+	            			    }
+	            			}
+	            		}
+	            		
+	            		if (BoostStyle == 3 || BoostStyle == 5) {
+	            		
+	            			if (DirectionS) {
+	            			    
+	            			    if (sBoost < (Speed + BoostSpeed)) {
+	            			    	
+	            			    	sBoost++;
+	            			    }
+	            			    
+	            			    if (sBoost >= (Speed + BoostSpeed)) {
+	            			    
+	            			        DirectionS = Off;
+	            			    }
+	            			}
+	            		
+	            			if (!DirectionS) {
+	            			
+	            				if (sBoost > (Speed - BoostSpeed)) {
+	            				
+	            					sBoost--;
+	            				}	
+	            			
+	            				if (sBoost <= (Speed - BoostSpeed)) {
+	            			
+	            			    	DirectionS = On;
+	            				}
+	            			}
+	            		}
+	            	}
+	            } else {
+	            
+	            	rBoost = Off;
+	            	sBoost = Off;
+	            }
+	            	
+	            if (Step < 0) Step += 360;
+	            	
+	            	Step = Step % 360;
+	            	
+	            if (AxisXY < Deadzone) {
+                	
+                	set_polar(PS,Step,(Radius + AxisXY) * 327);
+	            }
+   	            
+   	            if (AxisXY >= Deadzone) {
+   	            
+	            	DoGzPolar(Angle,Radius);
+	            }
+	        
+	        	if (ComboRYeffect || ComboRXeffect) {
+	        
+	        		if (get_ival(Fire)) {
+	        		
+	        			combo_run(Polar);
+	        		}
+	        	}
+	        }
+	    }
+		
+		if (CrouchShot && CrouchShotMod) {
+	    
+	    	if (get_ival(Ads) && get_ival(Fire)) {
+                
+                combo_run(CrouchShot);
+            }    
+                else {
+                    
+                    combo_stop(CrouchShot);
+                }
+        }
+        
+        if (JumpShot && JumpShotMod) {
+        
+        	if (!get_ival(Ads) && get_ival(Fire)) {
+                
+                combo_run(JumpShot);
+            }    
+        }
+        
+	    if (RapidFire && RapidFireMod) {
+                
+            if (get_ival(Fire)) {
+            
+                combo_run(RapidFire);
+            } 
+            	else {
+            	
+            		combo_stop(RapidFire);
+            	}
+	    }
+		
+		if (antiRecoil) {
+		
+			if (get_ival(Ads) && get_ival(Fire)) {
+			
+				antiRecoil();
+			
+			} else {
+				
+				Reset();
+			}
+		}
+		
+	    if (!MainMenu) {
+	    
+	        if (get_ival(WeaponMenuHold) && event_press(WeaponMenuPress)) {
+	        	
+	        	Shunt = WeaponMenuPress;
+	        	Oled = On;                
+	        	Render = On;              
+	        	combo_run(Rumble); 
+	        }
+	    }
+	    
+	    if (Oled) {
+	    	
+	    	Render();
+	    	timeOut += get_rtime();
+	    
+	    	if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right)) {
+	    
+	    		timeOut = 0;
+	    	}
+	    
+	    	if (event_press(Up) || event_press(Right)) {
+	    		
+	    		recoilWeapon = clamp(recoilWeapon++, 1, 10);
+	    		Render = On;
+	    	}
+	    	
+	    	if (event_press(Down) || event_press(Left)) {
+	    		
+	    		recoilWeapon = clamp(recoilWeapon--, 1, 10);
+	    		Render = On;
+	    	}
+	    	
+	    	BlockButton(Down); BlockButton(Up); BlockButton(Right); BlockButton(Left);
+	    
+	    	if (event_press(WeaponMenuExit) || timeOut >= screenTime) {
+	    		
+	    		if (event_press(WeaponMenuExit))
+	    			
+	    			Shunt = WeaponMenuExit;
+	    			
+	    		combo_run(Rumble);
+	    		cls_oled(0);
+	    		Oled = Off;
+	    	}	
+	    }
+	
+		if (!Oled) {
+		
+		    if (!MainMenu && get_ival(MenuEnterHold) && event_press(MenuEnterPress)) {
+		    
+		        Shunt = MenuEnterPress;
+		        MenuToggle(On,Off,On,On,On);
+		        combo_run(Rumble);
+	        }
+		}
+		
+		if (MainMenu) {
+
+            Scroll();
+            combo_stop(Boot);
+            MenuTimeout += get_rtime();
+		    
+		    if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(ChangeMenuPress)) {
+		    
+		    	MenuTimeout = Off;
+		    }
+		    
+		    	if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+		    	
+		    		if (event_press(MenuExitPress))
+		    		
+		    			Shunt = MenuExitPress;
+		    		
+		    		MenuToggle(Off,Off,Off,Off,Off);
+		    		combo_run(Rumble);
+		    	}
+		    
+		    	if (event_press(ChangeMenuPress)) {
+		    
+		    		MenuValues = !MenuValues;
+		    		MenuSwitch = !MenuSwitch;
+		    		ModIndex = On;
+		    		Update = On;
+		    	}
+		    
+		    
+		    if (MenuValues) {
+		    
+		    	ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModIncrement[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		    }
+		    
+		    if (MenuSwitch && ModIndex > 1) {
+		    
+		    	ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		    }
+		    
+		    else if (MenuSwitch && ModIndex == 1){
+		    	
+		    		ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],1,7,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		    }		
+				
+			    BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+	    }
+ 
+        if (!MainMenu && Saver) { 
+            
+            ScreenTime (); 
+         	Saver (); 
+	    } 
+	    
+        if (!MainMenu && LEDRainbowFlow) { 
+            
+            LedFlow();
+        } 
+	    
+        if (!MainMenu && get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+            
+            Shunt = FindSlotPress;
+            Saver = Off;
+            ScreenTime = Off;
+            Slot = On;
+            combo_run(Boot);
+        }
+	    
+        if (ToggleTime) {
+            
+            TimeToggle();
+        }
+	
+	}// End Of KillSwitch
+	
+	if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = 0;
+        }
+            else {
+                
+                set_val (Shunt,0);
+            }
+    }
+}// End Of Main
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo Polar {
+	
+	if (ComboRXeffect)
+		set_Val(AimX,Power);
+	
+	if (ComboRYeffect)
+		set_Val(AimY,Power);
+	
+		wait(10);
+	
+	if (ComboRXeffect)
+		set_Val(AimX,Power * -1);
+	
+	if (ComboRYeffect)
+		set_Val(AimY,Power * -1);
+	
+		wait(10);
+}
+
+combo CrouchShot {
+
+	set_val(Crouch,100);
+	wait(50);
+	set_val(Crouch,0);
+	wait(20);
+	wait(CrouchShotWait);
+}
+
+combo JumpShot {
+	
+	set_val(Jump,100);
+    wait(50);
+    set_val(Jump,0);
+    wait(20);
+    wait(JumpShotWait);
+}
+
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidFireTime);
+    set_val(Fire,0);
+    wait(RapidFireTime);
+}
+
+combo Rumble {
+    
+    set_rumble(RUMBLE_B,15);
+    wait(250);
+    reset_rumble();
+    timeOut = 0;
+}
+
+combo Boot {
+        
+        wait(Slot);
+    
+    if (Slot == 20000)    
+        
+        cls_oled(0);
+        
+        if (Slot) {
+            
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    }    
+        else {
+            
+            set_rgb(255,0,0);
+            set_rumble(RUMBLE_B,15);
+        }
+     	
+     	wait(150);
+    	set_rgb(0,0,0);
+    	wait(150);
+    	reset_rumble();    
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+        else
+            
+            set_rgb(255,0,0);
+	
+		wait(150);
+		reset_leds();
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+function DoGzGetPolar (Current,Received) { 		
+	
+	Output = Current / 10 + Received / 10;
+	
+		if(Output <= -3276) return -32768; 
+		if(Output >=  3276) return  32767; 
+
+	return Current + Received; 
+} 
+
+function DoGzPolar (Rotation,Radial) {   	
+  	
+  	set_polar(PS,Rotation,Radial * 327);
+  	set_val(PX,DoGzGetPolar(get_val(PX),get_ival(PX)));
+	set_val(PY,DoGzGetPolar(get_val(PY),get_ival(PY)));	
+} 
+
+function antiRecoil () {
+	
+	if (TimeX <= 4) {
+		
+		timeX += get_rtime();
+		
+		if (timeX > antiRecoilXT) {
+		
+			TimeX ++;
+			ValX ++;
+			timeX = 0;
+		}
+	}
+
+	if (TimeY <= 4) {
+	
+		timeY += get_rtime();
+	
+	    if (timeY > antiRecoilYT) {
+	    
+	    	TimeY ++;
+	    	ValY ++;
+	    	timeY = 0;
+	    }
+	}
+
+	if (TimeY <= 4) {
+		
+		if (invertedRecoil) {	
+			
+			set_Val(AimY,antiRecoilRY * -1);
+			
+		} else {
+		
+			set_Val(AimY,antiRecoilRY);	
+		}
+	}
+	
+	if (TimeX <= 4) {
+	
+		set_Val(AimX,antiRecoilRX);
+	}
+	
+	if (TimeX > 4 && TimeY > 4) {
+	    
+	    arRunning = Off;
+	
+	} else {
+	
+	    arRunning = On;
+	}
+}
+
+function Weapon () {
+	
+	if (recoilWeapon == 1) {
+	
+	    antiRecoilRY = antiRecoilRY1[ValY];  
+	    antiRecoilYT = antiRecoilYT1[TimeY]; 
+	    antiRecoilRX = antiRecoilRX1[ValX];
+	    antiRecoilXT = antiRecoilXT1[TimeX];
+	}
+	
+	if (recoilWeapon == 2) {
+	
+	    antiRecoilRY = antiRecoilRY2[ValY];  
+	    antiRecoilYT = antiRecoilYT2[TimeY];
+	    antiRecoilRX = antiRecoilRX2[ValX];
+	    antiRecoilXT = antiRecoilXT2[TimeX];
+	}	
+	
+	if (recoilWeapon == 3) {
+	
+	    antiRecoilRY = antiRecoilRY3[ValY]; 
+	    antiRecoilYT = antiRecoilYT3[TimeY];
+	    antiRecoilRX = antiRecoilRX3[ValX];
+	    antiRecoilXT = antiRecoilXT3[TimeX];
+	}	
+	
+	if (recoilWeapon == 4) {
+	
+	    antiRecoilRY = antiRecoilRY4[ValY];  
+	    antiRecoilYT = antiRecoilYT4[TimeY];
+	    antiRecoilRX = antiRecoilRX4[ValX];
+	    antiRecoilXT = antiRecoilXT4[TimeX];
+	}	
+	
+	if (recoilWeapon == 5) {
+	
+	    antiRecoilRY = antiRecoilRY5[ValY];  
+	    antiRecoilYT = antiRecoilYT5[TimeY];
+	    antiRecoilRX = antiRecoilRX5[ValX];
+	    antiRecoilXT = antiRecoilXT5[TimeX];
+	}		
+	
+	if (recoilWeapon == 6) {
+	
+	    antiRecoilRY = antiRecoilRY6[ValY]; 
+	    antiRecoilYT = antiRecoilYT6[TimeY];
+	    antiRecoilRX = antiRecoilRX6[ValX];
+	    antiRecoilXT = antiRecoilXT6[TimeX];
+	}
+	
+	if (recoilWeapon == 7) {
+	
+	    antiRecoilRY = antiRecoilRY7[ValY]; 
+	    antiRecoilYT = antiRecoilYT7[TimeY];
+	    antiRecoilRX = antiRecoilRX7[ValX];
+	    antiRecoilXT = antiRecoilXT7[TimeX];
+	}	
+	
+	if (recoilWeapon == 8) {
+	
+	    antiRecoilRY = antiRecoilRY8[ValY]; 
+	    antiRecoilYT = antiRecoilYT8[TimeY];
+	    antiRecoilRX = antiRecoilRX8[ValX];
+	    antiRecoilXT = antiRecoilXT8[TimeX];
+	}	
+	
+	if (recoilWeapon == 9) {
+	
+	    antiRecoilRY = antiRecoilRY9[ValY]; 
+	    antiRecoilYT = antiRecoilYT9[TimeY];
+	    antiRecoilRX = antiRecoilRX9[ValX];
+	    antiRecoilXT = antiRecoilXT9[TimeX];
+	}	
+	
+	if (recoilWeapon == 10) {
+	
+	    antiRecoilRY = antiRecoilRY10[ValY]; 
+	    antiRecoilYT = antiRecoilYT10[TimeY];
+	    antiRecoilRX = antiRecoilRX10[ValX];
+	    antiRecoilXT = antiRecoilXT10[TimeX];
+	}
+}
+
+function set_Val(Input,Output) {
+
+      set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        return; 
+}
+
+function Toggle(ModT,ModP) {
+    
+    if (combo_running(Boot))    
+        
+        combo_stop(Boot);
+    
+        Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+	    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+    	
+    	Saver = 0;
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[8]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(15,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[6]);    
+        }
+            else {
+                
+                printf(36,38,0,1,MiscString[7]);
+            }
+                ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+        if (!MainMenu && ToggleT >= 5000) {
+            cls_oled(0);
+            ToggleTime = Off;
+            ToggleT = 0;
+    }
+}
+
+function LedFlow () {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 120) {
+        set_rgb(Colour / LedBrightness,Colour[1] / LedBrightness,Colour[2] / LedBrightness);
+        Colour[LedDec] -= 2; 
+        Colour[LedInc] += 2;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+}
+
+function Saver () {
+    
+    if (Saver) { 
+
+		TimeL += get_rtime();
+	
+		if(TimeL == 30) {            
+  			pixel_oled(X_POS1,Y_POS1,1);
+        	pixel_oled(X_POS2,Y_POS2,1);
+             
+             	TimerP += 1;    Length -= 1;
+             	TimerE += 1;    Length -= 1;
+                
+            	if(XorY1)  X_POS1 +=Dir1;
+            	if(XorY2)  X_POS2 +=Dir2;
+            	if(!XorY1) Y_POS1 +=Dir1;
+            	if(!XorY2) Y_POS2 +=Dir2;
+ 
+            if(Y_POS1 < 1)   Y_POS1 = 63;
+            if(Y_POS2 < 1)   Y_POS2 = 63;
+            if(X_POS1 < 1)   X_POS1 = 127;
+            if(X_POS2 < 1)   X_POS2 = 127;
+            if(Y_POS1 > 63)  Y_POS1 = 1;
+            if(Y_POS2 > 63)  Y_POS2 = 1;
+            if(X_POS1 > 127) X_POS1 = 1;
+            if(X_POS2 > 127) X_POS2 = 1;
+    
+    	if(Length < 1) {
+        	cls_oled(0);
+        	Y_POS2 = random(1,64);
+        	Y_POS1 = random(1,64);
+        	X_POS1 = random(1,128);
+        	X_POS2 = random(1,128);
+        	Steps1 = random(5,25);
+        	Steps2 = random(5,25);
+        	Length = random(200,1000);
+    	}
+    
+        	if(TimerP > Steps1) { 
+            	TimerP = 0;
+            	Steps1 = random(5,25);
+            	XorY1 = !XorY1;
+            	Dir1 = random(1,3);
+    
+           	 		if(Dir1 == 2) Dir1 = -1;
+        	} 
+
+		if(TimerE > Steps2)    {
+			TimerE = 0;
+            Steps2 = random(5,25);
+            XorY2 = !XorY2;
+            Dir2 = random(1,3);
+    
+				if(Dir2 == 2) Dir2 = -1;
+		}                                    
+        	TimeL = 0;
+     	}
+ 	}   
+	
+		if (!Saver)
+			cls_oled(0);
+}
+
+function ScreenTime () { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+             Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+
+function Render () {
+
+	if (Render) {
+		
+		cls_oled(0);
+		rect_oled(1,1,127,63,0,1);
+		
+		if (recoilWeapon < 10) {
+		
+			printf(22,20,1,1,weaponName[recoilWeapon]);
+		
+		} else {
+		
+		    printf(17,20,1,1,weaponName[recoilWeapon]);
+		}
+		
+		Render = Off;
+	}
+}
+
+function Reset () {
+	
+	ValY = 0;
+	ValX = 0;
+	TimeY = 0;
+	TimeX = 0;
+	timeY = 0;
+	timeX = 0;
+	arRunning = Off;
+}
+
+function BlockButton (Button) { 
+
+	if (!get_ival(Button))
+		
+		return; 
+		
+		set_val(Button,0);
+}
+
+function MenuToggle (Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod (ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch && ModIndex > 1) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			}
+				
+			else if (MenuSwitch && ModIndex == 1) {
+				
+			if (ModVal <=6)	{
+			
+				printf(59,24,0,1,MiscString[9]);
+			}
+				else {
+				
+				printf(45,24,0,1,MiscString[10]);
+				
+				}
+				
+				printf(45,34,0,1,ModAimAssist[ModVal]); 
+			}
+			
+			Update = Off; 
+	} 
+
+	if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+		Update = On;
+		ModVal += ModValInc;
+		    
+            if (ModVal >= ModValMax){ 
+                return ModValMax;
+            }
+	} 
+ 
+		if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+			Update = On;
+			ModVal -= ModValInc;
+				
+				if (ModVal <= ModValMin){
+					return ModValMin;
+				}
+		}
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+
+function Grid () { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll () {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+}   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,  TRIANGLE ,   SPACE   ,     O     ,     r     ,   SPACE   ,     Y     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   };
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Recoil Array's                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+const string weaponName [] = {"" , "Weapon 1" , "Weapon 2" , "Weapon 3" , "Weapon 4" , "Weapon 5" 
+							     , "Weapon 6" , "Weapon 7" , "Weapon 8" , "Weapon 9" , "Weapon 10" };
+
+const int16 antiRecoilRY1 [] = { valueRY1_1 , valueRY1_2 , valueRY1_3 , valueRY1_4 , valueRY1_5 };
+const int16 antiRecoilYT1 [] = { valueYT1_1 , valueYT1_2 , valueYT1_3 , valueYT1_4 , valueYT1_5 };
+const int16 antiRecoilRX1 [] = { valueRX1_1 , valueRX1_2 , valueRX1_3 , valueRX1_4 , valueRX1_5 };
+const int16 antiRecoilXT1 [] = { valueXT1_1 , valueXT1_2 , valueXT1_3 , valueXT1_4 , valueXT1_5 };
+
+const int16 antiRecoilRY2 [] = { valueRY2_1 , valueRY2_2 , valueRY2_3 , valueRY2_4 , valueRY2_5 };
+const int16 antiRecoilYT2 [] = { valueYT2_1 , valueYT2_2 , valueYT2_3 , valueYT2_4 , valueYT2_5 };
+const int16 antiRecoilRX2 [] = { valueRX2_1 , valueRX2_2 , valueRX2_3 , valueRX2_4 , valueRX2_5 };
+const int16 antiRecoilXT2 [] = { valueXT2_1 , valueXT2_2 , valueXT2_3 , valueXT2_4 , valueXT2_5 };
+
+const int16 antiRecoilRY3 [] = { valueRY3_1 , valueRY3_2 , valueRY3_3 , valueRY3_4 , valueRY3_5 };
+const int16 antiRecoilYT3 [] = { valueYT3_1 , valueYT3_2 , valueYT3_3 , valueYT3_4 , valueYT3_5 };
+const int16 antiRecoilRX3 [] = { valueRX3_1 , valueRX3_2 , valueRX3_3 , valueRX3_4 , valueRX3_5 };
+const int16 antiRecoilXT3 [] = { valueXT3_1 , valueXT3_2 , valueXT3_3 , valueXT3_4 , valueXT3_5 };
+
+const int16 antiRecoilRY4 [] = { valueRY4_1 , valueRY4_2 , valueRY4_3 , valueRY4_4 , valueRY4_5 };
+const int16 antiRecoilYT4 [] = { valueYT4_1 , valueYT4_2 , valueYT4_3 , valueYT4_4 , valueYT4_5 };
+const int16 antiRecoilRX4 [] = { valueRX4_1 , valueRX4_2 , valueRX4_3 , valueRX4_4 , valueRX4_5 };
+const int16 antiRecoilXT4 [] = { valueXT4_1 , valueXT4_2 , valueXT4_3 , valueXT4_4 , valueXT4_5 };
+
+const int16 antiRecoilRY5 [] = { valueRY5_1 , valueRY5_2 , valueRY5_3 , valueRY5_4 , valueRY5_5 };
+const int16 antiRecoilYT5 [] = { valueYT5_1 , valueYT5_2 , valueYT5_3 , valueYT5_4 , valueYT5_5 };
+const int16 antiRecoilRX5 [] = { valueRX5_1 , valueRX5_2 , valueRX5_3 , valueRX5_4 , valueRX5_5 };
+const int16 antiRecoilXT5 [] = { valueXT5_1 , valueXT5_2 , valueXT5_3 , valueXT5_4 , valueXT5_5 };
+
+const int16 antiRecoilRY6 [] = { valueRY6_1 , valueRY6_2 , valueRY6_3 , valueRY6_4 , valueRY6_5 };
+const int16 antiRecoilYT6 [] = { valueYT6_1 , valueYT6_2 , valueYT6_3 , valueYT6_4 , valueYT6_5 };
+const int16 antiRecoilRX6 [] = { valueRX6_1 , valueRX6_2 , valueRX6_3 , valueRX6_4 , valueRX6_5 };
+const int16 antiRecoilXT6 [] = { valueXT6_1 , valueXT6_2 , valueXT6_3 , valueXT6_4 , valueXT6_5 };
+
+const int16 antiRecoilRY7 [] = { valueRY7_1 , valueRY7_2 , valueRY7_3 , valueRY7_4 , valueRY7_5 };
+const int16 antiRecoilYT7 [] = { valueYT7_1 , valueYT7_2 , valueYT7_3 , valueYT7_4 , valueYT7_5 };
+const int16 antiRecoilRX7 [] = { valueRX7_1 , valueRX7_2 , valueRX7_3 , valueRX7_4 , valueRX7_5 };
+const int16 antiRecoilXT7 [] = { valueXT7_1 , valueXT7_2 , valueXT7_3 , valueXT7_4 , valueXT7_5 };
+
+const int16 antiRecoilRY8 [] = { valueRY8_1 , valueRY8_2 , valueRY8_3 , valueRY8_4 , valueRY8_5 };
+const int16 antiRecoilYT8 [] = { valueYT8_1 , valueYT8_2 , valueYT8_3 , valueYT8_4 , valueYT8_5 };
+const int16 antiRecoilRX8 [] = { valueRX8_1 , valueRX8_2 , valueRX8_3 , valueRX8_4 , valueRX8_5 };
+const int16 antiRecoilXT8 [] = { valueXT8_1 , valueXT8_2 , valueXT8_3 , valueXT8_4 , valueXT8_5 };
+
+const int16 antiRecoilRY9 [] = { valueRY9_1 , valueRY9_2 , valueRY9_3 , valueRY9_4 , valueRY9_5 };
+const int16 antiRecoilYT9 [] = { valueYT9_1 , valueYT9_2 , valueYT9_3 , valueYT9_4 , valueYT9_5 };
+const int16 antiRecoilRX9 [] = { valueRX9_1 , valueRX9_2 , valueRX9_3 , valueRX9_4 , valueRX9_5 };
+const int16 antiRecoilXT9 [] = { valueXT9_1 , valueXT9_2 , valueXT9_3 , valueXT9_4 , valueXT9_5 };
+
+const int16 antiRecoilRY10 [] = { valueRY10_1 , valueRY10_2 , valueRY10_3 , valueRY10_4 , valueRY10_5 };
+const int16 antiRecoilYT10 [] = { valueYT10_1 , valueYT10_2 , valueYT10_3 , valueYT10_4 , valueYT10_5 };
+const int16 antiRecoilRX10 [] = { valueRX10_1 , valueRX10_2 , valueRX10_3 , valueRX10_4 , valueRX10_5 };
+const int16 antiRecoilXT10 [] = { valueXT10_1 , valueXT10_2 , valueXT10_3 , valueXT10_4 , valueXT10_5 };

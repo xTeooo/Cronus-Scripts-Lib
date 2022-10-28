@@ -1,0 +1,95 @@
+// LT + Right D-Pad to change distance
+// 0. Off    = No Selection
+// 1. Blue   = Close
+// 2. Red    = Medium
+// 3. Green  = Long
+
+
+
+define
+Close_Range_Time  = 180,
+Medium_Range_Time = 140,
+Long_Range_Time   = 120;
+
+
+
+int
+count,
+start;
+
+
+
+main {
+
+
+  // LT Hair Trigger
+
+  deadzone(XB1_LT,NOT_USE,99,NOT_USE);
+
+
+  // RT Hair Trigger (Hip Aim)
+
+  if(get_val(XB1_RT) >= 1 && get_val(XB1_RT) < 13)
+    set_val(XB1_RT,13);
+
+
+  // Headshot Aim
+
+  if(get_val(XB1_LT) && event_press(XB1_RIGHT))
+    count ++;
+
+  if(count >= 4)
+    count = 0;
+
+  if(!start && get_val(XB1_LT) && get_ptime(XB1_LT) > 250) {
+    if(count == 1)
+      combo_run(AIM_HEAD_CLOSE);
+    if(count == 2)
+      combo_run(AIM_HEAD_MEDIUM);
+    if(count == 3)
+      combo_run(AIM_HEAD_LONG);
+  }
+
+  if(event_release(XB1_LT))
+    start = FALSE;
+
+  if(!count)
+    set_rgb(0,0,0);
+
+  if(count == 1)
+    set_rgb(0,50,0);
+
+  if(count == 2)
+    set_rgb(50,50,0);
+
+  if(count == 3)
+    set_rgb(50,0,0);
+
+
+}
+
+
+
+// Headshot Aim
+
+combo AIM_HEAD_CLOSE {
+ set_val(XB1_RY,-100);
+ wait(Close_Range_Time);
+ start = TRUE;
+}
+
+
+
+combo AIM_HEAD_MEDIUM {
+  set_val(XB1_RY,-100);
+  wait(Medium_Range_Time);
+  start = TRUE;
+}
+
+
+
+combo AIM_HEAD_LONG {
+  set_val(XB1_RY,-100);
+  wait(Long_Range_Time);
+  start = TRUE;
+}

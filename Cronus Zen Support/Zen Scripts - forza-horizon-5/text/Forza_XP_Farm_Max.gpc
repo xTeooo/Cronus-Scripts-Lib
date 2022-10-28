@@ -1,0 +1,63 @@
+/*
+============================================================================================================================
+    Forza Horizon 5 - Farm Skill Point (as of 11/21/21) By Batts
+    Original post: https://www.cronusmax.com/forums/showthread.php/212194-FORZA-HORIZONS-5-Farm-Skill-Points
+    
+        This will probably be patched in the next update.
+        
+        Follow the setup here:  <a href="https://youtu.be/uGOgxBw5-IE" target="_blank">https://youtu.be/uGOgxBw5-IE</a> 
+        
+        Use this share code: 743 324 179
+        
+        At the START RACE EVENT menu screen, start the script (RB/R1 + Dpad DOWN)
+        
+============================================================================================================================
+    DO NOT EDIT BELOW HERE  
+============================================================================================================================
+*/
+int toggle;
+int blockBtn;
+main {
+	if (get_val(XB1_RB) && event_press(XB1_DOWN)) {toggle = TRUE; blockBtn = XB1_DOWN;}// Activate
+    if (get_val(XB1_B)) toggle = FALSE; // Deactivate    
+    if(toggle){combo_run(TEN_IN_THIRTY);}
+    else{combo_stop(TEN_IN_THIRTY);}
+ 
+    if(blockBtn) {
+        if(event_release(blockBtn)) {
+            blockBtn = 0;
+        }else{
+            set_val(blockBtn,0);
+        }
+    }
+    block_rumble();
+}
+ 
+ 
+/*
+============================================================================================================================
+    TEN_IN_THIRTY   
+============================================================================================================================
+*/
+const int BTNS[][] = {
+   {XB1_A,   100,     150,    6000},
+   {XB1_RT,   25,    3000,       1},
+   {XB1_RT,   50,    3000,       1},
+   {XB1_RT,   75,    1500,       1},
+   {XB1_RT,  100,    2000,       1},
+   {XB1_RT,  100,   28000,   15000},
+   {XB1_X,   100,     150,    1300},
+   {XB1_A,   100,     150,   15000} 
+}; 
+ 
+int idx;
+ 
+combo TEN_IN_THIRTY {
+    set_val(BTNS[idx][0],BTNS[idx][1]);
+    wait(BTNS[idx][2]);
+    wait(BTNS[idx][3]);
+    idx++;
+    if(idx == sizeof(BTNS) / sizeof(BTNS[0])) {
+        idx = 0;
+    }
+}

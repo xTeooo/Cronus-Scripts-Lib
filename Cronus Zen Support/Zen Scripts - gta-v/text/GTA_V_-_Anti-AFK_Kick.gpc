@@ -1,0 +1,40 @@
+// Anti-AFK Kick
+int milliseconds;
+int seconds;
+
+
+
+main {
+
+
+  // Anti-AFK Kick
+  if(abs(get_val(XB1_RX)) < 20 && abs(get_val(XB1_RY)) < 20 && abs(get_val(XB1_LX)) < 20 && abs(get_val(XB1_LY)) < 20 && !get_val(XB1_XBOX) && !get_val(XB1_A) && !get_val(XB1_UP) && !get_val(XB1_DOWN) && !get_val(XB1_LEFT) && !get_val(XB1_RIGHT)) {
+    milliseconds += get_rtime();
+    if(milliseconds >= 1000) {
+      milliseconds -= 1000;
+      seconds ++;
+      if(seconds == 29) {
+        seconds = 0;
+        combo_run(Reset_Kick_Timer);
+      }
+    }
+  }
+
+  if(abs(get_val(XB1_RX)) >= 20 || abs(get_val(XB1_RY)) >= 20 || abs(get_val(XB1_LX)) >= 20 || abs(get_val(XB1_LY)) >= 20 || get_val(XB1_XBOX) || get_val(XB1_A) || get_val(XB1_UP) || get_val(XB1_DOWN) || get_val(XB1_LEFT) || get_val(XB1_RIGHT)) {
+    milliseconds = 0;
+    seconds = 0;
+  }
+
+
+}
+
+
+// Anti-AFK Kick
+combo Reset_Kick_Timer {
+  set_val(XB1_RS,0);
+  wait(50);
+  set_val(XB1_RS,100);
+  wait(50);
+  set_val(XB1_RS,0);
+  wait(50);
+}

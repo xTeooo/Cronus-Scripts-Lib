@@ -1,0 +1,464 @@
+int on;  //If the script is On/Off
+int gamesplayed = 0; 	
+int runCombo = 4000;     
+int startGame,inGame,restartGame,rumbling,resetButtons; 
+
+
+
+ 
+//LED
+int a,b; // LEDS for if the script is On/Off
+
+
+
+const string GP = "Allstar";
+
+const string Games_Played[] = {
+"Games:0",
+"Games:1",
+"Games:2",
+"Games:3",
+"Games:4",
+"Games:5",
+"Games:6",
+"Games:7",
+"Games:8",
+"Games:9",
+"Games:10",
+"Games:11",
+"Games:12",
+"Games:13",
+"Games:14",
+"Games:15",
+"Games:16",
+"Games:17",
+"Games:18",
+"Games:19",
+"Games:20",
+"Games:21",
+"Games:22",
+"Games:23",
+"Games:24",
+"Games:25",
+"Games:26",
+"Games:27",
+"Games:28",
+"Games:29",
+"Games:30",
+"Games:31",
+"Games:32",
+"Games:33",
+"Games:34",
+"Games:35",
+"Games:36",
+"Games:37",
+"Games:38",
+"Games:39",
+"Games:40",
+"Games:41",
+"Games:42",
+"Games:43",
+"Games:44",
+"Games:45",
+"Games:46",
+"Games:47",
+"Games:48",
+"Games:49",
+"Games:50",
+"Games:51",
+"Games:52",
+"Games:53",
+"Games:54",
+"Games:55",
+"Games:56",
+"Games:57",
+"Games:58",
+"Games:59",
+"Games:60",
+"Games:61",
+"Games:62",
+"Games:63",
+"Games:64",
+"Games:65",
+"Games:66",
+"Games:67",
+"Games:68",
+"Games:69",
+"Games:70",
+"Games:71",
+"Games:72",
+"Games:73",
+"Games:74",
+"Games:75",
+"Games:76",
+"Games:77",
+"Games:78",
+"Games:79",
+"Games:80",
+"Games:81",
+"Games:82",
+""
+};
+
+const string All_Star[] = {
+"VER:0",
+"VER:1",
+"VER:2",
+"VER:3",
+"VER:4",
+"VER:5",
+"VER:6",
+"VER:7",
+"VER:8",
+"VER:9",
+"VER:10",
+"VER:11",
+"VER:12",
+"VER:13",
+"VER:14",
+"VER:15",
+"VER:16",
+"VER:17",
+"VER:18",
+"VER:19",
+"VER:20",
+"VER:21",
+"VER:22",
+"VER:23",
+"VER:24",
+"VER:25",
+"VER:26",
+"VER:27",
+"VER:28",
+"VER:29",
+"VER:30",
+"VER:31",
+"VER:32",
+"VER:33",
+"VER:34",
+"VER:35",
+"VER:36",
+"VER:37",
+"VER:38",
+"VER:39",
+"VER:40",
+"VER:41",
+"VER:42",
+"VER:43",
+"VER:44",
+"VER:45",
+"VER:46",
+"VER:47",
+"VER:48",
+"VER:49",
+"VER:50",
+"VER:51",
+"VER:52",
+"VER:53",
+"VER:54",
+"VER:55",
+"VER:56",
+"VER:57",
+"VER:58",
+"VER:59",
+"VER:60",
+"VER:61",
+"VER:62",
+"VER:63",
+"VER:64",
+"VER:65",
+"VER:66",
+"VER:67",
+"VER:68",
+"VER:69",
+"VER:70",
+"VER:71",
+"VER:72",
+"VER:73",
+"VER:74",
+"VER:75",
+"VER:76",
+"VER:77",
+"VER:78",
+"VER:79",
+"VER:80",
+"VER:81",
+"VER:82",
+""
+};
+//──────────────────────────────────────────────────────┘
+init
+{
+//┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    cls_oled(0);         
+   	printf(center_x(5, OLED_FONT_MEDIUM_WIDTH),23,OLED_FONT_MEDIUM,OLED_WHITE,Games_Played[gamesplayed]);//-- Display Script Title 
+	printf(center_x(5, OLED_FONT_MEDIUM_WIDTH),49,OLED_FONT_MEDIUM,OLED_WHITE,All_Star[23]);//-- Display Script Title
+//└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+}
+
+///////////////////////////////////////////////////////
+					/*MAIN SECTION*/
+///////////////////////////////////////////////////////
+main
+{
+	{
+//┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    cls_oled(0);         
+   	printf(center_x(5, OLED_FONT_MEDIUM_WIDTH),23,OLED_FONT_MEDIUM,OLED_WHITE,Games_Played[gamesplayed]);//-- Display Script Title 
+	printf(center_x(5, OLED_FONT_MEDIUM_WIDTH),49,OLED_FONT_MEDIUM,OLED_WHITE,All_Star[23]);//-- Display Script Title
+//└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+}
+
+	
+	if(event_press(PS4_R2)) 
+	{
+		gamesplayed += 1;	
+	}
+	
+	if(event_press(PS4_L2)) 
+	{
+		gamesplayed -= 1;	
+	}
+	
+	if(event_press(PS4_DOWN)) 
+	{
+		on = !on;
+		if(on)
+		{
+			a = 0; 
+   		    b = 2; 
+   		    inGame = TRUE;
+		}else
+		{
+			a = 2; 
+   		    b = 0; 
+   		    combo_stop(RESTART_GAME);
+		    combo_stop(IN_GAME);
+		}
+			combo_run(NOTIFY);
+	} 
+	
+	if(on)
+	{
+		if(inGame)
+		{
+			if(runCombo) 
+			{ 
+				combo_run(IN_GAME); 
+	        }else
+			{
+				inGame = FALSE;
+	            restartGame = TRUE;
+	       	}
+		}
+		
+		if(restartGame)
+		{
+			combo_run(RESTART_GAME);
+		}
+		
+		 if(get_rumble(RUMBLE_A) || get_rumble(RUMBLE_B)) 
+		 {
+			if(!rumbling) 
+			{
+				rumbling = TRUE;
+				inGame = FALSE;  
+				restartGame = TRUE; 
+			}
+		 }else
+		 {
+			rumbling = FALSE;
+		 }
+		 
+		 if(rumbling = FALSE)
+		 {
+			combo_run(RESET_BUTTONS);
+		 }
+	}
+}
+
+///////////////////////////////////////////////////////
+                    /*PLAYS THE GAME*/
+///////////////////////////////////////////////////////
+combo IN_GAME 
+{
+    set_val(PS4_CROSS, 0);
+    wait(100);
+    set_val(PS4_CROSS, 100);
+    wait(2000);
+    set_val(PS4_CIRCLE, 100);
+    wait(200);
+    set_val(PS4_R1, 75);
+    wait(100);
+    set_val(PS4_R1, 75);
+    wait(100);
+	runCombo -= 1; // After the combo is run Minus 1
+}
+
+///////////////////////////////////////////////////////
+			  /*RESTART GAME - Restarts the game */
+///////////////////////////////////////////////////////
+
+
+combo RESTART_GAME 
+{
+	wait(3000);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(500);
+	gamesplayed += 1;
+	restartGame= FALSE; 
+	inGame = TRUE; 
+	runCombo = 4000;	
+}
+
+///////////////////////////////////////////////////////
+         /*NOTIFY - If script is on or off*/
+/////////////////////////////////////////////////////// 
+combo NOTIFY 
+{
+	set_rumble(RUMBLE_B,65); 
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(550);
+	reset_rumble();
+	set_led(LED_1, 0);
+	set_led(LED_2, 0);
+	set_led(LED_3, 0);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, 0);
+	set_led(LED_3, 0);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(250);
+	reset_leds();
+}
+
+///////////////////////////////////////////////////////
+			  /*RESET BUTTONS - Resets Buttons */
+///////////////////////////////////////////////////////
+combo RESET_BUTTONS
+{
+	 wait(1000)
+	 set_val(PS4_L1, 75);
+	 wait(100);
+	 set_val(PS4_L1, 75);
+	 wait(100);
+	 inGame = TRUE;
+	 resetButtons = FALSE;
+	 
+}
+
+///////////////////////////////////////////////////////
+			  /*ALLSTAR GAME - Skips game */
+///////////////////////////////////////////////////////
+
+
+combo ALLSTAR_GAME 
+{
+	wait(3000);
+	set_val(PS4_CROSS, 100);//a
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);//a
+	wait(150);
+	wait(500);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);//a
+	wait(150);
+	wait(500);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(500);
+	set_val(PS4_CROSS, 100);//a
+	wait(150);
+	wait(500);
+	gamesplayed += 1;
+	restartGame= FALSE; 
+	inGame = TRUE; 
+	runCombo = 4000;	
+}
+
+// End of combo section, Start of Functions
+
+//┌─────────────────────────────────────────────────────────────────────────────────────────────────────┐
+	function center_x(f_chars,f_font){  //--  center_x(number of chars,font size);                                                 
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); //-- return X for Centering String Horizontally
+}                                                      
+//└─────────────────────────────────────────────────────────────────────────────────────────────────────┘
+ ����������������

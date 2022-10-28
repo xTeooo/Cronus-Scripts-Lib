@@ -1,0 +1,159 @@
+/*
+============================================================================================================================
+    Forza Horizon 5 - Farm Skill Point (as of 11/21/21) By Batts
+    Original post: https://www.cronusmax.com/forums/showthread.php/212194-FORZA-HORIZONS-5-Farm-Skill-Points
+    
+        This will probably be patched in the next update.
+        
+        Follow the setup here:  <a href="https://youtu.be/uGOgxBw5-IE" target="_blank">https://youtu.be/uGOgxBw5-IE</a> 
+        
+        Use this share code: 743 324 179
+        
+        To start the race:
+        At the START RACE EVENT menu screen, Start combo (RB/R1 + Dpad DOWN)
+        
+        To start buying cars:
+        At the Buy & Sell tab when Autoshow is selected, Start combo (LT/L2 + RS/R3)
+        
+        To decativate any of the combos above press B/CIRCLE or switch zen slot
+        
+============================================================================================================================
+    DO NOT EDIT THE SECION BELOW
+============================================================================================================================
+*/
+int toggle;
+int toggle2;
+int blockBtn;
+main {
+	if (get_val(XB1_RB) && event_press(XB1_DOWN)) {toggle = TRUE; blockBtn = XB1_DOWN;}// Activate
+    if (get_val(XB1_B)) toggle = FALSE; // Deactivate
+    
+    if (get_val(XB1_LT) && event_press(XB1_RS)) {toggle2 = TRUE; blockBtn = XB1_RS;}// Activate
+    if (get_val(XB1_B)) toggle2 = FALSE; // Deactivate
+    
+    if(toggle){combo_run(TEN_IN_THIRTY);}
+    else{combo_stop(TEN_IN_THIRTY);}
+    
+    if(toggle2){combo_run(BUY);}
+    else{combo_stop(BUY);}
+ 
+    if(blockBtn) {
+        if(event_release(blockBtn)) {
+            blockBtn = 0;
+        }else{
+            set_val(blockBtn,0);
+        }
+    }
+    block_rumble();
+}
+ 
+ /*
+============================================================================================================================
+    BEGIN OF BUTTON PRESSES AND TIMING SETTINGS   
+============================================================================================================================
+
+
+============================================================================================================================
+    TEN IN THIRTY
+============================================================================================================================
+*/
+const int16 RACE[][] = {
+//   Button  | Value | Duration | Time After Press
+    {XB1_A,     100,     150,          6000},
+    {XB1_RT,     50,    3000,             1},
+    {XB1_RT,     75,    1500,             1},
+    {XB1_RT,    100,    2000,             1},
+    {XB1_RT,    100,   26000,         14000},
+    {XB1_X,     100,     150,          1300},
+    {XB1_A,     100,     150,         10000} 
+}; 
+
+/*
+============================================================================================================================
+    BUY CAR AND SPEND SKILLPOINTS
+============================================================================================================================
+*/
+const int16 CAR[] [] ={
+//   Button  | Value | Duration | Time After Press
+    {XB1_A,     100,     120,          1550},
+    {XB1_VIEW,  100,      80,           450},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_A,     100,     100,           500},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_DOWN,  100,     100,           500},
+    {XB1_A,     100,     100,          3100},
+    {XB1_Y,     100,     100,           500},
+    {XB1_A,     100,     100,           500},
+    {XB1_A,     100,     100,           500},
+    {XB1_A,     100,     100,         14000},
+    {XB1_B,     100,     100,          1000},
+    {XB1_RB,    100,     100,          1000},
+    {XB1_LEFT,  100,     100,            50},
+    {XB1_A,     100,     100,           500},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,          1000},
+    {XB1_A,     100,     100,          1000},
+    {XB1_UP,    100,     100,           500},
+    {XB1_A,     100,     100,          1000},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_A,     100,     100,          1000},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_A,     100,     100,          1000},
+    {XB1_UP,    100,     100,           500},
+    {XB1_A,     100,     100,           800},
+    {XB1_UP,    100,     100,           500},
+    {XB1_A,     100,     100,          1000},
+    {XB1_DOWN,  100,     100,            50},
+    {XB1_RIGHT, 100,     100,            50},
+    {XB1_A,     100,     100,          1000},
+    {XB1_B,     100,     100,          1000},
+    {XB1_B,     100,     100,          1000},
+    {XB1_LB,    100,     100,           500}
+};
+/*
+============================================================================================================================
+    END OF BUTTON PRESSES AND TIMING SETTINGS
+    DO NOT EDIT ANYTHING BELOW!
+============================================================================================================================
+*/
+ 
+int idx;
+ 
+combo TEN_IN_THIRTY {
+    set_val(RACE[idx][0],RACE[idx][1]);
+    wait(RACE[idx][2]);
+    wait(RACE[idx][3]);
+    idx++;
+    if(idx == sizeof(RACE) / sizeof(RACE[0])) {
+        idx = 0;
+    }
+}
+combo BUY {
+    set_val(CAR[idx][0],CAR[idx][1]);
+    wait(CAR[idx][2]);
+    wait(CAR[idx][3]);
+    idx++;
+    if(idx == sizeof(CAR) / sizeof(CAR[0])) {
+        idx = 0;
+    }
+}

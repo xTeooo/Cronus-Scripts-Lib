@@ -1,0 +1,42 @@
+int timedshot = 550;		// <---- Timing for when standing still
+int timedshot2 = 380;		// <---- Timing for when walking (stick no further than 65% out in any direction
+
+int stand;
+int walk;
+
+main {
+
+	if(isqrt(pow(get_ival(XB1_RX),2) + pow(get_ival(XB1_LX),2)) <= 30) {
+		stand = TRUE;
+		walk = FALSE;
+	}
+
+	if((isqrt(pow(get_ival(XB1_RX),2) + pow(get_ival(XB1_LX),2)) > 50) || (isqrt(pow(get_ival(XB1_RY),2) + pow(get_ival(XB1_LY),2)) > 50)) {
+		stand = FALSE;
+		walk = TRUE;
+    }
+    
+    if(get_ival(XB1_X)){
+    	set_val(XB1_X,0);
+	    if(stand) {
+	    	combo_run(test);
+    	}
+	    if(walk) {
+	    	combo_run(test2);
+    	}
+    }
+
+}
+
+combo test{
+	set_val(XB1_X,100);
+	wait(timedshot);
+	set_val(XB1_X,0);
+	wait(20);
+}
+combo test2{
+	set_val(XB1_X,100);
+	wait(timedshot2);
+	set_val(XB1_X,0);
+	wait(20);
+}
