@@ -1,0 +1,187 @@
+// GPC Online Library
+// red_dead_redemption_2_online_(rdr2)_-_quick_tonic_glitch_+_crouch_spam_+_rapid_fire.gpc
+
+/*
+  Red Dead Redemption 2 - Quick Tonic Glitch, Crouch Spam and Rapid Fire Script By Fadexz
+  						+ Auto DeadEye and AIM Assist
+  
+  
+  
+  Crouch Spam Toggle: Hold L2 + Press DOWN
+  AIM Assist Toggle: Hold L2 + Press UP
+  Auto DeadEye Toggle: Hold L2 + Press RIGHT
+  
+  Quick Tonic: Hold L1 +
+               Press SQUARE or
+               Press TRIANGLE or
+               Press CIRCLE
+
+
+
+*/
+
+int aimAssist_size	= 20; // Decrease if shake
+int aimAssist_time	= 40; // Increase if game lag
+
+define
+
+// Crouch Spam
+Crouch_Delay_Time = 170,  // Min should be 50
+// Quick Tonic Glitch
+Press_After_LB_Time = 300;
+
+
+
+int
+
+// Crouch Spam toggle 
+crouch_spam_toggle,
+// AIM Assist toggle
+AA_toggle,
+// Auto DeadEye toggle
+autoDE_toggle,
+// Quick Tonic Glitch
+slot_direction_x = -100,
+slot_direction_y = -100,
+lb_release_timer;
+
+
+
+main {
+
+
+// Crouch Spam
+ if(get_val(PS4_L2))
+ {
+ 	if(event_press(PS4_DOWN))
+  		crouch_spam_toggle = !crouch_spam_toggle;
+ 	if(event_press(PS4_UP))
+  		AA_toggle = !AA_toggle;
+ 	if(event_press(PS4_RIGHT))
+  		autoDE_toggle = !autoDE_toggle;
+ }
+
+ if(crouch_spam_toggle && get_val(PS4_L2))
+  combo_run(Crouch_Spam);
+  
+ if(AA_toggle && get_val(PS4_L2))
+ 	combo_run(AIM_ASSIST);
+ 	
+ if(autoDE_toggle && event_press(PS4_L2))
+ 	combo_run(DEADEYE);
+
+// Rapid Fire
+ if(get_val(PS4_R2))
+  combo_run(Rapid_Fire);
+ else combo_stop(Rapid_Fire);
+
+
+// Quick Tonic Glitch
+ if(!get_val(PS4_L1) && lb_release_timer < 30000)
+  lb_release_timer += get_rtime();
+
+ if(event_press(PS4_L1))
+  lb_release_timer = 0;
+
+ if(get_val(PS4_L1) || lb_release_timer >= 1 && lb_release_timer <= Press_After_LB_Time) {
+  if(event_release(PS4_SQUARE) && get_ptime(PS4_SQUARE) <= 300) {
+   slot_direction_x = -100;
+   slot_direction_y = -100;
+   combo_run(Quick_Tonic_Glitch);
+  }
+  if(event_release(PS4_TRIANGLE) && get_ptime(PS4_TRIANGLE) <= 300) {
+   slot_direction_x = 0;
+   slot_direction_y = -100;
+   combo_run(Quick_Tonic_Glitch);
+  }
+  if(event_release(PS4_CIRCLE) && get_ptime(PS4_CIRCLE) <= 300) {
+   slot_direction_x = 100;
+   slot_direction_y = -100;
+   combo_run(Quick_Tonic_Glitch);
+  }
+ }
+
+ if(get_val(PS4_L1) || lb_release_timer >= 1 && lb_release_timer <= Press_After_LB_Time) {
+  if(get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) <= 300)
+   set_val(PS4_SQUARE,0);
+  if(get_val(PS4_TRIANGLE) && get_ptime(PS4_TRIANGLE) <= 300)
+   set_val(PS4_TRIANGLE,0);
+  if(get_val(PS4_CIRCLE) && get_ptime(PS4_CIRCLE) <= 300)
+  set_val(PS4_CIRCLE,0);
+ }
+
+ if(combo_running(Quick_Tonic_Glitch)) {
+  set_val(PS4_L1,0);
+  set_val(PS4_R1,0);
+  set_val(PS4_L2,0);
+  set_val(PS4_R2,0);
+  set_val(PS4_RX,0);
+  set_val(PS4_RY,0);
+  set_val(PS4_R3,0);
+  set_val(PS4_TRIANGLE,0);
+  set_val(PS4_SQUARE,0);
+  set_val(PS4_LEFT,0);
+  set_val(PS4_RIGHT,0);
+ }
+}
+
+// Crouch Spam
+combo Crouch_Spam {
+ set_val(PS4_L3,100);
+ wait(50);
+ wait(Crouch_Delay_Time - get_rtime()); }
+
+
+
+// Rapid Fire
+combo Rapid_Fire {
+ wait(50);
+ set_val(PS4_R2,0);
+ wait(50 - get_rtime());
+ set_val(PS4_R2,0); }
+
+
+
+// Quick Tonic Glitch
+combo Quick_Tonic_Glitch {
+ wait(150);
+ set_val(PS4_SQUARE,100);
+ set_val(PS4_L1,100);
+ set_val(PS4_R1,100);
+ wait(50);
+ set_val(PS4_L1,100);
+ set_val(PS4_R1,100);
+ set_val(PS4_RX,slot_direction_x);
+ set_val(PS4_RY,slot_direction_y);
+ wait(150);
+ set_val(PS4_L1,100);
+ set_val(PS4_RX,slot_direction_x);
+ set_val(PS4_RY,slot_direction_y);
+ wait(100);
+ wait(50 - get_rtime());
+}
+
+combo AIM_ASSIST {
+    set_val(PS4_RY,aim_assist(PS4_RY,aimAssist_size));
+    wait(aimAssist_time);
+    set_val(PS4_RX,aim_assist(PS4_RX,aimAssist_size));
+    set_val(PS4_LX,aim_assist(PS4_LX,aimAssist_size));
+    wait(aimAssist_time);
+    set_val(PS4_RY,aim_assist(PS4_RY,inv(aimAssist_size))); 
+    wait(aimAssist_time);
+    set_val(PS4_RX,aim_assist(PS4_RX,inv(aimAssist_size)));
+    set_val(PS4_LX,aim_assist(PS4_LX,inv(aimAssist_size)));
+    wait(aimAssist_time);
+}
+
+function aim_assist(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < aimAssist_size + 1)
+        return f_val;
+    return get_val(f_axis); 
+}
+
+combo DEADEYE {
+    wait(200);
+    set_val(PS4_R3, 100);
+    wait(90);
+}

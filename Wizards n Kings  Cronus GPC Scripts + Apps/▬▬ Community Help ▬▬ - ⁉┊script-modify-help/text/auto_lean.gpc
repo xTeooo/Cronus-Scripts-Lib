@@ -1,0 +1,346 @@
+// GPC Online Library
+// rainbow_six_script(antirecoil,_rapidfire,_autolean,_autoscan,_auto_nade,_qe_spam,_sensitivity_change).gpc
+
+/*
+
+
+  Settings    * = Main Values to Change to your Preference
+ 
+ */ define AIM_DOWN_SIGHTS_HORIZONTAL_SENSITIVITY         =   100 /* * Right Stick Aim Down Sights Horizontal Sensitivity  Default = 100  Put a number from 0 ~ 327
+ */ define AIM_DOWN_SIGHTS_VERTICAL_SENSITIVITY           =   100 /* * Right Stick Aim Down Sights Vertical Sensitivity  Default = 100  Put a number from 0 ~ 327
+ */ define SHOOT_DOWN_SIGHTS_HORIZONTAL_SENSITIVITY       =   100 /* * Shoot Down Sights Horizontal Defualt = 100 Put a number from 0 ~ 327
+ */ define SHOOT_DOWN_SIGHTS_VERTICAL_SENSITIVITY         =   100 /* * Shoot Down Sights Vertical Defualt = 100 Put a number from 0 ~ 327
+ */ define HORIZONTAL_SENSITIVITY                         =   100  /* * Right Stick Look Horizontal Sensitivity  Default = 100  Put a number from 0 ~ 327
+ */ define VERTICAL_SENSITIVITY                           =   100 /* * Right Stick Look Vertical Sensitivity  Default = 100  Put a number from 0 ~ 327
+                                                                                                  
+    Recoil settings                                                                                   
+ */ define RECOIL_CONTROL       = 100;       /* Adjust the value from 0 - 100 to tune vertical recoil control
+ */ define RECOIL_CONTROL_LEFT  =  4;   /* Adjust the value from 0 - 100 to tune recoil control from the left
+ */ define RECOIL_CONTROL_RIGHT =  4; /* Adjust the value from 0 - 100 to tune recoul control from the right
+ */ define AR_Release = 70;	  /* This were Antirecoil stops(for example you pull the stick up to 70 then the recoil stops)
+      
+     NEED HELP?? TWITTER: @zYaxxii 
+                 PSN: Yaxxii  
+/*  
+/*
+                                   INSTRUCTIONS:
+                            
+             IF PRESS LT/L2 + UP = RAPIDFIRE ON/OFF (RUMBLE NOTIFY)(COLORED GRENN/BLUE)
+             IF PRESS LT/L2 + SCOREBOARD = CROUCHSHOT ON/OFF (RUMBLE NOTIFY)(COLORED SKYBLUE/BLUE)
+             IF PRESS LT/L2 + DOWN  = STRAFE (RUMBLE NOTIFY)(COLORED PINK/BLUE)
+             IF PRESS LT/L2 + OPTIONS = AUTOLEAN BY MOVEMENT (RUMBLE NOTIFY)(BLINK WHITE)
+             IF PRESS A/CROSS + UP = ANTIRECOIL(RUMBLE NOTIFY)(COLOR WHITE)
+             IF PRESS A/CROSS + LB/L1 = SLOWWALK(RUMBLE NOTIFY)(BLINK PINK)
+             AUTOSCAN IS ON IF Y/TRIANGLE IS HELD FOR 1.5 SEC (BLINK YELLOW)
+             AUTO RELEASE FRAG NADE IS ALWAYS ON AND MADE FOR CLOSE EXPLOSIONS
+             HAIRTRIGGER CAN BE DISABLED IN SCRIPT
+             AUTONADE CAN BE DISABLED IN SCRIPT 
+             
+             NEED HELP? TWITTER: @zYaxxii
+                        PSN: Yaxxii
+
+
+*/
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+// Toggles
+int Recoil             = TRUE; //IF TRUE RECOIL IS ON BY DEFAULT IF FALSE OFF BY DEFAULT
+int slow_walk          = FALSE; // if True slow walk is on by default(this is mostlikely for Roaming quietly)
+int crouchshoot        = FALSE; // if TRUE Crouchshoot is ON by default - if FALSE, OFF by default 
+int rapid              = FALSE; // if TRUE Rapidfire is ON by default - if FALSE, OFF by default  
+int strafe             = FALSE; // if TRUE Strafe is ON by default - if FALSE, OFF by default  
+int scanActive         = TRUE; // TRUE/1 = holding Y for 1.5 seconds enables a loop for scanning constantly, disabled by exiting cam view | 
+int releaseFrag        = TRUE; // TRUE/1 = holding LB will release a nade before it explodes, allowing for a short-distance explosion (for soft destuction/kills) | 
+int hairTriggers       = TRUE; // TRUE/1 = the slightest touch of the triggers will have instant response ingame | 
+int swaptrigger        = FALSE; // TRUE/1 = RT/R2 & LT/L2 are flipped to RB/R1 & LB/R1 (vice versa) | FALSE/0 = normal triggers
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+// Settings for the Toggles
+int Speed = 11;      // change this value[DONT GO LOWER THAN 11] Higher is lower Rapidfire and lower is higher Rapidfire 
+int FST_CCH = 80;    //ammount of first crouch
+int SND_CCH = 60;   //ammount of second crouch
+int Strafe = 200 ; //How long to go LEFT & RIGHT ***Yaxxii Default == 200 ***
+int strafe_positive       = 70;                           //Where you Stop Strafe 
+int strafe_minus          =-70;                           // 
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// and some variables
+int rumble_tipe;                                                                          
+int recoil_control;          
+int recoil_control_left;    
+int recoil_control_right;  
+int flashActive;
+int autoScan;
+int qeSpam;
+
+int colourID;
+int bind;
+int flashColourID;
+int leanPos; // uses LEAN enum
+int first;	 // first direction to lean (LS/RS)
+int second;	 // second direction to lean (LS/RS)
+int autoLean;
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+define AUTOLEAN_AMOUNT = 10; // amount of movement in the left stick to start leaning
+define FRAG_COOK_TIME = 3600; // dont change
+define SCAN_TIME = 0x500; // dont change
+define LEAN_TIME = 0x5F; // dont change
+define LEAN_NONE = 0;
+define LEAN_LEFT = 0x1;
+define LEAN_RIGHT = 0x2;
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// Button Layout 
+define L2         = PS4_L2;             //L2
+define L1         = PS4_L1;        //L1
+define R2         = PS4_R2:        //R2
+define R1         = PS4_R1;        //R1
+define Y          = PS4_TRIANGLE;  //TRIANGLE
+define CROSS      = PS4_CROSS;     //CROSS
+define SQUARE     = PS4_SQUARE;    //SQUARE
+define L3         = PS4_L3;        //L3
+define R3         = PS4_R3;        //R3
+define RIGHT      = PS4_RIGHT;     //RIGHT
+define LEFT       = PS4_LEFT;      //LEFT
+define DOWN       = PS4_DOWN;      //DOWN
+define UP         = PS4_UP;        //UP
+define TOUCH      = PS4_TOUCH;     //TOUCHPAD
+define CROUCH     = PS4_CIRCLE;        //Circle
+define BACK       = PS4_CIRCLE;
+define OPTIONS    = PS4_OPTIONS;
+define RX         = PS4_RX;
+define RY         = PS4_RY;
+define L_Y        = 12;            // PS4_LY;       // XB1_LY;  // LS V AXIS =   12   //
+define L_X        = 11;            // PS4_LX;       // XB1_LX;  // LS H AXIS =   11   //
+define WALK       = PS4_LX || PS4_LY;
+define CIRCLE     = PS4_CIRCLE;
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// Color Indexes
+define OFF = 0x1;
+define BLUE = 0x2;
+define RED = 0x3;
+define GREEN = 0x4;
+define PINK = 0x5;
+define CYAN = 0x6;
+define YELLOW = 0x7;
+define WHITE = 0x8;
+
+data (1,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2,2,0,2,0,0,2,2,0,2,2,2,2);
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+data(1,                                                                                   
+  2,0,0,0, //1. Blue                                                                     
+  0,2,0,0, //2. Red                                                                      
+  0,0,2,0, //3. Lime/Green                                                               
+  0,0,0,2, //4. Fuchsia/Pink                                                             
+  2,0,2,0, //5. SkyBlue                                                                 
+  0,2,2,0, //6. Yellow                                                                  
+  2,2,2,2  //7. White                                                                   
+);  
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+//     INIT
+init{
+	first=0x8;second=0x5 }
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+main {
+
+//PRESS L2 +  R1 TO ACTIVATE RECOIL_CONTROL
+if(get(CROSS) && press(UP)){ bind = UP; combo_run(vibrate);  Recoil=!Recoil toggleLED(Recoil, WHITE, BLUE);}
+//RUN RECOIL_CONTROL
+if(Recoil && inADS() && inFire()){combo_run(Recoil_Control);}
+//STOP RECOIL_CONTROL
+if(Recoil && abs(get(10)) > AR_Release || abs(get(9)) > AR_Release){combo_stop(Recoil_Control)}                                                                   
+if(release(L2))combo_stop(Recoil_Control); 
+// Press X + L1 to TOggle Slowwalk
+if(get(CROSS) && press(L1)){bind=L1; combo_run(vibrate); slow_walk=!slow_walk;}
+//Run Slowwalk & Color Slowwalk
+if(slow_walk){combo_run(SLOW_WALK);flashColourID=PINK;flashActive=TRUE;combo_run(flash);}
+// Run FLASHLED
+if(slow_walk && flashActive){combo_run(flash);}
+//PRESS L2 + CROSS TO TOGGLE RAPIDFIRE
+if(inADS() && press(UP)){{bind= UP;} combo_run(vibrate); rapid=!rapid; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;} toggleLED(rapid, GREEN, RED);}
+if(rapid && get(4)){combo_run(RF);}
+// SPAM QE MECHANICS
+if(!inADS()){leanPos=LEAN_NONE;}
+if(inADS()){if(press(0x8) && (leanPos != LEAN_LEFT || leanPos == LEAN_NONE)){leanPos=LEAN_LEFT;first=0x5;second=0x8;}if(press(0x5) && (leanPos != LEAN_RIGHT || leanPos == LEAN_NONE)){leanPos=LEAN_RIGHT;first=0x8;second=0x5;}}
+if((press(0x8) && leanPos == LEAN_LEFT) || (press(0x5) && leanPos == LEAN_RIGHT)){leanPos=LEAN_NONE;}
+//PRESS L2 + SCOREBOARD TO TOGGLE CROUCHSHOOT
+if(inADS() && press(TOUCH)){ bind = TOUCH; combo_run(vibrate);  crouchshoot=!crouchshoot; toggleLED(crouchshoot, CYAN, BLUE);}
+//Run Chrouchshoot
+if(crouchshoot && inFire()){combo_run(CROUCHSHOOT);}
+//PRESS L2 + DOWN TO TOGGLE STRAFE 
+if(inADS() && press(DOWN)){ bind = DOWN; combo_run (vibrate); strafe=!strafe; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;}toggleLED(strafe, PINK, WHITE);} 
+//Run Strafe 
+if(strafe && inFire() && get(0x4)){ combo_run(Strafe);}
+// Stop Strafe while moving
+if((get(L_Y) <strafe_minus) || (get(L_Y) > strafe_positive) || (get(L_X) <strafe_minus) || (get(L_X) > strafe_positive)) {combo_stop(Strafe);}
+// HAIR TRIGGERS
+if(hairTriggers) hairTrigger();
+// GRENADE SCRIPT
+if(releaseFrag) releaseFrag();
+// HOLD Y Enable AutoScan
+if(scanActive){if(get(Y) && get_ptime(Y) >= SCAN_TIME){autoScan=TRUE;}} // hold Y to scan once to enable auto scanning
+// Run AutoScan
+if(autoScan){combo_run(autoScan);flashColourID=YELLOW;flashActive=TRUE;combo_run(flash);}
+// DOWN or B Disable AutoScan
+if(autoScan && (press(CROUCH) || press(Y) || press(DOWN))){combo_stop(autoScan);autoScan=FALSE;flashActive=FALSE;colourLED(BLUE);} 
+// Toggle Autolean by Movement 
+if(inADS() && press(OPTIONS)){bind = OPTIONS; autoLean=!autoLean; combo_run (vibrate);  if(autoLean){flashColourID=WHITE;flashActive=TRUE;}if(!autoLean){flashActive=FALSE;}}
+// Run FlashLED
+if(autoLean && flashActive){combo_run(flash);}
+if(autoLean){if(ifADS() && abs(get(11)) > AUTOLEAN_AMOUNT){if(get(11) < 0){if(!get(8)){set(8, 100);}}else{if(!get(5))set(5, 100);}}}
+// LT + BACK TOGGLE QeSpam
+if(inADS() && press(RIGHT)){ bind = RIGHT; combo_run(vibrate); qeSpam=!qeSpam; if(combo_running(flash)){combo_stop(flash);flashActive=FALSE;} toggleLED(qeSpam, YELLOW, BLUE);} 
+// Run QeSpam
+if(qeSpam && isADS() && get(0x4)){combo_run(qe);}
+// Disable QE if no longer ADS or not shooting
+if(combo_running(qe) && (!inADS() || release(0x4))){combo_stop(qe);}
+// Trigger Flip Check
+if(swaptrigger){swap(0x4, 0x3);swap(0x7, 0x6);}
+// Disable input for non-conflicting in-game binds
+if(bind){if(release(bind)){bind = 0;}else{unset(bind);}}
+
+
+sensitivity(PS4_RX, 55, HORIZONTAL_SENSITIVITY);
+sensitivity(PS4_RY, 55, VERTICAL_SENSITIVITY); }
+
+// COMBOS 
+combo autoScan{
+set(0x11, 0x64);
+wait(SCAN_TIME);
+unset(0x11);
+wait(0x1);
+unset(0x11);
+wait(0x1); }
+
+combo flash{
+set_ledx(-1, 0); // set LED state OFF
+wait(120);
+colourLED(flashColourID); // set LED state to specified ID
+wait(80);
+reset_leds(); }
+
+combo RF {
+upset(R2);
+wait(Speed);
+unset(R2);
+wait(Speed); }
+
+combo CROUCHSHOOT {
+upset(CROUCH);
+wait(FST_CCH);
+unset(CROUCH);
+wait(SND_CCH); }
+
+combo vibrate {                                      
+set_rumble(rumble_tipe, 100);
+wait(300);
+reset_rumble();     }
+
+combo Crouch_Spam {
+upset(CROUCH);
+wait(FST_CCH);
+unset(CROUCH);
+wait(SND_CCH);
+unset(CROUCH); }
+
+combo Strafe {
+set(11,40); //***Yaxxii Default == 100 INSTEAD OF 80 ***
+wait(Strafe);
+set(11,-40); //***Yaxxii Default ==100 INSTEAD OF 80 ***
+wait(Strafe); }
+
+combo LOW_SHOOT_SENS {
+   	sensitivity(PS4_RX, 55, SHOOT_DOWN_SIGHTS_HORIZONTAL_SENSITIVITY);
+	sensitivity(PS4_RY, 55, SHOOT_DOWN_SIGHTS_VERTICAL_SENSITIVITY);}
+    
+combo LOW_ADS_SENS { 
+  	sensitivity(PS4_RX, 55, AIM_DOWN_SIGHTS_HORIZONTAL_SENSITIVITY);
+	sensitivity(PS4_RY, 55, AIM_DOWN_SIGHTS_VERTICAL_SENSITIVITY);}
+
+
+combo SLOW_WALK{
+    sensitivity(11, NOT_USE, 100-(abs(get(11))/2));
+    sensitivity(12, NOT_USE, 100-(abs(get(12))/2));}
+
+
+combo qe{
+	set(first, 100);
+	wait(0x96);
+	unset(first);
+	wait(LEAN_TIME);
+	set_val(second, 100);
+	wait(0x96);
+	unset(second);
+	wait(LEAN_TIME);
+	set_val(first, 100);
+	wait(0x96);
+	unset(first);
+	wait(LEAN_TIME);
+	set_val(second, 100);
+	wait(0x96);
+	unset(second);     }
+
+//RECOIL CONTROL COMBO [Don't adjust values]
+combo Recoil_Control {
+recoil_control = get_val(10) + RECOIL_CONTROL;
+if(recoil_control > 100) recoil_control = 100;set_val(10, recoil_control);
+recoil_control_left = get_val(9) -RECOIL_CONTROL_LEFT;
+if(recoil_control_left > 100) recoil_control_left = 100;set_val(9, recoil_control_left);
+recoil_control_right = get_val(9) +RECOIL_CONTROL_RIGHT;
+if(recoil_control_right > 100) recoil_control_right = 100;set_val(9, recoil_control_right); }
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// Functions
+function hairTrigger(){
+if(get(0x7)){set(0x7, 0x64);}
+if(get(0x4)){set(0x4, 0x64);}
+if(get_val(PS4_R3)) set_val(PS4_R3, 0x64);
+if(get_val(PS4_CIRCLE)) set_val(PS4_CIRCLE, 0x64);
+if(get_val(PS4_L1)) set_val(PS4_L1, 0x64);
+if(get_val(PS4_TRIANGLE)) set_val(PS4_TRIANGLE, 0x64);
+if(get_val(PS4_CIRCLE)) set_val(PS4_CIRCLE, 0x64);}
+
+function releaseFrag(){ 
+if(get(0x6) && get_ptime(0x6) >= FRAG_COOK_TIME){
+unset(0x6);}}
+
+function isADS(){
+return	get(0x7) == 0x64 && get_ptime(0x7) >= 30;}
+
+function inADS(){ 
+return get(0x7) == 0x64 && get_ptime(0x7) >= 30; }
+
+function inFire(){ 
+return get(0x4) == 0x64 && get_ptime(0x4) >= 30; }
+
+function ifADS() {
+return get(0x7) == 0x64 && get_ptime(0x7) >= 50;}
+
+
+
+function upset(id){set_val(id, 100);} 
+
+function set(id,val){set_val(id,val);} 
+
+function unset(id){set_val(id, 0);} 
+
+function get(id){return get_val(id);} 
+
+function press(id){return event_press(id);} 
+
+function release(id){return event_release(id);}
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------
+// COLOR LED function                                
+
+function colourLED(int colour){
+colourID = (colour*4) - 3;
+reset_leds();
+set_led(0, dbyte(colourID));
+set_led(1, dbyte(colourID + 1));
+set_led(2, dbyte(colourID + 2));
+set_led(3, dbyte(colourID + 3)); }
+
+
+function toggleLED(int event, int onC, int offC){
+if(event){colourLED(onC);return;}
+colourLED(offC);return; }
+//END 

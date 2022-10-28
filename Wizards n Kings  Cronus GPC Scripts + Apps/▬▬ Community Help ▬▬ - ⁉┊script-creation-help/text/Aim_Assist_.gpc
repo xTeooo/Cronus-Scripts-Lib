@@ -1,0 +1,106 @@
+//Aim Assist V3 (Linear + Exponential)
+int AimAssist_LinearExpo = 21; 
+int NegativeAimAssist_LinearExpo = -21;
+int Delay = 21; 
+int Release = 22; // -> This should always be +1 more than Aim Assist values
+
+
+
+//LED
+int a; 
+//Layout
+define FIRE_BTN = 4;    //XB1_RB //PS4_R2
+define ADS_BTN = 7;     //XB1_LB //ADS_BTN
+define CROUCH_BTN = 5;  //XB1_RS //PS4_R3
+define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE
+define SPRINT_BTN = 8;  //XB1_LS //PS4_L3
+define JUMP_BTN = 19;   //XB1_A  //PS4_CROSS
+define NEXT_PIECE = 3;  //XB1_RT //PS4_R1
+define RIGHT_BUMP = 3;  // XB1_RB //PS4_R1
+define LEFT_BUMP = 6;   //ADS_BTN //PS4_L1
+define SWAP_BTN = 17;   //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18;  //XB1_B  //PS4_CIRCLE
+define R_X = 9;         //XB1_R_X //PS4_R_X
+define R_Y = 10;        //XB1_R_Y //PS4_R_Y
+define L_X = 11;        //XB1_L_X //PS4_L_X
+define L_Y = 12;        //XB1_L_Y //PS4_L_Y
+define UP = 13;         //XB1_UP //PS4_UP
+define DOWN = 14;       //XB1_DOWN //PS4_DOWN
+define LEFT = 15;       //XB1_LEFT //PS4_LEFT
+define RIGHT = 16;      //XB1_RIGHT //PS4_RIGHT
+
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟐 - 𝐌𝐀𝐈𝐍 𝐁𝐋𝐎𝐂𝐊
+																													
+																													
+																													
+main{
+
+//Aim Assist V3
+if(get_val(ADS_BTN)) combo_run(AS);
+if(get_val(FIRE_BTN)) combo_run(AS2);
+
+}
+
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟑 - 𝐂𝐎𝐌𝐁𝐎𝐒
+
+combo AS { 
+set_val(10,a_f(10,AimAssist_LinearExpo));
+wait(Delay)
+set_val(9,a_f(9,AimAssist_LinearExpo));
+wait(Delay)
+set_val(10,a_f(10,NegativeAimAssist_LinearExpo));
+wait(Delay)
+set_val(9,a_f(9,NegativeAimAssist_LinearExpo));
+wait(Delay)}
+																		
+																												
+combo AS2 { 
+set_val(10,a_f(10,AimAssist_LinearExpo));
+wait(Delay)
+set_val(9,a_f(9,AimAssist_LinearExpo));
+wait(Delay)
+set_val(10,a_f(10,NegativeAimAssist_LinearExpo));
+wait(Delay)
+set_val(9,a_f(9,NegativeAimAssist_LinearExpo));
+wait(Delay)}
+ 
+ 
+function a_f(p,m) {
+if(abs(get_val(p)) < Release)
+return m;
+return get_val(p);}
+
+												
+
+combo Notify {
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);									
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+}

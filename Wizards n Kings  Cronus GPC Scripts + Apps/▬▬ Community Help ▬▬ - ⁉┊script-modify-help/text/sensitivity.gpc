@@ -1,0 +1,151 @@
+
+
+
+			
+define Build         = PS4_CIRCLE; 
+define Pickaxe       = PS4_TRIANGLE;
+define Fire          = PS4_R2;			
+define Ads           = PS4_L2; 	
+define L1 			 = PS4_L1;
+define L2 			 = PS4_L2;	
+define R1 			 = PS4_R1;
+define R2  			 = PS4_R2;
+define Trap          = PS4_SQUARE; 	
+define AimX    		 = PS4_RX;
+define AimY  		 = PS4_RY;
+define On            = TRUE;
+define Off      	 = FALSE;
+
+
+
+int Sensitivity    	= TRUE;  	// General/Fire Conditions-Sensitivity Control-
+int GeneralSens    	= 100;  	// General Sensitivity ( While Not Holding Ads Or Fire )
+int AdsSens        	= 100;  	// Ads Sensitivity ( While Holding Only Ads )
+int FireSens       	= 50;  		// Fire Sensitivity ( While Holding Only Fire )
+int AdsFireSens    	= 100;  	// Ads + Fire Sensitivity ( While Holding Ads + Fire )
+//int	PickAxeSens		= 100;
+
+
+int BuildTracker    = TRUE;
+int BuildSyncTime 	= 1000;
+int BuildTrack,BuildCount;
+
+
+
+
+main {
+
+
+	if(BuildTracker) 
+  
+  	{
+  		if(event_press(Build)) 
+  	
+		{
+  	
+  			BuildTrack = !BuildTrack;
+  
+  		}
+  
+  			if(BuildTrack) 
+  
+			{ 
+  
+  				BuildCount += get_rtime();
+  			
+  			}
+  			
+  			  	if(event_press(Pickaxe) || BuildCount == BuildSyncTime) 
+  			  	
+  			  	{ 
+  			  	
+  			  		BuildTrack = Off; 
+  			  		BuildCount = 0;
+  			  	
+  			  	}
+  		
+				if(get_ival(PS4_L1) || get_ival(PS4_L2) || get_ival(PS4_R1) || get_ival(PS4_R2) || get_ival(PS4_SQUARE)) 
+			
+				{
+			
+					BuildCount = 0;
+  			
+  				}
+  			
+  			if (!BuildTrack) 
+ 			
+ 			{ 
+
+				if (Sensitivity && !BuildTrack) 
+
+				{	
+					
+										
+					if (get_ival(Ads)) 
+					
+					{
+					        	
+        				sensitivity(AimX,NOT_USE,AdsSens);
+        				sensitivity(AimY,NOT_USE,AdsSens); 
+        	
+    				}
+    			
+    	        	else if (get_ival(Fire) && !get_ival(Ads))
+    	
+   					{        
+    		
+    					sensitivity(AimX,NOT_USE,FireSens);
+   						sensitivity(AimY,NOT_USE,FireSens);
+			
+					}
+		
+					else if (get_ival(Ads) && get_ival(Fire)) 
+		
+					{
+        	
+        				sensitivity(AimX,NOT_USE,AdsFireSens);
+        				sensitivity(AimY,NOT_USE,AdsFireSens);
+        		
+    				}
+    				
+/*    				else if (!event_press (Pickaxe) && !get_ival(Fire) && !get_ival(Ads))
+					
+					{	sensitivity(AimX,NOT_USE,PickaxeSens);
+        				sensitivity(AimY,NOT_USE,PickaxeSens);
+        				
+        			}	
+*/    	
+    				else
+    	
+    				{
+    		
+    					sensitivity(AimX,NOT_USE,GeneralSens);
+   						sensitivity(AimY,NOT_USE,GeneralSens);}}				
+				
+/*
+	
+			if (event_press (Pickaxe)) {
+   	
+ 				Sensitivity = !Sensitivity;}
+	
+				if	(event_press (Pickaxe) && Sensitivity && !BuildTrack && !Sensitivity){
+			
+					sensitivity(AimX,NOT_USE,PickAxeSens);
+        			sensitivity(AimY,NOT_USE,PickAxeSens);}  	
+*/        	
+
+  
+			}
+			
+		}
+		
+	}
+			
+				
+		
+			
+	
+				
+			
+
+	

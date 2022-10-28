@@ -1,0 +1,71 @@
+                                            
+                                                     
+//--------------------------------------             
+// use the name of the color                         
+define Blue          =  1;                           
+define Red           =  2;                           
+define Green         =  3;                           
+define Pink          =  4;                           
+define SkyBlue       =  5;                           
+define Yellow        =  6;                           
+define White         =  7;                           
+                                                     
+data(1,// begin of data segment--------              
+  2,0,0,0, //1. Blue                                 
+  0,2,0,0, //2. Red                                  
+  0,0,2,0, //3. Green                                
+  0,0,0,2, //4. Pink                                 
+  2,0,2,0, //5. SkyBlue                              
+  0,2,2,0, //6. Yellow                               
+  2,2,2,2  //7. White                                
+); // end of data segment--------------              
+                                                     
+///////////////////////////////////////              
+// variables                                         
+int Col_ind;                                         
+int auto_run_onoff;
+                                                     
+main {//---------------------------------            
+                                                     
+   ////////////////////////////////                  
+   // LED color indication                           
+   if(auto_run_onoff)  colourled(Green);    // ON             
+   else       colourled(Blue);// OFF              
+ if(get_ival(XB1_B)){
+        if(event_press(XB1_UP)) auto_run_onoff = !auto_run_onoff;
+        set_vibrate(auto_run_onoff);
+    }
+    if(auto_run_onoff){
+        if(abs(get_ival(PS4_LX))>20 || abs(get_ival(PS4_LY))>20){
+            set_val(XB1_RT,100);
+        }
+    }
+
+                                                     
+}//-----------------------------------------         
+                                                     
+//  COMBO BLOCKS                                     
+//--------------------------------------------------------------
+int vibrate_type;
+function set_vibrate( f_var){
+    if(f_var)vibrate_type = RUMBLE_A;
+    else vibrate_type = RUMBLE_B;
+    combo_run(NOTIFY);
+}
+combo NOTIFY {
+    set_rumble(vibrate_type,100);
+    wait(300);
+    reset_rumble();
+    wait(100);
+}
+                                                     
+// COLOR LED function                                
+//--------------------------------------------------------------
+function colourled(Colour) {                         
+	Col_ind=(Colour*4)- 3;                              
+	set_led(LED_1,dbyte(Col_ind  ));                    
+	set_led(LED_2,dbyte(Col_ind+ 1));                   
+	set_led(LED_3,dbyte(Col_ind+ 2));                   
+	set_led(LED_4,dbyte(Col_ind+ 3));                   
+}                                                    
+                                                     

@@ -1,0 +1,328 @@
+
+/*
+v 1.10
+Hello everyone.  This script should be able to counter square/axial deadzones,
+add circular deadzones, allow control over the response curve and skip over or
+add regions of restricted diagonal movement around the axes.
+
+There is a small bug with the angular movement.  Angles right around the axes
+will wobble in the mirrored direction around the axis.
+Edit: Now FIXED, by Discord moderator ME.
+Additional huge CPU load reduction by mimicking code by ME.
+
+Hope it's useful for players. :D
+
+INITIAL NOTES
+Use decimals for the deadzone values(20% = 0.2) and the axial restrict and use
+positive numbers for the angularAnti(20 degrees = 20.0).
+
+Circular anti-deadzone values are relative to the remaining range of the square
+anti-deadzones when both are used together.  For example, if antiCircle and
+antiSquare are both set to 0.50, you'll get an antideadzone of 0.75.
+
+Uncap values is disabled by default to avoid acceleration ranges.  This will
+cause issues with movement in the diagonals if any square deadzones are left
+uncountered. Either make sure to counter them, or set this value to TRUE.
+
+This graph link shows how some of the the values function with some sample ranges
+if the descriptions aren't clear enough. 
+https://www.desmos.com/calculator/1twwnifmmg
+Please refer to the documentation page for more detailed descriptions, examples
+and recommended value ranges.
+*/
+	//CHANGE BELOW VALUES
+
+	//RIGHT STICK SETTINGS
+	fix32 deadzone                =  0.00;    //Enter value of desired circular deadzone.
+	fix32 antiCircularDeadzone    =  0.26;    //Enter value of the game's circular deadzone.  Common sizes are 0.2 to 0.25.
+	fix32 antiEllipseYScale       =  0.00;    //Only change if deadzone is ellipical.  When changed, antiCircleDeadzone will control width and this the height.
+	fix32 antiSquareDeadzone      =  0.00;    //Enter value of the game's square/axial deadzone.  Common sizes are 0.2 to 0.25.
+	fix32 antiRectangleYScale     =  0.00;    //Only change if deadzone is rectangular.  When changed, antiSquareDeadzone will control the width and this the height.
+	fix32 outerDeadzoneIn         =  1.00;	  //Only useful if user's stick is unable to reach certain magnitudes.  1.00 is ideal normnally.
+	fix32 outerDeadzoneOut        =  1.00;    //Enter value of the maximum range you want to limit stick output. Do not use values over 1.
+	fix32 degree                  =  1.00;    //Enter value of the game's curve to cancel it into a linear curve.  Larger values result in faster starting movement.
+	fix32 axialRestrict           =  0.00;    //Restrict diagonal movement based on distance from the axis.
+	fix32 angularRestrict         =  0.00;    //Restrict diagonal movement around axis based on angle.
+	fix32 angularAnti             =  0.00;    //Use to counter reticted diagonal movement around the axes based on angle.
+	fix32 diagonalScaleMin        =  1.00;	  //Use to warp lower magnitude diagonal values.
+	fix32 diagonalScaleMax        =  1.00;    //Use to warp higher magnitude diagonal values.
+	bool  uncapValues             =  FALSE;	  //Choose if to uncap values beyond the outerDeadzone.
+
+	int8 useAlternate             =  50;      //Choose to use alternate settings when a button is held down.
+	int8 useAlternate2			  =  50;	  //Please use values of ~42-60 to ignore buttons, or replace value of the button you'd
+											  //like to use to switch to the alternate values below.  The button values can be
+											  //found in the leftmost column from Help > GPC Input Reference or by pressing F1.
+	//RIGHT STICK ALTERNATE SETTINGS
+	fix32 deadzoneA               =  0.00;
+	fix32 antiCircularDeadzoneA   =  0.00;
+	fix32 antiEllipseYScaleA      =  0.00;
+	fix32 antiSquareDeadzoneA     =  0.00;
+	fix32 antiRectangleYScaleA    =  0.00;
+	fix32 outerDeadzoneInA        =  1.00;
+	fix32 outerDeadzoneOutA       =  1.00; 
+	fix32 degreeA                 =  1.00;
+	fix32 axialRestrictA          =  0.00;
+	fix32 angularRestrictA        =  0.00;
+	fix32 angularAntiA            =  0.00;
+	fix32 diagonalScaleMinA       =  1.00;
+	fix32 diagonalScaleMaxA       =  1.00;
+	bool  uncapValuesA            =  FALSE;
+	
+	//RIGHT STICK ALTERNATE 2 SETTINGS
+	fix32 deadzoneA2              =  0.00;
+	fix32 antiCircularDeadzoneA2  =  0.00;
+	fix32 antiEllipseYScaleA2     =  0.00;
+	fix32 antiSquareDeadzoneA2    =  0.00;
+	fix32 antiRectangleYScaleA2   =  0.00;
+	fix32 outerDeadzoneInA2       =  1.00;
+	fix32 outerDeadzoneOutA2      =  1.00; 
+	fix32 degreeA2                =  1.00;
+	fix32 axialRestrictA2         =  0.00;
+	fix32 angularRestrictA2       =  0.00;
+	fix32 angularAntiA2           =  0.00;
+	fix32 diagonalScaleMinA2      =  1.00;
+	fix32 diagonalScaleMaxA2      =  1.00;
+	bool  uncapValuesA2           =  FALSE;
+
+	/*------------------------------------------------------------*/
+
+	//LEFT STICK SETTINGS
+	fix32 deadzoneL               =  0.27;    //Enter value of desired circular deadzone.
+	fix32 antiCircularDeadzoneL   =  0.00;    //Enter value of the game's circular deadzone.  Common sizes are 0.2 to 0.25.
+	fix32 antiEllipseYScaleL      =  0.00;    //Only change if deadzone is ellipical.  When changed, antiCircleDeadzone will control width and this the height.
+	fix32 antiSquareDeadzoneL     =  0.00;    //Enter value of the game's square/axial deadzone.  Common sizes are 0.2 to 0.25.
+	fix32 antiRectangleYScaleL    =  0.00;    //Only change if deadzone is rectangular.  When changed, antiSquareDeadzone will control the width and this the height.
+	fix32 outerDeadzoneInL        =  1.00;	  //Only useful if user's stick is unable to reach certain magnitudes.  1.00 is ideal normnally.
+	fix32 outerDeadzoneOutL       =  1.00;    //Enter value of the maximum range you want to limit stick input. Do not use values over 1.
+	fix32 degreeL                 =  1.00;    //Enter value of the game's curve to cancel it into a linear curve.  Larger values result in faster starting movement.
+	fix32 axialRestrictL          =  0.00;    //Restrict diagonal movement based on distance from the axis.
+	fix32 angularRestrictL        =  0.00;    //Restrict diagonal movement around axis based on angle.	
+	fix32 angularAntiL            =  0.00;    //Use to counter reticted diagonal movement around the axes based on angle.
+	fix32 diagonalScaleMinL       =  1.00;    //Use to warp lower magnitude diagonal values.
+	fix32 diagonalScaleMaxL       =  1.00;    //Use to warp higher magnitude diagonal values.
+	bool  uncapValuesL            =  FALSE;	  //Choose if to uncap values beyond the outerDeadzone.
+
+	int8 useAlternateL            =  50;      //Choose to use alternate settings when a button is held down.
+	int8 useAlternateL2           =  50;	  //Please use values of ~42-60 to ignore buttons, or replace value of the button you'd
+											  //like to use to switch to the alternate values below.  The button values can be
+											  //found in the leftmost column from Help > GPC Input Reference or by pressing F1.
+	//LEFT STICK ALTERNATE SETTINGS
+	fix32 deadzoneLA              =  0.00;
+	fix32 antiCircularDeadzoneLA  =  0.00;
+	fix32 antiEllipseYScaleLA     =  0.00;
+	fix32 antiSquareDeadzoneLA    =  0.00;
+	fix32 antiRectangleYScaleLA   =  0.00;
+	fix32 outerDeadzoneInLA       =  1.00;
+	fix32 outerDeadzoneOutLA      =  1.00; 
+	fix32 degreeLA                =  1.00;
+	fix32 axialRestrictLA         =  0.00;
+	fix32 angularRestrictLA       =  0.00;
+	fix32 angularAntiLA           =  0.00; 
+	fix32 diagonalScaleMinLA      =  1.00;
+	fix32 diagonalScaleMaxLA      =  1.00;
+	bool  uncapValuesLA           =  FALSE;
+	
+	//LEFT STICK ALTERNATE 2 SETTINGS
+	fix32 deadzoneLA2             =  0.00;
+	fix32 antiCircularDeadzoneLA2 =  0.00;
+	fix32 antiEllipseYScaleLA2    =  0.00;
+	fix32 antiSquareDeadzoneLA2   =  0.00;
+	fix32 antiRectangleYScaleLA2  =  0.00;
+	fix32 outerDeadzoneInLA2      =  1.00;
+	fix32 outerDeadzoneOutLA2     =  1.00; 
+	fix32 degreeLA2               =  1.00;
+	fix32 axialRestrictLA2        =  0.00;
+	fix32 angularRestrictLA2      =  0.00;
+	fix32 angularAntiLA2          =  0.00; 
+	fix32 diagonalScaleMinLA2     =  1.00;
+	fix32 diagonalScaleMaxLA2     =  1.00;
+	bool  uncapValuesLA2          =  FALSE;
+	
+	
+fix32 stickRX, stickRY;
+fix32 stickLX, stickLY;	
+	
+main {
+
+	//Apply right stick settings
+	static fix32 prevRX, prevRY;      //Magic CPU reduction variables by ME.
+	fix32 currRX = get_val(STICK_1_X);
+	fix32 currRY = get_val(STICK_1_Y);
+	
+	if(prevRX != currRX || prevRY != currRY){
+		if(get_val(useAlternate) > 0.00){
+			applyStick(deadzoneA, antiCircularDeadzoneA, antiEllipseYScaleA, antiSquareDeadzoneA, antiRectangleYScaleA, outerDeadzoneInA, outerDeadzoneOutA,  degreeA, axialRestrictA, angularRestrictA, angularAntiA, diagonalScaleMinA, diagonalScaleMaxA, uncapValuesA,  1);
+		}
+		else if(get_val(useAlternate2) > 0.00){
+			applyStick(deadzoneA2, antiCircularDeadzoneA2, antiEllipseYScaleA2, antiSquareDeadzoneA2, antiRectangleYScaleA2, outerDeadzoneInA2, outerDeadzoneOutA2,  degreeA2, axialRestrictA2, angularRestrictA2, angularAntiA2, diagonalScaleMinA2, diagonalScaleMaxA2, uncapValuesA2,  1);
+
+		}
+		else{
+			applyStick(deadzone, antiCircularDeadzone, antiEllipseYScale, antiSquareDeadzone, antiRectangleYScale, outerDeadzoneIn, outerDeadzoneOut,  degree, axialRestrict, angularRestrict, angularAnti, diagonalScaleMin, diagonalScaleMax, uncapValues,  1);
+		}
+		
+		prevRX = currRX;
+		prevRY = currRY;
+	}
+	
+	set_val(STICK_1_X, stickRX);
+	set_val(STICK_1_Y, stickRY);
+	
+	//Apply left stick settings
+	static fix32 prevLX, prevLY;      //Magic CPU reduction variables by ME.
+	fix32 currLX = get_val(STICK_2_X);
+	fix32 currLY = get_val(STICK_2_Y);
+	
+	if(prevLX != currLX || prevLY != currLY){	
+		if(get_val(useAlternateL) > 0.00){
+			applyStick(deadzoneLA, antiCircularDeadzoneLA, antiEllipseYScaleLA, antiSquareDeadzoneLA, antiRectangleYScaleLA,outerDeadzoneInLA, outerDeadzoneOutLA, degreeLA, axialRestrictLA, angularRestrictLA, angularAntiLA, diagonalScaleMinLA, diagonalScaleMaxLA, uncapValuesLA, 2);
+		}
+		else if(get_val(useAlternateL2) > 0.00){
+			applyStick(deadzoneLA2, antiCircularDeadzoneLA2, antiEllipseYScaleLA2, antiSquareDeadzoneLA2, antiRectangleYScaleLA2,outerDeadzoneInLA2, outerDeadzoneOutLA2, degreeLA2, axialRestrictLA2, angularRestrictLA2, angularAntiLA2, diagonalScaleMinLA2, diagonalScaleMaxLA2, uncapValuesLA2, 2);
+		}
+		else{
+			applyStick(deadzoneL, antiCircularDeadzoneL, antiEllipseYScaleL, antiSquareDeadzoneL, antiRectangleYScaleL,outerDeadzoneInL, outerDeadzoneOutL, degreeL, axialRestrictL, angularRestrictL, angularAntiL, diagonalScaleMinL, diagonalScaleMaxL, uncapValuesL, 2);
+		}
+		
+		prevLX = currLX;
+		prevLY = currLY;		//fixed typo(prevLX = currLY) replicating ME.'s code.  Caught by Kevin M.
+	}
+	
+	set_val(STICK_2_X, stickLX);
+	set_val(STICK_2_Y, stickLY);
+}
+
+void applyStick(fix32 dead, fix32 antiCDead, fix32 antiEScale, fix32 antiSDead, fix32 antiRScale, fix32 outerDeadIn, fix32 outerDeadOut, fix32 deg, fix32 axisRestrict, fix32 angleRestrict, fix32 angular, fix32 dScaleMin, fix32 dScaleMax, bool uncap, int8 stick){
+
+	fix32 x;
+	fix32 y;
+	if(stick == 1){
+		x               = get_val(STICK_1_X)/100.0;
+		y               = get_val(STICK_1_Y)/100.0;
+	}
+	else{
+		x               = get_val(STICK_2_X)/100.0;
+		y               = get_val(STICK_2_Y)/100.0;
+	}
+	
+	fix32 rAngle = rad2deg(abs(atan(y/x)));
+	if(abs(x) < 0.0001){rAngle = 90.0;}
+
+	//Setting up axial angle deadzone values
+	fix32 axialX, axialY;
+	if(abs(x) <= axisRestrict && rAngle > 45.0){axialX = 0.0;}
+	else{ axialX = (abs(x) - axisRestrict)/(1.0 - axisRestrict); }
+	
+	if(abs(y) <= axisRestrict && rAngle <= 45.0){axialY = 0.0;}
+	else{ axialY = (abs(y) - axisRestrict)/(1.0 - axisRestrict); }
+	
+	fix32 inputMagnitude  = sqrt(x*x + y*y);
+	fix32 outputMagnitude;
+	fix32 angle           = rad2deg(abs(atan(axialY/axialX)));
+	if(abs(axialX) < 0.0001){angle = 90.0;}               //avoids angle change with Atan by avoiding dividing by 0
+
+    //Checks if rectangular deadone is used.
+	if(antiRScale == 0.00){ antiRScale = antiSDead; }
+	
+	//Ellipse warping
+	if(antiEScale > 0.00 && antiCDead > 0.00){
+		antiEScale = antiEScale/antiCDead;                         
+		fix32 ellipseAngle = atan((1.0/antiEScale)*tan(deg2rad(rAngle)));  //Find scaled ellipse angle
+		if(ellipseAngle < 0.0){ellipseAngle = 1.570796;}                   //Capping range to avoid negative rollover
+		fix32 ellipseX = cos(ellipseAngle);                                //use cos to find horizontal alligned value
+		fix32 ellipseY = sqrt( sq(antiEScale)*(1.0 - sq(ellipseX)) );      //use ellipse to find vertical value
+		antiCDead = antiCDead*sqrt( sq(ellipseX) + sq(ellipseY));          //Find magnitude to scale antiCircleDeadzone
+	}
+	
+	//Resizes circular antideadzone to output expected value(counters shrinkage when scaling for the square antideadzone below).
+	antiCDead =   antiCDead/( (antiCDead*(1.0 - antiSDead/outerDeadOut) )/( antiCDead*(1.0 - antiSDead) ) );
+
+	//Angular Restriction
+	if(abs(x) > axisRestrict && abs(y) > axisRestrict){
+		if((angle > 0.0) && (angle < angleRestrict/2.0)){angle = 0.00;}
+		if(angle > 90.0 - angleRestrict/2.0 && angle < 90.0){angle = 90.0;}
+		if((angle > angleRestrict/2.0) && (angle < (90.0 - angleRestrict/2.0))){
+			angle = ((angle - angleRestrict/2.0)*(90.0))/((90.0 - angleRestrict/2.0) - angleRestrict/2.0);
+		}
+	}
+	fix32 refAngle = angle;
+	if(refAngle < 0.001){refAngle = 0.0;}
+	
+	//Diagonal ScalePrep
+	fix32 diagonal = angle;
+	if(diagonal > 45.0){
+		diagonal = (((diagonal - 45.0)*(-45.0))/(45.0)) + 45.0;
+	}
+	
+	//Angular Restriction Countering
+	if(angle < 90.0 && angle > 0.0){
+		angle = ((angle - 0.0)*((90.0 - (angular/2.0)) - (angular/2.0)))/(90.0) + (angular/2.0);
+	}
+	
+	//Flipping angles back to correct quadrant
+	if(axialX < 0.0 && axialY > 0.0){angle = -angle;}
+	if(axialX > 0.0 && axialY < 0.0){angle = angle - 180.0;}
+	if(axialX < 0.0 && axialY < 0.0){angle = angle + 180.0;}
+	
+	//~~~~~~~~~~Deadzone wrap~~~~~~~~~~~~~~~~~~//
+	if(inputMagnitude > dead){
+		outputMagnitude = (inputMagnitude - dead)/(outerDeadIn - dead);
+
+		//Circular antideadzone scaling
+		outputMagnitude = ((pow(outputMagnitude, (1.0/deg))*(outerDeadOut - antiCDead) + antiCDead));		
+		
+		//Capping max range
+		if(outputMagnitude > outerDeadOut && !uncap){
+			outputMagnitude = outerDeadOut;
+		}	
+		
+		//Diagonal Scale
+		fix32 dScale = (((outputMagnitude - antiCDead)*(dScaleMax - dScaleMin))/(outerDeadOut - antiCDead)) + dScaleMin;		
+		fix32 cScale = (((diagonal - 0.0)*(1.0/sqrt(2.0)))/(45.0));            //Both these lines scale the intensity of the warping
+		cScale       = 1.0 - sqrt(1.0 - cScale*cScale);                        //based on a circular curve to the perfect diagonal
+		dScale       = (((cScale - 0.0)*(dScale - 1.0))/(.29289)) + 1.0;
+
+		outputMagnitude = outputMagnitude*dScale;
+
+		//Scaling values for square antideadzone
+		fix32 newX = cos(deg2rad(angle))*outputMagnitude;
+		fix32 newY = sin(deg2rad(angle))*outputMagnitude;
+		
+		//Magic angle wobble fix by user ME.
+		if (angle > 45.0 && angle < 225.0) {
+			newX = inv(sin(deg2rad(angle - 90.0)))*outputMagnitude;
+			newY = inv(cos(deg2rad(angle - 270.0)))*outputMagnitude;
+		}
+		
+		//Square antideadzone scaling
+		fix32 outputX = abs(newX)*(1.0 - antiSDead/outerDeadOut) + antiSDead;
+		if(x < 0.0){outputX = outputX*(-1.0);}
+		if(refAngle == 90.0){outputX = 0.0;}
+		
+		fix32 outputY = abs(newY)*(1.0 - antiRScale/outerDeadOut) + antiRScale;
+		if(y < -0.0){outputY = outputY*(-1.0);}
+		if(refAngle == 0.0){outputY = 0.0;}
+		
+		//Output
+		if(stick == 1){
+			stickRX = clamp(outputX*100.0, -outerDeadOut*100.0, outerDeadOut*100.0);
+			stickRY = clamp(outputY*100.0, -outerDeadOut*100.0, outerDeadOut*100.0);
+		}
+		else{
+			stickLX = clamp(outputX*100.0, -outerDeadOut*100.0, outerDeadOut*100.0);
+			stickLY = clamp(outputY*100.0, -outerDeadOut*100.0, outerDeadOut*100.0);
+		}
+	}
+	
+	else{
+		if(stick == 1){
+			stickRX = 0.0;
+			stickRY = 0.0;
+		}
+		else{
+			stickLX = 0.0;
+			stickLY = 0.0;
+		}					
+	}
+
+}

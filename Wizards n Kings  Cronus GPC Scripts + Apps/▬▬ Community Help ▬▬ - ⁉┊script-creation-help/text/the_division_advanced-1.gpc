@@ -1,0 +1,527 @@
+// GPC Online Library
+// the_division_advanced.gpc
+
+/*******************************************************************************
+*                                                                              *                                    
+*   Advanced script for The Division                                           *
+*   This script will allow for the following functions to be performed:        *
+*   Rapid Fire, Anti-Recoil, Auto Sprint, Auto Slide Down Ladders,             *
+*   Auto Aim Assist Through Strafing, Auto Scope In, Auto Mark Targets,        *
+*   and an On / Off functionality.                                             *
+*                                                                              *
+*   This script should hopefully work for both Playstation and X-Box Users     *
+*   As I do not have an X-Box please let me know if there are any changes      *
+*   necesary to make it work on both platforms.                                *
+*                                                                              *
+*   Many thanks to bonefisher for the initial The Division script, most of     *
+*   this functionality has come from his script and modified to allow in       *
+*   game changing of values as well as persistence.  Values will be held and   *
+*   re-used the next time the script is loaded.                                *
+*                                                                              *  
+*   The initial script from bonefisher can be found at:                        *
+*   http://www.consoletuner.com/gpclib/?s=1112                                 *
+*   The updated script from bonefisher can be found at:                        *
+*   http://www.consoletuner.com/gpclib/?s=1129                                 *
+*                                                                              *
+*******************************************************************************/
+
+/*******************************************************************************
+*                                                                              *
+*   Script Updates:                                                            *
+*                                                                              *
+*   Special Rapid Fire for Handguns. (Completely borrowed from bonefisher!)    *
+*   Updated to stop from equiping grenade accidentaly while adjusting rate of  *
+*   fire, adjusting ant-recoil, and enabling rapid fire.                       *
+*   Added a quick climb option for auto run.                                   *
+*   Changed how anti-recoil works, hopefully improved functionality.           *
+*                                                                              *
+*******************************************************************************/   
+
+/*******************************************************************************
+*        Quick Reference Table:                                                *
+*                                                                              * 
+*        Rapid Fire        PS: L2 + D-Pad Left  X-Box: LT + D-Pad Left         *
+*        Auto Sprint       PS: L2 + L3          X-Box: LT + LS                 *
+*        Fast Handgun      PS: L2 + Square      X-Box: LT + X                  *
+*        Auto Scope        PS: L2 + Circle      X-Box: LT + B                  *  
+*        Auto Mark Target  PS: L2 + D-Pad Up    X-Box: LT + D-Pad Up           *
+*        Aim Assist Strafe PS: L2 + X (Cross)   X-Box: LT + A                  *
+*        Anti-Recoil       PS: L2 + D-Pad Down  X-Box: LT + D-Pad Down         *  
+*        Script Toggle     PS: R3 (Half Second) X-Box: RS (Half Second)        *
+*        Auto Climb        PS: L2 + D-Pad Right X-Box: LT + D-Pad Right        *
+*        Pistol Rapid Fire PS: L2 + Triangle    X-Box: LT + Y                  *
+*******************************************************************************/
+
+int Mods, ModFlags;
+int ToggleScriptTime;
+int anti_recoil, anti_recoil_left, anti_recoil_right;
+int ANTI_RECOIL_LEFT, ANTI_RECOIL_RIGHT, ANTI_RECOIL_VERTICLE;
+int FastHandgunTime;
+int HoldTime, RateOfFire;
+
+init {
+    Mods = get_pvar(SPVAR_9, 0, 2047, 2047);
+    ANTI_RECOIL_LEFT = get_pvar(SPVAR_7, 0, 100, 2);
+    ANTI_RECOIL_RIGHT = get_pvar(SPVAR_8, 0, 100, 2);
+    ANTI_RECOIL_VERTICLE = get_pvar(SPVAR_9, -100, 100, 66);
+    RateOfFire = get_pvar(SPVAR_12, 0, 25, 20);
+    HoldTime = get_pvar(SPVAR_13, 0, 500, 5);
+}
+
+main {
+
+    vm_tctrl(-5);
+    
+    // Make sure the correct LED is lit from the get go.
+    if (!test_bit(ModFlags, 4)) {
+        combo_run(ScriptToggle);
+        set_bit(ModFlags, 4);
+    }
+    
+    // Use this to check time to see if we are turning script on or off
+    if (get_val(5)) { 
+        combo_run(ScriptToggleTime);
+    }
+    
+    // If the scope in button was held for more than half a second then 
+    // we flip the script on and off.  This value is stored in a persistent
+    // value and should remember the state the next time the script is loaded.
+    // A rumble notifier is ran when it is in the on state.
+    if (event_release(5)) {
+        if (ToggleScriptTime >= 500) {
+            if (test_bit(Mods, 1)) {
+                clear_bit(Mods, 1);
+                set_val(5, 0);
+            } else {
+                set_bit(Mods, 1);
+                set_val(5, 0);
+                combo_run(RumbleNotifier);
+            }
+            
+            ToggleScriptTime = 0;
+            combo_run(ScriptToggle);
+            set_pvar(SPVAR_9, Mods);
+        }
+    }
+    
+    // Set hair triggers
+    if (get_val(4)) set_val(4, 100);
+    if (get_val(7)) set_val(7, 100);
+    
+    // If ads is up and the left d-pad is pressed then enable or disable
+    // rapid fire.  A rumble notifier is used for on.
+    if ((event_press(7) && !get_val(4) && get_val(15) && test_bit(Mods, 1)) || (event_press(15) && get_val(7) && !get_val(4) && test_bit(Mods, 1))){         
+        if (test_bit(Mods, 8)) {
+            clear_bit(Mods, 8);
+        } else {
+            set_bit(Mods, 8);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // Checks to see if RapidFire and script are both enabled.  If so runs
+    // the RapidFire combo when shooting.
+    if(test_bit(Mods, 8) && get_val(4) && test_bit(Mods, 1) && !test_bit(ModFlags, 3)) {
+        combo_run(RapidFire); 
+    } else if (test_bit(ModFlags, 3) && get_val(4) && test_bit(Mods, 1)) {
+        combo_run(AutoFireMAX);
+    }
+    
+    // This is used to turn auto run on and off.  A rumble notifier is used to
+    // notify that the mod was turned on.
+    if ((event_press(7) && get_val(8) && test_bit(Mods, 1)) || (event_press(8) && get_val(7) && test_bit(Mods, 1))) {
+        if (test_bit(Mods, 2)) {
+            clear_bit(Mods, 2);
+        } else {
+            set_bit(Mods, 2);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // Checks the value of the left stick and if it is less than -97 (forward)
+    // it runs the AutoSprint combo.  If the value is greater than 99 (backward)
+    // it auto slides down ladders.  
+    if (test_bit(Mods, 2) && test_bit(Mods, 1)) {
+        if (!test_bit(ModFlags, 2) && get_val(12) < -97 && !get_val(7)) {
+            combo_run(AutoSprint);
+            set_bit(ModFlags, 2);
+            
+            if(test_bit(Mods, 4)) { set_val(18, 100); }
+        } else if (get_val(12) < -97 && test_bit(ModFlags, 2)) {
+            if(test_bit(Mods, 4)) { set_val(18, 100); }
+        } else if (get_val(12) > -97) {
+            clear_bit(ModFlags, 2);
+        }
+        
+        if (get_val(12) > 99) {
+            combo_run(SlideDownLadder);
+        }
+    }
+    
+    // Pressing ADS and Reload will enable fast handgun swap.  This will allow
+    // switching to the handgun by holding down the weapon swap button for .25
+    // seconds.  Rumble notification is used when set to enabled.
+    if ((event_press(7) && get_val(20) && test_bit(Mods, 1)) || (event_press(20) && get_val(7) && test_bit(Mods, 1))) {
+        if (test_bit(Mods, 7)) {
+            clear_bit(Mods, 7);
+        } else {
+            set_bit(Mods, 7);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // Pressing ADS and Weapon Swap will enable rapid fire for handgun swap.  
+    // This will allow special rapid fire optimized for handguns.  This will 
+    // automatically take place when using rapid handgun swap.
+    if ((event_press(7) && get_val(17) && test_bit(Mods, 1)) || (event_press(17) && get_val(7) && test_bit(Mods, 1))) {
+        if (test_bit(Mods, 11)) {
+            clear_bit(Mods, 11);
+            set_val(17, 0);
+        } else {
+            set_bit(Mods, 11);
+            combo_run(RumbleNotifier);
+            set_val(17, 0);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // Checks the weapon swap press time to see if we need to switch to handgun
+    if (get_val(17) && test_bit(Mods, 7) && test_bit(Mods, 1)) {
+        if(get_ptime(17) < 150) { clear_bit(ModFlags, 3); } 
+        if(get_ptime(17) >= 150) { set_val(17, 0); }
+        if(get_ptime(17) >= 250) { combo_run(FastHandgunSwitch); set_bit(ModFlags, 3); }
+    }
+    
+    // Pressing ADS and D-Pad Right will enable auto climb objects.  This will 
+    // allow auto climbing / vaulting objects by setting climb button to be
+    // pressed when auto running.  This will not work without auto-run being
+    // enabled.
+    if ((event_press(7) && get_val(16) && test_bit(Mods, 1) && !get_val(4)) || (event_press(16) && get_val(7) && test_bit(Mods, 1) && !get_val(4))) {
+        if (test_bit(Mods, 4)) {
+            clear_bit(Mods, 4);
+        } else {
+            set_bit(Mods, 4);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // Checks to see if the ADS and Climb buttons are pressed.  If it is it 
+    // turns on the AutoScope function.  This will go into the first person
+    // scope if one is equiped on the weapon.  A rumble notification is used
+    // if the mod is set to on.
+    if ((event_press(7) && get_val(18) && test_bit(Mods, 1)) || (event_press(18) && get_val(7) && test_bit(Mods, 1))){         
+        if (test_bit(Mods, 3)) {
+            clear_bit(Mods, 3);
+        } else {
+            set_bit(Mods, 3);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // If scoping and auto scope is turned on then run the combo to auto scope
+    // into a FPS scope.
+    if (test_bit(Mods, 3) && test_bit(Mods, 1)) {
+        if (test_bit(ModFlags, 1) && get_val(7)) {
+            combo_run(Scope);
+            clear_bit(ModFlags, 1);
+        } else if (!get_val(7)) {
+            set_bit(ModFlags, 1);
+        }
+    }
+    
+    // Checks to see if up was pressed on the dpad while scoped in.  If so then
+    // turns on the mod to allow for auto marking of enemies while scoped in.
+    // A rumble notification is used if the mod is set to on.
+    if ((event_press(7) && !get_val(4) && get_val(13) && test_bit(Mods, 1)) || (event_press(13) && get_val(7) && !get_val(4) && test_bit(Mods, 1))){         
+        if (test_bit(Mods, 5)) {
+            clear_bit(Mods, 5);
+        } else {
+            set_bit(Mods, 5);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // If ADS is up and MarkTargets is turned on then run the combo when scoped
+    // in.
+    if (test_bit(Mods, 5) && get_val(7) && test_bit(Mods, 1)) {                                     
+            combo_run(MarkTargets); 
+    }
+    
+    // Checks to see if the take cover button is pressed along with ADS.  If it
+    // is then we enable aim assist through auto strafing while firing.  A 
+    // rumble notification is used when set to on.
+    if ((event_press(7) && get_val(19) && test_bit(Mods, 1)) || (event_press(19) && get_val(7) && test_bit(Mods, 1))){         
+        if (test_bit(Mods, 6)) {
+            clear_bit(Mods, 6);
+        } else {
+            set_bit(Mods, 6);
+            combo_run(RumbleNotifier);
+        }
+        
+        set_pvar(SPVAR_9, Mods);
+    }
+    
+    // If aim assist is turned on and shooting then run the combo to auto strafe
+    if (test_bit(Mods, 6) && get_val(4) && test_bit(Mods, 1)) {
+        combo_run(Strafe); 
+    }
+    
+    // This checks to see if ADS is on and down is pressed on the D-Pad.  This
+    // actually has multiple functions, the first being an always on anti recoil
+    // with the second being a ADS only anti recoil.  A rumble notification is 
+    // used to distinguish which one is being used.  A single rumble is always
+    // use anti recoil.  A double rumble is used for ADS only anti recoil.  
+    // Pressing down while in ADS a third time disables this function.
+    if (get_val(7) && event_press(14) && !get_val(4) && test_bit(Mods, 1)) {                                  
+        if (test_bit(Mods, 9) || test_bit(Mods, 10)) {
+            clear_bit(Mods, 9); clear_bit(Mods, 10);
+            set_pvar(SPVAR_9, Mods);
+        } else if (!test_bit(Mods, 9) && !test_bit(Mods, 10)) {
+            set_bit(Mods, 9);
+            set_pvar(SPVAR_9, Mods);
+            combo_run(RumbleNotifier);
+        } else if (test_bit(Mods, 9) && !test_bit(Mods, 10)) {
+            clear_bit(Mods, 9); set_bit(Mods, 10);
+            set_pvar(SPVAR_9, Mods);
+            combo_run(DoubleRumbleNotifier);
+        }
+    }
+    
+    // This checks to see which (if any) anti recoil is turned on and runs the 
+    // appropriate combo for that anti recoil.
+    if (test_bit(Mods, 9) && get_val(4) && test_bit(Mods, 1)) {
+        if (get_ptime(4) < 2000) combo_run(AntiRecoil);
+        if (get_ptime(4) >= 2000) combo_run(AntiRecoil2);
+    } else if (test_bit(Mods, 10) && get_val(7) && get_val(4) && test_bit(Mods, 1)) {
+        if (get_ptime(4) < 2000) combo_run(AntiRecoil);
+        if (get_ptime(4) >= 2000) combo_run(AntiRecoil2);
+    }
+    
+    // This section is used to fine tune the anti recoil if it is set to on.
+    // So while shooting and having ADS up pressing up on the dpad will reduce
+    // anti recoil by one, pressing down on the dpad will increase the down pull
+    // by one, pressing right on the dpad will increase right pull by one, while
+    // pressing left on the dpad will increase the left pull by one.  These 
+    // values are stored in persistent variable allowing them to be used every
+    // time a new session is started, the script is reloaded, or even if the 
+    // Titan One looses power.
+    if ((test_bit(Mods, 9) || test_bit(Mods, 10)) && test_bit(Mods, 1) && get_val(4) && get_val(7)) {
+        if (event_press(15)) {block(15, 500); ANTI_RECOIL_LEFT = ANTI_RECOIL_LEFT + 1;}
+        if (event_press(16)) {block(16, 500); ANTI_RECOIL_RIGHT = ANTI_RECOIL_RIGHT + 1;}
+        
+        if (ANTI_RECOIL_LEFT > 100) ANTI_RECOIL_LEFT = 100;
+        if (ANTI_RECOIL_RIGHT > 100) ANTI_RECOIL_RIGHT = 100;     
+                
+        set_pvar(SPVAR_7, ANTI_RECOIL_LEFT);
+        set_pvar(SPVAR_8, ANTI_RECOIL_RIGHT);
+        
+        if (event_press(13)) ANTI_RECOIL_VERTICLE = ANTI_RECOIL_VERTICLE - 1;
+        if (event_press(14)) ANTI_RECOIL_VERTICLE = ANTI_RECOIL_VERTICLE + 1;
+        
+        if (ANTI_RECOIL_VERTICLE < -100) ANTI_RECOIL_VERTICLE = -100;
+        if (ANTI_RECOIL_VERTICLE > 100) ANTI_RECOIL_VERTICLE = 100;
+        
+        set_pvar(SPVAR_9, ANTI_RECOIL_VERTICLE);
+    }
+    
+    // This allows for the values used for anti-recoil to be reset when a 
+    // different weapon is equiped.
+    if ((get_val(2) && event_press(13) && test_bit(Mods, 1)) || (get_val(13) && event_press(2) && test_bit(Mods, 1))) {
+        block(2, 500);
+        ANTI_RECOIL_LEFT = 0; ANTI_RECOIL_RIGHT = 0; ANTI_RECOIL_VERTICLE = 0;
+    }
+    
+    // This portion of the script allows for fine tune adjustment of the fire 
+    // rate.  Pressing right on the dpad will increase the rate of fire by one,
+    // and pressing left on the dpad while shooting will decrease the rate of 
+    // fire by one.  Do not use ADS while adjusting rate of fire or it will 
+    // adjust the anti recoil settings instead.  Again these are stored in 
+    // persistent variables and will be stored across sessions.
+    if (test_bit(Mods, 1) && get_val(4) && !get_val(7)) {
+        if (event_press(16)) {RateOfFire = RateOfFire + 1; block(16, 500);}
+        if (event_press(15)) {RateOfFire = RateOfFire - 1; block(15, 500);}
+        
+        if (RateOfFire > 25) { RateOfFire = 25; }
+        if (RateOfFire < 1) { RateOfFire = 1; }
+        
+        set_pvar(SPVAR_12, RateOfFire);
+        HoldTime = 500 / RateOfFire;
+        set_pvar(SPVAR_13, HoldTime);
+    }
+} 
+
+// This tracks the time that the scope button has been pressed.  If pressed for
+// more than half a second swaps the enabled value and turns on or off the 
+// script functionality.
+combo ScriptToggleTime {
+    ToggleScriptTime = get_ptime(5);
+}
+
+// Combo used for changing the LED based on whether or not the script is 
+// enabled.
+combo ScriptToggle {
+    if (!test_bit(Mods, 1)) {
+        set_led(LED_1, 0);
+        set_led(LED_2, 1);
+        set_led(LED_3, 0);
+        set_led(LED_4, 0);
+    } else {
+        set_led(LED_1, 0);
+        set_led(LED_2, 0);
+        set_led(LED_3, 1);
+        set_led(LED_4, 0);
+    }
+}
+
+// Combo used to automatically switch to the handgun.  Eliminates the need to 
+// double press the weapon swap button.  Just hold it for more than half a 
+// second to swap automatically to the handgun.
+combo FastHandgunSwitch {
+    set_val(17, 100);
+    wait(100);
+}
+// Combo used to automatically sprint.  This presses the spring button every
+// .3 seconds (or close to that!) while the left stick is pressed forward at
+// 97% or higher.
+combo AutoSprint {
+    set_val(8, 0);
+    wait(100);
+    set_val(8, 100);
+    wait(200);
+}
+
+// Combo used to automatically slide down ladders.  Keeps run pressed while the
+// left stick is pressed back at 97% or higher.
+combo SlideDownLadder {
+    set_val(8, 100);
+    wait(4000);
+}
+
+// Combo used to scope fullin in when pressing ads.  This is useful if you have
+// a more advanced scope on your weapon and don't want to have to press the 
+// right stick everytime you pull your weapon up.
+combo Scope {
+    set_val(5, 0);
+    wait(200);
+    set_val(5, 100);
+    wait(200);
+}
+
+// Combo responsible for auto marking targets.  When scoped in consistently 
+// sends the D-Pad up signal which is used to mark targets when over them.
+combo MarkTargets {
+    set_val(13, 100);
+    wait(50);
+    set_val(13, 0);
+    wait(1000);
+}
+
+// Combo responsible for strafe aim assist.  Sets the left stick X-Axis to 100
+// for .3 seconds, then sets it to 0 for .3 seconds, and then finially sets it
+// to -100 for .3 seconds.  This keeps the user moving which helps to keep aim 
+// assist working while firing.
+combo Strafe {
+    set_val(11, 100);
+    wait(300);
+    set_val(11, 0);
+    wait(100);
+    set_val(11, -100);
+    wait(300);
+    set_val(11, 0);
+    wait(100);
+}
+
+// Combo responsible for the rumble notifier.  This is used when enabling mods.
+combo RumbleNotifier {
+    set_rumble(RUMBLE_A, 100);
+    wait(200);
+    reset_rumble();
+}
+
+// Combo responsible for the double rumble notifier.  This is only used when
+// setting anti recoil to be enabled on ADS only.
+combo DoubleRumbleNotifier {
+    set_rumble(RUMBLE_A, 100);
+    wait(200);
+    set_rumble(RUMBLE_A, 0);
+    wait(200);
+    set_rumble(RUMBLE_A, 100);
+    wait(200);
+    reset_rumble();
+}
+
+// Combo responsible for rapid fire.  Fire rate can be fine tuned using the 
+// instructions provided earlier in the script.
+combo RapidFire {
+    set_val(4, 100);
+    wait(HoldTime);
+    set_val(4, 0);
+    wait(HoldTime);
+}
+
+// You can adjust the wait time for pistols but no need to I tested them all.
+// This is a direct copy from bonefisher script!  LOL  I didn't adjust this at 
+// all.
+combo AutoFireMAX { 
+    set_val(4, 100);
+    wait(40);
+    set_val(4, 0);
+    wait(20);
+    set_val(4, 0);
+}
+
+// This combo sets the value of the right stick to compensate for recoil.
+// This accounts for both X-Axis and Y-Axis movement.  Can be fine tuned using
+// the instructions provided earlier in the script.
+combo AntiRecoil {
+    anti_recoil = get_val(10) + ANTI_RECOIL_VERTICLE;
+    if(anti_recoil > 100) {
+        anti_recoil = 100;
+    }
+    set_val(10, anti_recoil);
+    
+    anti_recoil_left = get_val(9) - ANTI_RECOIL_LEFT;
+    if(anti_recoil_left < -100) {
+        anti_recoil_left = -100;
+    }
+    set_val(9, anti_recoil_left);
+    
+    anti_recoil_right = get_val(9) + ANTI_RECOIL_RIGHT;
+    if(anti_recoil_right > 100) {
+        anti_recoil_right = 100;
+    }
+    set_val(9, anti_recoil_right);
+}
+
+combo AntiRecoil2 {
+    anti_recoil = get_val(10) + ANTI_RECOIL_VERTICLE + 30;
+    if(anti_recoil > 100) {
+        anti_recoil = 100;
+    }
+    set_val(10, anti_recoil);
+    
+    anti_recoil_left = get_val(9) - ANTI_RECOIL_LEFT;
+    if(anti_recoil_left < -100) {
+        anti_recoil_left = -100;
+    }
+    set_val(9, anti_recoil_left);
+    
+    anti_recoil_right = get_val(9) + ANTI_RECOIL_RIGHT;
+    if(anti_recoil_right > 100) {
+        anti_recoil_right = 100;
+    }
+    set_val(9, anti_recoil_right);
+}

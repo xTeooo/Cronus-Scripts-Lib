@@ -1,0 +1,96 @@
+/*
+
+
+SMART RECOIL
+
+Vertical - Up & Down
+
+Horizontal = Left & Right
+
+
+*/
+
+
+
+define ToggleTaylorAR = TRUE;
+
+
+
+int TaylorARVert   = 20;
+int TaylorARHoriz  = 0;
+int SmartRumble, AntirecoilStrength;
+
+
+
+main {
+
+
+    if(ToggleTaylorAR)
+    {
+
+        if(get_ival(PS4_L2))
+        {
+
+            if(event_press(XB1_UP))
+                TaylorARVert ++;
+
+            if(event_press(XB1_DOWN))
+                TaylorARVert --;
+
+            if(event_press(XB1_LEFT))
+                TaylorARHoriz --;
+
+            if(event_press(XB1_RIGHT))
+                TaylorARHoriz ++;
+
+            if(get_ival(PS4_R2) || get_ival(PS4_R1))
+            {
+
+                SmartRumble = get_rumble(RumbleToUse());
+
+                if(SmartRumble > 10 && SmartRumble < 90)
+                {
+                    AntirecoilStrength = TaylorARVert + SmartRumble / 2;
+                }
+
+                if(SmartRumble < 10)
+                {
+                    Set_Val(PS4_RY, TaylorARVert);
+                    Set_Val(PS4_RX, TaylorARHoriz);
+                }
+                else
+                {
+                    Set_Val(PS4_RY, AntirecoilStrength);
+                    Set_Val(PS4_RX, TaylorARHoriz);
+                }
+ 
+            }
+
+            AntirecoilStrength = 0;
+            SmartRumble = 0;
+
+        }
+
+    }
+
+
+}
+
+
+
+function Set_Val(Stick, Value) {
+
+    set_val(Stick, clamp(Value * (100 - abs(get_val(Stick))) / 100 + get_val(Stick), -100, 100));
+        return;
+
+}
+
+
+
+function RumbleToUse() {
+
+    if(get_rumble(RUMBLE_A) >= get_rumble(RUMBLE_B)) 
+        return RUMBLE_A;
+    return RUMBLE_B;
+
+}

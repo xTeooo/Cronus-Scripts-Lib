@@ -1,0 +1,81 @@
+init {
+
+	cls_oled(OLED_BLACK);
+	number_to_string(Value,find_digits(Value),30);
+
+}
+
+int Value = 99995;
+
+main {
+
+	if(event_press(PS4_CROSS)) {
+		Value ++;
+		cls_oled(OLED_BLACK);
+		number_to_string(Value,find_digits(Value),30);
+	}
+
+}
+
+int i,c_val,c;
+
+int extra_digit;
+function number_to_string(f_val,f_digits,vert) {
+/***********************************************************
+*  number_to_string(value to convert, # of digits in value)
+*
+*  Display Up to Max 16-bit Signed Integer (-32,768 to 32,767)
+*
+*      Convert digits to ASCII ANDRY85
+*      Add ASCII character to print buffer
+*      Print string centered X & Y on OLED
+*
+***********************************************************/
+	i = 1;
+	c_val = 100000000;
+
+	if(f_val < 0) //--neg numbers
+	{
+		extra_digit = 1;
+		putc_oled(i,ASCII_MINUS);    //--add leading "-"
+		i += 1;
+		f_val = abs(f_val);
+	} else
+		extra_digit = 0;
+
+	for(c = 9; c >= 1; c--)
+	{
+		if(f_digits >= c)
+		{
+			putc_oled(i,ASCII_DIGIT0 + (f_val / c_val));
+			f_val = f_val % c_val;
+			i +=  1;
+
+			if(c == 4 || c == 7)
+			{
+				extra_digit = 1;
+				putc_oled(i,ASCII_COMMA);   //--add ","
+				i += 1;
+			}
+		}
+		c_val /= 10;
+	}
+		puts_oled(center_x(f_digits + extra_digit,OLED_FONT_SMALL_WIDTH),vert,OLED_FONT_SMALL,i - 1,OLED_WHITE);
+}
+
+int digit_idx;
+
+function find_digits(f_num) {
+
+  for(digit_idx = 1; digit_idx <= 8; digit_idx ++) {
+    if(abs(f_num) < pow(10,digit_idx))
+      return digit_idx;
+  }
+
+  return 9;
+
+}
+
+function center_x( f_chars, f_font) {
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}

@@ -1,0 +1,71 @@
+/*
+
+ (            )  (       (            
+ )\ )      ( /(  )\ )    )\ )  *   )  
+(()/( (    )\())(()/(   (()/(` )  /(  
+ /(_)))\  ((_)\  /(_))   /(_))( )(_)) 
+(_)) ((_)  _((_)(_))_   (_)) (_(_())  
+/ __|| __|| \| | |   \  |_ _||_   _|  
+\__ \| _| | .` | | |) |  | |   | |    
+|___/|___||_|\_| |___/  |___|  |_|    
+                                      
+
+ 
+
+Red BLINK Means NO Combos Running
+	Green LED Means 1st Running
+		Blue LED Means 2nd Running
+			Purple Means BOTH Combos Running
+*/
+
+int RUN,RUN2;		//Don't Change
+
+main {
+    if (event_press(PS4_CROSS))  // Single Press Toggles On-Off
+            RUN = !RUN;
+           
+        if (RUN)  {
+                set_rgb(0,100,0);      			// Green LED Means On- Combo Running
+            			combo_run(combo_1);
+           } else {
+             	combo_stop(combo_1);
+        }
+           
+     if (Button2) {
+     	if (event_press(PS4_SQUARE)) // Single Press Toggles On-Off
+            RUN2 = !RUN2;
+            
+        	if (RUN2) {
+                set_rgb(0, 0, 100);      		// Blue LED Means On- Combo Running
+            			combo_run(combo_2);
+           	} else {
+             	combo_stop(combo_2);
+        }
+     }      
+     
+     if (RUN && (RUN2)) {
+           	set_rgb(100, 0, 100);				// Purple LED Means On- Combo Running
+           	
+    	   } else if (!RUN && (!RUN2)) {
+             	combo_run(LEDflash);			// Red LED Flash Means No Combos Running
+     }
+        
+}
+  
+  combo combo_1    {
+ //Your Combo Here
+
+}
+
+ combo combo_2    {
+//Your Combo Here
+
+}
+
+combo LEDflash	 {
+	set_rgb(200,0,0);
+	wait(250);
+	set_rgb(0,0,0);
+	wait(250);
+}
+ 

@@ -1,0 +1,134 @@
+//Buttons
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Build    = PS4_TRIANGLE;
+define Pickaxe  = PS4_RIGHT;
+define On       = TRUE;
+define Off      = FALSE;
+
+// Edit Buttons
+define Edit     = PS4_CIRCLE;   // Edit In Game (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+define Select   = PS4_R2;       // Edit Select Piece In Game
+define Confirm  = PS4_L2; 	// Edit Confirm In Game	
+define Reset    = PS4_R1;       // Edit Reset In Game
+
+//Quick Edit Assist
+define QuickEditAssist = TRUE;   	 // [ON / OFF] Edit Assist
+define EditDelay       = 11;     // Edit Assist Hold Delay On Select
+define EditAssist      = XB1_B;  // EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+
+//Hair Triggers
+define HairTriggers = TRUE; // Instant Triggers [100%]
+
+define PXS     =     90;  				    	
+define PXSE    =    270;				    
+define PVSI    =     20;    				
+define PVS     =     20;
+define PYS     =   -200;				
+define PYSE    =    200;		    	
+int    PPFX    =    PXS;
+int    PPFY    =    PYS;				  	  
+int    PVID;
+int    PFD     =      61;		    
+int    PPFD    =      61;
+int    RX;
+int    RY;
+main{
+	
+	
+	
+		if (HairTriggers) { 
+   		
+   		deadzone(PS4_L2,PS4_R2,100,100); deadzone (PS4_L1,PS4_R1,100,100)
+   	}
+   	
+   	
+	if (QuickEditAssist) {
+	 	
+	 	if (get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = On;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = 0;	
+			Edit1 = Off;
+		}
+	}
+
+   
+
+	if (InstaEditReset) {
+        
+        if (EditHold) {
+        	
+        	if (get_ival(Edit) && get_ptime(Edit) > EditHoldTime) {
+        
+            	Edit1 = On;
+            	Edit2 = Off;
+			}
+        }
+        	
+        else if (event_press(Edit)) {
+        			
+        		Edit1 = On;
+            	Edit2 = Off;
+		}
+		
+		if (Edit2) {
+            
+            if (event_release(Select)) {  
+                
+                Edit1 = On;
+                Edit2 = Off;
+                BuildTrack = Off;
+            }
+		}
+    }
+
+    if (Edit1 || Edit2) {
+        
+        if (event_press(Reset)) {  
+            
+            combo_run(InstantReset);
+            Edit1 = Off;
+            Edit2 = Off;
+            BuildTrack = Off;
+        }
+
+        if (event_press(Pickaxe)) {
+            
+            Edit1 = Off;
+            Edit2 = Off;
+            BuildTrack = Off;
+		}
+    }
+    
+		
+    	if(get_val(PS4_R2) > 360){
+    	if(abs(get_val(XB1_RX) < 360)) 
+    	if(abs(get_val(XB1_RY) < 360)) 
+    	if(abs(get_val(XB1_RX) > -360)) 
+    	if(abs(get_val(XB1_RY) > -360)){
+   			PPFX = PolarFlow(PPFX,PXS,PXSE,PVSI,PFD,1);
+        	PPFY = PolarFlow(PPFY,PYS,PYSE,PVS,PPFD,2);
+       	    set_polar(POLAR_RS,30,PPFX);
+    		set_polar(POLAR_RS,30,PPFY);}
+}
+    	
+}
+   		
+   function EditAssist() {
+
+    EditT += get_rtime();
+        
+        if (get_ival(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		EditPress(Select);
+        }
+}
+   		

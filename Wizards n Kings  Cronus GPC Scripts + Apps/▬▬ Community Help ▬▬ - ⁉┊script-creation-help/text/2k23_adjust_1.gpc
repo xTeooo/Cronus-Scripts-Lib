@@ -1,0 +1,323 @@
+
+/* The Golf Club 2019
+
+v1.2
+Added X_VARIANCE. Maximum amount X axis will vary (+-)
+ 
+v1.1
+Chip - LT/L2 + A/Cross
+Swing Strenth - Hold A/Cross then Up/Down (+- 5 each tap) TRACE_4 shows max backswing value
+------------------------------------------------------------------------------------------
+v1.0
+***IF YOU USE LEFT STICK TO SWING SET SWING_STICK = LEFT;***
+ 
+To use Random Delay Times at Top of The Swing set RANDOM_DELAY_TOP = TRUE
+ 
+Full Swing - HOLD LT/L2 then tap RT/R2
+ 
+Smooth Follow Through on Putt - Pull swing stick back until putter head is at desired location then tap
+either LT/L2 or RT/R2
+**///--Change to LEFT for Left Stick Swing
+//--Change to FALSE to Use a Random Delay Time
+//--Maximum Amount X will Vary (+-) During Swing
+//--------------------------------------------------
+//--swing strength
+//--swing
+//--chip
+//--putt smooth follow through
+//--------------------------------------------------------------
+//--Swing
+//--new RX every 50 ms
+//--------------------------------------------------------------
+//--PUTT
+//--------------------------------------------------------------
+//--SCROLL VALS
+ 
+#include <xb1.gph>
+ 
+#define RIGHT 22
+#define LEFT 24
+#define SWING_STICK LEFT
+#define RANDOM_DELAY_TOP TRUE
+#define X_VARIANCE 0.0
+#define RND_MOD 0.0
+#define BACK_SWING_LOWER 0.6
+#define BACK_SWING_UPPER 0.6
+#define DOWN_SWING_LOWER 2.72651191111
+#define DOWN_SWING_UPPER 2.72651191111
+#define DELAY_TOP_LOWER 480
+#define DELAY_TOP_UPPER 480
+ 
+int SP[12];
+ 
+fix32 rnd_back, back_val;
+fix32 rnd_down, down_val;
+int rnd_delay, delay;
+fix32 rnd_x, rx_val, rx_count;
+fix32 ry_val, back_max_val;
+int swing, set, back, down;
+uint8 swing_y, swing_x;
+int putt, idx;
+fix32 putt_val;
+int b;
+int bb; 
+int bb_array[3];
+ 
+init{
+  SP[0] = 100;
+  SP[1] =  95;
+  SP[2] =  90;
+  SP[3] =   85;
+  SP[4] =   80;
+  SP[5] =   75;
+  SP[6] = 0;
+  SP[7] =  12;
+  SP[8] =   14;
+  SP[9] =   16;
+  SP[10] =   18; 
+  SP[11] =  20;
+  swing_y = SWING_STICK;
+  swing_x = SWING_STICK - 1;
+  back_max_val = 100.0;
+}
+ 
+main {
+  set_val(30, back_val);
+  set_val(31, down_val);
+  set_val(32, delay / 10);
+  set_val(33, back_max_val);
+  set_val(34, rx_val);
+ if (get_val(XB1_B) && event_active(XB1_RT)) back_max_val = back_max_val - 2.7;
+  if (get_val(XB1_B) && event_active(XB1_LT)) {
+    back_max_val =  back_max_val-14.749;
+    if (back_max_val > 100.0) back_max_val = 100.0;
+  }
+   //--#7
+  if(get_val(XB1_LB) && event_active(XB1_X)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 550;
+  }
+  //--#8
+  if(get_val(XB1_LB) && event_active(XB1_A)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 460;
+  }
+  //--#10
+  if(get_val(XB1_A) && event_active(XB1_LB)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 540;
+  }
+  if (get_val(XB1_RT) && event_active(XB1_A)) {
+    swing = TRUE;
+    set = FALSE;
+	delay = 468;
+  }
+  if (get_val(XB1_RT) && event_active(XB1_X)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 648;
+  }
+  //--#1
+  if(get_val(XB1_X) && event_active(XB1_A)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 370;
+  }
+   //--#2
+  if(get_val(XB1_A) && event_active(XB1_X)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 400;
+  }
+  
+  //--#3
+  if(get_val(XB1_X) && event_active(XB1_LB)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 525;
+  }
+   //--#4
+  if(get_val(XB1_LB) && event_active(XB1_X)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 580;
+  }
+   //--#3
+  if(get_val(XB1_X) && event_active(XB1_RT)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 620;
+  }
+  //--#7
+  if(get_val(XB1_LB) && event_active(XB1_LT)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 658;
+  }
+  //--#8
+  if(get_val(XB1_LB) && event_active(XB1_RT)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 695;
+  }
+  //--#14
+  if(get_val(XB1_X) && event_active(XB1_LT)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 722;
+  }
+  //--#15
+  if(get_val(XB1_LT) && event_active(XB1_RT)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 765;
+  }
+  //--#16
+  if(get_val(XB1_LT) && event_active(XB1_LB)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 800;
+  }
+  //--#17
+  if(get_val(XB1_A) && event_active(XB1_LT)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 835;
+  }
+   //--#18
+  if(get_val(XB1_LT) && event_active(XB1_A)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 872;
+  }
+   //--#19
+  if(get_val(XB1_LT) && event_active(XB1_X)) {
+    swing = TRUE;
+    set = FALSE;
+    delay = 902;
+  }
+{
+    if(get_val(XB1_RT)) set_val(XB1_LX, 0.0);  
+ 
+ 
+    if(get_val(XB1_LX) > 100.0) set_val(XB1_LX, 100.0); 
+ 
+    if(get_val(XB1_LX)<-100.0) set_val(XB1_LX, -100.0);
+  }
+  
+  if (swing) {
+    if (!set) {
+      combo_run(c_SET);
+    }
+    else {
+      if (elapsed_time()) {
+        if (back) {
+            ry_val = ry_val +back_val;
+            if (ry_val > back_max_val) {
+            ry_val = back_max_val;
+            back = FALSE;
+            combo_run(c_DELAY_TOP);
+            }
+        }
+        if (down) {
+            ry_val =ry_val- down_val;
+            if (ry_val <- 100.0) {
+            ry_val = -100.0;
+            down = FALSE;
+            swing = FALSE;
+            back_max_val = 100.0;
+            combo_run(c_set_xy);
+            }
+        }
+        rx_count = rx_count+0.00685;
+        if (rx_count >= 0.1492) {
+            rx_val = rnd_x;
+            rx_count = 0.0;
+        }
+      }
+      set_val(swing_y, ry_val);
+      set_val(swing_x, rx_val);
+    }
+  }
+  if (putt) {
+    ry_val = ry_val-putt_val;
+    if (ry_val <= - 100.0) {
+      ry_val =- 100.0;
+      putt = FALSE;
+      combo_run(c_set_y);
+    }
+    set_val(swing_y, ry_val);
+  }
+  if (elapsed_time()) {
+    rnd_back =rnd_back+RND_MOD;
+    rnd_down =rnd_down+RND_MOD;
+    rnd_x = rnd_x+RND_MOD;
+    rnd_delay =rnd_delay +10;
+    if (rnd_back > BACK_SWING_UPPER) rnd_back = BACK_SWING_LOWER;
+    if (rnd_down > DOWN_SWING_UPPER) rnd_down = DOWN_SWING_LOWER;
+    if (rnd_x > X_VARIANCE) rnd_x = inv(X_VARIANCE);
+    if (rnd_delay > DELAY_TOP_UPPER) rnd_delay = DELAY_TOP_LOWER;
+  }
+}
+ 
+combo c_SET {
+  wait(1000);
+  rx_val = rnd_x;
+  back_val = rnd_back;
+  down_val = rnd_down;
+  if (RANDOM_DELAY_TOP) delay = rnd_delay;
+  set = TRUE;
+  back = TRUE;
+}
+ 
+combo c_DELAY_TOP {
+  wait(delay);
+  down = TRUE;
+}
+ 
+combo c_set_xy {
+    set_val(swing_y, ry_val);
+    set_val(swing_x, rx_val);
+    wait(40);
+}
+ 
+combo c_set_y {
+    set_val(swing_y, ry_val);
+    wait(40);
+}
+uint8 active_slot[2];
+init{
+  active_slot = mslot_get() + 1; 
+  active_slot[1] = mslot_get() - 1;
+ do {
+   if(mslot_check(active_slot) == 1) break;
+  if(++active_slot > 9) active_slot = 1;
+ } while(1);
+ do {
+   if(mslot_check(active_slot[1]) == 1) break;
+   if(!(--active_slot[1])) active_slot[1] = 9;
+ } while(1);
+}
+#include <xb1.gph>
+main {
+  // Hold LT and press Dpad UP/DOWN to cycle slots
+  if(is_active(XB1_RT)) {
+    if(event_active(XB1_LT))  mslot_load(active_slot);
+    if(event_active(XB1_LB)) mslot_load(active_slot[1]);
+  }
+}
+main {
+#undef set_val
+#undef get_val 
+fix32 random_decimalsX;
+ 
+  //every 5 milliseconds assign a random decimal to RX
+ if(!(system_time() %0 )){
+    random_decimalsX = rand();
+  }
+ 
+  if(abs(get_val(STICK_1_X)) < 90.0) set_val(STICK_1_X, get_val(STICK_1_X)+random_decimalsX);
+}

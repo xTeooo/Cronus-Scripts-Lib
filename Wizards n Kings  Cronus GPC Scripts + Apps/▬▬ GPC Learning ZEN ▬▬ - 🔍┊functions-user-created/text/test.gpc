@@ -1,0 +1,796 @@
+/*
+VVVVVVVV           VVVVVVVV                                     iiii          tttt                                            
+V::::::V           V::::::V                                    i::::i      ttt:::t                                            
+V::::::V           V::::::V                                     iiii       t:::::t                                            
+V::::::V           V::::::V                                                t:::::t                                            
+ V:::::V           V:::::V eeeeeeeeeeee    rrrrr   rrrrrrrrr  iiiiiiittttttt:::::ttttttt      aaaaaaaaaaaaa      ssssssssss   
+  V:::::V         V:::::Vee::::::::::::ee  r::::rrr:::::::::r i:::::it:::::::::::::::::t      a::::::::::::a   ss::::::::::s  
+   V:::::V       V:::::Ve::::::eeeee:::::eer:::::::::::::::::r i::::it:::::::::::::::::t      aaaaaaaaa:::::ass:::::::::::::s 
+    V:::::V     V:::::Ve::::::e     e:::::err::::::rrrrr::::::ri::::itttttt:::::::tttttt               a::::as::::::ssss:::::s
+     V:::::V   V:::::V e:::::::eeeee::::::e r:::::r     r:::::ri::::i      t:::::t              aaaaaaa:::::a s:::::s  ssssss 
+      V:::::V V:::::V  e:::::::::::::::::e  r:::::r     rrrrrrri::::i      t:::::t            aa::::::::::::a   s::::::s      
+       V:::::V:::::V   e::::::eeeeeeeeeee   r:::::r            i::::i      t:::::t           a::::aaaa::::::a      s::::::s   
+        V:::::::::V    e:::::::e            r:::::r            i::::i      t:::::t    tttttta::::a    a:::::assssss   s:::::s 
+         V:::::::V     e::::::::e           r:::::r           i::::::i     t::::::tttt:::::ta::::a    a:::::as:::::ssss::::::s
+          V:::::V       e::::::::eeeeeeee   r:::::r           i::::::i     tt::::::::::::::ta:::::aaaa::::::as::::::::::::::s 
+           V:::V         ee:::::::::::::e   r:::::r           i::::::i       tt:::::::::::tt a::::::::::aa:::as:::::::::::ss  
+            VVV            eeeeeeeeeeeeee   rrrrrrr           iiiiiiii         ttttttttttt    aaaaaaaaaa  aaaa sssssssssss  
+            
+		╔═══════Rainbow Six Siege═══════════════════════════════════════════════════════════════════════════════╗
+		║	Version: 	Polar 6.4.3 - Attackers		 															║
+		║	Cronus: 	Zen only																				║
+		║	Platform: 	Multi																					║
+		║	Controller: Multi																					║
+		║	Game: 		Rainbow Six Siege																		║
+		║	Author: 	Veritas																					║
+		║	Join our discord to get early access:	https://discord.gg/tkGPX8HaNs								║
+		║	NOTE:		You need to load the 2 scripts in order to work between defenders and attacker			║
+		║				RSS_DEF and RSS_ATK																		║		
+		║   All Scripts Are Free. If you paid for a script, file a chargeback because you have been scammed,	║
+		║	but if you appriciate the works you can donate here: 												║
+		║	https://www.paypal.com/donate?hosted_button_id=AUCJD5BDGTDPY										║		
+		╚═══════════════════════════════════════════════════════════════════════════════════════════════════════╝
+*/
+//══════════════════════════════════════════════════════════════════════════════════════════════
+//Script Specific 
+//══════════════════════════════════════════════════════════════════════════════════════════════
+const string 	OperatorName[] 	= {
+	/*------------------------------------------------Original Operators Atakers------------------------------------------------*/
+	"SLEDGE",		"THATCHER",		"ASH", 			"THERMITE",	"TWITCH",	"MONTAGNE",	"GLAZ",		"FUZE",		"BLITZ",	"IQ",
+	//Black Ice		Dust Line		kull Rain		Red Crow
+	"BUCK",			"BLACKBEARD",	"CAPITAO",		"HIBANA",
+	//Velvet Shell	Health			Blood Orchid					White Noise
+	"JACKAL",	   /*No Operator*/	"YING",			"ZOFIA",		"DOKKAEBI",	
+	//Chimera		Chimera			Para Bellum		Grim Sky		Wind Bastion
+	"LION",			"FINKA",	   /*No Operator*/	"MAVERICK",		"NOMAD",
+	//Burnt Horizon	Phantom Sight	Ember Rise		Shifting Tides
+	"GRIDLOCK", 	"NOKK",			"AMARU",		"KALI",
+	//Void Edge 	Steel Wave		Shadow Legacy	Neon Dawn
+	"IANA",			"ACE",			"ZERO",		  /*No Operator*/
+	//Void Edge 	Steel Wave		Shadow Legacy	Neon Dawn
+	"FLORES",		"OSA",			"Recruit", ""};
+const string 	GunName[]		= {
+//	0				1				2				3				4				5				6				7				8			9
+"L85A2",		"M590A1",		"P226 MK 25",	"SMG-11",		"USP40",		"ARX200",		"G36C",			"MK1 9MM",		"AUG A2",	"P12",			
+//	10				11				12				13				14				15				16				17				18			19
+"CSRX 300",		"C75 AUTO",		"G8A1",			"SUPERNOVA",	"P229 RC",		"FMG-9",		"SIX12 SD",		"5.7 USG",		"D-50",		"SMG-12",	
+//	20				21				22				23				24				25				26				27				28			29
+"SUPER SHO..",	"R4-C",			"M45 MEUSOC",	"M1014",		"P9",			"LFP586",		"MP7",			"PMM",			"GSH-18",	"556XI",
+//	30				31				32				33				34				35				36				37				38			39
+"AR33",			"F2",			"417",			"SGCQB",		"CAMRS",		"C8-SFW",		"M249",			"PARA-308",		"PRB92",	"552COMMANDO",
+//	40				41				42				43				44				45				46				47				48			49	
+"OTS-03",		"AK-12",		"6P41",			"SR-25",		"MK17 CQB",		"TYPE-89",		"C7E",			"ITA12S",		"ITA12L",	"PDW9",
+//	50				51				52				53				54				55				56				57				58			29
+".44MAG SEMI",	"Q-929",		"T-95 LSW",		"BEARING 9",	"SIX12",		"RG15",			"BOSG.12.2",	"SPSMG9",		"LMG-E",	"M762",
+//	60				61				62				63				64				65				66				67				68			69		
+"MK 14 EBR",	"V308",			"SPEAR .308",	"AR-15.50",		"M4 GS",		"1911 TACOPS",	"AK-74M",		"F90",			"SC3000K",	"Shield",
+//	70				71
+"Gonne-6",		"SASG-12"};
+const string  	GunTypeName[] 	= {
+//	0,  			1,  		2,  		3,  			4,  			5,  			6,  				7,  		8
+"ASSAULTRIFLE", "SHOTGUN", "HANDGUN", "SUBMACHINEGUN", "MACHINEPISTOL", "MARKSMANRIFLE", "LIGHTMACHINEGUN", "HANDGONNE", "NO_GUN", ""};
+const int16		GunNameIndex[] 	= {
+//Original Operators
+0, 	1,	-1,	2,	-1, /* SLEDGE */		30, 0, 	1, 	2, 	-1, /* THATCHER */		21,	6, 	-1,	17,	22, /* Ash */		29, 23, -1,	17,	22, /* THERMITE */
+31, 32, 33,	24,	25, /* TWITCH */		69, -1,	-1, 24,	25, /* MONTAGNE */		40, -1, -1, 27, 70, /* GLAZ */		41, 42, 69,	27, 28,	/* FUZE */
+69, -1, -1, 9, 	-1, /* BLITZ */			12, 8, 	39,	9, 	-1, /* IQ */
+//Year 1
+35, 34, -1,	7, 	-1, /* BUCK */			44, 43,	-1,	18,	-1, /* BLACKBEARD */	36, 37,	-1,	38, -1, /* CAPITÃO */	45, 13,	-1,	53, 14, /* HIBANA */
+//Year 2 
+46, 49, 48,	4, 	47, /* JACKAL */		52, 54, -1,	51, -1, /* YING */			59,	58, -1,	55, -1, /* ZOFIA */		60,	56,	-1,	19, 70, /* DOKKAEBI */
+//Year 3
+61, 32,	33,	25,	70, /* LION */			42,	62,	71,	27, 70, /* FINKA */			63, 64,	-1,	65, -1,	/* MAVERICK */	66, 5, 	-1,	38, 50, /* NOMAD */
+//Year 4
+36, 67,	-1,	20,	70, /* GRIDLOCK */		15, 16,	-1,	18, 17, /* NOKK */			12, 13,	-1,	3, 	70, /* Amaru */		10, -1,	-1, 57, 11, /* KALI */
+//Year 5
+5, 	6, -1,	7, 	70,	/* IANA */			41, 23,	-1,	24, -1, /* ACE */			26, 68,	-1,	17, 70, /* ZERO */
+//Year 6
+30, 43,	-1,	28, -1, /* FLORES */		29, 49,	-1,	27, -1,	/* OSA */			
+0,	60,	36,	9, 20	/* Recruit */
+};
+const int16   	GunTypeIndex[] 	= {
+//Original Operators
+0, 1, 0, 2, 0, /* SLEDGE */				0, 0, 1, 2, 0, /* THATCHER */			0, 0, 0, 2, 2, /* Ash */			0, 1, 0, 2, 2, /* THERMITE */
+0, 5, 1, 2, 2, /* TWITCH */				8, 0, 0, 2, 2, /* MONTAGNE */			5, 0, 0, 2, 7, /* GLAZ */			0, 3, 8, 2, 2, /* FUZE */
+8, 0, 0, 0,	2, /* BLITZ */				6, 0, 0, 2, 0, /* IQ */
+//Year 1	
+0, 5, 0, 2, 0, /* BUCK */				0, 5, 0, 2, 0, /* BLACKBEARD */			3, 0, 0, 2, 0, /* CAPITÃO */		0, 1, 0, 4, 2, /* HIBANA */
+//Year 2		
+0, 3, 1, 2, 1, /* JACKAL */				6, 1, 0, 2, 0, /* YING */				0, 3, 0, 0,	2, /* ZOFIA */			5, 1, 0, 3, 7, /* DOKKAEBI */
+//Year 3	
+0, 5, 1, 2, 7, /* LION */				3, 0, 1, 2, 7, /* FINKA */				0, 0, 0, 2, 0, /* MAVERICK */		0, 0, 0, 2, 2, /* NOMAD */
+//Year 4	
+3, 0, 0, 1, 7, /* GRIDLOCK */			3, 1, 0, 2, 2, /* NOKK */				3, 1, 0, 3, 7, /* Amaru */			5, 0, 0, 4, 4, /* KALI */
+//Year 5
+0, 0, 0, 2, 7, /* IANA */				0, 1, 0, 2, 0, /* ACE */				0, 3, 0, 2, 7, /* ZERO */
+//Year 6
+0, 5, 0, 2, 0, /* FLORES */				0, 3, 0, 2, 0, /* OSA */				
+0, 5, 3, 2,	1  /* Recruit */
+};
+const int16 	GunRFIndex[] 	= {
+//Original Operators
+0, 0, 0, 1, 0, /* SLEDGE */				0, 0, 1, 1, 1, /* THATCHER */			0, 0, 0, 1, 1, /* Ash */			0, 1, 0, 1, 1, /* THERMITE */
+0, 1, 1, 1, 1, /* TWITCH */				1, 1, 1, 1, 1, /* MONTAGNE */			1, 1, 1, 1, 1, /* GLAZ */			0, 0, 0, 1, 1, /* FUZE */
+1, 1, 1, 1, 1, /* BLITZ */				0, 0, 0, 1, 0, /* IQ */
+//Year 1
+0, 1, 0, 1, 0, /* BUCK */				0, 1, 0, 1, 0, /* BLACKBEARD */			0, 0, 0, 1, 0, /* CAPITÃO */		0, 1, 0, 0, 1, /* HIBANA */
+//Year 2
+0, 0, 1, 1, 1, /* JACKAL */				0, 1, 0, 1, 0, /* YING */				0, 0, 0, 1, 0, /* ZOFIA */			1, 1, 0, 0, 0, /* DOKKAEBI */
+//Year 3
+0, 1, 1, 1, 0, /* LION */				0, 0, 1, 1, 0, /* FINKA */				1, 0, 0, 1, 0, /* MAVERICK */
+0, 0, 0, 1, 1, /* NOMAD
+//Year 4
+0, 0, 0, 1, 0, /* GRIDLOCK */			0, 1, 0, 1, 1, /* NOKK */				0, 1, 0, 0, 0, /* Amaru */			1, 0, 0, 0, 0, /* KALI */
+//Year 5
+0, 0, 0, 1, 0, /* IANA */				0, 1, 0, 1, 0, /* ACE */				0, 0, 0, 1, 0, /* ZERO */
+//Year 6
+0, 1, 0, 1, 0, /* FLORES */				0, 0, 0, 1, 0, /* OSA */
+0, 1, 0, 1,	1  /* Recruit */
+};
+const int16 	GunARIndex[]	= {
+//Primary Guns			Secondary Gun	Grenades
+//Original Operators
+49,71,	20,80,	0,0,	39,87,	0,0,	1,	/* SLEDGE */	26,92,	44,76,	20,80,	25,89,	0,0,	0,	/* THATCHER */
+53,95,	45,98,	0,0,	33,88,	38,87,	0,	/* Ash */		45,81,	40,90,	0,0,	28,83,	38,87,	0,	/* THERMITE */
+29,94,	37,93,	20,75,	24,86,	95,90,	0,	/* TWITCH */	24,83,	24,83,	0,0,	24,83,	24,83,	0,	/* MONTAGNE */
+27,90,	0,0,	0,0,	27,87,	27,87,	0,	/* GLAZ */		29,94,	44,90,	0,0,	27,90,	18,87,	0,	/* FUZE */
+25,86,	0,0,	0,0,	25,86,	0,0,	0,	/* BLITZ */		28,91,	28,91,	28,91,	28,91,	0,0,	0,	/* IQ */
+//Year	 1
+49,99,	44,88,	0,0,	37,87,	0,0,	0,	/* BUCK */		28,70,	55,90,	0,0,	31,90,	0,0,	0,	/* BLACKBEARD */
+39,94,	50,91,	0,0,	37,90,	0,0,	0,	/* CAPITÃO */	30,99,	20,85,	0,0,	32,92,	31,85, 	0,	/* HIBANA */
+//Year	 2
+28,94,	42,91,	31,83,	25,85,	31,83,	0,	/* JACKAL */	27,79,	31,83,	0,0,	27,79,	0,0,	0,	/* YING */
+75,90,	44,83,	0,0,	25,89,	0,0,	0,	/* ZOFIA */		26,97,	18,92,	0,0,	34,72,	65,83,	0,	/* DOKKAEBI */
+//Year	 3
+28,89,	37,93,	23,70, 	34,87,	95,9,	0,	/* LION */		24,92,	44,90,	48,90,	27,80,	18,87,	1,	/* FINKA */
+38,93,	27,93,	0,0,	27,93,	0,0,	1,	/* MAVERICK */	27,94,	47,92,	0,0,	24,87,	30,84,	0,	/* NOMAD */
+//Year	 4
+27,92,	42,89,	0,0,	24,87,	40,91,	0,	/* GRIDLOCK */	28,77,	27,70,	0,0,	31,91,	29,84,	1,	/* NOKK */
+29,95,	20,85,	0,0,	32,80,	74,90,	0,	/* Amaru */		16,101	,0,0,	0,0,	29,96,	65,83,	0,	/* KALI	*/
+//Year	 5
+28,90,	28,90,	0,0,	24,88,	0,0,	1,	/* IANA */		56,95,	40,90,	0,0,	36,85,	0,0,	0,	/* ACE */
+29,71,	50,82,	0,0,	26,86,	0,0,	0,	/* ZERO */
+//Year	 6
+28,92,	55,90,	0,0,	24,82,	0,0,	0,	/* FLORES */	45,81,	42,91,	0,0,	27,87,	0,0,	0,	/* OSA */
+0,0,	0,0,	0,0,	0,0,	0,0,	0	/* Recruit */
+};
+const int16  	operatorsByYear[]= {0,10,14,18,22,26,29};
+int 			operatorsCount	= 31; 	
+const string enterSlotMsg[]		= {"Enter slot number", "for the", "Defenders script", ""};	
+const string operatorType		= "Attackers";
+//══════════════════════════════════════════════════════════════════════════════════════════════
+const string configurationText	= "Configure";
+const string operationYear[] 	= {"",		  	"Year 1",	"Year 2", 	"Year 3",	"Year 4",	"Year 5",	"Year 6",	""};
+const string operationName[] 	= {"Original",	"Black",	"Velvet", 	"Chimera",	"Burnt", 	"Void", 	"Crimson",	""};
+const string operationName2[] 	= {"Operators",	"Ice",		"Shell",	"",			"Horizon",	"Edge", 	"Heist",	""};
+const int16  operatorSelMsg[] 	= {80,114,101,115,115,32,65,47,127,32,116,111,32,115,101,108,101,99,116,46,
+									32,72,111,108,100,32,76,84,47,76,50,32,43,32,133,32,134,32,84,111,32,
+									110,97,118,105,103,97,116,101,32,116,104,114,111,117,103,104,32,115,101,97,115,111,110,115,46,32};									
+const string gunIndexMsg[]		= {"Primary", "Secondary", ""}
+const string configuration[]	= {"Anti-recoil", "Guns", ""};
+const string saveMessage		= "SAVED";
+int verticalAR, horizontalAR, tempPolar;
+const string polarRecoild		= "Antirecoil";
+int forIndex 					= 1;	
+int arVal, c_val, chr_val, 
+slotNumber, pval_data;
+
+define GUN_PRIMARY				= 0;
+define GUN_SECONDARY			= 1;
+
+define DEFAULT 					= 0;
+define OPERATOR_SELECTION_MOD 	= 2;
+define OPERATOR_BY_YEAR_MOD 	= 3;
+define GAME_MOD					= 4;
+define ANTIRECOIL_MOD			= 5;
+define GUN_SELECTION_MOD		= 6;
+define RESET_MOD				= 7;
+define CHANGE_SLOT_MOD			= 8;
+define SAVE_AR_MOD				= 9;
+define CONFIG_MOD				= 10;
+define QUICK_TOGGLE_MOD			= 11;
+define QUICK_TOGGLE_EDIT_MOD	= 12;
+
+int currentMod					= DEFAULT;
+int activeGun					= 0;
+int operatorsByYearIndex		= 0;	
+int currentConfigModIndex		= 0;
+int gunRapidFire;
+int activeOperator				= 0;
+int LINE_TOP					= 7;
+int LINE_CENTER					= 25;
+int LINE_BOTTOM					= 45;
+int messageColumCount 			= 127;
+int messageArrayLine			= 0;
+int messageSize;
+
+int presses_per_sec    			= 40; // 60 fps max: '30' | 30 fps max: '15' (some games limit to '10')
+int RightStickDeadZone			= 10;
+
+	//Game buttons
+int FireButton					= XB1_RT;
+int AdsButton   				= XB1_LT;
+int AbilityButton  				= XB1_RB;
+int TacticalButton				= XB1_LB;
+int SelectButton    			= XB1_A;
+int CrouchButton    			= XB1_B;
+int MeleeButton     			= XB1_RS;
+int SprintButton    			= XB1_LS;
+int ReloadButton  				= XB1_X;
+int SwapButton      			= XB1_Y;
+    //Special buttons
+int ForceSwapButton 			= XB1_A;
+	//Navigation buttons
+int UpButton					= XB1_UP;
+int RightButton					= XB1_RIGHT;
+int DownButton					= XB1_DOWN;
+int LeftButton					= XB1_LEFT;
+int MenuButton					= XB1_MENU;
+int ModsButton					= XB1_VIEW;
+int RxButton					= XB1_RX;
+int RyButton					= XB1_RY;
+int LxButton					= XB1_LX;
+int LyButton					= XB1_LY;
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		Main block					║
+╚═══════════════════════════════════╝
+*/	
+int i_val;
+int gunARInfo[4], gunIndex[2], gunCount;
+int saveVar = -32768;
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		Main block					║
+╚═══════════════════════════════════╝
+*/	
+init{
+	LoadSlotNumber();
+	combo_run(ChangingOps);
+}
+main {	   
+	if(currentMod == GAME_MOD){
+		if(ButtonHold(AdsButton) && ButtonPress(MenuButton)) DisplayMod(OPERATOR_SELECTION_MOD);
+		if(ButtonHold(AdsButton) && ButtonPress(ModsButton)) DisplayMod(CONFIG_MOD);
+		
+		//Gun switch 	
+		if(ButtonRelease(SwapButton) && get_ptime(SwapButton) < 500){
+			if(!ButtonHold(TacticalButton) && !ButtonHold(AbilityButton) && !ButtonHold(LeftButton) && !ButtonHold(RightButton)){
+				activeGun = !activeGun;
+			}
+			DisplaySwitchGun();	
+		}
+		//Force Gun switch    	
+		if(ButtonHold(AdsButton) && DoubleTab(ForceSwapButton)){ 
+			activeGun 	= !activeGun;
+			DisplaySwitchGun();
+		}												
+		
+    	if(get_val(AdsButton) && get_val(FireButton)){
+			if(isqrt(pow(get_val(RxButton), 2) + pow(get_val(RyButton), 2)) < RightStickDeadZone){ 
+				set_polar(POLAR_RS, verticalAR, (horizontalAR * 326));
+			}
+		}	
+		//Rapid Fire for all
+		if(gunRapidFire){
+			if(ButtonHold(FireButton))	combo_run(RapidFire);
+			else						combo_stop(RapidFire);    	
+		}
+	}
+	else if(currentMod == CONFIG_MOD){	
+		if(ButtonHold(AdsButton) && ButtonPress(MenuButton)) DisplayMod(OPERATOR_SELECTION_MOD);
+		if(ButtonHold(AdsButton) && ButtonPress(ModsButton)) DisplayMod(CONFIG_MOD);
+		
+		currentConfigModIndex = EditValues(currentConfigModIndex, 0, 1, TRUE);
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)) DisplayConfiguration();
+		if(ButtonRelease(SelectButton)){ 			
+			if(currentConfigModIndex == 0) DisplayMod(ANTIRECOIL_MOD);
+			if(currentConfigModIndex == 1) DisplayMod(GUN_SELECTION_MOD);
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(GAME_MOD);
+		block_all_inputs();		
+	}		    
+	else if(currentMod == OPERATOR_SELECTION_MOD){  
+		
+		if(ButtonPress(CrouchButton)){
+			DisplayEnterSlotNumber();
+			currentMod = CHANGE_SLOT_MOD;		
+		}
+		if(ButtonHold(AdsButton)){
+			operatorsByYearIndex = EditValues(operatorsByYearIndex, 0, 6, TRUE);
+			if(ButtonPress(RightButton) || ButtonPress(LeftButton)) DisplayOperatorByYear();
+		}else{
+			DisplayOperatorSelectionScroll();
+			activeOperator = EditValues(activeOperator, 0, operatorsCount, TRUE);
+			if(ButtonPress(RightButton) || ButtonPress(LeftButton)) DisplayOperatorSelection();
+		}
+		if(ButtonRelease(AdsButton))DisplayOperatorSelection();
+		if(ButtonPress(SelectButton)){
+			activeGun = GUN_PRIMARY;
+			gunIndex[GUN_PRIMARY] = 0;
+			gunIndex[GUN_SECONDARY] = 0;
+			LoadARInfo();
+			ActivateOperator();
+		}
+		block_all_inputs();
+	}     
+	else if(currentMod == ANTIRECOIL_MOD){
+    	if(get_val(AdsButton) && get_val(FireButton)){
+			if(isqrt(pow(get_val(RxButton), 2) + pow(get_val(RyButton), 2)) < RightStickDeadZone){  
+				set_polar(POLAR_RS, verticalAR, (horizontalAR * 326));
+			}
+		}	
+		//Rapid Fire for all
+		if(gunRapidFire){
+			if(ButtonHold(FireButton))	combo_run(RapidFire);
+			else						combo_stop(RapidFire);    	
+		}
+		if(	ButtonRelease(LeftButton) || ButtonRelease(RightButton) ||
+			ButtonRelease(DownButton) || ButtonRelease(UpButton) ){
+			DisplayAntiRecoilMenu(0);
+		}
+		
+		AdjustRecoilValue();
+		if(ButtonRelease(SelectButton)){
+			SaveARInfo();
+			DisplayMod(GAME_MOD);			
+		}
+		Unset(UpButton);
+		Unset(DownButton);
+		Unset(LeftButton);
+		Unset(RightButton);
+		Unset(SelectButton);
+		Unset(CrouchButton);
+		Unset(SwapButton);
+	}
+	else if(currentMod == GUN_SELECTION_MOD){	
+		gunIndex[activeGun] = EditValues(gunIndex[activeGun], 0, gunCount - 1, TRUE);
+		if(GunNameIndex[GetGunNameIndex()] < 0){
+			if(ButtonPress(LeftButton)) gunIndex[activeGun] = gunIndex[activeGun] - 1;
+			if(ButtonPress(RightButton)) gunIndex[activeGun] = 0;
+		}
+		if(ButtonPress(LeftButton) || ButtonPress(RightButton)) DisplayGunSelection();
+		if(ButtonRelease(SelectButton)){
+			SaveARInfo();
+			DisplayMod(GAME_MOD);		
+		}
+		if(ButtonPress(CrouchButton)) DisplayMod(CONFIG_MOD);	
+		block_all_inputs();
+	}	
+	else if(currentMod == CHANGE_SLOT_MOD){
+		if(slotNumber == 0){
+			arVal = EditValues(arVal, 1, 8, TRUE);
+			DisplayEnterSlotNumber();
+			if(ButtonRelease(SelectButton)){
+				set_pvar(SPVAR_60, arVal);
+				block_all_inputs();
+				combo_run(SAVE);
+				slotNumber = arVal;
+			}
+		}else load_slot(slotNumber);
+		block_all_inputs();
+	}	
+}
+
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║			Combos					║
+╚═══════════════════════════════════╝
+*/
+combo ChangingOps{
+   	cls_oled(0);
+   	printf(CenterText(sizeof(operatorType) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM - 5, OLED_FONT_MEDIUM, OLED_WHITE, operatorType[0]);
+   	wait(250);
+   	DisplayMod(OPERATOR_SELECTION_MOD);
+}
+combo RapidFire {
+    set_val(FireButton, 100);
+    wait(560 / presses_per_sec);
+    set_val(FireButton, 0);
+    wait(560 / presses_per_sec - get_rtime());
+    set_val(FireButton, 0);
+} 
+combo SAVE { 	
+   	cls_oled(0);						
+   	printf(CenterText(sizeof(saveMessage) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER , OLED_FONT_MEDIUM, OLED_WHITE, saveMessage[0]);
+   	wait(250);
+   	DisplaySwitchGun();
+	if(activeGun == GUN_PRIMARY){
+		LED(GREEN);
+	}else{
+		LED(BLUE);
+	}
+}
+
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║		Main Functions				║
+╚═══════════════════════════════════╝
+*/
+function ActivateOperator(){
+	DisplaySwitchGun();
+	DisplayMod(GAME_MOD);
+	block_all_inputs();
+}
+function AdjustRecoilValue(){
+	arVal = 0;
+	if(ButtonPress(LeftButton)) 	arVal = 1;
+	if(ButtonPress(RightButton)) 	arVal = 2;
+	if(ButtonPress(UpButton)) 		arVal = 3;
+	if(ButtonPress(DownButton)) 	arVal = 4;
+	if(arVal == 0) return;
+	if(activeGun == GUN_PRIMARY){
+		if(arVal > 2) gunARInfo[0] = EditARValues(gunARInfo[0], 0, 99);
+		if(arVal < 3) gunARInfo[1] = EditARValues(gunARInfo[1], 0, 200);
+		horizontalAR 	= gunARInfo[0];
+		verticalAR 		= gunARInfo[1];
+	}else{
+		if(arVal > 2) gunARInfo[2] = EditARValues(gunARInfo[2], 0, 99);
+		if(arVal < 3) gunARInfo[3] = EditARValues(gunARInfo[3], 0, 200);
+		horizontalAR 	= gunARInfo[2];
+		verticalAR 		= gunARInfo[3];
+	}
+	
+	DisplayAntiRecoilMenu(arVal);
+}
+function DisplayAntiRecoilMenu(charIndex){
+	ClearScroll(LINE_TOP);
+	DisplayFrame();
+	putc_oled(1, 86);
+	puts_oled(20, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);
+	DisplayAntiRecoilDirectionMenu(charIndex);
+
+	putc_oled(1, 72);
+	puts_oled(100, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);
+	
+	printf(CenterText(sizeof(polarRecoild) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, polarRecoild[0]);
+	NumberToString(verticalAR, FindDigits(verticalAR), 90, LINE_CENTER);
+	NumberToString(horizontalAR, FindDigits(horizontalAR), 15, LINE_CENTER);
+}	
+function DisplayAntiRecoilDirectionMenu(charIndex){
+	if(charIndex != 1){
+		putc_oled(1, 133);
+		puts_oled(50, 35, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+	if(charIndex != 2){
+		putc_oled(1, 134);
+		puts_oled(70, 35, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+	if(charIndex != 3){
+		putc_oled(1, 131);
+		puts_oled(60, 25, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+	if(charIndex != 4){
+		putc_oled(1, 132);
+		puts_oled(60, 45, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	}
+}
+function DisplayConfiguration(){
+	DisplayFrame();	
+	printf(CenterText(sizeof(configurationText) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, configurationText[0]);
+	printf(CenterText(configuration[currentConfigModIndex + 1] - configuration[currentConfigModIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER , OLED_FONT_MEDIUM, OLED_WHITE, configuration[currentConfigModIndex]);
+	DisplayLeftRight();		    	
+	LED(RED);
+}
+function DisplayEnterSlotNumber(){
+	DisplayFrame();
+	
+	printf(CenterText(enterSlotMsg[0 + 1] - enterSlotMsg[0] - 1, OLED_FONT_SMALL_WIDTH), LINE_TOP, 		OLED_FONT_SMALL, OLED_WHITE, enterSlotMsg[0]);
+	printf(CenterText(enterSlotMsg[1 + 1] - enterSlotMsg[1] - 1, OLED_FONT_SMALL_WIDTH), LINE_TOP + 10, OLED_FONT_SMALL, OLED_WHITE, enterSlotMsg[1]);
+	printf(CenterText(enterSlotMsg[2 + 1] - enterSlotMsg[2] - 1, OLED_FONT_SMALL_WIDTH), LINE_TOP + 20, OLED_FONT_SMALL, OLED_WHITE, enterSlotMsg[2]);
+	NumberToString(arVal, FindDigits(arVal), CenterText(FindDigits(arVal), OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM);	
+}
+function DisplayGunName(){
+	printf(CenterText(GunName[GunNameIndex[GetGunNameIndex()] + 1] - GunName[GunNameIndex[GetGunNameIndex()]] - 1 , OLED_FONT_MEDIUM_WIDTH), LINE_CENTER, OLED_FONT_MEDIUM, OLED_WHITE, GunName[GunNameIndex[GetGunNameIndex()]]);	
+}
+function DisplayGunSelection(){	
+	DisplayFrame();
+	DisplayGunIndex();
+	DisplayLeftRight();
+	DisplayGunName();
+}
+function DisplayGunType(){
+	printf(CenterText(GunTypeName[GetGunTypeIdex() + 1] - GunTypeName[GetGunTypeIdex()] - 1 , OLED_FONT_SMALL_WIDTH), LINE_BOTTOM, OLED_FONT_SMALL, OLED_WHITE, GunTypeName[GetGunTypeIdex()]);
+	printf(CenterText(GunTypeName[GetGunTypeIdex() + 1] - GunTypeName[GetGunTypeIdex()] - 1 , OLED_FONT_SMALL_WIDTH), LINE_BOTTOM, OLED_FONT_SMALL, OLED_WHITE, GunTypeName[GetGunTypeIdex()]);	
+	gunRapidFire = GetGunRFIndex();
+}
+function DisplayGunIndex(){
+	ClearScroll(LINE_TOP);
+	if(activeGun == GUN_PRIMARY){
+		printf(CenterText(gunIndexMsg[0 + 1] - gunIndexMsg[0] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, gunIndexMsg[0]);
+	}else{
+		printf(CenterText(gunIndexMsg[1 + 1] - gunIndexMsg[1] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, gunIndexMsg[1]);
+	}
+}
+function DisplayMod(modIndex){	
+   	currentMod 	 =  modIndex;
+	block_all_inputs();
+   	if(modIndex == OPERATOR_SELECTION_MOD) 	DisplayOperatorSelection();
+   	if(modIndex == ANTIRECOIL_MOD){
+   		DisplayAntiRecoilMenu(0);
+   	}
+   	if(modIndex == GUN_SELECTION_MOD)		DisplayGunSelection();
+   	if(modIndex == CONFIG_MOD)				DisplayConfiguration();
+   	if(modIndex == GAME_MOD)				DisplaySwitchGun(); 
+}
+function DisplayOperatorSelection(){
+		DisplayFrame();	
+		DisplayLeftRight();
+		PrintOperatorName(LINE_CENTER);
+		ClearScroll(LINE_TOP);
+}
+function DisplayOperatorByYear(){
+	DisplayFrame();
+	activeOperator				= operatorsByYear[operatorsByYearIndex];
+	
+	printf(CenterText(operationName[operatorsByYearIndex + 1] - operationName[operatorsByYearIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, operationName[operatorsByYearIndex]);
+	printf(CenterText(operationName2[operatorsByYearIndex + 1] - operationName2[operatorsByYearIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER, OLED_FONT_MEDIUM, OLED_WHITE, operationName2[operatorsByYearIndex]);
+	printf(CenterText(operationYear[operatorsByYearIndex + 1] - operationYear[operatorsByYearIndex] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_WHITE, operationYear[operatorsByYearIndex]);	
+}
+function DisplaySwitchGun(){
+	DisplayFrame();	
+	printf(CenterText(OperatorName[activeOperator + 1] - OperatorName[activeOperator] - 1, OLED_FONT_MEDIUM_WIDTH), LINE_TOP, OLED_FONT_MEDIUM, OLED_WHITE, OperatorName[activeOperator]);		
+	DisplayGunName();
+	DisplayGunType();
+	if(activeGun == GUN_PRIMARY){
+		LED(GREEN);
+		horizontalAR = gunARInfo[0];
+		verticalAR = gunARInfo[1];
+		gunCount = 3;
+	}else{
+		LED(BLUE);
+		horizontalAR = gunARInfo[2];
+		verticalAR = gunARInfo[3];
+		gunCount = 2;
+	}
+}
+function DisplayOperatorSelectionScroll(){
+	messageColumCount --;
+	messageSize = sizeof(operatorSelMsg)/sizeof(operatorSelMsg[0]);
+	for (messageArrayLine = 0; messageArrayLine < messageSize; messageArrayLine++){
+		if(messageColumCount + (10 * messageArrayLine ) > 0 && messageColumCount + (10 * messageArrayLine ) < 127){
+			putc_oled(1, operatorSelMsg[messageArrayLine]);
+			puts_oled(messageColumCount + (10 * messageArrayLine ), LINE_TOP - 5, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH, 1);
+		}
+	}
+
+	if(messageColumCount + (10 * messageArrayLine ) < 0 ){
+		messageColumCount = 127;
+	}
+	line_oled(1, 1 , 1 , 22 , 1 , 1 );	
+}
+function DisplayLeftRight(){
+	ClearScroll(LINE_BOTTOM);
+	putc_oled(1, 133);
+	puts_oled(10, LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	putc_oled(1, 134);
+	puts_oled(111,LINE_BOTTOM, OLED_FONT_MEDIUM, OLED_FONT_MEDIUM_WIDTH,1);
+	line_oled(1, 1 , 1 , LINE_BOTTOM + 10 , 1 , 1 );
+}
+function DisplayFrame(){
+	cls_oled(0);
+	rect_oled(1,1,127,63,0,1);
+}
+function LoadARInfo(){
+	
+	//Default data from script
+	//Primary Gun
+	gunARInfo[0] = GunARIndex[GetGunARIndex()];
+	gunARInfo[1] = GunARIndex[GetGunARIndex() + 1];
+	//Seconday Gun
+	gunARInfo[2] = GunARIndex[GetGunARIndex() + 6];
+	gunARInfo[3] = GunARIndex[GetGunARIndex() + 7];
+		
+	//Primary Gun 
+	saveVar = -32768 - (2 * activeOperator) * -1;	
+	tempPolar = get_pvar(saveVar, -32768, 32767, 0);
+	if(tempPolar != 0){
+		gunARInfo[0]    = (tempPolar / 100) % 100;  		
+	    gunARInfo[1]    = (tempPolar % 100);
+	    gunIndex[GUN_PRIMARY] = (tempPolar / 10000);
+	    //Fix the > 100 values
+	    if(gunARInfo[0] < 0){
+	    	gunARInfo[0] = abs(gunARInfo[0]);
+	    	gunARInfo[1] =  200 - abs(gunARInfo[1]);
+	    	gunIndex[0]  = abs(gunIndex[GUN_PRIMARY]);
+	    }
+	    
+	    //Secondary Gun
+		saveVar = -32768 - ((2 * activeOperator) + 1) * -1;		
+		tempPolar = get_pvar(saveVar, -32768, 32767, 0);
+		gunARInfo[2]    = (tempPolar / 100) % 100;  		
+	    gunARInfo[3]    = (tempPolar % 100);
+	    gunIndex[1] = (tempPolar / 10000);
+
+	    //Fix the > 100 values
+	    if(gunARInfo[2] < 0){
+	    	gunARInfo[2] = abs(gunARInfo[2]);
+	    	gunARInfo[3] =  200 - abs(gunARInfo[3]);
+	    	gunIndex[1] = abs(gunIndex[1]);
+	    }
+	}
+}
+function SaveARInfo(){
+	cls_oled(0);						
+   	printf(CenterText(sizeof(saveMessage) - 1, OLED_FONT_MEDIUM_WIDTH), LINE_CENTER , OLED_FONT_MEDIUM, OLED_WHITE, saveMessage[0]);
+	//old trick to concat int's
+	if(horizontalAR == 0 && verticalAR == 0){
+		saveVar = -32768 - (2 * activeOperator) * -1;
+		set_pvar(saveVar, 0);
+		
+		saveVar = -32768 - ((2 * activeOperator) + 1) * -1;	
+		set_pvar(saveVar, 0);
+	}else{
+		
+		//Primary Gun
+		tempPolar = (gunIndex[0]) *  pow(10, 2) +  gunARInfo[0];		
+		if(gunARInfo[1] > 99){
+			//we are trying to put 3 value inthis one variable so some fittling is needed
+			tempPolar = tempPolar * pow(10, 2) + (200 - gunARInfo[1]);
+			tempPolar = tempPolar * -1;
+		}else{
+			tempPolar = tempPolar * pow(10, 2) +  gunARInfo[1];
+		}
+		saveVar = -32768 - (2 * activeOperator) * -1;
+		set_pvar(saveVar, tempPolar);
+		Set(TRACE_1, saveVar);
+		
+		//Secondary Gun	
+		tempPolar = (gunIndex[1]) *  pow(10, 2) +  gunARInfo[2];
+		if( gunARInfo[3] > 99){
+			//we are trying to put 3 value inthis one variable so some fittling is needed
+			tempPolar = tempPolar * pow(10, 2) + (200 - gunARInfo[3]);
+			tempPolar = tempPolar * -1;
+		}else{
+			tempPolar = tempPolar * pow(10, 2) +  gunARInfo[3];
+		}
+		saveVar = -32768 - ((2 * activeOperator) + 1) * -1;	
+		set_pvar(saveVar, tempPolar);
+		Set(TRACE_2, saveVar);
+	}
+	
+   	DisplaySwitchGun();
+	if(activeGun == GUN_PRIMARY){
+		LED(GREEN);
+	}else{
+		LED(BLUE);
+	}
+}
+function LoadSlotNumber(){
+	pval_data  = get_pvar(SPVAR_60, 0, 8,0); 
+   	slotNumber = pval_data;
+}
+
+function PrintOperatorName(line){
+	printf(CenterText(OperatorName[activeOperator + 1] - OperatorName[activeOperator] - 1, OLED_FONT_MEDIUM_WIDTH), line, OLED_FONT_MEDIUM, OLED_WHITE, OperatorName[activeOperator]);
+}
+
+function EditValues(value, min, max, loop){
+	if(event_press(UpButton) || event_press(RightButton)){
+		if(get_ival(AdsButton) && currentMod != OPERATOR_SELECTION_MOD) value += 10;
+		else value ++; 
+		if(currentMod == CHANGE_SLOT_MOD){
+			if(value == get_slot()) value ++;
+		}
+		if(loop && value > max) return min;
+	}
+	if(event_press(DownButton) || event_press(LeftButton)){
+		if(get_ival(AdsButton) && currentMod != OPERATOR_SELECTION_MOD) value -= 10;
+		else value --; 
+		if(currentMod == CHANGE_SLOT_MOD){
+			if(value == get_slot()) value --;
+		}
+		if(loop && value < min) return max;
+	}
+
+	return value = clamp(value, min, max);
+}
+/*
+╔═══════Rainbow Six Siege═══════════╗
+║	    Utilities functions			║
+╚═══════════════════════════════════╝
+*/
+	//Information functions	
+function ClearScroll(scrollLine){
+	for (forIndex = 0; forIndex < 127; forIndex++) {		 
+		PrintCharacter(32, forIndex, scrollLine);
+	}
+}	
+function GetGunNameIndex() 	{ return (5 * activeOperator) + (activeGun * 3) + gunIndex[activeGun]}
+function GetGunTypeIdex() 	{ return GunTypeIndex[GetGunNameIndex()]}
+function GetGunRFIndex()   	{ return GunRFIndex[GetGunNameIndex()]}
+function GetGunARIndex()	{ return (11 * activeOperator)}
+function EditARValues(value, min, max){
+	if(event_press(UpButton) || event_press(RightButton)){
+		if(get_ival(AdsButton)) value -= 10;
+		else value --;                           
+	}
+	if(event_press(DownButton) || event_press(LeftButton)){
+		if(get_ival(AdsButton)) value += 10;
+		else value ++;
+	}
+	return value = clamp(value, min, max);
+}
+	//Buttons funntions
+function ButtonPress(button){
+	return event_press(button);
+} 
+function ButtonRelease(button){return event_release(button);}
+function ButtonHold(button){
+	return get_val(button);
+} 	
+function DoubleTab(button) { 
+	if(event_press(button) && get_brtime(button) < 300) return TRUE;                                     
+	return 0;                                        
+}  
+function Set(id,val){set_val(id, val);} 
+function Unset(id){set_val(id, 0);}
+	//Utilities functions
+//--LED
+define BLUE      = 1;
+define RED       = 2;
+define GREEN     = 3;
+define PINK      = 4;
+define SKYBLUE	 = 5;
+define YELLOW    = 6;
+define WHITE     = 7;
+	 
+data(
+	0,0,0,0, //0. Off
+	2,0,0,0, //1. Blue
+  	0,2,0,0, //2. Red
+  	0,0,2,0, //3. Lime/Green
+  	0,0,0,2, //4. Fuchsia/Pink
+  	2,0,2,0, //5. SkyBlue
+  	0,2,2,0, //6. Yellow
+  	2,2,2,2  //7. White
+);	
+function CenterText(f_chars,f_font) {                                                         
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); 
+}   
+function NumberToString(f_val,f_dgts, x_val,y_val) {
+ 
+	i_val = 1;  chr_val = 10000;
+    
+	if(f_val < 0){          
+         putc_oled(i_val,45);    
+         i_val += 1;
+         f_val = abs(f_val);
+	} 
+	for(c_val = 5; c_val >= 1; c_val--){
+	    if(f_dgts >= c_val) {
+            putc_oled(i_val, (f_val / chr_val) + 48);
+            f_val = f_val % chr_val;
+            i_val +=  1; 
+            if(c_val == 4){
+                putc_oled(i_val,44);   
+                i_val += 1;
+            }
+        }
+        chr_val /= 10;
+    }  
+
+    puts_oled(x_val, y_val, 1,i_val - 1, 1);    
+} 
+function PrintCharacter(character, column, scrollLine){
+	if(column > 0 && column < 127){
+		putc_oled(1,character);
+		puts_oled(column, scrollLine, 0, 1, 1);
+	}
+}	
+function FindDigits(digits) {                         
+	//  FindDigits(value)                                
+	//        return Number of Digits in Value Passed     		                                                      
+    digits = abs(digits);                               
+    if(digits / 10000 > 0) return 5;                   
+    if(digits /  1000 > 0) return 4;                   
+    if(digits /   100 > 0) return 3;                   
+    if(digits /    10 > 0) return 2;                   
+                          return 1;                  
+}
+function LED(Colour) {
+    set_led(LED_1,duint8(Colour*4));
+    set_led(LED_2,duint8((Colour*4) + 1));
+    set_led(LED_3,duint8((Colour*4) + 2));
+    set_led(LED_4,duint8((Colour*4) + 3));
+}

@@ -1,0 +1,155 @@
+// GPC Online Library
+// rust_console_ak_.gpc
+
+
+																																												/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    JB'S Rust AK Anti Recoil        )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+This is not any scammers crap combo script that does not work at all. You can configure this to any gun any setting any attachment. The timing will need to be changed per gun.
+
+This script allows you to have anti recoil with aiming. Each bullet has a value which can be changed. 
+
+The values are pretty decent at this point. You can fine tune them if need be.
+
+Currently I have it set up for an AK with a holo.
+
+READ ALL THE INSTRUCTIONS BELOW IN GREEN TEXT.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(              In Game Values                        )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+ 
+ 70 - X
+ 70 - Y
+ 40 - ADS
+ 40 - 1 X Zoom
+ 10 - Dead Zone Left
+ 10 - Dead Zone Right
+ 90 - FOV under Graphics. Not sure if this has an effect or not.
+
+																																												*/   
+
+
+
+define Ads      = PS4_L2; // DO NOT TOUCH
+define Fire     = PS4_R2; // DO NOT TOUCH
+
+
+																																												/*
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Script Stick Drift              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+1)	DO NOT SET YOUR IN GAME VALUE TO THIS. 
+2)	THIS IS VERY IMPORTANT!!! This allows you to remove stick drift from the script. Move your right stick around and find the highest value in device manager.  
+3)	See what your MAX INPUT is for your left stick X and Y when you dont touch it.
+4)	I recomend moving it around a little bit and see where it falls.
+6)	Mine was 7. It does not matter if it is positive or negative. Thats why 7 is in the dead zone above
+7)  Your stick drift cannot exceed a value for the anti recoil below.
+8)  LEAVE YOUR IN GAME DEADZONE AT 10 DO NOT SET IT TO THE ONE BELOW
+					 																																							*/
+
+define Deadzone = 7; 
+
+																																												/* 
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Anti Recoil Values              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+
+1)	Values below are for the recoil pattern. You can adjust each bullet. The values are pretty solid. You can fine tune them if you want.
+2)  I recommend changing values only by increasing or decreasing the value by 1 at a time. Max 2 at a time.
+3)  X is Horzontal
+4)  Y is Vertical 
+																																												*/
+const int16 AK[][] = {
+	{0,-20,-10,-25,-18,  8, 12, 32,  23,  23,  23,  24,  23,   4, -13, -13, -13, -20, -21, -26, -26, -26, -26,  18,  18,  20,  20,  20,  20,  20,   0},			//X-Axis
+	{0, 49, 49, 49, 49, 46, 27, 27,  27,  27,  28,  28,  28,  41,  41,  41,  41,  41,  41,  36,  36,  36,  36,  36,  34,  34,  34,  34,  30,  30,   0},			//Y-Axis
+	{0,130,260,390,520,650,780,910,1040,1170,1300,1430,1560,1690,1820,1950,2080,2210,2340,2470,2600,2730,2860,2990,3120,3250,3380,3510,3640,3770,4000}  		//Time
+}
+
+int X_Strength_modifier = 0;	//Boost X Axis Strnegth
+int Y_Strength_modifier = 0;	//Boost Y Axis Strnegth
+
+int AntiRecoil_Y;     // DO NOT TOUCH
+int AntiRecoil_X;     // DO NOT TOUCH
+int AntiRecoil_Y_Use; // DO NOT TOUCH
+int AntiRecoil_X_Use; // DO NOT TOUCH
+
+int recoil_timer,wtime,vpower,hpower,time_array,step;
+
+
+
+  																																												/*
+ DO NOT CHANGE ANYTHING BELOW. Unless you are configuring for a different weapon. You will need to change the value after get_ptime.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+																																												*/
+
+
+
+main {
+ 
+	set_val(TRACE_1,AntiRecoil_X);
+	set_val(TRACE_2,AntiRecoil_Y);
+	set_val(TRACE_3,wtime);
+	set_val(TRACE_4,step);
+	
+	AntiRecoil_X = AK [0][hpower];
+	AntiRecoil_Y = AK [1][vpower];
+	wtime        = AK [2][time_array]; 
+	
+	AntiRecoil_Y_Use = (AntiRecoil_Y * (100 + Y_Strength_modifier)) / 100;
+    AntiRecoil_X_Use = (AntiRecoil_X * (100 + X_Strength_modifier)) / 100;
+    
+  if(isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) <= Deadzone) {
+    set_val(PS4_LX,0);
+    set_val(PS4_LY,0);
+  }
+
+  if(isqrt(pow(abs(get_ival(PS4_RX)),2) + pow(abs(get_ival(PS4_RY)),2)) <= Deadzone) {
+    set_val(PS4_RX,0);
+    set_val(PS4_RY,0);
+  }
+   
+  if(get_val(Fire) && get_val(Ads)){
+  	recoil_timer += get_rtime();   
+	if(recoil_timer >= wtime){ 
+		vpower++;
+	    hpower++;
+	    time_array++;
+	    step++;
+	}
+	
+	set_val(PS4_RY, SmartSens(AntiRecoil_Y_Use, PS4_RY));
+    set_val(PS4_RX, SmartSens(AntiRecoil_X_Use, PS4_RX));
+    
+        
+    }
+    
+	if(event_release(Fire) || AK [2][time_array] == AK [2][30]){ 
+		vpower       = 0;
+	    hpower       = 0;
+	    time_array   = 0;
+	    step         = 0;
+	    recoil_timer = 0;
+	}
+    
+    
+}
+
+
+int SmartSens;
+
+function SmartSens(f_val, f_axis) { 
+
+    SmartSens = ( (f_val * ( 100 - abs( get_val(f_axis) ) ) ) / 100); 
+
+    return clamp(get_val(f_axis) + SmartSens, -100, 100);
+}
+
