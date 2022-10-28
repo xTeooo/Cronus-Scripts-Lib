@@ -1,0 +1,184 @@
+int T;													// Timer
+int T2V;												// Timer
+int T2H;												// Timer
+
+int ARVT1 =  290;										// Vertical Timeout1
+int ARVT2 =  290;										// Vertical Timeout2
+
+int ARHT1 =  480;										// Horizontal Timeout1
+int ARHT2 =  480;										// Horizontal Timeout2
+
+int ARVT3 =  770;										// Horizontal Timeout1
+int ARHT3 =  770;										// Horizontal Timeout2
+
+int ARVT4 = 1150;										// Horizontal Timeout1
+int ARHT4 = 1150;										// Horizontal Timeout2
+
+int ARVT5 = 1530;										// Horizontal Timeout1
+int ARHT5 = 1530;										// Horizontal Timeout2
+
+int ARVT6 = 2290;										// Horizontal Timeout1
+int ARHT6 = 2290;										// Horizontal Timeout2
+
+int ARV;												// Anti_Recoil Vertical Value
+int ARH;												// Anti_Recoil Horizontal Value
+
+//////////////////////////////////////////////////////////////////////////////////////////////////These are you values and timings\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+int ARVP1 = 50;												// Anti_Recoil First Vertical Value1
+int ARHP1 = 35;												// Anti_Recoil First Horizontal Value1
+
+int ARVP2 = 50;												// Anti_Recoil Second Vertical Value2
+int ARHP2 =-10;												// Anti_Recoil Second Horizontal Value2
+
+int ARVP3 = 50;												// Anti_Recoil Third Vertical Value3
+int ARHP3 =-19;												// Anti_Recoil Third Horizontal Value3
+
+int ARVP4 = 50;												// Anti_Recoil Forth Vertical Value1
+int ARHP4 =-16;												// Anti_Recoil Forth Horizontal Value1
+
+int ARVP5 = 45;												// Anti_Recoil Fifth Vertical Value2
+int ARHP5 =-9;												// Anti_Recoil Fifth Horizontal Value2
+
+int ARVP6 = 40;												// Anti_Recoil Sixth Vertical Value3
+int ARHP6 =  1;												// Anti_Recoil Sixth Horizontal Value3
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+int arum,brum;
+int recoilmod_y = 0;									// Recoil Modifer For the Y Axis
+int recoilmod_x = 0;									// Recoil Modifer For the X Axis
+
+int StickNoise = 10;									// Set this to your deadzone. Small in Apex is 10
+
+init{		
+	
+	ARV = ARVP1;										// Initialize Vertical Recoil Placeholder
+	ARH = ARHP1;										// Initialize Horizontal Recoil Placeholder
+	
+}
+
+main {
+		set_val(TRACE_1, ARV);						
+		set_val(TRACE_2, ARH);					
+		set_val(TRACE_3, T);	
+		set_val(TRACE_4,arum);
+		set_val(TRACE_5,brum);
+		set_val(TRACE_6,MovementARecoilToApply);
+	
+	//if(get_val(XB1_RT)){ 	combo_run(c);}			// If Fire Trigger execute this
+		
+    //--Anti Recoil
+    ARV = ARVP1;                                    // Reset Vertical Recoil Placeholder
+    ARH = ARHP1;                                    // Reset Horizontal Recoil Placeholder
+
+	if(get_ival(XB1_LT) && get_ival(XB1_RT)){
+		 T += get_rtime();							
+       	if(get_rumble(RUMBLE_A)){    
+        	arum += get_rtime();  
+    	}
+   	}
+   	
+    if (T <= ARVT1){            		            // If First Vertical Timer Reached execute
+        ARV = ARVP1;                                // Apply First Vertical Recoil
+    }
+    if (T <= ARHT1){  			                    // If First Horizontal Timer Reached execute
+        ARH = ARHP1;                                // Apply First Horizontal Recoil
+    }
+    if (T > ARVT1 && T <= ARVT2){                   // If Secondary Vertical Timer Reached execute
+        ARV = ARVP2;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARHT1 && T <= ARHT2){                   // If Secondary Vertical Timer Reached execute
+        ARH = ARHP2;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARVT2 && T <= ARVT3){                   // If Secondary Vertical Timer Reached execute
+        ARV = ARVP3;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARHT2 && T <= ARHT3){                   // If Secondary Vertical Timer Reached execute
+        ARH = ARHP3;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARVT3 && T <= ARVT4){                   // If Secondary Vertical Timer Reached execute
+        ARV = ARVP4;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARHT3 && T <= ARHT4){                   // If Secondary Vertical Timer Reached execute
+        ARH = ARHP4;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARVT4 && T <= ARVT5){                   // If Secondary Vertical Timer Reached execute
+        ARV = ARVP5;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARHT4 && T <= ARHT5){                   // If Secondary Vertical Timer Reached execute
+        ARH = ARHP5;                                // Apply Secondary Vertical Recoil
+    }
+    if (T > ARVT5){   				                // If Secondary Vertical Timer Reached execute
+        ARV = ARVP6;                                // Apply Third Vertical Recoil
+    }
+    if (T > ARHT5){                   				// If Secondary Vertical Timer Reached execute
+        ARH = ARHP6;                                // Apply Third Vertical Recoil
+    }
+    
+    if(event_release(XB1_RT)){                      // If Fire Trigger released execute this
+        T = 0;                                      // Reset Timer
+        ARV = ARVP1;                                // Reset Vertical Recoil Placeholder
+        ARH = ARHP1;                                // Reset Horizontal Recoil Placeholder
+    }
+    
+    if(event_release(XB1_RT)){     
+    	brum = arum;
+    	arum = 0;
+	}
+
+    if(get_val(XB1_RT)){ 
+        T += get_rtime();                                // Start Initial Timer
+	  
+	    if(isqrt(pow(get_ival(XB1_RX),2) + pow(get_ival(XB1_RY),2)) <= StickNoise) {
+	       	set_val(XB1_RY, ARV + recoilmod_y);            // Set Vertical Recoil when stick at or below deadzone
+        	set_val(XB1_RX, ARH + recoilmod_x);                // Set Horizontal Recoil when stick at or below deadzone
+		} 
+	   	if(isqrt(pow(get_ival(XB1_RX),2) + pow(get_ival(XB1_RY),2)) > StickNoise) { 
+	 		AntiRecoil(XB1_RY, ARV + recoilmod_y);            // Set Vertical Recoil when stick is above deadzone
+        	AntiRecoil(XB1_RX, ARH + recoilmod_x);                // Set Horizontal Recoil when stick is aboce deadzone
+		}
+	}
+
+}
+combo c{
+set_val(XB1_RT, 100);
+wait(40);
+set_val(XB1_RT, 0);
+wait(40);
+}
+//////////////////////////////////////////////////////////////////////////
+//Anti Recoil
+//////////////////////////////////////////////////////////////////////////
+int MinARecoilPercent = 5; 						
+int CurrentX,CurrentY,MinARecoilFactor,MinARecoilToApply,MovementARecoilToApply;
+
+function AntiRecoil(AxisToApply,ARecoilToApply) {
+
+    CurrentY = get_val(XB1_RY);
+    CurrentX = get_val(XB1_RX);
+    MinARecoilFactor = MinARecoilPercent / 100;
+    MinARecoilToApply = MinARecoilFactor * ARecoilToApply;
+    MovementARecoilToApply = (1 - MinARecoilFactor) * ((ARecoilToApply * (100 - isqrt(CurrentX*CurrentX + CurrentY*CurrentY))) / (100 + abs(CurrentX) + (CurrentY*CurrentY/2)));
+    set_val(AxisToApply,clamp1(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply),-100,100 - MinARecoilToApply));
+}
+//////////////////////////////////////////////////////////////////////////
+//Clamp
+//////////////////////////////////////////////////////////////////////////
+function clamp1(v, lo, hi) { return min1(hi, max1(v, lo)); }
+
+//////////////////////////////////////////////////////////////////////////
+//Min
+//////////////////////////////////////////////////////////////////////////
+function min1(a, b) { if(a<=b) return a; return b; }
+
+//////////////////////////////////////////////////////////////////////////
+//Max
+//////////////////////////////////////////////////////////////////////////
+function max1(a, b) { if(a>=b) return a; return b; }
+//////////////////////////////////////////////////////////////////////////
+//Offset
+//////////////////////////////////////////////////////////////////////////
+function offset(int axis, int offset_val) {
+      set_val(axis, clamp1(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+    return
+}

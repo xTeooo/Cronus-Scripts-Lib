@@ -1,0 +1,410 @@
+/*************************************** DoGz DAM ELLIPSE ASSIST FORTNITE V1.00 ***************************************\
+
+*/// BIG SHOUTOUT TO DON'T AT ME (DAM) AS ALWAYS
+
+// THE SCRIPT IS SETUP FOR EXPONENTIAL PLAYERS ( LINEAR PLAYERS WILL NEED TO ADJUST ACCORDINGLY TO SUIT YOUR SETTINGS >>> WHERE I STATED BELOW <<< )
+
+// POLAR AIM ASSIST ELLIPSE STYLE
+// QUICK EDIT ASSIST 	                  ( HOLD YOUR QUICK EDIT BUTTON IN AND MOVE TO SELECT TILES ZEN WILL HOLD SELECT AND CONFIRM AUTOMATICALLY )  
+// INSTANT EDIT AND RESET				  ( STANDARD INSTANT EDIT & RESET )
+// FAST RESET			                  ( PRESS THIS BUTTON AT ANYTIME TO RESET THE PEICE YOU ARE LOOKING AT )
+// EDIT SESNITIVITY CONTROL               ( SET IN GAME EDIT SENSE TO MAXIMUM SENSE 5.0X (SET 0 - 100) )
+// PUMPWALL
+// DROP SHOT ON FIRE
+// JUMPSHOT ON FIRE
+// INSTANT PICKAXE
+// AUTOPING
+
+// JUMPSHOT        = L2 & CROSS           ( R3 & BUILD TURN OFF AS WELL )
+// DROP SHOT       = L2 & R3              ( CROSS & BUILD TURN OFF AS WELL )
+// PUMP WALL       = L2 & R1              ( SHOOT THEN BUILD WALL INSTANTLY )
+// AUTOPING        = L2 & TRIANGLE        ( & HOLD L2 & R2 FOR 1 SECOND ( REPEATS EVERY 3 SECONDS ))
+// INSTANT PICKAXE = TRIANGLE TO ACTIVATE ( RELEASE FIRE TO SWAP TO WEAPON )
+// EDIT ASSIT      = L3 (HOLD)
+// FAST RESET      = TOUCHPAD OR OPTIONS  ( IF HOLD L2 BLOCKS FAST RESET COMBO )
+
+// INVERT AIM ASSIST SPIN DIRECTION USING INVERT_BUTTON ( CROUCH (R3) ) 
+
+// NO NEED TO ALTER BELOW HERE
+define ON  =  TRUE;
+define OFF = FALSE;
+
+// NO NEED TO ALTER BELOW HERE
+define PS         = PS4_PS;       //XBOX
+define SHARE      = PS4_SHARE;    //VIEW  
+define OPTIONS    = PS4_OPTIONS;  //MENU  
+define R1         = PS4_R1;       //RB  
+define R2         = PS4_R2;       //RT  
+define R3         = PS4_R3;       //RS  
+define L1         = PS4_L1;       //LB  
+define L2         = PS4_L2;       //LT  
+define RX         = PS4_RX;       //RX  	
+define RY         = PS4_RY;       //RY  
+define LX         = PS4_LX;       //LX  
+define LY         = PS4_LY;       //LY    
+define L3         = PS4_L3;       //LS  
+define UP         = PS4_UP;       //UP  
+define DOWN       = PS4_DOWN;     //DOWN  
+define LEFT       = PS4_LEFT;     //LEFT 
+define RIGHT      = PS4_RIGHT;    //RIGHT 
+define CROSS      = PS4_CROSS;    //A  
+define CIRCLE     = PS4_CIRCLE;   //B  
+define SQUARE     = PS4_SQUARE;	  //X  
+define TRIANGLE   = PS4_TRIANGLE; //Y  
+define TOUCH      = PS4_TOUCH;    //SYNC
+define PR1        = XB1_PR1;      //XBOX PADDLE RIGHT TOP
+define PR2        = XB1_PR2;      //XBOX PADDLE RIGHT BOTTOM
+define PL1        = XB1_PL1;      //XBOX PADDLE LEFT TOP
+define PL2        = XB1_PL2;      //XBOX PADDLE LEFT BOTTOM
+define PRX		  = POLAR_RX;     //RX POLAR
+define PRY		  = POLAR_RY;     //RY POLAR
+define RS         = POLAR_RS;     //RS POLAR
+define VIB_A      = RUMBLE_A;     //RUMBLE A
+
+// PUT YOUR BUTTONS HERE BELOW IF DIFFERENT
+define AIM         = PS4_L2;       //XB1_LT 
+define FIRE        = PS4_R2;       //XB1_RT  
+define PREVWEAPON  = PS4_L1;       //XB1_LB 
+define NEXTWEAPON  = PS4_R1;       //XB1_RB                                        
+define BUILD       = PS4_CIRCLE;   //XB1_B
+define ROOF        = PS4_L1; 	   //XB1_LB  
+define STAIRS      = PS4_L2; 	   //XB1_LT  
+define FLOOR       = PS4_R1; 	   //XB1_RB  
+define WALL        = PS4_R2; 	   //XB1_RT	                                            
+define CROUCH      = PS4_R3; 	   //XB1_RS  
+define JUMP        = PS4_CROSS;    //XB1_A  
+define PICKAXE     = PS4_TRIANGLE; //XB1_Y  
+define PING_BUTTON = PS4_RIGHT;    //RIGHT
+
+// PUT YOUR BUTTONS HERE BELOW IF DIFFERENT	 
+define RESET      = PS4_R3;     //RESET IN GAME ( EDIT MODE )   
+define SELECT     = PS4_R2;     //SELECT IN GAME ( EDIT MODE )  
+define CONFIRM    = PS4_CIRCLE; //CONFIRM IN GAME ( EDIT MODE )
+
+// PUT YOUR BUTTONS HERE BELOW IF DIFFERENT OR YOU WANT TO CHANGE TOGGLES & INVERT POLAR DIRECTION
+define JUMPSHOT_HOLD_TOGGLE     = AIM,     JUMPSHOT_PRESS_TOGGLE    = JUMP,   JUMPSHOT_ISOLATE  = CROUCH;
+define DROPSHOT_HOLD_TOGGLE     = AIM,     DROPSHOT_PRESS_TOGGLE    = CROUCH, DROPSHOT_ISOLATE  = JUMP;
+define PUMPWALL_HOLD_TRIGGER    = AIM,     PUMPWALL_PRESS_TRIGGER   = R1;
+define AUTOPING_HOLD_TRIGGER    = AIM,     AUTOPING_PRESS_TRIGGER   = PICKAXE;
+define INVERT_BUTTON            = CROUCH;
+
+// PUT YOUR BUTTONS HERE BELOW IF DIFFERENT FOR EDIT SETUP  ( EDIT_BUTTON == SWITCH/EDIT IN GAME )
+define EDIT_BUTTON        =  CIRCLE; //EDIT BUTTON IN GAME(MAY HAVE HOLD TIME ON THIS ENTER ON/OFF BELOW THIS OPTION >> define EDIT_BUTTON_HOLD = ON;)
+define FAST_RESET_EDIT 	  =      L3; //EDIT BUTTON IN GAME CANNOT HAVE HOLD TIME (USED IN COMBOS MUST NOT HAVE A HOLD TIME IN GAME (EDIT ONLY))
+define EDIT_ASSIST_BUTTON =      L3; //EDIT BUTTON IN GAME CANNOT HAVE HOLD TIME (USED AS EDIT ASSIT BUTTON)
+define FAST_RESET_BUTTON  =   TOUCH; //ONE BUTTON RESET DOES NOT MATCH IN GAME TO ANYTHING
+define FAST_RESET_BUTTON2 = OPTIONS; //ONE BUTTON RESET DOES NOT MATCH IN GAME TO ANYTHING
+define DELAY1             =      30; //DELAY BEFORE EDIT ASSIST BUTTON TRIGGERS HOLDING OF SELECT
+
+// PUT YOUR HOLD TIME ON/OFF & HOLD TIME HERE BELOW IF DIFFERENT
+define EDIT_BUTTON_HOLD   =  ON; //IF YOU HAVE HOLD TIME ON YOU EDIT BUTTON (SEPERATE FROM EDIT ASSIST BUTTON)
+define EDIT_HOLD_WAIT     = 130; //IF YOU HAVE HOLD TIME ON YOU EDIT BUTTON MATCH THE TIME
+
+// ADJUST EDIT SENSE HERE BELOW IF YOU FEEL ITS TO FAST OR SLOW (DOES NOT MATCH ANYTHING IN GAME)
+define EDIT_SENSE		  = OFF; //IF YOU WANT EDIT SENSITIVITY CONTROL USE THESE TWO SETTINGS (ON/OFF HERE)
+define EDIT_SENSITIVITY   =  56; //SET IN GAME EDIT SENSE TO MAXIMUM SENSE 5.0X (SET 0 - 100)
+
+// AUTOPING TIMES
+define PING_TIME          = 3000; //WHILE HOLDING AIM & FIRE AUTOPING REPEATS EVERY 3 SECONDS
+define PING_WAIT          = 1000; //WHILE HOLDING AIM & FIRE AUTOPING WILL TRIGGER AFTER 1 SECOND
+
+// SHOT MOD TIMES
+define PUMPWALL_WAIT  =  50;
+define DROP_SHOT_WAIT =  70;
+define JUMPSHOT_WAIT  = 550;
+
+// GAME SETTINGS DO NOT TOUCH
+int SHUNT,SHUNT1,EDIT,EDIT1,PA,HOLD1;
+int angle,X,Y,I,V,POLAR_RADIUS;
+define POLAR_RELEASE =  15;// SET UP FOR EXPO ( LINEAR WILL NEED TO REDUCE THIS )
+define POLAR_START   =  13;// SET UP FOR EXPO ( LINEAR WILL NEED TO REDUCE THIS )
+define POLAR_WAIT    =  10;
+define POLAR_INVERT  =   1;
+define POLAR_VV      = 344;
+define POLAR_II      =   8;
+define POLAR_C       = 360;
+define POLAR         = 327;
+define WAIT          =  10;
+define WAIT1         =  12;
+define WAIT2         =  20;
+define WAIT3         =  30;
+define MAX           = 100;
+define MID           =  50;
+define LOW           =   0;
+
+// POLAR SETUP
+define POLAR_W       =   8; // RX STRENGTH 							   ( SET UP FOR EXPO ( LINEAR WILL NEED TO REDUCE THIS ))
+define POLAR_H       =  22; // RY STRENGTH ( SET UP FOR EXPO 		   ( LINEAR WILL NEED TO REDUCE THIS ))
+int RADIUS           =   8; // WHILE HOLDING ADS ( SET UP FOR EXPO 	   ( LINEAR MAY NEED TO REDUCE THIS ))
+int POLAR_BOOST      =   5; // BOOST APPLIED WHEN HOLDING ADS & FIRING ( SET UP FOR EXPO ( LINEAR MAY NEED TO REDUCE THIS ))
+
+// SHOT MODS/AUTOPING MASTER CONDITION
+int PUMPWALL =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+int AUTOPING =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+int DROPSHOT =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+int JUMPSHOT =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+
+// INSTANT EDIT/PICKAXE
+int INSTANT_PICKAXE    =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+int INSTANT_EDIT_RESET =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+int FAST_RESET         =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+int EDIT_ASSIST        =  ON; // SET TO OFF TO TURN OFF COMPLETELY
+
+// DEFAULT CONDITION
+int DROP_SHOT  = OFF; // ON/OFF WHEN FIRST LOADED
+int JUMP_SHOT  = OFF; // ON/OFF WHEN FIRST LOADED
+
+
+main {
+  		
+  		POLAR_RADIUS = RADIUS;
+	if (get_ival(FIRE)) {
+		POLAR_RADIUS = POLAR_RADIUS + POLAR_BOOST;
+	}
+	else {
+		POLAR_RADIUS = POLAR_RADIUS;
+	}
+	if (get_ival(AIM) && abs(get_ival(RX)) <= POLAR_RELEASE && abs(get_ival(RY)) <= POLAR_RELEASE) {
+		angle = (angle + POLAR_II + V) % POLAR_C; 
+		set_polar(RS, angle,abs(get_ival(PRX)) / POLAR + POLAR_W);
+ 		X = get_val(PRX);
+  		set_polar(RS, angle,abs(get_ival(PRX)) / POLAR + POLAR_H);
+  		Y = get_val(PRY);
+		set_val(PRX, get_ival(PRX));
+  		set_val(PRY, get_ival(PRY));
+		set_val(RX,X);
+  		set_val(RY,Y);
+	}
+	if (get_ival(AIM) && abs(get_ival(RX)) >= POLAR_START && abs(get_ival(RY)) >= POLAR_START) {
+	combo_run(POLAR);
+	}
+	if (event_press(INVERT_BUTTON)) {
+  		I = !I;
+  	}
+  	if (I) {
+  		V = POLAR_VV;
+  	}
+  	else {
+  		V = OFF;
+  	}
+	if (EDIT_ASSIST) {
+	if (get_ival(EDIT_ASSIST_BUTTON)) {
+		ASSIST();
+		EDIT = ON;
+	}
+	if (event_release (EDIT_ASSIST_BUTTON)) {
+		combo_run (CONFIRM);
+		HOLD1 = OFF;
+		EDIT = OFF;
+		}
+	}
+	if (FAST_RESET) {
+	if (!get_ival(L2) && event_press(FAST_RESET_BUTTON) || !get_ival(L2) && event_press(FAST_RESET_BUTTON2)) { 
+	if (EDIT_SENSE) {	
+		stickize (RX,RY,EDIT_SENSITIVITY);
+	}
+    	SHUNT  = FAST_RESET_BUTTON;
+    	SHUNT1 = FAST_RESET_BUTTON2;
+    	combo_run(RESET);
+		}
+	}
+	if (INSTANT_EDIT_RESET) {
+	if (EDIT_BUTTON_HOLD) {
+	if (get_ival(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > EDIT_HOLD_WAIT) {
+		EDIT  = ON;
+		EDIT1 = ON;
+		}
+	}
+	else 
+	if (!EDIT_BUTTON_HOLD) {
+	if (get_ival(EDIT_BUTTON)) {
+		EDIT  = ON;
+		EDIT1 = ON;
+		}
+	}
+	if (EDIT1 == ON) {
+	if (event_release(SELECT)) {  
+    	combo_run (CONFIRM);
+    	EDIT  = OFF;
+    	EDIT1 = OFF;
+    		}
+		}
+	}
+	if (EDIT == ON || EDIT1 == ON) {
+	if (EDIT_SENSE) {	
+		stickize (RX,RY,EDIT_SENSITIVITY);
+	}
+	if (event_press(RESET)) {  
+    	combo_run (RESETS);
+    	EDIT = OFF; 
+	}
+	if (event_press(PICKAXE) || event_press(BUILD) || event_press(FLOOR) || event_press(ROOF)|| event_press(STAIRS)) {
+		EDIT  = OFF;
+		EDIT1 = OFF;
+		}
+	}
+	if (INSTANT_PICKAXE) {
+	if (get_ival(PICKAXE)) {
+		PA = ON;
+	}
+	if(event_press(AIM)|| get_ival(NEXTWEAPON)|| get_ival(PREVWEAPON)) {
+		PA = OFF;
+	}                                                                                                                   
+	if(get_ival(PICKAXE)) {
+		PA = ON;
+	}
+	if(PA == ON) {
+	if(get_ival(BUILD)) { 
+		PA = OFF;
+	}
+	if(event_release(FIRE)) {
+		combo_run (PICKAXE);
+			}
+		}
+	}
+	if (DROPSHOT && get_ival(DROPSHOT_HOLD_TOGGLE) && event_press(DROPSHOT_PRESS_TOGGLE)) {
+		DROP_SHOT = !DROP_SHOT;
+		JUMP_SHOT = OFF;
+	}
+	if (DROPSHOT && DROP_SHOT) {
+	if (!EDIT && !get_ival(EDIT_ASSIST_BUTTON) && get_ival(FIRE)) {
+		combo_run(DROPSHOT);
+	}
+	if (event_press(DROPSHOT_ISOLATE) || event_press(BUILD)) {
+		DROP_SHOT = OFF;
+		}
+	}
+	if (PUMPWALL && get_ival(PUMPWALL_HOLD_TRIGGER) && event_press(PUMPWALL_PRESS_TRIGGER)) {
+		SHUNT = PUMPWALL_PRESS_TRIGGER;
+		combo_run(PUMPWALL);
+	}
+	if (JUMPSHOT && get_ival(JUMPSHOT_HOLD_TOGGLE) && event_press(JUMPSHOT_PRESS_TOGGLE)) {
+		JUMP_SHOT = !JUMP_SHOT;
+		DROP_SHOT = OFF;
+	} 
+	if (JUMP_SHOT) {
+	if (!EDIT && !get_ival(EDIT_ASSIST_BUTTON) && get_ival(FIRE)) {
+    	combo_run(JUMPSHOT); 
+	} 
+	if (event_press(JUMPSHOT_ISOLATE) || event_press(BUILD)) {
+		JUMP_SHOT = OFF;
+		}
+   	}
+	if (AUTOPING) {
+	if (get_ival(AIM) && get_ival(FIRE) && get_ptime(FIRE) > PING_WAIT) {
+		combo_run(PING);
+	}
+	else
+	if (get_ival(AUTOPING_HOLD_TRIGGER) && event_press(AUTOPING_PRESS_TRIGGER)) {
+		SHUNT = AUTOPING_PRESS_TRIGGER;
+		combo_run (PING);
+		}
+	}
+	if (SHUNT) {
+	if (event_release(SHUNT)) {
+		SHUNT = OFF;
+	}
+	else {
+		set_val (SHUNT,OFF);
+		}
+	}
+	if (SHUNT1) {
+	if (event_release(SHUNT1)) {
+		SHUNT1 = OFF;
+	}
+	else {
+		set_val (SHUNT1,OFF);
+		}
+	}	
+}
+
+combo POLAR {
+	Set_val(RX, POLAR_RADIUS);
+	Set_val(RY, POLAR_RADIUS);
+	wait(POLAR_WAIT);
+	Set_val(RX, POLAR_RADIUS * -POLAR_INVERT);
+	Set_val(RY, POLAR_RADIUS * -POLAR_INVERT);
+	wait(POLAR_WAIT);
+}
+combo PUMPWALL {
+	set_val(FIRE,MAX);
+	wait(PUMPWALL_WAIT);
+ 	set_val(BUILD,MAX);
+    wait(PUMPWALL_WAIT);
+    set_val(WALL,MAX);
+    wait(PUMPWALL_WAIT);
+    set_val(BUILD,MAX);
+	wait(MID);
+	wait(WAIT3);
+}
+combo DROPSHOT {
+    wait(DROP_SHOT_WAIT)
+	set_val(CROUCH,MAX);		
+	wait(DROP_SHOT_WAIT);
+	set_val(CROUCH,OFF);
+}
+combo JUMPSHOT {                   
+    set_val(JUMP,MAX); 
+    wait(MID);  
+    wait(JUMPSHOT_WAIT); 
+}
+combo PING {
+	set_val(PING_BUTTON,MAX);
+	wait(MID);
+	set_val(PING_BUTTON,LOW);
+	wait(WAIT);
+	set_val(PING_BUTTON,MAX);
+	wait(MID);
+	set_val(PING_BUTTON,LOW);
+	wait(WAIT);
+	set_val(PING_BUTTON,LOW);
+	wait(PING_TIME);
+}
+combo CONFIRM {
+	set_val(CONFIRM,MAX);
+	wait(MID);
+	set_val(CONFIRM,LOW);
+	wait(MAX);
+}
+combo PICKAXE {
+	set_val(PICKAXE,MAX);
+	wait(WAIT3);
+	PA = OFF;
+}
+combo RESET {
+	set_val(FAST_RESET_EDIT,MAX);
+	wait(MID)
+	set_val(RESET,MAX);		
+	wait(MID);
+	combo_run(CONFIRM);
+}
+combo RESETS {
+	wait(WAIT2)
+	combo_run(CONFIRM);
+}
+function Set_val(A,V) {
+  	set_val(A,Return
+  		(V * (MAX - abs(get_ival(A)))
+  	/MAX + 
+  		get_ival(A),-MAX,MAX));
+	return; 
+}
+function Return(V,L,H) {
+	if(V < L) 
+		return L;
+	if(V > H) 
+		return H;
+    return V;
+}
+function ASSIST () {
+		HOLD1 += get_rtime();
+	if (get_ival(EDIT_ASSIST_BUTTON)) {
+	if (HOLD1 >= DELAY1)
+  		PRESS (SELECT);
+  	}
+}
+function PRESS (BUTTON) {
+	if (get_ival(BUTTON))
+		return;
+		set_val(BUTTON,MAX);
+}
