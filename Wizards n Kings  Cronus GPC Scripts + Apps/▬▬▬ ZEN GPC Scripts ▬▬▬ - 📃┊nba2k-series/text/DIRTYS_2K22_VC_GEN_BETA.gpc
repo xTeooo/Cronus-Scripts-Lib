@@ -1,0 +1,115 @@
+/*
+DIRTY GAMING TIPS 2K22 VC GEN BETA
+HAVE TESTED ONLY ON PS4 SO FAR
+PAYPAL @DIRTY619 FOR DONATIONS/CUSTOM SCRIPTS
+SUB TO YOUTUBE CHANNEL TO KNOW WHEN SHOOTING SCRIPT WILL RELEASE
+
+
+
+
+--------SIMPLE INSTRUCTIONS-------
+MAKE A NEW MY PLAYER GO TO NBA
+START YOUR FIRST GAME WHEN 2KTV STARTS TO LOAD PRESS UP ON THE DPAD
+TO MAKE SURE IT IS WORKING I ADVISE TO WATCH THE FIRST 2-3 GAMES BEFORE GOING AFK
+-------------END------------------
+
+
+
+CHANGE LOOP_TIMING BETWEEN 6-12 BUT SO FAR 8 WORKS BEST FOR ME
+THIS JUST WILL DO THE COMBO OF RESTARTING GAME PICK BETWEEN 6-12 MINUTES
+DEFAULT IS 8
+*/
+define LOOP_TIMING = 12;
+
+//┌──────────────────────────────────────────────┐
+int milliseconds,seconds,minutes,VC,IN_GAME;
+//└──────────────────────────────────────────────┘
+main
+{
+//┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+    set_val(TRACE_1, VC);set_val(TRACE_2, minutes);set_val(TRACE_3, seconds);set_val(TRACE_4, milliseconds / 10);set_val(TRACE_5, IN_GAME);
+//└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+//┌───────────────────────────┐
+	if(event_press(PS4_UP))
+	{
+		VC = !VC;
+		combo_run(START_GAME);
+	}
+//└───────────────────────────┘
+//┌─────────────────────────────────────────────────────┐
+    if(VC)
+	{	
+		milliseconds = milliseconds + get_rtime();
+			if(milliseconds >= 1000) 
+			{
+				milliseconds = milliseconds - 1000
+				seconds = seconds + 1;
+					if(seconds == 60) 
+					{
+						seconds = 0;
+						minutes = minutes + 1;
+							if(minutes == LOOP_TIMING) 
+							{
+								IN_GAME = FALSE;
+								minutes = 0;
+								combo_run(START_GAME);
+							}
+					}
+			} 
+	}
+//└─────────────────────────────────────────────────────┘
+//┌─────────────────────┐
+  	if(IN_GAME)
+	{
+  		combo_run(X_SPAM);
+  	}   
+  	if(!IN_GAME)
+	{
+  		combo_stop(X_SPAM);
+  	}   
+//└─────────────────────┘
+}
+
+combo START_GAME{
+wait(500);
+set_val(PS4_CIRCLE,100);
+wait(30);
+wait(1500);
+set_val(PS4_CIRCLE,100);
+wait(30);
+wait(1500);
+set_val(PS4_CIRCLE,100);
+wait(30);
+wait(1500);
+set_val(PS4_LX,-100);
+wait(1500);
+wait(500);
+set_val(PS4_RIGHT,100);
+wait(30);
+wait(500);
+set_val(PS4_RIGHT,100);
+wait(30);
+wait(500);
+set_val(PS4_CROSS,100);
+wait(30);
+wait(500);
+set_val(PS4_RIGHT,100);
+wait(30);
+wait(500);
+set_val(PS4_CROSS,100);
+wait(30);
+wait(500);
+set_val(PS4_DOWN,100);
+wait(30);
+wait(500);
+set_val(PS4_CROSS,100);
+wait(30);
+wait(500);
+IN_GAME = TRUE;
+}
+combo X_SPAM
+{
+	set_val(PS4_CROSS,100);
+	wait(2000);
+	wait(300);
+}

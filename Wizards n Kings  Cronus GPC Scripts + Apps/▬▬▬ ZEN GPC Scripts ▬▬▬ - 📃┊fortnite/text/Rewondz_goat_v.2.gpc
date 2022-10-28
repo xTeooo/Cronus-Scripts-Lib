@@ -1,0 +1,305 @@
+///////////////////////////////REWINDZ GOAT V.2/////////////////////////////
+//Buttons
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Build    = PS4_CIRCLE;
+define Pickaxe  = PS4_L3;
+define On       = TRUE;
+define Off      = FALSE;
+
+// Edit Buttons
+define Edit     = PS4_SQUARE;   // Edit In Game (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+define Select   = PS4_R2;       // Edit Select Piece In Game
+define Confirm  = PS4_R1; 	// Edit Confirm In Game	
+define Reset    = PS4_L1;       // Edit Reset In Game
+
+
+
+define PXS     =     90;  				    	
+define PXSE    =    270;				    
+define PVSI    =     20;    				
+define PVS     =     20;
+define PYS     =   -200;				
+define PYSE    =    200;		    	
+int    PPFX    =    PXS;
+int    PPFY    =    PYS;				  	  
+int    PVID;
+int    PFD     =      1;		    
+int    PPFD    =      1;
+int    RX;
+int    RY;
+int BuildTrack,BuildCount,Edit1,Edit2,EditT,time;
+		
+//Instant Edit + Reset 
+define InstaEditReset = FALSE; 	// [ON / OFF] Normal Instant Edit/Reset
+define EditHold       = FALSE; 	// [ON / OFF] SET On WHEN USING EDIT HOLD TIME TO EDIT ( MATCH TO IN GAME SETUP ) [Off = INSTANT PRESS]
+define EditHoldTime   = 100;  	// Time If Using Hold to Edit In game [Setting To Be Matched To In Game Time]
+
+//Fast Reset (One Button)
+define InstaFastReset = FALSE;        // Fast Reset [ON / OFF]
+define FastReset      = PS4_PS; // FAST RESET BUTTON [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ]
+
+//Quick Edit Assist
+define QuickEditAssist = FALSE;   	 // [ON / OFF] Edit Assist
+define EditDelay       = 15;     // Edit Assist Hold Delay On Select
+define EditAssist      = XB1_X;  // EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+
+//Playstation On PC/Xbox
+define PlayStationOnXbox = TRUE; // [ON / OFF] DS4/5 On PC/Xbox [Touchpad Button Fix]
+
+//Hair Triggers
+define HairTriggers = TRUE; // Instant Triggers [100%]
+
+//Button Press Time [20- 50ms]
+define ButtonTime = 20;            	// Button Press Time (Fast Reset Combo)
+		
+
+ 
+
+	main{
+	
+	
+	if (PlayStationOnXbox && get_console() == PIO_XB360 && get_controller() == PIO_PS4) { 
+	
+		swap(PS4_TOUCH,PS4_SHARE);
+	}
+	
+	if (HairTriggers) { 
+   		
+   		deadzone(PS4_L2,PS4_R2,100,100); deadzone (PS4_L1,PS4_R1,100,100)
+   	}
+   	
+   	
+	if (QuickEditAssist) {
+	 	
+	 	if (get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = On;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = 0;	
+			Edit1 = Off;
+		}
+	}
+
+    if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       	
+    		combo_run(FastReset);
+    	}
+    }	
+
+	if (InstaEditReset) {
+        
+        if (EditHold) {
+        	
+        	if (get_ival(Edit) && get_ptime(Edit) > EditHoldTime) {
+        
+            	Edit1 = Off;
+            	Edit2 = Off;
+			}
+        }
+        	
+        else if (event_press(Edit)) {
+        			
+        		Edit1 = Off;
+            	Edit2 = Off;
+		}
+		
+		if (Edit2) {
+            
+            if (event_release(Select)) {  
+                
+                Edit1 = Off;
+                Edit2 = Off;
+                BuildTrack = Off;
+            }
+		}
+    }
+
+    if (Edit1 || Edit2) {
+        
+        if (event_press(Reset)) {  
+            
+            combo_run(InstantReset);
+            Edit1 = Off;
+            Edit2 = Off;
+            BuildTrack = Off;
+        }
+
+        if (event_press(Pickaxe)) {
+            
+            Edit1 = Off;
+            Edit2 = Off;
+            BuildTrack = Off;
+		}
+    }
+    
+		
+    	if(get_val(PS4_L2) > 80){
+    	if(abs(get_val(XB1_RX) < 9)) 
+    	if(abs(get_val(XB1_RY) < 9)) 
+    	if(abs(get_val(XB1_RX) > -9)) 
+    	if(abs(get_val(XB1_RY) > -9)){
+   			PPFX = PolarFlow(PPFX,PXS,PXSE,PVSI,PFD,1);
+        	PPFY = PolarFlow(PPFY,PYS,PYSE,PVS,PPFD,2);
+       	    set_polar(POLAR_RS,30,PPFX);
+    		set_polar(POLAR_RS,30,PPFY);}
+}
+    	
+}
+   		
+   		
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(50)
+    set_val(Reset,100);        
+    wait(50);
+    combo_run(Confirm);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo InstantReset {
+
+    wait(1)
+    combo_run(Confirm);
+}
+
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        
+        if (get_ival(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		EditPress(Select);
+        }
+}
+
+function EditPress (Button) {
+
+    if (get_ival(Button))
+        
+   		return;
+            
+        set_val(Button,100);
+}
+  		
+ 		
+ 	function PolarFlow(PFB,PSV,PFV,PV,PF,PID) {
+    	if(PF) {
+       		PFB += PV;
+    	if(PFB <= PFV)  
+    	return PFB;
+    	if(PFB > PFV) {
+        	PVID[PID] = 0;
+    	return PFB - PV;}
+}
+		else{
+        	PFB -= PV;    
+    	if(PFB >= PSV)  
+    	return PFB;
+    	if(PFB < PSV) {
+    		PVID[PID] = 1; 
+        return PFB + PV;}
+} 
+       {return FALSE;
+}
+   		
+ 	   
+}
+combo AntiBloom { 
+		
+  set_val(PS4_LX,-40);
+  wait(ast);
+  set_val(PS4_LX, 40);
+  wait(ast);
+  if(ast < 160){ast = ast + 10;}
+  else {ast = 100;
+   }
+}
+const char Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+int HeadTime,Head;
+
+//Aim Assist
+int AimAssist    = TRUE;  // Aim Assist [ON / OFF]
+int AimAssistHip = TRUE;  // Operate on Fire Or Ads [If FALSE It Will Only Run On ADS]
+int AATimed      = FALSE; // Aim Assist Will Cut Out After 2 seconds By Default (Change Below)
+
+int Power  = 3;    // Mero's Aim Assist Power [1,2,3] ==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+int AATime = 2000; // Mero's TimeZ Aim Assist Will Cut Out After Time [1000] = 1 Second, [2000] = 2 Second
+
+// Progression Head Shot Assist
+int HeadAssist    = TRUE; // Main Toggle ON/OFF
+int HeadHipAssist = TRUE; // Operate on Fire Only [If FALSE It Will Only Run On ADS & FIRE]
+int DoGzComboRecoil   =  TRUE;
+define InvertedYAxis  = FALSE;
+///
+int ComboAR1RY        = 33;
+int ComboAR1RX        = -6;
+int ComboAR1Wait      = 10;
+
+int VerticalAR, HorizontalAR;
+int Output;
+
+main {
+    if (DoGzComboRecoil)
+    {
+        if (get_ival(PS4_L2) && get_ival(PS4_R2))
+        {
+            DoGzPolarAR(FALSE, FALSE);
+            combo_run(AntiRecoil);
+        } 
+        else 
+        {
+            VerticalAR   = 0;  
+            HorizontalAR = 0;
+            combo_stop(AntiRecoil);
+        }
+    }
+}
+
+combo AntiRecoil {
+    VerticalAR   = ComboAR1RY * 327;  
+    HorizontalAR = 0;
+    wait(ComboAR1Wait);
+    HorizontalAR = ComboAR1RX * 327;
+    VerticalAR   = 0;  
+    wait(ComboAR1Wait);
+}
+
+function DoGzGetPolar(Current, Received) {
+    Output = Current / 10 + Received / 10;
+
+    if(Output <= -3276)
+        return -32768;
+
+    if(Output >=  3276)
+        return  32767; 
+
+        return Current + Received; 
+} 
+
+function DoGzPolarAR(Rotation, Radial) {
+    set_polar(POLAR_RS, Rotation, Radial);
+        set_val(POLAR_RX, DoGzGetPolar (get_val(POLAR_RX) + (HorizontalAR), get_ival(POLAR_RX)));
+
+    if (InvertedYAxis) 
+        set_val(POLAR_RY, DoGzGetPolar (get_val(POLAR_RY) + (inv(VerticalAR)), get_ival(POLAR_RY)));
+    else
+        set_val(POLAR_RY, DoGzGetPolar (get_val(POLAR_RY) + (VerticalAR), get_ival(POLAR_RY)));
+}

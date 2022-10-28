@@ -1,0 +1,429 @@
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Build    = PS4_CIRCLE;
+define Pickaxe  = PS4_L3;
+define N_Weapon = PS4_R1;       
+define P_Weapon = PS4_L1;       
+define Reload   = PS4_SQUARE; 
+define Jump     = PS4_CROSS;    
+define Crouch   = PS4_R3;       
+define AimY     = PS4_RY; 
+define AimX     = PS4_RX;
+define RX       = PS4_RX;
+define RY       = PS4_RY;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+
+// Edit Buttons
+define Edit     = PS4_RIGHT;    // Edit In Game (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+define Select   = PS4_R2;       // Edit Select Piece In Game
+define Confirm  = PS4_R1; 	    // Edit Confirm In Game	
+define Reset    = PS4_L1;       // Edit Reset In Game
+
+//Polar Aim Assist
+int FireAssist      = TRUE;
+int RadiusBoost     = TRUE;
+int AngleBoost      = TRUE;
+int PolarRadius     = 4;
+int PolarAngle      = 15;
+int PolarRBoost     = 15;
+int PolarABoost     = 4;
+int PolarRelease    = 1;
+
+//Polar DoGz V1
+define PXS     =     90;  				    	
+define PXSE    =    270;				    
+define PVSI    =     20;    				
+define PVS     =     20;
+define PYS     =   -200;				
+define PYSE    =    200;		    	
+int    PPFX    =    PXS;
+int    PPFY    =    PYS;				  	  
+int    PVID;
+int    PFD     =      1;		    
+int    PPFD    =      1;
+
+
+// Progression Head Shot Assist
+define HeadAssist    = FALSE;	// Main Toggle ON/OFF
+define HeadHipAssist = FALSE;	// Operate on Fire Only [If Off It Will Only Run On ADS & FIRE]
+
+define HeadStep = 3;  // Step Increment Increasing Until Its Reached HeadMax
+define HeadMax  = 30; // Max Head Assist Value
+
+//DoGz Smart AR 
+int DoGzSmartAR     = TRUE;		// [(On) or (Off)] = Master Toggle For DoGz Smart Anti-Recoil 
+int TimedRecoil     = FALSE;	// [(On) or (Off)] = Smart Using Time 							(TimedRecoil = Off + RumbleRecoil = Off ==== Legacy Recoil On)
+int RumbleRecoil    = FALSE;	// [(On) or (Off)] = Smart Using Rumble Feedback				(TimedRecoil = Off + RumbleRecoil = Off ==== Legacy Recoil On)
+int RecoilHipFire   = FALSE;	// [(On) or (Off)] = {Operates on Fire Alone}
+int DoGzARVertical  = 17;		// [1 - 100] = Base Power RY Axis [Timed/Rumble] (MK Values)
+int DoGzARPullPower = 10;      	// [1 - 100] = Pull Power RY Axis [Timed]        (MK Values)
+int DoGzARTime      = 20;		// [10 - 1000] = Pull Time RY Axis [Timed]
+
+//Build Tracker
+int BuildTracker    = TRUE;
+int BuildSyncTime   = 1000;
+
+//Block Rumble
+int BlockRumble     = FALSE;
+
+//Fast Reset (One Button)
+define InstaFastReset = FALSE; 	// Fast Reset [ON / OFF]
+define FastReset      = PS4_PS;	// FAST RESET BUTTON [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ]
+
+//Instant Edit + Reset 
+define InstaEditReset = FALSE; 	// [ON / OFF] Normal Instant Edit/Reset
+define EditHold       = FALSE; 	// [ON / OFF] SET On WHEN USING EDIT HOLD TIME TO EDIT ( MATCH TO IN GAME SETUP ) [Off = INSTANT PRESS]
+define EditHoldTime   = 100;  	// Time If Using Hold to Edit In game [Setting To Be Matched To In Game Time]
+
+//Quick Edit Assist
+define QuickEditAssist = FALSE;			// [ON / OFF] Edit Assist
+define EditDelay       = 10;			// Edit Assist Hold Delay On Select
+define EditAssist      = PS4_RIGHT;		// EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+
+//Playstation On PC/Xbox
+define PlayStationOnXbox = TRUE;		// [ON / OFF] DS4/5 On PC/Xbox [Touchpad Button Fix]
+
+//Hair Triggers
+define HairTriggers = TRUE;				// Instant Triggers [100%]
+
+//Edit Sensitivity
+int EditSensitivity = TRUE;				// Edit Sense [ON / OFF]
+int EditSense = 100;					// Edit Sensitivity Value
+
+//Button Press Time [20- 50ms]
+define ButtonTime = 20;					// Button Press Time (Fast Reset Combo)
+
+//Input Delay Reducer
+int DelayBuster = -5;					// LEAVE AS (-5) FOR TOURNAMENTS AND ARENA; (-1) for 1ms Delay
+
+int BuildTrack,BuildCount,Edit1,Edit2,EditT,time;
+int AxisX,AxisY,ModDigit;
+int angle,cos_angle,sin_angle,actual_X,actual_Y,actual_Magnitude,max_Magnitude,Radius,Angle;
+int BoostAR,AxisCY,AxisLY,TimeValue,OutPut,RumValue,RecoilTimer;
+int Axe,Head;
+
+main {
+
+vm_tctrl(DelayBuster);
+	
+	
+	if (PlayStationOnXbox && get_console() == PIO_XB360 && get_controller() == PIO_PS4) { 
+	
+		swap(PS4_TOUCH,PS4_SHARE);
+	}
+	
+	if (HairTriggers) { 
+   		
+   		deadzone(PS4_L2,PS4_R2,100,100); 
+   	}
+   	
+   	
+	if (QuickEditAssist) {
+	 	
+	 	if (get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = On;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = 0;	
+			Edit1 = Off;
+		}
+	}
+	
+    if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       	
+    		combo_run(FastReset);
+    	}
+    }	
+    
+    if (InstaEditReset) {
+        if (EditHold && get_ival(Edit) && get_ptime(Edit) > EditHoldTime || !EditHold && event_press(Edit)) {
+                Edit1 = On;
+                Edit2 = On;
+        }
+
+        if (Edit2) {
+            if (event_release(Select)) {  
+                combo_run (Confirm);
+    			       Edit1 = Off;
+                Edit2 = Off;
+    		}
+
+        }
+    }
+
+    if (Edit1 || Edit2) {
+        if (EditSensitivity) {    
+            stickize (RX,RY,EditSense);
+        }
+
+            if (event_press(Reset)) {  
+                combo_run (InstantReset);
+                Edit1 = Off;
+                Edit2 = Off; 
+            }
+
+                if (event_press(Pickaxe) || event_press(Build) || event_press(Ads)) {
+                    Edit1 = Off;
+                    Edit2 = Off;
+                }
+    }
+    
+    if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack) {
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                BuildTrack = Off;
+                BuildCount = Off;
+            }
+            
+                if (get_ival(PS4_L1) || get_ival(PS4_R1) || get_ival(PS4_L2) || get_ival(PS4_L2)) 
+                    BuildCount = Off;
+        }
+    }
+
+    if (!BuildTrack) { 
+
+       
+       if (FireAssist) {
+
+        if (get_ival(Fire) && abs(get_ival(RX)) <= PolarRelease && abs(get_ival(RY)) <= PolarRelease) {
+            actual_X = get_ival(RX);
+            actual_Y = get_ival(RY);
+            actual_Magnitude = isqrt(pow(actual_X,2) + pow(actual_Y,2));
+            max_Magnitude = (actual_Magnitude < 100);
+
+            if (RadiusBoost && get_ival(Fire)) {
+                Radius = PolarRadius + PolarRBoost;
+            }
+                else {
+                    Radius = PolarRadius;
+                }
+            
+                    if (AngleBoost && get_ival(Fire)) {
+                        Angle = PolarABoost;
+                    }
+                        else {
+                            Angle = 0;
+                        }
+                                 
+                angle += PolarAngle + Angle;
+                angle = angle % 360;
+                sin_angle = DamPolar[angle % 360];
+                cos_angle = DamPolar[(angle + 270) % 360];
+                cos_angle = (cos_angle * Radius) / 100;
+                sin_angle = (sin_angle * Radius) / 100;
+
+            if (actual_Magnitude <= Radius) { 
+                sin_angle -= actual_Y; 
+                cos_angle -= actual_X; 
+            }
+                else { 
+                    sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+                    cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+                } 
+
+            set_val(RX,clamp(actual_X + cos_angle, -100,100));
+            set_val(RY,clamp(actual_Y + sin_angle, -100,100)); 
+        }
+    }
+       
+                  
+	    if (HeadAssist) {
+	        
+	        if (get_ival(Ads) && get_ival(Fire) || HeadHipAssist && get_ival(Fire)) {
+	        
+	        	if (abs(get_ival(AimY)) < HeadMax) { 
+	        		
+	        		Head += HeadStep;
+	        		combo_run(HeadAssist);
+	        	}	
+	        }
+	        
+	        if (!get_ival(Fire)) Head = 0;
+	        	
+	        if (Head >= HeadMax) combo_stop(HeadAssist);
+	    }
+	    
+	                if(get_val(PS4_L2) > 80){
+        if(abs(get_val(XB1_RX) < 3)) 
+        if(abs(get_val(XB1_RY) < 3)) 
+        if(abs(get_val(XB1_RX) > -3)) 
+        if(abs(get_val(XB1_RY) > -3)){
+               PPFX = PolarFlow(PPFX,PXS,PXSE,PVSI,PFD,1);
+            PPFY = PolarFlow(PPFY,PYS,PYSE,PVS,PPFD,2);
+               set_polar(POLAR_RS,30,PPFX);
+            set_polar(POLAR_RS,30,PPFY);}
+}
+    	
+}
+	    
+	    
+	    if (DoGzSmartAR) {
+	    
+	        if (get_ival(Ads) >= 95 && get_ival(Fire) || (RecoilHipFire && get_ival(Fire))) {
+	        
+            	TimeValue += get_rtime();
+            	
+            	if (TimeValue > 30) { 
+            		
+            		AxisLY = get_lval(AimY);
+            		AxisCY = get_ival(AimY);
+            	}
+            	
+            	if (abs(AxisCY) != abs(AxisLY)) BoostAR = ((AxisCY - AxisLY) * 4);
+            	
+            	if ((BoostAR != 0) && (TimeValue > 40)) {
+            	
+            		BoostAR = 0;
+            		TimeValue = 0;
+            	}
+            	
+            	if (RumbleRecoil) {
+            	    
+            	    if (get_rumble(RUMBLE_A)) {
+                    
+            	    	RumValue = get_rumble(RUMBLE_A) / 3;
+            	    	
+            	    } else {
+	        	    	
+	        	    	RumValue = 0;	
+	        	    }
+	        	}    
+	        
+            	if (TimedRecoil) {
+            	   
+            	   RecoilTimer += get_rtime();
+            	   
+            	   if (RecoilTimer > DoGzARTime) {
+                    
+            	    	RumValue = DoGzARPullPower;
+            	    	RecoilTimer = 0;
+            	    
+            	    } else {
+	        	    	
+	        	    	RumValue = 0;	
+	        	    }
+	        	} 
+	        	
+	        	OutPut = (DoGzARVertical + RumValue + BoostAR);
+	        	Set_Val(AimY,OutPut);
+	        }
+	    
+	    	if (!get_ival(Fire)) {
+	    		
+	    		RecoilTimer = 0;
+	    		TimeValue = 0;
+	    		BoostAR = 0;
+        	} 	
+	    }
+	} 
+
+
+combo HeadAssist{
+
+	set_val(AimY,inv(Head) + get_val(AimY));
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(50)
+    set_val(Reset,100);        
+    wait(50);
+    combo_run(Confirm);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo InstantReset {
+
+    wait(10)
+    combo_run(Confirm);
+}
+
+function Set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+        
+    return; 
+}
+
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        if (get_ival(EditAssist)) {
+            if (EditT >= EditDelay)
+                  Press(Select);
+          }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        return;
+            set_val(Button, 100);
+}
+
+function BlockButton (Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+
+function PolarFlow(PFB,PSV,PFV,PV,PF,PID) {
+    	if(PF) {
+       		PFB += PV;
+    	if(PFB <= PFV)  
+    	return PFB;
+    	if(PFB > PFV) {
+        	PVID[PID] = 0;
+    	return PFB - PV;}
+}
+		else{
+        	PFB -= PV;    
+    	if(PFB >= PSV)  
+    	return PFB;
+    	if(PFB < PSV) {
+    		PVID[PID] = 1; 
+        return PFB + PV;}
+} 
+       {return FALSE;
+}
+   		
+ 	   
+}
+
+const int8 DamPolar[]= {
+    100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,
+    71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,
+    -8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,
+    -65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,
+    -97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,
+    -94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,
+    -56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,
+    11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,
+    81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+ ú¸Š¼Œ´Œµ‚»¾ˆ¸Ž¶

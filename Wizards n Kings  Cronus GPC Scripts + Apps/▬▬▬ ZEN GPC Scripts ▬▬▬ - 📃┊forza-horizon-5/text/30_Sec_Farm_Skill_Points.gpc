@@ -1,0 +1,228 @@
+/*
+============================================================================================================================
+	Forza Horizon 5 - Farm Skill Point (as of 11/21/21)
+	
+	    This will probably be patched in the next update.
+	    
+	    Follow the setup here:  https://youtu.be/uGOgxBw5-IE
+	    
+	    Use this share code: 743 324 179
+	    
+	    Set SKILL_POINTS_TO_EARN (below) to desired number.  Must be increments of 10.
+	    
+	    At the START RACE EVENT menu screen, start the script (RB/R1 + Dpad DOWN)
+	    
+	    OLED displays minutes/seconds left remaining for the script to run
+	    
+============================================================================================================================
+*/
+
+define SKILL_POINTS_TO_EARN = 430;  //--Change this value to number of skill points you want to farm
+
+/*
+============================================================================================================================
+	DO NOT EDIT BELOW HERE  
+============================================================================================================================
+*/
+define SECS_PER_LOOP = 70;
+
+int totalSecs,totalTimeM,totalTimeS;
+int onOff;
+int blockBtn;
+/*
+============================================================================================================================
+	Init{}  
+============================================================================================================================
+*/
+init {
+    totalSecs = ((SKILL_POINTS_TO_EARN / 10) * SECS_PER_LOOP) + ((SKILL_POINTS_TO_EARN / 10) / 3);
+    totalTimeM = totalSecs / 60;
+    totalTimeS = totalSecs - (totalTimeM * 60);
+}
+/*
+============================================================================================================================
+	main{}  
+============================================================================================================================
+*/
+main {
+    
+    if(get_val(XB1_RB) && event_press(XB1_DOWN)) {
+        onOff = !onOff;
+        blockBtn = XB1_DOWN;
+    }
+    if(onOff) {
+        combo_run(TEN_IN_THIRTY);
+        TrackTime(); 
+        
+    }else{
+        combo_stop(TEN_IN_THIRTY);
+        combo_run(REFRESH_TIME);
+    }
+    
+    DisplayTime();
+    
+    if(blockBtn) {
+        if(event_release(blockBtn)) {
+            blockBtn = 0;
+        }else{
+            set_val(blockBtn,0);
+        }
+    }
+    block_rumble();
+}
+
+/*
+============================================================================================================================
+	TEN_IN_THIRTY   
+============================================================================================================================
+*/
+const int16 BTNS[][] = {
+   {XB1_A,   100,     150,    6000},
+   {XB1_RT,   25,    2500,       1},
+   {XB1_RT,   50,    1500,       1},
+   {XB1_RT,   75,    1500,       1},
+   {XB1_RT,  100,   27000,   15000},
+   {XB1_X,   100,     150,    1300},
+   {XB1_A,   100,     150,   15000} 
+}; 
+
+int idx, skillPoints;
+
+combo TEN_IN_THIRTY {
+	set_val(BTNS[idx][0],BTNS[idx][1]);
+	wait(BTNS[idx][2]);
+	wait(BTNS[idx][3]);
+	idx++;
+	if(idx == sizeof(BTNS) / sizeof(BTNS[0])) {
+	    idx = 0;
+	    skillPoints += 10;
+	    if(skillPoints >= SKILL_POINTS_TO_EARN) {
+	        onOff = FALSE;
+	    }
+	}
+}
+/*
+============================================================================================================================
+	TrackTime()   
+============================================================================================================================
+*/
+int msecs,updateDisplay;
+
+function TrackTime() {
+	if(totalTimeM || totalTimeS) {
+		msecs += get_rtime();
+		if(msecs == 1000) {
+	    	msecs = 0;
+	    	totalTimeS -= 1;
+	    	updateDisplay = TRUE;
+	    	if(totalTimeS < 0) {
+	        	totalTimeS = 59;
+	        	totalTimeM -= 1;
+	    	}
+		}
+	}
+}
+/*
+============================================================================================================================
+	DisplayTime()   
+============================================================================================================================
+*/
+combo REFRESH_TIME {
+    wait(1000);
+    updateDisplay = TRUE;
+ }
+    
+/*
+============================================================================================================================
+	DisplayTime()   
+============================================================================================================================
+*/
+int displayX, displayY;
+int xDir = 1, yDir = 1;
+
+function DisplayTime() {
+    if(updateDisplay) {
+        cls_oled(OLED_BLACK);
+        
+        NumberToString(totalTimeM,FindDigits(totalTimeM),1);
+    	putc_oled(bufferIndex,58);      //-- :
+    	bufferIndex++;
+    	
+    	if(FindDigits(totalTimeS) == 1) {
+    		putc_oled(bufferIndex,48); //-- 0
+    		bufferIndex++;	
+    	}
+    	
+    	NumberToString(totalTimeS,FindDigits(totalTimeS),bufferIndex);
+    	
+    	displayX += random(1,10) * xDir;
+    	
+    	if(displayX >= OLED_WIDTH - (OLED_FONT_LARGE_WIDTH * (bufferIndex - 1))) { 
+    		xDir = inv(xDir);
+    		displayX = OLED_WIDTH - (OLED_FONT_LARGE_WIDTH * (bufferIndex - 1)); 
+    	}
+    	if(displayX <= 0) {
+    		xDir = inv(xDir);
+    		displayX = 0;
+    	}
+    	
+    	displayY += random(1,10) * yDir;
+    	
+    	if(displayY >= OLED_HEIGHT - OLED_FONT_LARGE_HEIGHT) { 
+    		yDir = inv(yDir);
+    		displayY = OLED_HEIGHT - OLED_FONT_LARGE_HEIGHT; 
+    	}
+    	if(displayY <= 0) {
+    		yDir = inv(yDir);
+    		displayY = 0;
+    	}
+    	
+    	puts_oled(displayX,displayY,OLED_FONT_LARGE,bufferIndex,OLED_WHITE);
+    	updateDisplay = FALSE;
+    }
+}    	 
+/*
+============================================================================================================================
+	Convert Number to String    
+============================================================================================================================
+*/
+int bufferIndex;
+int charIndex,digitIndex;
+ 
+function NumberToString(fVal,fDigits,fIdx) {
+    bufferIndex = fIdx;  
+    digitIndex = 10000;
+	if(fVal < 0) {                    //--neg numbers
+         putc_oled(bufferIndex,45);    //--add leading "-"
+         bufferIndex += 1;
+         fVal = abs(fVal);
+	} 
+	for(charIndex = 5; charIndex >= 1; charIndex--) {
+	    if(fDigits >= charIndex) {
+            putc_oled(bufferIndex,(fVal / digitIndex) + 48);
+            fVal %= digitIndex;
+            bufferIndex ++; 
+            if(charIndex == 4) {
+                putc_oled(bufferIndex,44);   //--add ","
+                bufferIndex ++;
+            }
+        }
+        digitIndex /= 10;
+    }   
+} 
+/*
+============================================================================================================================
+	FindDigits()   
+============================================================================================================================
+*/
+int logVal;
+
+function FindDigits(num) {
+    logVal = 0;
+    num = abs(num);
+    while (num > 0) {
+        num /= 10;
+        logVal++;
+    }
+    return logVal;
+}

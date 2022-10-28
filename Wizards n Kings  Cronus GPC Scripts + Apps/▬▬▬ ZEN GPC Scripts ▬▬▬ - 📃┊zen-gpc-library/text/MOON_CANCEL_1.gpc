@@ -1,0 +1,78 @@
+// This Script is for Ghost of Tsushima (Legend Mode) Only Works with ((Moon Master Katana))
+// Hold D-Pad RIGHT for begin MOON CANCEL Combo and Release The Button for end MOON CANCEL Combo
+// Press L2+SHARE for script off (KILLSWITCH)
+// Thanks DoGzTheFiGhTeR For helping me
+
+int KillSwitch;
+int Col_ind;
+define Blue      = 1; 
+define Red       = 2; 
+define Green     = 3; 
+define Pink      = 4; 
+define SkyBlue   = 5; 
+define Yellow    = 6; 
+define White     = 7;
+ 
+data(1,
+  2,0,0,0, //1. Blue
+  0,2,0,0, //2. Red
+  0,0,2,0, //3. Lime/Green
+  0,0,0,2, //4. Fuchsia/Pink
+  2,0,2,0, //5. SkyBlue
+  0,2,2,0, //6. Yellow
+  2,2,2,2  //7. White
+);
+main {
+   if (get_ival(PS4_L2)) {
+        
+        if (event_press(PS4_SHARE)) { 
+        
+            KillSwitch = !KillSwitch; // On/Off
+        }
+        
+        set_val(PS4_SHARE,0); // This Will Block Share Button Being Sent To The Console
+    }
+    
+    if (!KillSwitch) { if(get_ival(PS4_RIGHT)) {
+    
+    set_val(PS4_RIGHT,0); { combo_run(MoonCancel); }  
+    }
+ else { combo_stop(MoonCancel); }
+    
+    
+    
+    
+    // COLOR INDICATION
+     if(get_ival(PS4_RIGHT)) { colourled(Green); }
+     else colourled(Red); 
+     }
+ }
+ 
+
+combo MoonCancel {
+	set_val(PS4_TRIANGLE, 100);
+	wait(500);
+	set_val(PS4_TRIANGLE, 0);
+	wait(240);
+	set_val(PS4_CIRCLE, 100);
+	wait(90);
+	set_val(PS4_TRIANGLE, 100);
+	wait(90);
+	set_val(PS4_TRIANGLE, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(90);
+	set_val(PS4_TRIANGLE, 100);
+	wait(90);
+	set_val(PS4_TRIANGLE, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(90);
+}
+function colourled(Colour) {
+    Col_ind=(Colour*4) - 3;
+    set_led(LED_1,dbyte(Col_ind  ));
+    set_led(LED_2,dbyte(Col_ind + 1));
+    set_led(LED_3,dbyte(Col_ind + 2));
+    set_led(LED_4,dbyte(Col_ind + 3));
+}

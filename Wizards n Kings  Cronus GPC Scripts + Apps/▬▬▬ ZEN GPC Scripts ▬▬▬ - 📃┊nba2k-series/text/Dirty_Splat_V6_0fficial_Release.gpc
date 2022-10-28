@@ -1,0 +1,384 @@
+
+/* ______   _____  _______   _________  ____  ____    ______   _______  _____          _     _________   
+|_   _ `.|_   _||_   __ \ |  _   _  ||_  _||_  _| .' ____ \ |_   __ \|_   _|        / \   |  _   _  |  
+  | | `. \ | |    | |__) ||_/ | | \_|  \ \  / /   | (___ \_|  | |__) | | |         / _ \  |_/ | | \_|  
+  | |  | | | |    |  __ /     | |       \ \/ /     _.____`.   |  ___/  | |   _    / ___ \     | |      
+ _| |_.' /_| |_  _| |  \ \_  _| |_      _|  |_    | \____) | _| |_    _| |__/ | _/ /   \ \_  _| |_     
+|______.'|_____||____| |___||_____|    |______|    \______.'|_____|  |________||____| |____||_____|    
+       ____   ____   ______                                                                            
+      |_  _| |_  _|.' ____ \                                                                           
+        \ \   / /  | |____\_|                                                                          
+         \ \ / /   | '____`'.                                                                          
+          \ ' /    | (____) |                                                                          
+           \_/     '.______.'                                                                          
+ ____  _____  ______        _         _____   ___  ____    _____    _____                              
+|_   \|_   _||_   _ \      / \       / ___ `.|_  ||_  _|  / ___ `. / ___ `.                            
+  |   \ | |    | |_) |    / _ \     |_/___) |  | |_/ /   |_/___) ||_/___) |                            
+  | |\ \| |    |  __'.   / ___ \     .'____.'  |  __'.    .'____.' .'____.'                            
+ _| |_\   |_  _| |__) |_/ /   \ \_  / /_____  _| |  \ \_ / /_____ / /_____                             
+|_____|\____||_______/|____| |____| |_______||____||____||_______||_______|                            
+                                                                                                       
+only mess with the standing limit which is how much you have to push the analog to let the Coronas know 
+that you are moving shot so the standing limit can only be between 10 and 99 
+
+these here are my offline values for base 38/38/38 full speed
+catch-and-shoot 400 
+jumper time     520 
+pull up shot    675 
+fade  shot      700
+
+if the light on this end is green that means you're online  
+to switch from online and offline modes you hold options and press down 
+
+if the light is off that means you're offline
+to go online press options and press up your shots will be saved just like the previous versions 
+
+if you want to adjust 
+your jump shot timing hold L2 and then d-pad 
+to do your catch-and-shoot hold L1 and then d-pad 
+to adjust your pull-up shots R2 and then d-pad 
+to adjust your fades R1 and then the d-pad 
+
+left and right d-pad are by 1 millisecond 
+up and down are by 5 milliseconds 
+
+this has no dribbles when I do release the beta w dribbles as I did with this one donators will receive it first and 
+then week or so after I will released to public for free so no need to donate if you're patient if you're not give 
+me all your money at paypal or cashapp
+
+PAYPAL @dirty619
+CASHAPP $JC20000
+
+
+
+
+you can even go tested in the cages or if you find a dead Park just do it with some friends but if not just join the 
+Discord and you'll be able to find somebody to help test this with shouldn't be hard
+*/
+//┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+int	Standing_Limit	= 50,/*-either 1 thru 99 This is how far the  left analog needs to be pressed in order to be considered moving-*/
+						 
+						 
+						 /*--*/Catch_Shoot_Timing 	= 400,///Must be a lower value than jumper		
+						 /*--*/Jumper_Timing 		= 520,///Must be a higher value than Catch and Shoot		
+						 
+						 
+						 /*--*/Pullup_Shot_Timing 	= 675,///Must be a lower value than Fade Shot		
+						 /*--*/Fade_Shot_Timing 	= 700,///Must be a higher value than Pullup												
+//└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+	Index = 1,Moving,Online_Toggle;
+	define green = 17,off = 0;
+	const string TEXT [] = {"Jumper","Pullup","Catch_Shoot","Fade"}	
+	init
+	{
+		Catch_Shoot_Timing	= 	get_pvar(SPVAR_1,Catch_Shoot_Timing ,4000, Catch_Shoot_Timing);
+		Jumper_Timing		= 	get_pvar(SPVAR_2,Jumper_Timing 		,4000, Jumper_Timing);
+		Pullup_Shot_Timing	= 	get_pvar(SPVAR_3,Pullup_Shot_Timing ,4000, Pullup_Shot_Timing);
+		Fade_Shot_Timing    = 	get_pvar(SPVAR_4,Fade_Shot_Timing 	,4000, Fade_Shot_Timing);
+		Online_Toggle		= 	get_pvar(SPVAR_5,0,2   , Online_Toggle);
+	}
+
+main{
+	vm_tctrl(-9);			
+		if(!Moving)
+		{
+			if(get_val(PS4_SQUARE))
+			{  				
+				block(PS4_SQUARE, Catch_Shoot_Timing); 
+				if(event_press(PS4_SQUARE))
+				{  
+					combo_run(CATCH_SHOOT); 
+				}
+				if(get_ptime(PS4_SQUARE) >= Jumper_Timing)
+				{
+					set_val(PS4_SQUARE,0);
+				}
+			}
+		}
+		if(Moving)
+		{
+			if(get_val(PS4_SQUARE))
+			{ 
+				block(PS4_SQUARE, Pullup_Shot_Timing); 
+				if(event_press(PS4_SQUARE))
+				{  
+					combo_run(Pullup_Shot); 
+				}
+				if(get_ptime(PS4_SQUARE) >= Fade_Shot_Timing)
+				{
+					set_val(PS4_SQUARE,0);
+				}
+			}
+		}
+	if(!Online_Toggle){
+					Led_Status(off);
+		if(get_val(PS4_OPTIONS))
+		{	
+			if(event_press(PS4_DOWN))
+			{
+				Online_Toggle 			= TRUE;
+				Catch_Shoot_Timing 		= Catch_Shoot_Timing 		+ 150;
+				Jumper_Timing 			= Jumper_Timing 	  		+ 150;
+				Pullup_Shot_Timing 		= Pullup_Shot_Timing 	  	+ 150;
+				Fade_Shot_Timing 		= Fade_Shot_Timing 		  	+ 150;
+				combo_run(SAVE);
+			}
+		}
+	}		
+	if(Online_Toggle){
+						Led_Status(green);
+	if(get_val(PS4_OPTIONS))
+			{	
+				if(event_press(PS4_UP))
+				{
+					Online_Toggle 			= FALSE;
+					Catch_Shoot_Timing 		= Catch_Shoot_Timing 		- 150;
+					Jumper_Timing 			= Jumper_Timing 	  		- 150;
+					Pullup_Shot_Timing 		= Pullup_Shot_Timing 	  	- 150;
+					Fade_Shot_Timing 		= Fade_Shot_Timing 		  	- 150;
+					combo_run(SAVE);
+				}
+			}
+	}
+		 
+		if(abs(get_val(PS4_LX)) > Standing_Limit || abs(get_val(PS4_LY)) > Standing_Limit)
+		{
+			Moving = TRUE;
+		}
+		else
+		{
+			Moving = FALSE;
+		}
+		if(get_val(PS4_L2))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT) + 3, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT) + 3, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[0]);//-- Display Script Title          
+					Jumper_Timing = Jumper_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Jumper_Timing,FindDigits(Jumper_Timing));
+				}
+		}
+		if(get_val(PS4_R2))
+		{
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[1]);//-- Display Script Title          
+					Pullup_Shot_Timing = Pullup_Shot_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Pullup_Shot_Timing,FindDigits(Pullup_Shot_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[1]);//-- Display Script Title          
+					Pullup_Shot_Timing = Pullup_Shot_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Pullup_Shot_Timing,FindDigits(Pullup_Shot_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[1]);//-- Display Script Title          
+					Pullup_Shot_Timing = Pullup_Shot_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Pullup_Shot_Timing,FindDigits(Pullup_Shot_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[1]);//-- Display Script Title          
+					Pullup_Shot_Timing = Pullup_Shot_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Pullup_Shot_Timing,FindDigits(Pullup_Shot_Timing));
+				}
+		}
+		if(get_val(PS4_L1))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[2]);//-- Display Script Title          
+					Catch_Shoot_Timing = Catch_Shoot_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Catch_Shoot_Timing,FindDigits(Catch_Shoot_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[2]);//-- Display Script Title          
+					Catch_Shoot_Timing = Catch_Shoot_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Catch_Shoot_Timing,FindDigits(Catch_Shoot_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[2]);//-- Display Script Title          
+					Catch_Shoot_Timing = Catch_Shoot_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Catch_Shoot_Timing,FindDigits(Catch_Shoot_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[2]);//-- Display Script Title          
+					Catch_Shoot_Timing = Catch_Shoot_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Catch_Shoot_Timing,FindDigits(Catch_Shoot_Timing));
+				}
+		}
+		if(get_val(PS4_R1))
+		{ 	
+			set_val(PS4_LEFT,0);set_val(PS4_RIGHT,0);set_val(PS4_UP,0);set_val(PS4_DOWN,0);
+				if(event_press(PS4_LEFT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[3]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing - 1;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_RIGHT)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[3]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing + 1;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_UP)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[3]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing + 5;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+				if(event_press(PS4_DOWN)) 
+				{
+					cls_oled(0);
+		    		printf(center_x(sizeof(TEXT)+ 3 , OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,TEXT[3]);//-- Display Script Title          
+					Fade_Shot_Timing 		= Fade_Shot_Timing - 5;
+					combo_run(SAVE);
+    				Display_Values(Fade_Shot_Timing,FindDigits(Fade_Shot_Timing));
+				}
+		}
+}
+combo SAVE{
+	set_rumble(RUMBLE_A,100);
+	wait(200);
+	reset_rumble();
+	set_pvar(SPVAR_1, Catch_Shoot_Timing);
+	set_pvar(SPVAR_2, Jumper_Timing);
+	set_pvar(SPVAR_3, Pullup_Shot_Timing);
+	set_pvar(SPVAR_4, Fade_Shot_Timing);
+	set_pvar(SPVAR_5, Online_Toggle);
+}
+combo CATCH_SHOOT{
+	set_val(PS4_SQUARE,100);
+	wait(Catch_Shoot_Timing);
+}	
+combo Pullup_Shot{
+	set_val(PS4_SQUARE,100);
+	wait(Pullup_Shot_Timing);
+}		
+function center_x(f_chars,f_font){                                                 
+    return (OLED_WIDTH * 2 ) - ((f_chars * f_font) * 2); //-- return X for Centering String Horizontally
+}   	
+function Display_Values(f_val,f_dgts) {
+    if(f_dgts >= 5)
+    {
+        putc_oled(Index,(f_val / 10000) + 48);
+        f_val %= 10000;
+        Index++;
+    }
+    if(f_dgts >= 4)
+    {
+        putc_oled(Index,(f_val / 1000) + 48);
+        f_val %= 1000;
+        Index++;
+    }
+    if(f_dgts >= 3)
+    {
+        putc_oled(Index,(f_val / 100) + 48);
+        f_val %= 100;
+        Index++;
+    }
+    if(f_dgts >= 2)
+    {
+        putc_oled(Index,(f_val / 10) + 48);
+        f_val %= 10;
+        Index++;
+    }
+    putc_oled(Index,f_val + 48);
+    puts_oled(1,1,2,Index,1);    
+    Index = 1;
+} 
+function FindDigits(f_num) {
+    f_num = abs(f_num);
+    	if(f_num /  10000 > 0) return 5;
+    	if(f_num /  1000 > 0) return 4;
+    	if(f_num /  100 > 0) return 3;
+    	if(f_num /   10 > 0) return 2;
+    	return 1;
+}
+function Led_Status(colour) {
+    set_led(LED_1, duint8(colour * 4));
+    set_led(LED_2, duint8((colour * 4) + 1));
+    set_led(LED_3, duint8((colour * 4) + 2));
+    set_led(LED_4, duint8((colour * 4) + 3));
+}
+data 					  
+(0,0,0,0,//-- Off	    
+1,0,0,0, //-- Dim Blue	  
+0,1,0,0, //-- Dim Red		  
+0,0,1,0, //-- Dim Green	
+0,0,0,1, //-- Dim Pink	
+1,0,1,0, //-- Dim SkyBlue	
+0,1,1,0, //-- Dim Yellow	
+1,1,1,0, //-- Dim White	
+2,0,0,0, //-- Blue		
+0,2,0,0, //-- Red			
+0,0,2,0, //-- Green		
+0,0,0,2, //-- Pink		
+2,0,2,0, //-- SkyBlue		
+0,2,2,0, //-- Yellow		
+2,2,2,0, //-- White		
+3,0,0,0, //-- Bright Blue	
+0,3,0,0, //-- Bright Red	
+0,0,3,0, //-- Bright Green
+0,0,0,3, //-- Bright Pink	
+3,0,3,0, //-- Bright SkyBlue
+0,3,3,0, //-- Bright Yellow
+3,3,3,0  //-- Bright white
+);		

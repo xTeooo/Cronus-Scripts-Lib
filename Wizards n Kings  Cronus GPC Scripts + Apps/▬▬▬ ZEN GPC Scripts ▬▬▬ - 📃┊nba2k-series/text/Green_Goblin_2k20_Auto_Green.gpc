@@ -1,0 +1,452 @@
+/*                                                 Grêêñ Gðßlïñ 2K20 Äµ†ð Grêêñ Èx¢êllêñ† §¢rïþ†       
+    
+               
+               
+               
+               Heres a quick n easy 20 script I made for yall, I put 9 dribble moves you can do at anytime without toggling dribble mods.
+                You will green off vibration so just hold x it'll release on its own.
+				Thank Ya'll so much for the love and support it is greatly appreciated.
+				please subscribe to my youtube channel need 500 more to hit 1k and monetize - Flex Money Bags AKA Green Goblin. 
+    			If You would like to donate here is my paypal - paypal.me/gucciflexbrim59 Enjoy! :)
+
+
+				$$INSTRUCTIONS$$
+
+-Hold X to shoot Greens. It will release off vibration
+
+-Hold Up On Dpad to do the WalkBack
+
+-L3 left hand curry slide ( When ball in left hand )
+
+-R3 right hand curry slide ( When Ball in right hand )
+
+-LB Left Hand Spin Back 
+
+-RB Right Hand Spin Back
+
+- RT + R3 right explosive behind the back ( When Ball in right hand )
+
+- RT + L3 Left explosive behind the back ( When Ball in left hand )
+
+- RT + LB Left Hand Half Spin
+
+- RT + RB Right Hand Half Spin
+
+-Hold L2 + R2 for Advanced Defense.  
+                                                                                                                                                         
+                                                                                                                                                            
+                                                                                                                                                                 */
+
+int blockButton;
+int timeBetweenTriggers;
+
+define MAX_RANGE = 330;
+int release = 21; 
+int faderelease = 11;
+
+main {
+
+
+// -- Advanced Defense
+	if(get_val(PS4_L2) && get_val(PS4_R2)) 
+	{
+		if(FindMax(abs(get_val(PS4_LX)),abs(get_val(PS4_LY))) > 15) 
+		{
+			timeBetweenTriggers =  MAX_RANGE - (FindMax(abs(get_val(XB1_LX)),abs(get_val(XB1_LY))) * 3);
+			combo_run(ALTERNATE_TRIGGERS);	
+		}
+			
+        }
+        
+		
+		 //--block output
+		if(blockButton) 
+		{
+			if(event_release(blockButton)) 
+			{
+				blockButton = 0;
+			}
+				else
+				{
+	    			set_val(blockButton,0);
+				}
+		}
+
+	if(get_rumble(RUMBLE_A) || get_rumble(RUMBLE_B)) 
+	{
+		combo_run(wait_time);
+	}
+	
+	if((get_val(XB1_LX)< -50))
+	{
+		if(get_rumble(RUMBLE_A) || get_rumble(RUMBLE_B)) 
+	    {
+	    	combo_run(FADE);
+	    }
+	}
+
+
+//*-*Dribbles
+{	
+	if(get_val(XB1_UP))
+	
+
+	{
+		
+		combo_run(WalkBack);
+		
+	
+	}
+	
+	
+	
+	if(get_val(PS4_R2))
+	{		
+		if (event_press(PS4_L3)) 
+		{
+			combo_run(LHExplosiveBB);
+		}
+		
+		if (event_press(PS4_R3)) 
+		{
+			combo_run(Takeover); 
+			combo_run(RHExplosiveBB);
+		}
+	}
+						
+		if(get_val(PS4_L3)) 
+		{
+			combo_run(LHSLIDE); 
+			set_val(PS4_L3, 0);
+		}
+		
+		if(get_val(PS4_R3)) 
+		{
+			combo_run(Takeover); 
+			combo_run(RHSLIDE); 
+			set_val(PS4_R3, 0);
+		}
+			
+	 	
+	 	if(combo_running(RHExplosiveBB) || combo_running(LHExplosiveBB))
+	 	{
+	 	 combo_stop(LHSLIDE);
+	 	 combo_stop(RHSLIDE);
+	 	 set_val(PS4_R2, 0);
+	 	}
+	 	
+	 	 
+		
+		
+		if(event_press(XB1_LB))
+		{   
+		    blockButton = XB1_LB;
+			combo_run(L_SPINBACK);
+		}
+	
+	
+	{
+		if(event_press(XB1_RB))
+		{
+		    blockButton = XB1_RB;
+			combo_run(R_SPINBACK);
+		}
+	
+	}
+	
+	if(get_val(PS4_R2))
+	{		
+		if (event_press(PS4_L1)) 
+		{
+		    blockButton = PS4_L1;
+			combo_run(LHHalfSpin);
+		}
+		
+		if (event_press(PS4_R1)) 
+		{
+		    blockButton = PS4_R1;
+			combo_run(Takeover); 
+			combo_run(RHHalfSpin);
+		}
+	}
+		
+		
+	if(combo_running(RHHalfSpin) || combo_running(LHHalfSpin))
+	 	{
+	 	 combo_stop(L_SPINBACK);
+	 	 combo_stop(R_SPINBACK);
+	 	 set_val(PS4_R2, 0);
+	 	}
+	 	
+	 	 }	
+	
+	
+	//COMBOS
+	
+}	
+	combo WalkBack
+{
+	set_val(XB1_LY, 100);
+	wait(200);
+	set_val(XB1_LY, 100);
+	set_val(XB1_RY, -100);
+	wait(500);
+	
+
+
+}
+combo L_SPINBACK
+{ 
+	set_val(XB1_RY, -100); 
+	wait(30); 
+	set_val(XB1_RX, -100); 
+	wait(30);	////same
+	set_val(XB1_RY, 100);
+	wait(60);
+	set_val(XB1_LY, 100); 
+	
+	wait(800);
+}
+combo R_SPINBACK
+{ 
+	set_val(XB1_RY, -100); 
+	wait(30);
+	set_val(XB1_RX, 100); 
+	wait(30);
+	set_val(XB1_RY, 100);
+	wait(60);
+	set_val(XB1_LY, 100); 
+	wait(800);
+}
+
+combo LHHalfSpin
+{ 
+	set_val(PS4_RX, -100);
+	wait(10);
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, -30);
+	wait(10);
+	set_val(PS4_RX, -20);
+	set_val(PS4_RY, -100);
+	wait(10);	
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+
+//-RH Halfspin
+combo RHHalfSpin
+{ 
+	set_val(PS4_RX, 100);
+	wait(10);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, -30);
+	wait(10);	
+	set_val(PS4_RX, 20);
+	set_val(PS4_RY, -100);
+	wait(10);	
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+
+combo LHSLIDE
+{ 
+	set_val(XB1_RT, 100);
+	wait(50);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	wait(70);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, 0);
+	set_val(PS4_RY, 0);
+}
+
+
+combo RHSLIDE
+{ 
+	set_val(XB1_RT, 100);
+	wait(50);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, -75);
+	set_val(PS4_RY, 75);
+	wait(70);
+	set_val(XB1_RT, 100);
+	set_val(PS4_RX, 0);
+	set_val(PS4_RY, 0);
+}
+
+combo RHExplosiveBB
+{
+	set_val(PS4_R2, 100);
+    set_val(PS4_RX, -100);
+    set_val(PS4_RY, 0);
+    wait(160)
+    set_val(PS4_R2, 100);
+    set_val(PS4_RX, 0);
+    set_val(PS4_RY, 0);
+    wait(110)
+    set_val(PS4_R2, 100);
+    set_val(PS4_LX, -100);
+    set_val(PS4_LY, -85);
+    wait(250);
+}
+ 
+combo LHExplosiveBB
+{
+	set_val(PS4_R2, 100);
+	wait(80);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 29);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 56);
+	set_val(PS4_RY, 34);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 85);
+	set_val(PS4_RY, 49);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 96);
+	set_val(PS4_RY, 56);
+	set_val(PS4_LX, 27);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 96);
+	set_val(PS4_RY, 56);
+	set_val(PS4_LX, 43);
+	set_val(PS4_LY, -20);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 96);
+	set_val(PS4_RY, 56);
+	set_val(PS4_LX, 61);
+	set_val(PS4_LY, -27);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 95);
+	set_val(PS4_RY, 56);
+	set_val(PS4_LX, 82);
+	set_val(PS4_LY, -35);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 93);
+	set_val(PS4_RY, 56);
+	set_val(PS4_LX, 100);
+	set_val(PS4_LY, -42);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, -42);
+	set_val(PS4_RY, 0);
+	set_val(PS4_LX, 100);
+	set_val(PS4_LY, -46);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 21);
+	set_val(PS4_LX, 100);
+	set_val(PS4_LY, -49);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_RX, 0);
+	set_val(PS4_LX, 99);
+	set_val(PS4_LY, -52);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 95);
+	set_val(PS4_LY, -55);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 92);
+	set_val(PS4_LY, -57);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 92);
+	set_val(PS4_LY, -60);
+	wait(60);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 87);
+	set_val(PS4_LY, -65);
+	wait(20);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 85);
+	set_val(PS4_LY, -66);
+	wait(100);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 82);
+	set_val(PS4_LY, -69);
+	wait(30);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 79);
+	set_val(PS4_LY, -70);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 64);
+	set_val(PS4_LY, -64);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 45);
+	set_val(PS4_LY, -56);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 26);
+	set_val(PS4_LY, -42);
+	wait(10);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LX, 0);
+	set_val(PS4_LY, -25);
+	wait(10);
+	set_val(PS4_R2, 0);
+	set_val(PS4_LY, 0);
+}
+	
+combo Takeover
+{
+	set_val(PS4_R3, 100);
+	wait(100);
+}	
+
+combo FADE
+{
+	wait(faderelease)'
+	set_val(XB1_LT, 100);
+	set_val(XB1_X, 0);
+	wait(100);
+	set_val(XB1_LT, 0);
+}
+
+combo wait_time
+{
+	wait(release);
+	set_val(PS4_L2, 100);
+	set_val(PS4_SQUARE, 0):
+	wait(100);
+	set_val(PS4_L2, 0);
+	wait(200):
+}
+
+combo ALTERNATE_TRIGGERS {
+    set_val(XB1_LT,100);
+    set_val(XB1_RT,0);
+    wait(30);
+    set_val(XB1_LT,0);
+    set_val(XB1_RT,0);
+    wait(timeBetweenTriggers);
+    set_val(XB1_RT,100);
+    set_val(XB1_LT,0);
+    wait(30);
+    set_val(XB1_LT,0);
+    set_val(XB1_RT,0);
+    wait(timeBetweenTriggers);
+}
+
+/*
+============================================================================================================================
+   FindMax
+============================================================================================================================
+*/
+function FindMax(a,b) {
+    if(a > b){
+        return a;
+    }
+    return b;
+}

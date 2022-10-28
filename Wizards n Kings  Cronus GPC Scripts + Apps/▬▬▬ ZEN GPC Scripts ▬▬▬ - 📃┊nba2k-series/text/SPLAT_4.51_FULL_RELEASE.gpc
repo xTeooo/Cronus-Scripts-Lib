@@ -1,0 +1,913 @@
+  int CATCH_AND_SHOOT = 550;                    
+  int JumpShotValue = 670;                    
+  int MovingShotValue = 900;
+  int Offline;
+
+  int Dribbles = FALSE;
+
+  int DribbleSet = TRUE; 
+
+
+  int Advanced_Defense;
+
+ 
+ 
+ int TIMER = 300;
+ int Script = TRUE; 
+ int Display_Value1;	 	
+ int Display_Value2;	 	
+ int Display_Value3;
+
+ int Index = 1; 
+ int Menu_Display;                            
+ int Toggle_Mods;                              
+ int Edit_Values;  		 	                                                        
+ int Block_Output;	 	                                                        
+ int Screen_Saver;   	                     
+ int Refresh_Display;
+ int Timer;                              
+ int Title_Screen;	 	 
+
+ int stepWait;
+  define MAX_RANGE 	    = 330;
+  	define MAX_MODS_COUNT  = 3; 			   								                          
+ 
+ 
+ 
+ 
+ define Red 	    = 9; define Yellow           = 13;	 		                   					           
+ define Green       = 10;define SkyBlue          = 12;			                                    
+ define Pink 	    = 11;define Blue 	        = 8;define White            = 14;	 	
+
+
+
+
+
+
+
+
+define SMALL_FONT	= 0;    define MEDIUM_FONT 	= 1;    define LARGE_FONT 	= 2; 
+define FONT_WIDTH 	= 0;    define FONT_HEIGHT 	= 1;    define FONT_LENGTH 	= 2;
+define BLACK_COLOR	= 0;    define WHITE_COLOR 	= 1;
+define Off 	    = 0;
+const string ON  					    = "ON";																								
+const string OFF 					    = "OFF";                                                                                            
+const string Dribbles_Toggle      	    = "Dribbles" ;                                                                                        
+const string LINE5      			    = "Version 4.51" ;                                                                                        
+const string LINE6      			    = "DIRTY SPLAT" ;                                                                                        
+const string Moving              = "Moving Shot" ;                                                                                          
+const string CNS              = "CATCH N SHOOT" ;                                                                                          
+const string REGULAR              = "JUMPSHOT" ;                                                                                          
+const string Adv_Def_Toggle             = "Adv_Def" ;                                                                                         
+const string DRIBBLE1  					= "QS & MMSPAM";																								
+const string DRIBBLE2  					= "MM to CURRY";																								
+const string DRIBBLE3  					= "CURRY SLIDE";																								
+const string DRIBBLE4  					= "EXP BTB";																								
+const string DRIBBLE5  					= "SPINBACK";																								
+const string DRIBBLE6  					= "SPINFORWARD";																								
+const string DRIBBLE7  					= "Adv Dribble";																								
+const string DRIBBLE8 					= "CROSSOVER";																								
+const string DRIBBLE9  					= "UP COURT";																								
+const string DRIBBLE10  				= "PRO2 & SBCO";																								
+const string DRIBBLE11  				= "CRABBY PATTY";																								
+init{  
+	MovingShotValue =	get_pvar(SPVAR_1, 10, 3000, MovingShotValue );
+	JumpShotValue =		get_pvar(SPVAR_2, 10, 3000, JumpShotValue );
+	CATCH_AND_SHOOT =	get_pvar(SPVAR_3, 10, 3000, CATCH_AND_SHOOT );
+	Offline =	get_pvar(SPVAR_4, 1, 1, Offline );
+	}											                                                                              
+
+
+
+
+
+
+
+
+
+
+ 
+main {
+
+	vm_tctrl(-9);//--Script loads at 1ms
+    set_val(TRACE_1,CATCH_AND_SHOOT);//--
+	set_val(TRACE_2,JumpShotValue);//--Tracks StandingStill
+	set_val(TRACE_3,MovingShotValue);//--
+	set_val(TRACE_4,Offline);//--
+
+	if(Offline == FALSE)
+	set_ds4_led(Green);
+	
+	else if (Offline == TRUE)
+	set_ds4_led(Off);
+	
+	if(event_press(PS4_SQUARE))
+        combo_run(catchAndshoot);
+    
+    if(!get_val(PS4_R2)  && get_ptime(PS4_SQUARE) >= JumpShotValue)
+			set_val(PS4_SQUARE,0);
+		
+    if(get_val(PS4_R2) && get_ptime(PS4_SQUARE) >= MovingShotValue)
+    			set_val(PS4_SQUARE,0);
+		                                  
+  	if(get_val(PS4_L2) && get_val(PS4_R2) && event_press(PS4_OPTIONS)){
+   	    Menu_Display = TRUE;             
+		Refresh_Display = TRUE;     
+    }
+    
+    if(Menu_Display){
+    
+        if(event_press(PS4_RIGHT))// Switch MODs
+        {                                           
+            Toggle_Mods ++;
+            if(Toggle_Mods > 1) Toggle_Mods = 0;
+		    Refresh_Display = TRUE;   
+		}
+
+        if(event_press(PS4_LEFT))
+        {                                                         
+        	Toggle_Mods --;                                      
+        	if(Toggle_Mods < 0) Toggle_Mods = 1;                          
+       		Refresh_Display = TRUE;                                                  
+        } 
+		
+        if(event_press(PS4_CROSS))// display mod name and  ON/OFF
+		{ 
+			if(Toggle_Mods == 0 ) 
+			{ 
+              Advanced_Defense = !Advanced_Defense;
+			}
+        	if(Toggle_Mods == 1 ) 
+			{ 
+              Dribbles = !Dribbles;
+        	}                                                                                                                       
+          Refresh_Display = TRUE;                                        
+	   }
+		
+    }
+ 
+ 
+ 
+ 
+ 
+ 
+    if((get_val(PS4_OPTIONS)) && Script == TRUE){	
+    	Block_Output = PS4_DOWN;
+    	if(event_press(PS4_DOWN) && Offline == TRUE){
+    		Offline = FALSE;
+        	CATCH_AND_SHOOT = CATCH_AND_SHOOT + 150; 
+			JumpShotValue = JumpShotValue + 150; 
+	    	MovingShotValue = MovingShotValue + 150;
+			Display_Value2 = TRUE;
+        }
+        
+        Block_Output = PS4_UP;
+    	if(event_press(PS4_UP) && Offline == FALSE){
+    		Offline = TRUE;
+            CATCH_AND_SHOOT = CATCH_AND_SHOOT - 150; 
+			JumpShotValue = JumpShotValue - 150; 
+			MovingShotValue = MovingShotValue - 150;			
+            Display_Value2 = TRUE;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if(get_val(PS4_R1)){        	
+        Block_Output = PS4_RIGHT;
+	        if(event_press(PS4_RIGHT)){ 
+	        	Screen_Saver = TRUE;
+				DribbleSet ++;	
+				if (DribbleSet >11)
+					DribbleSet = 1;
+			}
+		Block_Output = PS4_LEFT;
+			if(event_press(PS4_LEFT)){
+				Screen_Saver = TRUE;
+				DribbleSet --;	
+				if (DribbleSet <1)
+					DribbleSet = 11;
+			}
+    }
+    
+    
+    
+    
+    
+    if(get_val(PS4_SHARE) && Script == TRUE){//--Save Recorded Timing
+      
+		if(event_press(PS4_SQUARE) && Script == TRUE){
+			Dribbles = !Dribbles;
+		} 
+          set_val(PS4_SHARE,0);
+          set_val(PS4_SQUARE,0);
+    }
+    
+    
+    
+    
+ 	if(!get_val(PS4_R2) && get_val(PS4_L2) && Script == TRUE)//--Recorded Shot Modifier
+ 	{
+        if(event_press(PS4_LEFT)) 
+        {
+            CATCH_AND_SHOOT = CATCH_AND_SHOOT - 1;
+            Edit_Values = TRUE;
+			Display_Value1 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+		}
+  
+        if(event_press(PS4_RIGHT))  
+        {
+            CATCH_AND_SHOOT = CATCH_AND_SHOOT + 1;
+            Edit_Values = TRUE;
+			Display_Value1 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+
+        }
+        
+        if(event_press(PS4_UP)) 
+        {
+            CATCH_AND_SHOOT = CATCH_AND_SHOOT + 15;
+            Edit_Values = TRUE;
+			Display_Value1 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+
+        }
+  
+        if(event_press(PS4_DOWN))  
+        {
+            CATCH_AND_SHOOT = CATCH_AND_SHOOT - 15;
+            Edit_Values = TRUE;
+			Display_Value1 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+
+        }
+      printf(center_x(sizeof(CNS) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,CNS[0]);// Display Script Title          
+
+        set_val(PS4_UP,0);
+        set_val(PS4_DOWN,0);
+        set_val(PS4_LEFT,0);
+        set_val(PS4_RIGHT,0);
+	}
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	if(get_val(PS4_R2) && get_val(PS4_L2) && Script == TRUE)//--Recorded Shot Modifier
+ 	{
+        if(event_press(PS4_LEFT)) 
+        {
+            JumpShotValue = JumpShotValue - 1;
+            Edit_Values = TRUE;
+			Display_Value2 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+		}
+  
+        if(event_press(PS4_RIGHT))  
+        {
+            JumpShotValue = JumpShotValue + 1;
+            Edit_Values = TRUE;
+			Display_Value2 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+        }
+        
+        if(event_press(PS4_UP)) 
+        {
+            JumpShotValue = JumpShotValue + 15;
+           Edit_Values = TRUE;
+			Display_Value2 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+        }
+  
+        if(event_press(PS4_DOWN))  
+        {
+            JumpShotValue = JumpShotValue - 15;
+            Edit_Values = TRUE;
+			Display_Value2 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+        }
+            	    printf(center_x(sizeof(REGULAR) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,REGULAR[0]);// Display Script Title          
+
+        set_val(PS4_UP,0);
+        set_val(PS4_DOWN,0);
+        set_val(PS4_LEFT,0);
+        set_val(PS4_RIGHT,0);
+	}
+ 	
+ 	
+ 	
+ 	if(get_val(PS4_R2) && !get_val(PS4_L2) && Script == TRUE)//--Recorded Shot Modifier
+ 	{
+        if(event_press(PS4_LEFT)) 
+        {
+           MovingShotValue = MovingShotValue - 1;
+            Edit_Values = TRUE;
+			Display_Value3 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+		}
+  
+        if(event_press(PS4_RIGHT))  
+        {
+            MovingShotValue = MovingShotValue + 1;
+            Edit_Values = TRUE;
+			Display_Value3 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+        }
+        
+        if(event_press(PS4_UP)) 
+        {
+            MovingShotValue = MovingShotValue + 15;
+            Edit_Values = TRUE;
+			Display_Value3 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+        }
+  
+        if(event_press(PS4_DOWN))  
+        {
+            MovingShotValue = MovingShotValue - 15;
+            Edit_Values = TRUE;
+			Display_Value3 = TRUE;
+			combo_run (RUMBLE);
+			combo_run (Save_Timing);
+        }
+            	    printf(center_x(sizeof(Moving) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,Moving[0]);// Display Script Title          
+
+        set_val(PS4_UP,0);
+        set_val(PS4_DOWN,0);
+        set_val(PS4_LEFT,0);
+        set_val(PS4_RIGHT,0);
+	}
+    else if(Edit_Values)
+    {
+			combo_run (Save_Timing);
+    }
+    
+	if(Block_Output){ //--block output
+		if(event_release(Block_Output)){
+			Block_Output = 0;
+		}
+			else{
+		    	set_val(Block_Output,0);
+			}
+	}
+	
+	
+	
+	
+  	if(Dribbles){
+	  if(DribbleSet == 1){	
+	    	printf(center_x(sizeof(DRIBBLE1) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE1[0]);// Display Script Title          
+	    		if((get_val(PS4_LX))<0 && event_press(PS4_L3))
+	    			combo_run(QuickStopLeftHand);
+	    		if((get_val(PS4_LX))>0 && event_press(PS4_L3))
+	    			combo_run(QuickStopRightHand); 
+				if (get_val(PS4_R3)) 
+					combo_run(MMSPAM);		
+		}
+		if(DribbleSet == 2) {
+    	    printf(center_x(sizeof(DRIBBLE2) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE2[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(L_MOMENTUM_CURRYSLIDE);
+				if (event_press(PS4_R3))
+					combo_run(R_MOMENTUM_CURRYSLIDE);			
+		}
+	    if(DribbleSet == 3){
+    	    printf(center_x(sizeof(DRIBBLE3) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE3[0]);// Display Script Title          
+				if (event_press(PS4_L3))
+						combo_run(L_CURRY_SLIDE);	
+				if (event_press(PS4_R3))
+						combo_run(R_CURRY_SLIDE);		
+		}
+		if(DribbleSet == 4){
+    	    printf(center_x(sizeof(DRIBBLE4) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE4[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(L_HANDED_EXPLOSIVE_BTB);	
+				if (event_press(PS4_R3)) 
+					combo_run(R_HANDED_EXPLOSIVE_BTB);			
+		}
+		if(DribbleSet == 5){
+    	    printf(center_x(sizeof(DRIBBLE5) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE5[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(L_SPINBACK);
+				if (event_press(PS4_R3)) 
+					combo_run(R_SPINBACK);		
+		}
+		if(DribbleSet == 6){
+    	    printf(center_x(sizeof(DRIBBLE6) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE6[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(L_HANDED_HALF_SPIN);
+				if (event_press(PS4_R3)) 
+					combo_run(R_HANDED_HALF_SPIN);
+		}
+		if(DribbleSet == 7){
+    	    printf(center_x(sizeof(DRIBBLE7) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE7[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(duffyLH);
+				if (event_press(PS4_R3)) 
+					combo_run(duffyRH);
+		}
+		if(DribbleSet == 8){
+    	    printf(center_x(sizeof(DRIBBLE8) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE8[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(LH_Crossover);
+				if (event_press(PS4_R3)) 
+					combo_run(RH_Crossover);
+		}
+		if(DribbleSet == 9){
+    	    printf(center_x(sizeof(DRIBBLE9) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE9[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(UPCOURTLH);
+				if (event_press(PS4_R3)) 
+					combo_run(UPCOURTRH);
+		}
+	    if(DribbleSet == 10){
+    	    printf(center_x(sizeof(DRIBBLE10) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE10[0]);// Display Script Title          
+				if (get_val(PS4_R3)) 
+					combo_run(PRO2SPAM);		
+				if (event_press(PS4_L3)) 
+					combo_run(SBCO);		
+		}
+		if(DribbleSet == 11) {
+    	    printf(center_x(sizeof(DRIBBLE11) - 1, OLED_FONT_SMALL_WIDTH),33,OLED_FONT_SMALL,OLED_WHITE,DRIBBLE11[0]);// Display Script Title          
+				if (event_press(PS4_L3)) 
+					combo_run(CRABBYLH);
+				if (event_press(PS4_R3))
+					combo_run(CRABBYRH);			
+		}
+		
+	}
+	
+	
+	
+	if(Advanced_Defense == TRUE){
+		if(get_val(PS4_L2)){
+			stepWait = MAX_RANGE - (FindMax(abs(get_val(PS4_LX)),abs(get_val(PS4_LY))) * 3);
+			combo_run(ALTERNATE_STEP);
+		}
+    }
+	
+	
+	
+	
+	if(Display_Value1){ //Display Refresh for Values
+    	cls_oled(0);
+        Display_Values(CATCH_AND_SHOOT,FindDigits(CATCH_AND_SHOOT));
+        Display_Value1 = FALSE;
+    }
+	
+	
+	
+	if(Display_Value2){ //Display Refresh for Values
+        cls_oled(0);
+        Display_Values(JumpShotValue,FindDigits(JumpShotValue));
+        Display_Value2 = FALSE;
+    }
+	
+	
+	
+	if(Display_Value3){ //Display Refresh for Values
+		cls_oled(0);
+        Display_Values(MovingShotValue,FindDigits(MovingShotValue));
+        Display_Value3 = FALSE;
+    }
+
+
+
+    if(Refresh_Display) { 
+		cls_oled(0);// Clear OLED screen       
+        line_oled(1,25,127,25,1,1); 
+        rect_oled(0, 0,OLED_WIDTH,64,FALSE,1);
+        display_mod(0, center_x(sizeof(Adv_Def_Toggle)- 1, OLED_FONT_MEDIUM_WIDTH) ,Adv_Def_Toggle[0],Advanced_Defense);
+        display_mod(1, center_x(sizeof(Dribbles_Toggle)- 1, OLED_FONT_MEDIUM_WIDTH) ,Dribbles_Toggle[0],Dribbles);// Display Mod Name and togle status  : ON/OFF
+    //    display_mod(2, center_x(sizeof(Center_Toggle)- 1, OLED_FONT_MEDIUM_WIDTH) ,Center_Toggle[0],Center_onoff);// Display Mod Name and togle status  : ON/OFF
+        Refresh_Display = FALSE; //display_md(corresponding Mod_Name_Index,center_x(sizeof(corresponding_string_to_display) - 1,OLED_FONT_MEDIUM_WIDTH)corresponding_string_to_display[0]toggle_I_want_to_be_displayed[profile]);
+    }
+
+
+
+    if(Title_Screen){  
+		cls_oled(0); // clear OLED screen            	    	
+    	printf(center_x(sizeof(LINE5) - 1, OLED_FONT_SMALL_WIDTH),53,OLED_FONT_SMALL,OLED_WHITE,LINE5[0]);// Display Script Title          
+    	printf(center_x(sizeof(LINE6) - 1, OLED_FONT_SMALL_WIDTH),43,OLED_FONT_SMALL,OLED_WHITE,LINE6[0]);// Display Script Title          
+	    Screen_Saver = TRUE; // screen saver      
+        Title_Screen = FALSE;                                 
+    }                            
+  
+  
+  
+    if(Screen_Saver ) {     // Screen saver (OLED off)                         
+        TIMER += get_rtime();
+			if(TIMER >= 1500) {                        
+				cls_oled(0);         
+				TIMER = 0;      
+				Screen_Saver = FALSE; 
+			}                         
+    }
+  
+  
+  
+   if(event_press(XB1_B)) {     
+   		    EXIT();           
+    }   
+}
+
+//// EXCELLENT SHOT RELEASES
+combo catchAndshoot {
+	set_val(PS4_SQUARE,100);
+	wait(CATCH_AND_SHOOT);
+	set_val(PS4_SQUARE,0);
+	wait(1);
+}
+combo L_CURRY_SLIDE	{//curryslide yessuh
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+combo R_CURRY_SLIDE	{
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+combo duffyRH	{
+	call(CRABBYRH);
+	wait(300);
+	set_val(PS4_RX, -100);
+	wait(40);	
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);	
+	wait(350);
+	call(MMLH);
+	wait(100);
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+combo duffyLH	{			//nice lil momentum combo
+	call(CRABBYLH);
+	wait(300);
+	call(MMLH);
+	wait(300);
+	set_val(PS4_RX, -100);
+	wait(40);	
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(150);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+combo CRABBYLH	{   //crab
+	set_val(XB1_RX, 84);
+	set_val(XB1_RY, -74);
+	wait(300);
+}
+combo CRABBYRH	{
+	set_val(XB1_RX, -87);
+	set_val(XB1_RY, -64):
+	wait(300);
+}
+combo SBCO	{	// speedbost crossover. use it to speedboost+looks comp(NOT ACTIAVED IN SCRIPT)
+	set_val(XB1_RY, -100);
+	wait(40);
+	set_val(XB1_RY, 0);
+	wait(40);	
+}
+combo MMSPAM	{			 //momentum spam
+	wait(100);
+	call(MMLH);
+	wait(200);
+	wait(120);
+	call(MMRH);
+	wait(100);
+}
+combo MMRH	{
+	set_val(PS4_RX, -100);
+	wait(40);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(100);
+}
+combo MMLH	{
+	set_val(PS4_RX, 100);
+	wait(40);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(100);
+}
+combo UPCOURTRH {
+	set_val(XB1_LY, -100);
+	wait(300);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, 0);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, 100);
+	wait(300);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, 0);
+	wait(100);
+	call(R_CURRY_SLIDE);
+}
+combo UPCOURTLH	{
+	set_val(XB1_LY, -100);
+	wait(300);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RY, 0);
+	wait(50);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, -100);
+	wait(300);
+	set_val(XB1_LY, -100);
+	set_val(XB1_RX, 0);
+	wait(100);
+	call(L_CURRY_SLIDE);
+}
+combo LH_Crossover { 
+	set_val(PS4_RY, -100);
+	wait(100);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(400);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(400);
+	call(L_CURRY_SLIDE);
+	wait(300);
+}
+combo RH_Crossover { 
+	set_val(PS4_RY, -100);
+	wait(100);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(400);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(400);
+	call(R_CURRY_SLIDE);
+	wait(300);
+}
+combo PRO2SPAM {
+	set_val(XB1_LY, 100);
+	set_val(XB1_RY, -100);
+	wait(50);
+	set_val(XB1_LY, 100);
+	set_val(XB1_RY,0);
+	wait(50);
+	set_val(XB1_LY, 100);
+	wait(200);
+	set_val(XB1_RY, 0);
+	set_val(XB1_LY, 0);
+}
+combo L_MOMENTUM_CURRYSLIDE {		
+	set_val(PS4_RX, 100);
+	wait(30);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(150); 
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, 75);  
+	wait(200);
+}
+combo R_MOMENTUM_CURRYSLIDE { 
+	set_val(PS4_RX, -100);
+	wait(30);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(150);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, 75);
+	wait(200);
+}
+combo L_HANDED_EXPLOSIVE_BTB {
+	set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	wait(150);
+    set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(200);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -70);
+	wait(200);
+}
+combo R_HANDED_EXPLOSIVE_BTB {	
+	set_val(PS4_RX, -75);
+	set_val(PS4_RY, 75);
+	wait(150);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(200);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(200);
+}
+combo L_SPINBACK{ 
+	set_val(PS4_RY, -100); // 12 'o Clock
+	set_val(PS4_LY, 100);
+	wait(30); ////testing 30 from 60
+	set_val(PS4_LY, 100);
+	set_val(PS4_RX, -100); // 9 'o Clock
+	wait(30);	////same
+	set_val(PS4_LY, 100);
+	set_val(PS4_RY, 100);// 6 'o Clock
+	wait(30);//////60 from 120
+	set_val(PS4_LY, 100); 
+	wait(800);
+}
+combo R_SPINBACK{ 
+	set_val(PS4_RY, -100); // 12 'o Clock
+	set_val(PS4_LY, 100);
+	wait(30);
+	set_val(PS4_LY, 100);
+	set_val(PS4_RX, 100); // 3 'o Clock
+	wait(30);
+	set_val(PS4_LY, 100);
+	set_val(PS4_RY, 100);// 6 'o Clock
+	wait(30);
+	set_val(PS4_LY, 100); 
+	wait(800);
+}
+combo L_HANDED_HALF_SPIN { 	                        
+	set_val(PS4_RX, -100);   	
+	wait(10);
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, -30);
+	wait(10);
+	set_val(PS4_RX, -20);
+	set_val(PS4_RY, -100);
+	wait(10);
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+combo R_HANDED_HALF_SPIN{ 	
+	set_val(PS4_RX, 100);
+	wait(10);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, -30);
+	wait(10);
+	set_val(PS4_RX, 20);
+	set_val(PS4_RY, -100);
+	wait(10);
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+/// ADVANCED DEFENSE COMBO 
+combo ALTERNATE_STEP {
+	set_val(PS4_R2,0);
+    set_val(PS4_L2,100);
+    wait(100);
+    set_val(PS4_R2,100);
+    set_val(PS4_L2,0);
+    wait(stepWait);
+}
+combo Save_Timing{
+		set_pvar(SPVAR_1, MovingShotValue);
+		set_pvar(SPVAR_2, JumpShotValue); 
+		set_pvar(SPVAR_3,  CATCH_AND_SHOOT);
+		set_pvar(SPVAR_4, Offline);
+		Edit_Values = TRUE;		
+}                            
+
+//// QUICK STOP
+combo QuickStopLeftHand{ 
+	set_val(PS4_RX, 100);
+	wait(100);
+}
+combo QuickStopRightHand{ 
+	set_val(PS4_RX, -100);
+	wait(100);
+}
+function Display_Values(f_val,f_dgts) {
+    if(f_dgts >= 5) 
+	{
+        putc_oled(Index,(f_val / 10000) + 48);
+        f_val %= 10000;
+        Index++;
+    }
+    if(f_dgts >= 4) 
+	{
+        putc_oled(Index,(f_val / 1000) + 48);
+        f_val %= 1000;
+        Index++;
+    }
+    if(f_dgts >= 3) 
+	{
+        putc_oled(Index,(f_val / 100) + 48);
+        f_val %= 100;
+        Index++;
+    }
+    if(f_dgts >= 2) 
+	{
+        putc_oled(Index,(f_val / 10) + 48);
+        f_val %= 10;
+        Index++;
+    }
+    putc_oled(Index,f_val + 48);
+    puts_oled(30,1,2,Index,1);    
+    Index = 1;
+} 
+function FindDigits(f_num) {
+    f_num = abs(f_num);
+    if(f_num /  10000 > 0) return 5;
+    if(f_num /  1000 > 0) return 4;
+    if(f_num /  100 > 0) return 3;
+    if(f_num /   10 > 0) return 2;
+    return 1;
+}
+function FindMax(a,b) {
+    if(a > b){
+        return a;
+    }
+    return b;
+}
+function center_x(f_chars,f_font){  //  center_x(number of chars,font size);                                                 
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); // return X for Centering String Horizontally
+}                                                      
+function display_mod(f_idx, f_string, mod_name, f_toggle) {   
+	if(Toggle_Mods == f_idx)                              
+		{                                                                                      
+            printf(f_string, 3, OLED_FONT_SMALL, OLED_WHITE, mod_name); //Display MOD_NAME                                                                    
+            if(f_toggle == 1)                                                             
+                printf(center_x(sizeof(ON)  - 1, OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE, ON[0]); // Display ON OFF 
+            else                                                                                               
+                printf(center_x(sizeof(OFF) - 1, OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,OFF[0]); 
+        }            
+}                                                                               
+function set_ds4_led(colour) {
+    set_led(LED_1, duint8(colour * 4));
+    set_led(LED_2, duint8((colour * 4) + 1));
+    set_led(LED_3, duint8((colour * 4) + 2));
+    set_led(LED_4, duint8((colour * 4) + 3));
+}
+function EXIT(){               
+	cls_oled(0);             
+	TIMER = 0;         
+	Menu_Display = FALSE;            
+	Title_Screen = TRUE;
+
+}
+combo RUMBLE{
+	set_rumble(RUMBLE_A, 100);
+	set_rumble(RUMBLE_B, 100);
+	wait(100);
+	reset_rumble();
+}
+
+data 					  
+(0,0,0,0,// Off	    
+1,0,0,0, // Dim Blue	  
+0,1,0,0, // Dim Red		  
+0,0,1,0, // Dim Green	
+0,0,0,1, // Dim Pink	
+1,0,1,0, // Dim SkyBlue	
+0,1,1,0, // Dim Yellow	
+1,1,1,0, // Dim White	
+2,0,0,0, // Blue		
+0,2,0,0, // Red			
+0,0,2,0, // Green		
+0,0,0,2, // Pink		
+2,0,2,0, // SkyBlue		
+0,2,2,0, // Yellow		
+2,2,2,0, // White		
+3,0,0,0, // Bright Blue	
+0,3,0,0, // Bright Red	
+0,0,3,0, // Bright Green
+0,0,0,3, // Bright Pink	
+3,0,3,0, // Bright SkyBlue
+0,3,3,0, // Bright Yellow
+3,3,3,0  // Bright white
+);		

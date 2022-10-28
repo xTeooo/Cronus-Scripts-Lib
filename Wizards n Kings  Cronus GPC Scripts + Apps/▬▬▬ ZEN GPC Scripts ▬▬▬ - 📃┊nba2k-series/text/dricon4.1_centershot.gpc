@@ -1,0 +1,800 @@
+/*
+
+dricon 4.1 (Centershot)
+
+====// Controls //========================================
+
+Toggle Script On/Off = R2 + Options 
+
+//Timed release for Center shooting for excellent boost.
+
+Set the values the below from TRUE to FALSE to disable 
+*/
+int AdvancedDribbles = TRUE;
+int Dribbles = TRUE;
+int AdvancedDefense = FALSE;
+
+//Change the value below to modify where the bar lands for center
+int Center = 18; //All scripts use 18 right now. 18.5 is center but can only use integers
+
+
+/*
+**Dribble Commands****************************
+-Quickstop = Hold R2(RT) to sprint in the direction and tap R2(RT) again to quickstop
+-Momentum Up The Court = Dpad Up
+-Left Hand Advanced Dribble = Dpad Left
+-Right Hand Advanced Dribble = Dpad Right
+-Toggle Advanced Dribble Move = Double Tap Dpad Left/Right
+-Left Hand Dribble = L3 (LS)
+-Right Hand Dribble = R3 (RS)
+-Toggle Dribble Move = Double Tap R3/L3 (RS/LS)
+**********************************************
+
+
+*/
+
+
+define Blue          =  1;              
+define Green         =  3;   
+define LED_OFF       = -2; 
+define Red           =  2; 
+ 
+data( 1,                 
+  2,0,0,0 , //1. Blue                  
+  0,2,0,0 , //2. Red                   
+  0,0,2,0 , //3. Green                 
+  0,0,0,2 , //4. Pink                  
+  2,0,2,0 , //5. SkyBlue               
+  0,2,2,0 , //6. Yellow                
+  2,2,2,2   //7. White                  
+)
+
+//=========================================================
+// DATA //=================================================
+//=========================================================
+                     
+define TimeLimit = 300; 
+define HoldTime = 150; 
+ 
+
+int onoff = TRUE;
+
+int blockButton;
+int DribbleSet;
+int AdvancedDribbleSet;
+int timeBetweenTriggers;
+
+define MAX_RANGE = 330;
+
+ 
+ 
+main 
+{
+	//--Script loads at 1ms
+	vm_tctrl(-9);
+	
+	// -- Advanced Defense
+	if(get_val(PS4_L2) && get_val(PS4_R2) && onoff == TRUE && AdvancedDefense == TRUE) 
+	{
+		if(FindMax(abs(get_val(PS4_LX)),abs(get_val(PS4_LY))) > 15) 
+		{
+			timeBetweenTriggers =  MAX_RANGE - (FindMax(abs(get_val(XB1_LX)),abs(get_val(XB1_LY))) * 3);
+			combo_run(ALTERNATE_TRIGGERS);	
+		}
+			LED_CM(Red);
+        }
+   
+       
+       	if(event_release(PS4_R2) || event_release(PS4_L2) && onoff == TRUE && AdvancedDefense == TRUE)
+        {
+        	LED_CM(Blue);
+        }
+	
+
+    if(get_val(PS4_R2)) 
+    {
+    	blockButton = PS4_OPTIONS;
+    	if(event_press(PS4_OPTIONS))
+    	{
+        	onoff=!onoff;
+        }
+    }
+
+    // -- Quickstop
+    if((get_val(PS4_LX))<0 && get_val(PS4_R2) && onoff == TRUE) 
+	{
+		if(event_press(PS4_R2) && get_brtime(PS4_R2) < 150) 
+        {
+			combo_run(QuickStopLeftHand); 
+		}
+	}
+	
+	if((get_val(PS4_LX))>0 && get_val(PS4_R2) && onoff == TRUE) 
+	{
+		if(event_press(PS4_R2) && get_brtime(PS4_R2) < 150) 
+        {
+	    	combo_run(QuickStopRightHand);
+		}
+	}
+	
+    //--Center Shot
+
+    if(get_val(PS4_L1) && onoff == TRUE)
+    {  
+		set_val(XB1_RY, 100);
+		set_val(XB1_RX, Center);
+    }
+
+
+
+    //--DribbleSpam UpCourt
+    if(abs(get_ival(PS4_LY,-100)) && onoff == TRUE)
+	 { 
+		combo_run(MMSPAM);	
+     }
+     
+	if(get_val(PS4_UP) && onoff == TRUE)	
+	{
+		combo_run(MMSPAM);
+	}
+	
+	if(event_release(PS4_UP) && onoff == TRUE)	
+	{
+		combo_stop(MMSPAM);
+	}   	
+	
+	 //--Advanced Dribble Sets	
+	 if(get_ival(PS4_RIGHT) && Dribbles == 1 && onoff == TRUE) 
+	 { 
+    	block(PS4_RIGHT,150); 
+        if(event_press(PS4_RIGHT) && get_brtime(PS4_RIGHT) < 150) 
+        {
+        	blockButton = PS4_RIGHT;
+    		{
+	    		AdvancedDribbleSet++;
+	    		if (AdvancedDribbleSet >1)
+	    			AdvancedDribbleSet = 0;
+	    			combo_run(RUMBLE);
+    		}
+    	}
+    }
+    	
+	 if(get_ival(PS4_LEFT) && Dribbles == 1 && onoff == TRUE) 
+	 { 
+    	block(PS4_LEFT,150); 
+        if(event_press(PS4_LEFT) && get_brtime(PS4_LEFT) < 150) 
+        {
+        	blockButton = PS4_LEFT;
+    		{
+	    		AdvancedDribbleSet--;
+	    		if (AdvancedDribbleSet <0)
+	    			AdvancedDribbleSet = 1;
+	    			combo_run(RUMBLE);
+    		}
+    	}
+    }
+    
+    //Advanced Dribble Set 0, Cross Over > Speed Boost
+	if(AdvancedDribbles == 1 && AdvancedDribbleSet == 0 && onoff == TRUE)
+	{
+			if (event_press(PS4_LEFT)) 
+			{
+				combo_run(LH_Crossover_SpeedBoost);
+			}
+	
+			if (event_press(PS4_RIGHT)) 
+			{
+				combo_run(RH_Crossover_SpeedBoost);
+			}
+	}
+		
+	//Advanced Dribble Set 1, Cross Over > Speed Boost > Curry Slide
+	if(AdvancedDribbles == 1 && AdvancedDribbleSet == 1 && onoff == TRUE)
+	{
+			if (event_press(PS4_LEFT)) 
+			{
+				combo_run(LH_Crossover_SpeedBoost_CurrySlide);
+			}
+		
+			if (event_press(PS4_RIGHT)) 
+			{
+				combo_run(RH_Crossover_SpeedBoost_CurrySlide);
+			}
+	}
+	
+	//--Dribble Sets	
+	 if(get_ival(PS4_R3) && Dribbles == 1) 
+	 { 
+    	block(PS4_R3,150); 
+        if(event_press(PS4_R3) && get_brtime(PS4_R3) < 150) 
+        {
+        	blockButton = PS4_R3;
+    		{
+	    		DribbleSet++;
+	    		if (DribbleSet >5)
+	    			DribbleSet = 0;
+	    			combo_run(RUMBLE);
+    		}
+    	}
+    }
+    	
+	 if(get_ival(PS4_L3) && Dribbles == 1) 
+	 { 
+    	block(PS4_L3,150); 
+        if(event_press(PS4_L3) && get_brtime(PS4_L3) < 150) 
+        {
+        	blockButton = PS4_L3;
+    		{
+	    		DribbleSet--;
+	    		if (DribbleSet <0)
+	    			DribbleSet = 5;
+	    			combo_run(RUMBLE);
+    		}
+    	}
+    }
+    
+	//Dribble Set 0, Curry Slide
+	if(Dribbles == 1 && DribbleSet == 0 && onoff == TRUE)
+	{
+			if (event_press(PS4_L3)) 
+			{
+				combo_run(LH_CurrySlide);
+			}
+	
+			if (event_press(PS4_R3)) 
+			{
+				combo_run(RH_CurrySlide);
+			}
+	}
+		
+	//Dribble Set 1, Explosive behind the back
+	if(Dribbles == 1 && DribbleSet == 1 && onoff == TRUE)
+	{
+			if (event_press(PS4_L3)) 
+			{
+				combo_run(LH_Explosive_BehindTheBack);
+			}
+		
+			if (event_press(PS4_R3)) 
+			{
+				combo_run(RH_Explosive_BehindTheBack);
+			}
+	}
+		
+	//Dribble Set 2, Momentum
+	if(Dribbles == 1 && DribbleSet == 2 && onoff == TRUE)
+	{
+			if (event_press(PS4_L3)) 
+			{
+				combo_run(LH_Momentum);
+			}
+		
+			if (event_press(PS4_R3)) 
+			{
+				combo_run(RH_Momentum);
+			}
+	}
+		
+	//Dribble Set 3, Momentum behind the back
+	if(Dribbles == 1 && DribbleSet == 3 && onoff == TRUE)
+	{	
+			if (event_press(PS4_L3)) 
+			{
+				combo_run(LH_Momentum_BehindTheBack);
+			}
+		
+			if (event_press(PS4_R3)) 
+			{
+				combo_run(RH_Momentum_BehindTheBack);
+			}
+	}
+		
+	//Dribble Set 4, Momentum Curry Slide
+	if(Dribbles == 1 && DribbleSet == 4 && onoff == TRUE)
+	{	
+			if (event_press(PS4_L3)) 
+			{
+				combo_run(LH_Momentum_CurrySlide);
+			}
+		
+			if (event_press(PS4_R3)) 
+			{
+				combo_run(RH_Momentum_CurrySlide);
+			}
+	}
+		
+	//Dribble Set 5,Spinback
+	if(Dribbles == 1 && DribbleSet == 5 && onoff == TRUE)
+	{	
+			if (event_press(PS4_L3)) 
+			{
+				combo_run(LH_Spinback);
+			}
+		
+			if (event_press(PS4_R3)) 
+			{
+				combo_run(RH_Spinback);
+			}
+	}
+	
+	if (event_press(PS4_R3)) 
+	{
+		combo_run(Takeover);
+	}
+    
+    //--block output
+	if(blockButton) 
+	{
+		if(event_release(blockButton)) 
+		{
+			blockButton = 0;
+		}
+			else
+			{
+		    	set_val(blockButton,0);
+			}
+	}
+}
+
+
+//========================================================
+// SHOT AIM COMBOS//======================================
+//========================================================
+
+combo Aim_Adjust 
+{
+	wait(10);
+    if(shotRX < 6040) 
+    {
+        shotRX = shotRX + 1308;
+        	if(shotRX > endRX) 
+        	{
+            	shotRX = endRX;
+        	}
+    }
+}
+
+combo Perfect_Aim 
+{
+    set_val(PS4_RY,100)
+    set_val(POLAR_RX,shotRX) 
+    wait(1700);
+    shooting = FALSE;
+}
+
+//=========================================================
+// MISC COMBOS //==========================================
+//=========================================================
+
+combo RUMBLE
+{
+	set_rumble(RUMBLE_A, 100);
+	set_rumble(RUMBLE_B, 100);
+	wait(200);
+	set_rumble(RUMBLE_A, 0);
+	set_rumble(RUMBLE_B, 0);
+}
+
+combo Takeover
+{
+	set_val(PS4_R3, 100);
+	wait(100);
+}
+
+//=========================================================
+// DRIBBLE COMBOS //=======================================
+//=========================================================
+
+//-LH Halfspin
+combo LF_HS
+{ 
+	set_val(PS4_RX, -100);
+	wait(10);
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, -30);
+	wait(10);
+	set_val(PS4_RX, -20);
+	set_val(PS4_RY, -100);
+	wait(10);	
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+
+//-RH Halfspin
+combo RH_HS
+{ 
+	set_val(PS4_RX, 100);
+	wait(10);
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, -30);
+	wait(10);	
+	set_val(PS4_RX, 20);
+	set_val(PS4_RY, -100);
+	wait(10);	
+	set_val(PS4_RY, -100);
+	wait(10);
+}
+
+//-LH Momentum
+combo LH_Momentum
+{ 
+	set_val(PS4_RX, 100);
+	wait(40);	
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(100);
+}
+
+//-RH Momentum
+combo RH_Momentum
+{ 
+	set_val(PS4_RX, -100);
+	wait(40);	
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(100);
+}
+
+//-LH Momentum + Behind The Back
+combo LH_Momentum_BehindTheBack
+{ 
+	set_val(PS4_RX, 100);
+	wait(40);
+	
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(300);
+	
+	call(RH_Explosive_BehindTheBack);
+}
+
+//-RH Momentum + Behind The Back
+combo RH_Momentum_BehindTheBack
+{ 
+	set_val(PS4_RX, -100);
+	wait(40);
+	
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(300);
+	
+	call(LH_Explosive_BehindTheBack);
+}
+
+//-LH Momentum + Curryslide
+combo LH_Momentum_CurrySlide
+{ 
+	set_val(PS4_RX, 100);
+	wait(40);
+	
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(300);
+	
+	call(RH_CurrySlide);
+}
+
+//-RH Momentum + Curryslide
+combo RH_Momentum_CurrySlide
+{ 
+	set_val(PS4_RX, -100);
+	wait(40);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(300);
+	call(LH_CurrySlide);
+}
+
+//-LH Curryslide
+combo LH_CurrySlide
+{ 
+	set_val(PS4_RX, 100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+
+//-RH CurrySlide
+combo RH_CurrySlide
+{ 
+	set_val(PS4_RX, -100);
+	set_val(PS4_RY, 50);
+	wait(400);
+}
+
+//-LH Explosive BehindTheBack
+combo LH_Explosive_BehindTheBack
+{
+	set_val(PS4_RX, 75);
+	set_val(PS4_RY, 75);
+	wait(80);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(100);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -70);
+	wait(200);
+}
+
+//-RH Explosive BehindTheBack
+combo RH_Explosive_BehindTheBack
+{
+	set_val(PS4_RX, -75);
+	set_val(PS4_RY, 75);
+	wait(80);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(100);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(200);
+}
+
+//LH Boost
+combo LH_Boost
+{
+	set_val(PS4_RX, 100);
+	wait(60);
+	set_val(PS4_RX, 0);
+	wait(350);
+	set_val(PS4_LX, 100);
+	wait(60);
+	set_val(PS4_LX, 100);
+	set_val(PS4_R2, 100);	
+	wait(400);
+}
+
+//RH Boost
+combo RH_Boost
+{
+	set_val(PS4_RX, -100);
+	wait(60);
+	set_val(PS4_RX, 0);
+	wait(350);
+	set_val(PS4_LX, -100);
+	wait(60);
+	set_val(PS4_LX, -100);
+	set_val(PS4_R2, 100);	
+	wait(400);
+}
+
+//LH Spinback
+combo LH_Spinback
+{
+	set_val(PS4_RY, -100);//12'O Clock
+	wait(60);
+	set_val(PS4_RX, -100);//9'O Clock
+	wait(60);	
+	set_val(PS4_RY, 100);//6'O Clock
+	wait(120);
+	set_val(PS4_LY, 100); 
+	wait(800);
+}
+
+//RH Spinback
+combo RH_Spinback
+{	
+	set_val(PS4_RY, -100);//12'O Clock
+	wait(60);
+	set_val(PS4_RX, 100);//3'O Clock
+	wait(60);
+	set_val(PS4_RY, 100);//6'O Clock
+	wait(120);
+	set_val(PS4_LY, 100); 
+	wait(800);
+}
+
+//LH Dribble Freeze
+combo LH_DribbleFreeze
+{
+	set_val(PS4_RX, 100);
+	wait(100);
+	wait(150);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, 100);
+	wait(500);
+	set_val(PS4_LX, -75);
+	set_val(PS4_LY, -75);
+	wait(500);
+	set_val(PS4_L2, 100);
+	set_val(PS4_L3, 100);
+	wait(1500);
+}
+
+//RH Dribble Freeze
+combo RH_DribbleFreeze
+{
+	set_val(PS4_RX, -100);
+	wait(100);
+	wait(150);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, 100);
+	wait(500);
+	set_val(PS4_LX, 75);
+	set_val(PS4_LY, -75);
+	wait(500);
+	set_val(PS4_L2, 100);
+	set_val(PS4_L3, 100);
+	wait(1500);
+}
+
+combo QuickStopLeftHand
+{ 
+	set_val(PS4_RX, 100);
+	wait(100);
+}
+
+combo QuickStopRightHand
+{ 
+	set_val(PS4_RX, -100);
+	wait(100);
+}
+
+//========================================
+// ADVANCED DRIBBLE COMBOS//==============
+//========================================
+
+//===========================
+//-LH 
+//-Cross Over
+//-Speed Boost
+//-Curry Slide
+//===========================
+combo LH_Crossover_SpeedBoost_CurrySlide
+{ 
+	set_val(PS4_RY, -100);
+	wait(50);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(400);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(400);
+	call(LH_CurrySlide);
+	wait(300);
+}
+
+
+//===========================
+//-RH 
+//-Cross Over
+//-Speed Boost
+//-Curry Slide
+//===========================
+combo RH_Crossover_SpeedBoost_CurrySlide
+{ 
+	set_val(PS4_RY, -100);
+	wait(50);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(400);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(400);
+	call(RH_CurrySlide);
+	wait(300);
+}
+
+//===========================
+//-LH 
+//-Cross Over
+//-Speed Boost
+//===========================
+combo LH_Crossover_SpeedBoost
+{ 
+	set_val(PS4_RY, -100);
+	wait(50);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(400);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, -75);
+	wait(700);
+}
+
+
+//===========================
+//-RH 
+//-Cross Over
+//-Speed Boost
+//===========================
+combo RH_Crossover_SpeedBoost
+{ 
+	set_val(PS4_RY, -100);
+	wait(50);
+	wait(100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(400);
+	set_val(PS4_R2, 100);
+	set_val(PS4_LY, -75);
+	set_val(PS4_LX, 75);
+	wait(700);
+}
+
+
+
+//========================================
+// MOMENTUM SPAM //=======================
+//========================================
+combo MMSPAM 
+{
+	wait(210);
+	call(LH_Momentum);
+	wait(360);
+	call(RH_Momentum);
+}
+
+
+//========================================
+// MOMENTUM LOOP //=======================
+//========================================
+
+combo LHMomentumLoop
+{
+	call(LH_Momentum);
+	wait(300);
+	call(RH_Momentum);
+	wait(290);
+	combo_restart(LHMomentumLoop);
+	wait(10);
+}
+
+
+combo RHMomentumLoop
+{
+	call(RH_Momentum);
+	wait(300);
+	call(LH_Momentum);
+	wait(290);
+	combo_restart(RHMomentumLoop);
+	wait(10);
+}
+
+/*
+============================================================================================================================
+   Defense
+============================================================================================================================
+*/
+combo ALTERNATE_TRIGGERS {
+    set_val(XB1_LT,100);
+    set_val(XB1_RT,0);
+    wait(30);
+    set_val(XB1_LT,0);
+    set_val(XB1_RT,0);
+    wait(timeBetweenTriggers);
+    set_val(XB1_RT,100);
+    set_val(XB1_LT,0);
+    wait(30);
+    set_val(XB1_LT,0);
+    set_val(XB1_RT,0);
+    wait(timeBetweenTriggers);
+}
+/*
+============================================================================================================================
+   FindMax
+============================================================================================================================
+*/
+function FindMax(a,b) {
+    if(a > b){
+        return a;
+    }
+    return b;
+}
+
+//=========================================================
+//LED COLOURS//============================================
+//=========================================================
+function LED_CM(Colour) 
+{            
+    set_led(LED_1,dbyte(( Colour * 4)- 3     )); 
+    set_led(LED_2,dbyte(((Colour * 4)- 3) + 1)); 
+    set_led(LED_3,dbyte(((Colour * 4)- 3) + 2)); 
+    set_led(LED_4,dbyte(((Colour * 4)- 3) + 3)); 
+}
+
