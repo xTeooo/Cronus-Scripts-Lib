@@ -1,0 +1,688 @@
+// GPC Online Library
+// bo4_sweet_aim.gpc
+
+// GPC Online Library
+// cod_bo_4_-_goodbye_sticky_aim!_hello_spiroid!.gpc
+
+// GPC Online Library
+// cod_bo_4_-_goodbye_sticky_aim!_hello_spiroid!.gpc
+
+
+/*
+v1.4 Sweet_Evil 14 Edition.
+
+
+The calibration of the controller is automated! Please do not touch the controller when you 
+connect the cronusmax or select the script slot!!!!
+_______________________________________________________________________________________________
+	              __                     __   ___     __       ___     
+		         /  `  /\  |    |       /  \ |__     |  \ |  |  |  \ / 
+		         \__, /~~\ |___ |___    \__/ |       |__/ \__/  |   |                                             
+		           __             __           __   __   __             
+		          |__) |     /\  /  ` |__/    /  \ |__) /__`    | \  /  
+		          |__) |___ /~~\ \__, |  \    \__/ |    .__/    |  \/   
+
+        _________                      __    ___________     .__.____       ____   _____           
+       /   _____/_  _  __ ____   _____/  |_  \_   _____/__  _|__|    |     /_   | /  |  |          
+       \_____  \\ \/ \/ // __ \_/ __ \   __\  |    __)_\  \/ /  |    |      |   |/   |  |_         
+       /        \\     /\  ___/\  ___/|  |    |        \\   /|  |    |___   |   /    ^   /         
+      /_______  / \/\_/  \___  >\___  >__|   /_______  / \_/ |__|_______ \  |___\____   |          
+              \/             \/     \/               \/                 \/           |__|          
+																	   		  EDITION																			                                                                     
+	 						A GPC POWER SCRIPT FROM CRESCENS, A.K.A.
+			 __   __   __             __                           __   ___  __  
+			/  ` |__) /  \ |\ | |  | /__`  |\/|  /\  \_/     |  | /__` |__  |__) 
+			\__, |  \ \__/ | \| \__/ .__/  |  | /~~\ / \ ___ \__/ .__/ |___ |  \ 
+________________________________________________________________________________________________
+
+I only put my name above because I want people to notice the script. Let it be clear though that
+all credits for this fantastic aim assist script go to Sweet_Evil 14. Before you start using the 
+script realise that this is not your traditional sticky aim assist. Nevertheless, also this aim 
+assist requires you to be on target, so, like always, do not expect an aim bot or a miracle from 
+the script. What can you expect? To begin with, total freedom in movement. Wow, what a relieve! 
+After being sticky for a few COD games now, this really feels like a revelation. Where the sticky
+aim assist uses a lower sensitivity for a higher effectiveness, the spiroide aim assist from Sweet
+Evil actually boosts your sensitivity and creates an algorithm that allows to exploit the sticky
+aim bubble of your target. As a result, your aim comes with a stronger grip and higher accuracy. 
+Use the script a couple of games to get familiar with it. Once you “feel” the bubble you will fall
+in love with it, like I did. Goodbye Sticky! Welcome Spiroid! 
+
+IMPORTANT:
+The calibration of the controller is automated! Please do not touch the controller when you 
+connect the cronusmax or select the script slot!!!!
+
+ON BY DEFAULT:
+	AUTO CANCEL RELOAD (TO CANCEL RELOAD PRESS ADS OR FIRE), 
+	AUTO SPRINT, HAIR TRIGGERS.
+
+FIRE MODS:
+	HOLD ADS  +
+			
+	1. TAP D-PAD DOWN 	= RAPID FIRE OFF 	
+	2. TAP D-PAD RIGHT 	= RAPID FIRE ON
+	
+IF YOU EXPERIENCE DIFFICULTY WITH LONG RANGE SHOTS (SOU YOU OVER-SWAY OR OVER-AIM)
+TAP EITHER CIRCLE/B OR R1/RB WHILST HOLDING DOWN YOUR ADS BUTTON. THIS WILL CHANGE THE
+AIM CORRECTION VALUES UNTIL YOU RELEASE ADS AGAIN. 
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |U|S|E|R| |C|O|N|F|I|G|U|R|A|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+define EASY__SLIDE_DROP=TRUE;  	// TAP CROUCH/PRONE BTN TO PRONE/EASY SLIDE   
+define EASY__MELEE=TRUE; 		// MELEE SUPER FAST WITH LEFT STICK CLICK (TACTICAL BTN LAYOUT)
+define KS__ON=TRUE;				// ACTIVATE KILL STREAKS WITH D-PAD LEFT & SUPER POWER MOVE WITH D-PAD UP
+define IN_GAME_SENS=8;
+
+/*	KILLSTREAK SWITCH = d-pad left
+	SPECIAL POWER SWITCH = d-pad up
+	RESET: TAP RELOAD / RE- SPAWN WITH RELOAD 
+
+	If you are using Rapid Fire and you need to activate a Killstreak or Special Power 
+	that requires fire mods to be switched off, tap the "kill streak switch" or the "special 
+	power switch." This will deactivate the fire mods for 30 seconds.
+	
+	After 30 second the fire mods will come back on. If you die and respawn within 30 seconds, 
+	simply RESPAWN WITH RELOAD to reset the script (fire mods will come back on). 
+	If you want this switched off: under user config set KS__ON to FALSE;
+
+/* 	Define the refresh rate of the combo
+	Big value --> effect not perceived
+	Small value --> cause aim jitter  
+*/
+define Sampling_Time = 10;
+
+/* 	Add speed boost to initial joystick movement
+	Big value --> you loose sticky aim bubble
+*/
+int Aim_Boost = 7;
+
+// 	Compensate the acceleration of the movement introduced by the boost by reducing this value
+
+int Aim_Correction = 12;
+
+/* 	The algorithm saves two movements positions. the current position and the previous position. 
+ 	sampling frequency is defined by Sampling_Time. 
+	if the difference between the current value and the preceding value doesn't exceeds Aim_Perfection_Limit. 
+	the aimbot algorithm will execute
+	I add this parameter to avoid floaty movement when you try to track a target.
+*/
+define Aim_Perfection_Limit = 30;
+
+//	Operating aim perfection interval
+
+define POS_Aim_Limit = 70;
+define NEG_Aim_Limit = -70;
+
+//	Operating spiroide aim assist interval
+
+int POS_Micro_MVT_Limit;
+int NEG_Micro_MVT_Limit;
+
+/*---------------------------/ END USER CONFIG-----------------------------------------
+
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |L|E|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+    define Off      = 0;
+    define Blue     = 1;                                                           
+    define Pink     = 2;
+    define Red      = 3;                                                           
+    define White    = 4;    
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |D|A|T|A| | | | | | | | | | | | | | | | | | | | | | || | | | | | || | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+data(
+    0,0,0,0,     // OFF                                                            
+    2,0,0,0,     // BLUE                                                              
+    0,0,0,2,     // PINK                                                              
+    0,2,0,0,     // RED                                                               
+    2,2,2,2      // WHITE    
+);
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |V|A|R|I|A|B|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Dont't change!*/
+
+int hold_time=35;
+int rest_time=35;
+int RF_KS=FALSE;
+int rumble;
+int Fire_KS=FALSE;
+int fire__mods_ON=TRUE;
+int b_reload;
+
+int pressed;
+
+int Zoom;
+
+
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+int Sampling_Done = FALSE;
+//
+int spiroide_pulse = 0;
+int fine_pulse = 0;
+//
+// Joystick calibration value
+int Joystick_calibration = FALSE;
+int RX_Axis_Joystick_calibrate = 0; 
+int RY_Axis_Joystick_calibrate = 0;
+
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main{
+ //update main every 8ms --> only for PS4
+   // vm_tctrl(-2); 
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |S|L|I|D|E| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+if(EASY__SLIDE_DROP && get_val(5))combo_run(DROP_SHOT);
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |T|U|R|B|O| |B|T|N| |A|.|K|.| |H|A|I|R| |T|R|I|G|G|E|R|S| | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+//turbo(4);
+//turbo(7); 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|I|M| | |C|O|R|R|E|C|T|I|O|N|S| | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+
+        
+    //--rb pressed start timer
+    if (event_press(3))
+       pressed = 150;
+       
+    //--countdown
+    if(pressed) {
+        pressed -= 10;
+        if(event_release(3)) {
+            Zoom = TRUE;
+            rumble(Zoom);
+        }
+        if(get_val(3))
+            set_val(3,0)
+       
+    }
+    else if(get_val(3))      
+        Zoom = FALSE;
+ 	
+
+if (!Zoom)
+		{
+		Aim_Boost = 8;
+		Aim_Correction = 12;
+		POS_Micro_MVT_Limit = 25;
+		NEG_Micro_MVT_Limit = -25;
+		}
+		if(Zoom)
+			{
+			Aim_Boost = 4;
+			Aim_Correction = 6;
+			POS_Micro_MVT_Limit = 9;
+			NEG_Micro_MVT_Limit = -9;
+			}
+	
+ /*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |M|E|L|E|E| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if (EASY__MELEE && get_val(8))set_val(18, 100);	
+ /*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |R|U|N| | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if (/*!easy_run_KS && */!get_val(7)&& get_val(12) < -25)combo_run (EASY_RUN);
+
+//-- RF PRIMARY  
+if (fire__mods_ON && RF_KS && get_val(4))combo_run (RAPID_FIRE); 
+ /*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |K|I|L|L| |S|W|I|T|C|H| |&| |S|U|P|E|R| |P|W| |S|W|I|T|C|H| | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if (KS__ON)
+
+	{
+	if(event_press (13) && !get_val (7) && get_ptime(13)< 15)
+		{ 
+			combo_run(SPECIAL);
+		}
+	if(event_press (15) &&  !get_val (7) && get_ptime(15)< 15) 
+		{ 
+			combo_run(KILL);
+	}
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |R|E|S|E|T| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+if(event_release(20))
+	{
+		if (combo_running (NO__FIRE_MOD))
+			{ 
+				fire__mods_ON=TRUE; combo_stop (NO__FIRE_MOD); 
+			} 
+		combo_run (RELOAD_END);
+			
+ 			}	
+ /*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|A|N|C|E|L| |R|E|L|O|A|D| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+ if (b_reload && (event_press(4)||event_press(7)))
+ 			combo_run(CANCEL_RLD); 
+ /*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | |M|E|N|U| |A|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if(get_val(7))
+	{//hold ADS button
+			if (event_press (18) ||event_press (3))
+				{ 
+				Zoom=TRUE;
+				rumble(Zoom);
+				}
+		set_val(18,0); set_val(3,0);
+//--FIRE MODS OFF 
+    if(event_press(14))
+    			{//D-pad DOWN
+			        RF_KS=FALSE;   
+			        Fire_KS=FALSE;
+			        rumble (RF_KS);
+				}
+//--RAPID FIRE ON
+    if(event_press(16))
+    			{//D-pad RIGHT
+			        RF_KS=TRUE;          
+			        Fire_KS=TRUE;
+			        rumble (RF_KS);
+				}
+
+				}
+if (Zoom){
+	if (event_release (7)){
+	Zoom = FALSE; rumble(Zoom); 
+		}	
+		}
+ 
+        if (Joystick_calibration == FALSE)
+            {
+                RX_Axis_Joystick_calibrate = get_val(9); 
+                RY_Axis_Joystick_calibrate = get_val(10); 
+                Joystick_calibration = TRUE;     
+            }
+ 
+        X_Last_Value = X_Current_Value;
+        Y_Last_Value = Y_Current_Value;
+        X_Current_Value = get_lval(9)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(10)- RY_Axis_Joystick_calibrate;
+ 
+            //--LT pulled 
+        if(get_val(7)) 
+            {
+            //--current & last value less than limit   
+                if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit) 
+                {
+                    //--both have a value        
+                    //if(X_Last_Value && X_Current_Value) 
+                        //{
+                        //--difference between the 2 values less than 15         
+                        if(abs(X_Last_Value - X_Current_Value) < 15) 
+                            {
+                                combo_stop(Aim_Assist_Perfection);
+                                Sampling_Done = FALSE;
+ 
+                                //--RT pulled more than 95%
+                                if(get_val(4) > 95) 
+                                    {
+                                        combo_stop(Fine_Tune_Aim);
+                                        fine_pulse = 0;
+                                        combo_run(spiroide_Aim_Assit);
+                                    }
+                                else
+                                    {
+                                        combo_stop(spiroide_Aim_Assit);
+                                        spiroide_pulse = 0;
+                                        combo_run(Fine_Tune_Aim);
+                                    }    
+                            }
+                    //}
+                }
+                //--current and last greater than limit             
+                else if(abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit) 
+                    {
+                        combo_stop(Fine_Tune_Aim);
+                        combo_stop(spiroide_Aim_Assit);
+                        spiroide_pulse = 0;
+                        fine_pulse = 0;
+                        combo_run(Aim_Assist_Perfection);
+                    }
+        }
+        else //--LT not pulled
+            {
+                combo_stop(Fine_Tune_Aim);
+                combo_stop(spiroide_Aim_Assit);
+                combo_stop(Aim_Assist_Perfection);
+                spiroide_pulse = 0;
+                fine_pulse = 0;
+                Sampling_Done = FALSE;    
+            }
+ if(rumble) combo_run(RUMBLE);
+    if (RF_KS) color_led (White);	   
+	   else color_led (Blue);
+	   }
+//--END OF MAIN
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/      
+combo Aim_Assist_Perfection 
+    {        
+        // Save the first joystick position 
+        X_Last_Value = X_Current_Value
+        Y_Last_Value = Y_Current_Value
+ 
+        // Sampling frequency 
+        wait(Sampling_Time);
+ 
+        // Save the second joystick position 
+        X_Current_Value = get_lval(9)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(10)- RY_Axis_Joystick_calibrate; 
+ 
+     if (Sampling_Done == TRUE )
+        {
+            //Applying BOOST
+            //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+            Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+            Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+        }
+ 
+        X_Last_Value = X_Current_Value;
+        Y_Last_Value = Y_Current_Value;
+ 
+        // Sampling frequency 
+        wait(Sampling_Time);
+ 
+        // Save the second joystick position 
+        X_Current_Value = get_lval(9)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(10)- RX_Axis_Joystick_calibrate; 
+ 
+   if (Sampling_Done == TRUE )
+        {
+            //Applying CORRECTION
+            //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+            Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+            Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+        }
+ 
+        Sampling_Done = TRUE; 
+        wait(Sampling_Time);
+    }
+ 
+ 
+ 
+combo Fine_Tune_Aim {
+ 
+    set_val(9,(15 - fine_pulse));//right
+    set_val(11,(-15 + fine_pulse));//move left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(9,(15 - fine_pulse));//right+down
+    set_val(10,(10 - fine_pulse));
+    set_val(11,(-5 + fine_pulse));//move left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    set_val(10,(10 - fine_pulse));// down
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(9,(-15 + fine_pulse));//left+down
+    set_val(10,(10 - fine_pulse));
+    set_val(11,(5 - fine_pulse))//move 	right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+ 
+    set_val(9,(-15 + fine_pulse));// left
+    set_val(11,(15 - fine_pulse))//move 	right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(9,(-15 + fine_pulse)); //left + up
+    set_val(10,(-10 + fine_pulse));
+    set_val(11,(5 - fine_pulse))//move 	right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(10,(-10 + fine_pulse)); //up
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(9,(15 - fine_pulse));//right+up
+    set_val(10,(-10 + fine_pulse));
+    set_val(11,(-5 + fine_pulse))//move 	left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    fine_pulse = fine_pulse + 2;
+ 
+ 
+    if ( fine_pulse >10)
+       {
+            fine_pulse = 0;   
+        }
+   }
+ 
+    combo spiroide_Aim_Assit {
+ 	color_led (Off);
+    set_val(9,(4 + spiroide_pulse));//right
+    set_val(11,(-15+ spiroide_pulse));//move left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+ 
+    set_val(10,(5 + spiroide_pulse));// down
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(9,(-4 - spiroide_pulse));//left
+    set_val(11,15 - spiroide_pulse );//move right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+ 
+    set_val(10,(5 + spiroide_pulse));// down
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    spiroide_pulse = spiroide_pulse + 2;
+ 
+ 
+    if ( spiroide_pulse >10)
+       {
+            spiroide_pulse = 0;   
+        }
+	}
+combo DROP_SHOT{
+	set_val(5,100); 	
+	wait(800); 
+	}
+combo EASY_RUN {                  
+    set_val(8,100);       
+    wait(30);                     
+    wait(100);      
+} 
+combo RUMBLE{
+    set_rumble(RUMBLE_B,100);
+    wait(150);
+    reset_rumble();
+    wait(150);
+    rumble--;
+}
+combo RAPID_FIRE { 
+    set_val(4,100);
+    wait(hold_time); 
+    set_val(4,  0); 
+    wait(rest_time);
+} 
+combo RELOAD_END { 
+	b_reload=TRUE;
+	wait(1800);
+	b_reload=FALSE;
+	combo_stop (RELOAD_END);
+}
+combo CANCEL_RLD {
+//	combo_restart (STOP_SPRINT);
+	set_val(17, 100);
+	wait(30);
+	wait(20);
+	set_val(17, 100);
+	wait(30);
+	wait(20);
+	b_reload=FALSE;
+}
+combo SPECIAL {
+if	(!get_val (17))
+	set_val(3,100);
+if	(!get_val (17))
+	set_val(6,100);	
+	wait(100);
+	if (Fire_KS==TRUE && !get_val (17))
+	combo_run (NO__FIRE_MOD);
+	wait(40);
+} 
+combo KILL {
+if (Fire_KS==TRUE && !get_val (17))
+	combo_run (NO__FIRE_MOD);
+	wait (40);
+	set_val (17, 100);
+	wait(400);
+	set_val (17,0);
+	wait(40);
+	reset_leds ();
+}
+
+combo NO__FIRE_MOD {
+     fire__mods_ON=FALSE;
+     combo_run (BLINK_AR);
+     wait (30000);
+     fire__mods_ON=TRUE;
+     combo_stop (BLINK_AR);
+}
+combo BLINK_AR {
+    wait(400);
+    color_led (Off);
+    set_rumble(RUMBLE_B, 100);    
+    wait(60); 
+    reset_leds ();
+    reset_rumble ();	
+    wait(50);
+	}
+//function turbo(btn) {
+//    if (!get_val(btn)) return; 
+ //   set_val(btn, 100);
+//	}
+ 
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+    { 
+ 
+ 
+// Thanks Batts for help <img src="images/smilies/animated/smile_20_anim.gif" border="0" alt="" title="Smile" class="inlineimg" />
+       if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit) 
+            {
+                //--moving right
+                if(Last_Value < Current_Value)
+                    {           
+                        if (Boost)
+                            { 
+                                if (X_AXIS)
+                                    set_val(9, (Current_Value + Aim_Boost)); 
+ 
+                                if (Y_AXIS)
+                                        set_val(10, (Current_Value + Aim_Boost));
+                            }
+ 
+ 
+                        else if(Correction)
+                            {
+                                if (X_AXIS)
+                                    set_val(9, (Current_Value - Aim_Correction)); 
+ 
+                                if (Y_AXIS)
+                                set_val(10, (Current_Value - Aim_Correction));            
+                            }
+                    }
+                else //--moving left
+                    {
+ 
+                        if (Boost)
+                            { 
+                                if (X_AXIS)
+                                    set_val(9, (Current_Value - Aim_Boost)); 
+ 
+                                if (Y_AXIS)
+                                        set_val(10, (Current_Value - Aim_Boost));
+                            }
+ 
+ 
+                        else if(Correction)
+                            {
+                                if (X_AXIS)
+                                    set_val(9, (Current_Value + Aim_Correction)); 
+ 
+                                if (Y_AXIS)
+                                set_val(10, (Current_Value + Aim_Correction));            
+                            }
+                    }
+            }
+    } 
+function rumble(f_bln) {
+    if(f_bln)
+        rumble = 2;
+    else
+        rumble = 1;
+} 
+   function color_led(colour) {
+    set_led(LED_1, dbyte(colour * 4));
+    set_led(LED_2, dbyte((colour * 4) + 1));
+    set_led(LED_3, dbyte((colour * 4) + 2));
+    set_led(LED_4, dbyte((colour * 4) + 3));
+}

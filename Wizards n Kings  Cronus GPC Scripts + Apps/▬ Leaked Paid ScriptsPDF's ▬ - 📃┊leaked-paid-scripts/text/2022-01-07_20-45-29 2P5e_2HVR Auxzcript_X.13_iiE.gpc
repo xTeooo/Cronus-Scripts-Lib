@@ -1,0 +1,268 @@
+// Auxzcript Version:    X.11
+// Developer:            Auxzify
+// Special thanks to:    Everyone who purchases
+
+//Headshot Assist - When changing from FALSE/TRUE, make sure you change the combos to TRUE aswell - lines 153 & 159.
+int start
+
+//Aim Assist - Always on
+int AimAssist = TRUE;
+
+//Aim Abuse - L2/LT + LEFT
+int AimAbuse = TRUE;
+
+//Anti Recoil - Always on
+int AntiRecoil     = TRUE;
+
+//AIM ABUSE VALUES
+int AimAbuse_HOLD = 280; //How long you HOLD ADS Button
+int AimAbuse_RELEASE = 15; //How long you release ADS Button
+
+//AIM ASSIST VALUES
+int shake =  25; //X-AIM / XIM users set this to 0
+
+//ANTI RECOIL VALUES
+int antirecoil
+int antirecoilA      = 13;
+int antirecoilB      = 20;
+int delayA           = 14; 
+
+//AIM ASSIST KILLZONE
+int value  = 22;
+int value2 =-22;
+int delay  = 21;
+
+//GHOST PEEK - ADS_LB
+int GhostPeek = TRUE;
+int GhostPeek_R = 111;
+
+//100% Accuracy
+int PerfectAccuracy = TRUE;
+
+//Dropshot
+int Dropshot = TRUE;
+int DefenseMode = FALSE;
+int AttackMode = TRUE;
+
+//Insta Edit
+int Edit_Button = 18; //SET "RIGHT" TO YOUR EDIT KEYBIND!  
+int Edit_Button_Tap = TRUE; //IF YOU HAVE TO HOLD YOUR EDIT BIND TO ENTER EDIT MODE, SET THIS TO TRUE!
+int Hold_Time = 150;  
+int Reset_Edit_Button = 5; //SET "CROUCH_BTN" TO YOUR RESET EDIT BIND!
+int InstaEdit_Block1 = FALSE;
+int InstaEdit_Block2 = TRUE;
+int num, i, a;
+int Cooldown;
+int Button;
+int Tap;
+int ButtonPressed[6];
+
+//Layout
+define FIRE_BTN = 4; //XB1_RB //PS4_R2
+define ADS_BTN = 7; //XB1_LB //PS4_L2
+define CROUCH_BTN = 5; //XB1_RS //PS4_R3
+define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE
+define SPRINT_BTN = 8; //XB1_LS //PS4_L3
+define JUMP_BTN = 19; //XB1_A  //PS4_CROSS
+define NEXT_PIECE = 3; //XB1_RT //PS4_R1
+define RIGHT_BUMP = 3; // XB1_RB //PS4_R1
+define LEFT_BUMP = 6; //ADS_BTN //PS4_L1
+define SWAP_BTN = 17; //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18; //XB1_B  //PS4_CIRCLE
+define R_X = 9; //XB1_R_X //PS4_R_X
+define R_Y = 10; //XB1_R_Y //PS4_R_Y
+define L_X = 11; //XB1_L_X //PS4_L_X
+define L_Y = 12; //XB1_L_Y //PS4_L_Y
+define UP = 13; //XB1_UP //PS4_UP
+define DOWN = 14; //XB1_DOWN //PS4_DOWN
+define LEFT = 15; //XB1_LEFT //PS4_LEFT
+define RIGHT = 16; //XB1_RIGHT //PS4_RIGHT
+
+ main {
+
+//HEADSHOT AIM ABUSE
+ if(get_val(ADS_BTN) && get_ptime(ADS_BTN)> 150 && !start)combo_run(HeadshotAbuse);
+ if(event_release(ADS_BTN)){
+ start = FALSE;
+}     
+
+//AIM ASSIST
+ if (get_val(ADS_BTN) > 95) combo_run(AimAbuse);
+ if (event_release(ADS_BTN) && combo_running(AimAbuse)) combo_stop(AimAbuse);
+    
+ if (get_val(ADS_BTN) > 95) combo_run(AimAssist);
+ if (event_release(ADS_BTN) && combo_running(AimAssist)) combo_stop(AimAssist);
+    
+ if (abs(get_val(R_X)) > 100 - shake || abs(get_val(R_Y)) > 100 - shake){ 
+ combo_stop(AimAssist);}
+	
+ if(get_val(FIRE_BTN))
+ set_val(FIRE_BTN, 100);
+ 
+
+ //HOLD BUTTON FOR TOGGLE
+ if(get_val(ADS_BTN)) {
+
+}
+ //AIM ASSIST TAP BUTON TO TOGGLE   
+ if (event_press(LEFT)){//
+ AimAbuse =! AimAbuse; 
+}
+
+ //AIM ABUSE     
+ if(AimAbuse){//
+ if(get_val(ADS_BTN)> 95){
+ combo_run(AimAbuse);}
+ if(event_release(ADS_BTN)){ combo_stop(AimAbuse);
+}
+}
+ //Insta Edit
+ if(Edit_Button_Tap)
+ {
+ if(get_val(Edit_Button) && get_ptime(Edit_Button) > Hold_Time)
+ {
+ InstaEdit_Block1 = TRUE;
+ }
+ }
+ else if(!Edit_Button_Tap)
+ {
+ if(get_val(Edit_Button))
+ {
+ InstaEdit_Block1 = TRUE;
+}
+}
+ if (InstaEdit_Block1 == TRUE) {
+ resetPress(0,1,0,0,0,0);
+ if (get_val(18)) {
+ InstaEdit_Block2 = TRUE;
+}
+ if (event_release(PS4_R2) || get_val(5) || get_val(SWAP_BTN)) {
+ set_click(BUILD_BTN, 1, 0);
+ InstaEdit_Block1 = FALSE;
+}
+}
+ if (event_press(18)) 
+{
+ resetPress(0,1,0,0,0,0);
+ InstaEdit_Block2 = !InstaEdit_Block2;
+ InstaEdit_Block1 = FALSE;
+}	
+ if (get_val(BUILD_BTN)) 
+{
+ resetPress(0,1,0,0,0,0);
+ InstaEdit_Block2 = TRUE;
+}
+ if (a) {
+ if (i < num) {
+ if (!combo_running(InstaEdit)) {
+ combo_run(InstaEdit);
+}
+} else if 
+ (i > num) {a = FALSE;
+}
+
+ //ANTI-RECOIL      
+ if(AntiRecoil){
+ if(get_val(ADS_BTN) && get_val(FIRE_BTN)){combo_run(Antirecoil);}
+ if(get_rumble(RUMBLE_A) <= 50){antirecoil = antirecoilA;}
+ if(get_rumble(RUMBLE_A) > 50){antirecoil = antirecoilB;}
+ if(abs(get_val(R_Y)) >= antirecoil+ 10){combo_stop(Antirecoil);
+}
+}
+
+//GHOSTPEEK
+ if (GhostPeek) { 
+ if (get_val(ADS_BTN)) {if (get_val(LEFT_BUMP)) {
+ combo_run(GhostPeek); }
+ set_val(LEFT_BUMP, 0);
+}
+
+//100% ACCURACY
+ if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+ combo_run(PerfectAccuracy);
+ set_val(RIGHT_BUMP, 0);
+ } else {
+ combo_stop(PerfectAccuracy);
+}
+
+//Dropshot
+ if(get_val(ADS_BTN) && event_press(RELOAD_BTN)){
+ Dropshot =! Dropshot;
+ if(Dropshot){
+ if(DefenseMode){if(get_val(FIRE_BTN)==0&&get_rumble(RUMBLE_A)||get_rumble(RUMBLE_B)){combo_run(Dropshot);}}
+ if(AttackMode){if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);}}}
+}}
+}}
+
+combo HeadshotAbuse {
+ set_val(R_Y,-70);
+ wait(30);// change this value
+ start = TRUE;
+}
+
+combo AimAssist {
+ set_val(R_X, get_val(R_X) + shake * -1); wait(10)
+ set_val(R_X, get_val(R_X) + shake); wait(10)
+ set_val(R_X, get_val(R_X) + shake); wait(10)
+ set_val(R_X, get_val(R_X) + shake * -1); wait(10)
+}
+
+combo AimAbuse {
+ set_val(ADS_BTN, 100);
+ wait(AimAbuse_HOLD);
+ set_val(ADS_BTN, 0);
+ wait(AimAbuse_RELEASE);
+}
+
+combo Antirecoil {
+ set_val(R_Y, antirecoil);
+ wait(delayA);
+ set_val(R_Y, antirecoil);
+ wait(delayA);
+}
+
+combo GhostPeek {
+ set_val(CROUCH_BTN, 100);
+ wait(25); wait(25);
+ set_val(FIRE_BTN, 100);
+ wait(25); wait(25);
+ set_val(CROUCH_BTN, 100);
+ wait(25); wait(GhostPeek_R);
+}
+
+combo PerfectAccuracy {
+ set_val(FIRE_BTN,100);
+ wait(100);
+ wait(250);
+ set_val(FIRE_BTN,100);
+}
+
+combo Dropshot{
+ set_val(CROUCH_BTN,100);
+ wait(20);
+ wait(130);
+ set_val(CROUCH_BTN,100);
+}
+
+combo InstaEdit {
+ wait(Cooldown);
+ set_val(Button, 100);
+ wait(28);
+ set_val(Button, 0);
+ wait(28);
+ i = i + 1;}
+
+function set_click(B, Num, Wait) {
+ Cooldown = Wait;
+ i = 0;
+ Button = B;
+ num = Num;
+ a = TRUE;}
+
+function resetPress(P0,P1,P2,P3,T,S) {
+ 
+if(!P0){ButtonPressed[0] = FALSE;}	else if(P0) {ButtonPressed[0] = TRUE;}
+if(!P1){ButtonPressed[1] = FALSE;}	else if(P1) {ButtonPressed[1] = TRUE;}	
+if(!P2){ButtonPressed[2] = FALSE;}	else if(P2) {ButtonPressed[2] = TRUE;}	
+if(!P3){ButtonPressed[3] = FALSE;}	else if(P3) {ButtonPressed[3] = TRUE;}
+if(!T){Tap = FALSE;}  else if (T){Tap = TRUE;}}

@@ -1,0 +1,704 @@
+
+/*
+											 -   T H E   S U M M I T   -    A U T O F A R M   O N   T H E   1 0 t h   F L O O R   -
+												
+																	-   P L A Y S T A T I O N   O N L Y   -
+
+Game: The Division 2
+Version: 4.0
+Device: CronusZEN ONLY
+Controller tested: wired PS5 / PS4
+Console : PS5 using RemotePlay on PC / PS5 using Speciality controller / PS4
+Author: noozbar
+
+________________________________________________________________________________________________________
+
+V E R Y   I M P O R T A N T :
+
+You must equip your character with a semi automatic gun with a maximum of bullets in the magazine, I use the "Px4 Storm Type F" with 28 bullets
+Why? For BRAVO/DELTA/MIKE error detection
+
+Rumbles/Vibrations must be enable in console settings and game settings
+________________________________________________________________________________________________________
+
+N E W :
+	- Auto heal envery 2 loop
+	- If you enable "deconstruct_toggle", the script will open a cache every 2 runs. If your inventory is full, it will deconstruct the loot that dropped at your feet
+	- The script now detects if you have a BRAVO/DELTA/MIKE... error and will automatically restart the game. You will be back in the elevator on floor 10 and AutoFarm will restart automatically
+	- AutoRun has been added
+________________________________________________________________________________________________________
+
+I N S T R U C T I O N S :
+
+You need to get to the 10th floor of Summit
+Set the difficulty to Normal to go up from floor 1 to 9
+Then, go back to the lobby, change the difficulty to Challenging and put every directives exept 2 (the "skill" directives) and take the elevator again so that it takes you to the 10th floor
+It has to be the same floor as in the video otherwise it won't work (check Required Floor 10)
+If you are not on the right floor, go back to the lobby and take the elevator up to the 10th floor again until you find the right one. 
+Then start the script when the elevator doors open and go do something else while it's farming for you
+________________________________________________________________________________________________________
+
+Required Floor 10
+https://discord.com/channels/832268474066665512/839053823627493376/993591412304134245
+________________________________________________________________________________________________________
+
+Build 
+https://discord.com/channels/832268474066665512/839053823627493376/997068866335297606
+https://discord.com/channels/832268474066665512/839053823627493376/996886583045271564
+________________________________________________________________________________________________________
+
+Skill
+L1 ==> turret
+R1 ==> seeker mines cluster
+________________________________________________________________________________________________________
+
+Start Autofarm when the elevator doors open
+Hold L2 and tap UP
+________________________________________________________________________________________________________
+
+Enable or disable OLED Display (OLED display turns off after 3min)
+Tap DOWN
+________________________________________________________________________________________________________
+
+*/
+
+int deconstruct_toggle = 1; // If you want to open a cache every 2 runs and deconstruct what drops to the ground if the inventory is full set to 1, otherwise set to 0
+
+define MAX_LOOP = 25; // maximum amount of HardWired loops - if the amount of loops exceeds this value, your character will commit suicide and you will start the floor again (if an enemy is well hidden and neither the turret nor the mine reach him)
+
+int farm_toggle, error_toggle; 
+int floor_timer, error_timer;
+int loop_quantity, cleared, step;
+int elevator_led, combat_led, no_combat_led, dead_led;
+int max_rumble_time, max_run_time, max_loops, max_rumbleA, max_rumbleB;
+
+const string TXT[] = {
+			"L2/LT + UP"   , "to start or stop" ,
+			//   0                 1    
+			"The Summit"   , "AutoFarm"  ,
+			//   2               3
+			"Go to cover"  , "HardWired loop"  ,  "Suicide" , "You're dead" , "Restart" , "Open Cache" , "ERROR DELTA"
+			//   4                  5                  6            7             8            9              10
+}
+
+int display_info, info_count, current_info, screen_saver;
+int display_on = 1;
+int display_main = 1;
+
+main {
+// Debug
+	if(error_timer > max_rumble_time) max_rumble_time = error_timer;
+	if(floor_timer > max_run_time) max_run_time = floor_timer;
+	if(loop_quantity > max_loops) max_loops = loop_quantity;
+	if(get_rumble(RUMBLE_A) > max_rumbleA) max_rumbleA = get_rumble(RUMBLE_A);
+	if(get_rumble(RUMBLE_B) > max_rumbleB) max_rumbleB = get_rumble(RUMBLE_B);
+
+	if(event_release(PS4_TOUCH))
+	{
+		max_rumbleA = 0;
+		max_rumbleB = 0;
+	}
+	if(get_val(PS4_TOUCH))
+	{
+		set_val(TRACE_1, max_rumble_time / 1000);
+		set_val(TRACE_2, max_run_time / 1000);
+		set_val(TRACE_3, max_loops);
+		
+		set_val(TRACE_5, max_rumbleA);
+		set_val(TRACE_6, max_rumbleB);
+	
+	}
+	else
+	{
+		set_val(TRACE_1, farm_toggle);
+		set_val(TRACE_2, error_toggle);
+		set_val(TRACE_3, error_timer / 1000);
+		set_val(TRACE_4, cleared);
+		set_val(TRACE_5, loop_quantity);
+		set_val(TRACE_6, floor_timer / 1000);
+	}
+	
+// Block controller rumbles
+	block_rumble();
+	
+/* AutoRun 
+   push the left stick 90% forward or to the sides to run - hold to sprint must be enable */
+	if((isqrt(pow(abs(get_ival(PS4_LX)),2) + pow(abs(get_ival(PS4_LY)),2)) >= 90) && get_ival(PS4_LY) < 20 && !get_val(PS4_L2) && !get_val(PS4_R2))
+		set_val(PS4_L3, 100);
+		
+// Colors definitions	
+	elevator_led =   get_led(LED_1)   && get_led(LED_2)         &&  get_led(LED_3);
+	no_combat_led = !get_led(LED_1)   && get_led(LED_2)         &&  get_led(LED_3);
+	combat_led =    !get_led(LED_1)   && get_led(LED_2) > 200   && !get_led(LED_3); 
+	dead_led =      !get_led(LED_1)   && get_led(LED_2) < 200   && !get_led(LED_3);
+
+// Toggle to start farming
+	if(get_val(PS4_L2))
+	{
+		if(event_press(PS4_UP))
+		{
+			display_on = TRUE;
+			farm_toggle = !farm_toggle;
+			screen_saver = 0;
+			
+			if(!farm_toggle)
+				display_main = TRUE;
+			else
+			{	
+			// Restore counter/timer
+				loop_quantity = 0;
+				error_toggle = 0;
+				error_timer = 0;
+				floor_timer = 0;
+				cleared = 0;
+			}
+		}
+		
+		if(event_press(PS4_SHARE))
+			deconstruct_toggle = !deconstruct_toggle;
+			
+		set_val(PS4_SHARE, 0);
+	}
+
+// Toggle for OLED display or not
+	if(event_press(PS4_DOWN))
+	{
+		display_on = !display_on;
+		
+		if(!display_on)
+			cls_oled(OLED_BLACK);
+		else
+		{
+			if(!farm_toggle)
+				display_main = TRUE;
+			else
+			{
+				if(combo_running(GO_TO_COVER_AND_START_CYCLE))	
+					combo_run(DISPLAY_CORRIDOR);
+					
+				else if(combo_running(HARD_WIRED))	
+					combo_run(DISPLAY_HW);
+					
+				else if(combo_running(NADE))	
+					combo_run(DISPLAY_SUICIDE);
+					
+				else if(combo_running(RESTART))	
+					combo_run(DISPLAY_RESTART);
+					
+				else if(combo_running(OPEN_CACHE))	
+					combo_run(DISPLAY_OPEN_CACHE);
+					
+				else if(combo_running(ERROR))	
+					combo_run(DISPLAY_DELTA);
+			}
+		}
+		screen_saver = 0;
+	}
+	
+// Toggle ON
+	if(farm_toggle)
+	{
+	// Steps
+		if(elevator_led) step = 0; // From elevator to cover	
+		if(combat_led && step == 0) step = 1; // Combat		
+		if(no_combat_led && step == 1) { cleared++; step = 2;} // Cleared	
+		if(dead_led && step == 1) step = 3; // Killed
+		if(dead_led && step == 2) step = 4; // Suicided
+	
+	// Reset for DELTA
+		if(get_rumble(RUMBLE_A) || get_rumble(RUMBLE_B))
+		{
+			error_timer = 0;
+			error_toggle = 0;
+			combo_stop(ERROR);
+		}
+		
+	// Toggle DELTA	
+		if(error_timer >= 70000) // 1min 10sec
+			error_toggle = TRUE;
+			
+	// Error DELTA		
+		if(error_toggle)
+		{
+			combo_stop(GO_TO_COVER_AND_START_CYCLE);
+			combo_stop(HARD_WIRED);
+			combo_stop(OPEN_CACHE);
+			combo_stop(RESTART);
+			combo_stop(NADE);
+			
+			combo_run(ERROR);
+		}
+		
+	// NOT error DELTA
+		else
+		{
+			error_timer += get_rtime(); // DELTA/MIKE error detection
+			floor_timer += get_rtime(); // how long it takes me to finish the floor (TRACE 6)
+			
+		// From elevator to cover
+			if(!step)
+			{
+				if(!combo_running(RESTART))
+					combo_run(GO_TO_COVER_AND_START_CYCLE);
+			}
+		
+		// Combat
+			else if(step == 1) 
+			{
+				if(!combo_running(GO_TO_COVER_AND_START_CYCLE))
+				{
+					if(loop_quantity > MAX_LOOP) // if more than X loops to clear the floor, wipe and restart
+					{
+						combo_stop(HARD_WIRED);
+						combo_run(NADE);
+					}
+					else
+						combo_run(HARD_WIRED);
+				}
+			}
+			
+		// Cleared
+			else if(step == 2)
+			{
+				combo_stop(HARD_WIRED);
+				
+				if(deconstruct_toggle)
+				{
+					if(cleared > 1 && cleared % 2 == 0)
+						combo_run(OPEN_CACHE);
+					else 
+						combo_run(NADE);
+				}
+				else
+					combo_run(NADE);
+			}
+		
+		// Killed
+			else if(step == 3) 
+			{
+				combo_stop(HARD_WIRED);
+				combo_run(RESTART);
+			}
+		
+		// Suicided
+			else if(step == 4)
+			{
+				combo_stop(NADE);
+				combo_run(RESTART);
+			}
+			
+			combo_stop(ERROR);
+		}
+	}
+	else combo_stop_all();
+	
+// Display
+	if(display_on)
+	{	
+	// Screen Saver
+		screen_saver += get_rtime();
+	
+		if(screen_saver >= 150000) // 2min 30sec
+		{
+			cls_oled(OLED_BLACK);
+			display_on = FALSE;
+		}
+	
+	// Timer to display user infos
+		info_count += get_rtime();
+		if(info_count > 2000)
+		{
+			current_info = !current_info;
+			display_info = TRUE;
+		}
+		
+	// Display how to toggle
+		if(display_info) 
+		{
+			info_count = 0;
+			rect_oled(1, 50, 126, 13, OLED_WHITE, OLED_BLACK); // bottom rectangle (clear)
+			print(center_x(get_string_length(TXT[current_info]), OLED_FONT_SMALL_WIDTH),53,OLED_FONT_SMALL,OLED_WHITE,TXT[current_info]);
+			display_info = FALSE;
+		}
+	
+	// Display script name
+		if(display_main)
+		{
+			cls_oled(OLED_BLACK);
+			print(center_x(get_string_length(TXT[2]), OLED_FONT_MEDIUM_WIDTH),4,OLED_FONT_MEDIUM,OLED_WHITE,TXT[2]);
+			print(center_x(get_string_length(TXT[3]), OLED_FONT_MEDIUM_WIDTH),26,OLED_FONT_MEDIUM,OLED_WHITE,TXT[3]);
+			display_info = TRUE;
+			display_main = FALSE;
+		}
+	}		
+}
+//_____________________________________________________________________________________________________________________ C O M B O S
+
+combo GO_TO_COVER_AND_START_CYCLE {	
+	floor_timer = 0; // reset the timer
+	
+	if(display_on)
+		combo_run(DISPLAY_CORRIDOR);
+	wait(get_rtime());
+	
+// Start running to the cover	
+	set_val(PS4_LY, -100);
+	wait(390);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	wait(3160);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 23);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 59);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 82);
+	set_val(PS4_LY, -84);
+	wait(1190);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 76);
+	set_val(PS4_LY, -89);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 57);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 23);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	wait(310);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 49);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 81);
+	set_val(PS4_LY, -85);
+	wait(410);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 67);
+	set_val(PS4_LY, -96);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 38);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	wait(160);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 54);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 82);
+	set_val(PS4_LY, -84);
+	wait(510);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 48);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 23);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	wait(790);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 48);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 82);
+	set_val(PS4_LY, -84);
+	wait(230);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 40);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	wait(540);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 32);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 79);
+	set_val(PS4_LY, -86);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 83);
+	set_val(PS4_LY, -83);
+	wait(550);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 66);
+	set_val(PS4_LY, -97);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LX, 33);
+	set_val(PS4_LY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	wait(770);
+	set_val(PS4_L3, 100);
+	set_val(PS4_LY, -100);
+	set_val(PS4_CROSS, 100);
+	wait(80);
+	set_val(PS4_LY, -74);
+	set_val(PS4_CROSS, 100);
+	set_val(PS4_RY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_LY, -49);
+	set_val(PS4_CROSS, 100);
+	set_val(PS4_RY, -100);
+	wait(10); //_________________________________________________________________________________________v
+	set_val(PS4_LY, -30);
+	set_val(PS4_CROSS, 100);
+	set_val(PS4_RY, -100);
+	wait(10); //_________________________________________________________________________________________
+	set_val(PS4_CROSS, 100);
+	wait(720);
+	
+// Start Cycle 
+	set_val(PS4_R1, 100); // seeker
+	wait(700);
+	wait(2200);
+	set_val(PS4_L1, 100); // turret on
+	wait(100);
+	
+	
+	set_val(PS4_TRIANGLE, 100);
+	wait(200);
+	wait(1000);
+	set_val(PS4_TRIANGLE, 100);
+	wait(150);
+	wait(100);
+	set_val(PS4_TRIANGLE, 100);
+	wait(150);
+	wait(2600);
+	loop_quantity++;
+}
+
+combo HARD_WIRED { // HardWired loop
+	if(display_on) 
+		combo_run(DISPLAY_HW);
+	wait(get_rtime());
+	
+// Start loop
+	set_val(PS4_LY, 100); // exit cover
+	wait(50);
+	set_val(PS4_CROSS, 100); // cover
+	wait(150);
+	set_val(PS4_L1, 100); // deploy turret if mixed
+	wait(50);
+	wait(300);
+	set_val(PS4_L1, 100); // grab turret or blow turret if not close
+	wait(2250);
+	wait(250);
+	set_val(PS4_L1, 100); // deploy turret 
+	wait(50);
+	wait(1000);
+	set_val(PS4_R1, 100); // throw seeker
+	wait(700);
+	wait(2000);
+	
+	set_val(PS4_L1, 100); // re-target the turret if it's not firing at anyone (or deploy if mixed)
+	wait(50);
+	wait(1100);
+
+// check DELTA/MIKE... error
+	set_val(PS4_R2, 100); // triggers a vibration to check if we have not been victim of a DELTA/MIKE... error
+	wait(700);
+	if(error_timer > 1000) // if error_timer did not reset, we had an error
+		error_toggle = TRUE;
+	wait(500);
+	
+	set_val(PS4_R1, 100); // blow the mine if it's back at our feet (or throw if mixed)
+	if(loop_quantity > 1 && loop_quantity % 2 == 0)
+		set_val(PS4_RIGHT, 100); // heal
+	wait(2500);
+	if(loop_quantity > 1 && loop_quantity % 2 == 0)
+		set_val(PS4_RIGHT, 100); // heal
+	wait(500);
+	
+	loop_quantity++;
+}
+
+combo NADE {
+	if(display_on) 
+		combo_run(DISPLAY_SUICIDE);
+	wait(get_rtime());
+	
+	set_val(PS4_LEFT, 100); // take nade
+	wait(100);
+
+	set_val(PS4_RY, 100); // change view
+	set_val(PS4_RX, 100); // change view
+	wait(1000);
+
+	set_val(PS4_R2, 100); // throw nade
+	wait(50);
+	
+	set_val(PS4_LY, -100); // go forward
+	wait(500);
+	
+	wait(1500);
+	set_val(PS4_LEFT, 100); // take nade
+	wait(50);
+	set_val(PS4_RY, 100); // change view
+	wait(800);
+	set_val(PS4_R2, 100); // throw nade
+	wait(50);
+	set_val(PS4_LY, -100); // go forward
+	wait(500);	
+	wait(1500);
+	set_val(PS4_LEFT, 100); // take nade
+	wait(50);
+	set_val(PS4_RY, 100); // change view
+	wait(800);
+	set_val(PS4_R2, 100); // throw nade
+	wait(50);
+	set_val(PS4_LY, -100); // go forward
+	wait(500);
+	wait(4000);
+}
+
+combo RESTART {
+	if(display_on) 
+		combo_run(DISPLAY_DEAD);
+	wait(get_rtime());
+		
+	wait(4000); // wait respawn
+	set_val(PS4_SQUARE, 100); // press respawn
+	wait(150);
+	
+	if(display_on) 
+		combo_run(DISPLAY_RESTART);
+	wait(get_rtime());
+		
+	wait(8000); // loading + elevator
+	display_main = TRUE;
+	wait(get_rtime());
+	wait(2000);
+
+	loop_quantity = 0;
+}
+
+combo ERROR {
+	if(display_on) 
+		combo_run(DISPLAY_DELTA);
+	wait(get_rtime());
+	
+	wait(10000);
+	set_val(PS4_CROSS, 100); // error screen
+	wait(100);
+	wait(2000); // wait loading screen
+	set_val(PS4_CROSS, 100); // Division 2 screen
+	wait(100);
+	wait(25000); // wait loading screen
+	set_val(PS4_CROSS, 100); // select the character
+	wait(100);
+	wait(25000); // wait loading screen + elevator
+	loop_quantity = 0; //
+	floor_timer = 0; //
+	error_timer = 0;
+	error_toggle = FALSE;
+}
+
+combo OPEN_CACHE {
+	if(display_on) 
+		combo_run(DISPLAY_OPEN_CACHE);
+	wait(get_rtime());
+	
+	set_val(PS4_OPTIONS, 100);
+	wait(700);
+	wait(800);
+	set_val(PS4_RIGHT, 100);
+	wait(50);
+	wait(200);
+	set_val(PS4_DOWN, 100);
+	wait(50);
+	wait(200);
+	set_val(PS4_DOWN, 100);
+	wait(50);
+	wait(200);
+	set_val(PS4_DOWN, 100);
+	wait(50);
+	wait(200);
+	set_val(PS4_CROSS, 100);
+	wait(50);
+	wait(500);
+	set_val(PS4_SQUARE, 100);
+	wait(1800);
+	wait(3800);
+	set_val(PS4_CROSS, 100);
+	wait(50);
+	wait(150);
+	set_val(PS4_CIRCLE, 100);
+	wait(700);
+	wait(150);
+	set_val(PS4_L3, 100);
+	wait(2000);
+	call(NADE);
+}
+//_____________________________________________________________________________________________________________________ D I S P L A Y
+
+combo DISPLAY_CORRIDOR {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[4]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[4]);
+}
+
+combo DISPLAY_HW {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[5]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[5]);
+}
+
+combo DISPLAY_SUICIDE {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[6]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[6]);
+}
+
+combo DISPLAY_DEAD {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[7]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[7]);
+}
+
+combo DISPLAY_RESTART {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[8]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[8]);
+}
+
+combo DISPLAY_OPEN_CACHE {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[9]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[9]);
+}
+
+combo DISPLAY_DELTA {
+	rect_oled(1, 1, 126, 49, OLED_WHITE, OLED_BLACK); // clear text zone
+	print(center_x(get_string_length(TXT[10]), OLED_FONT_SMALL_WIDTH),random(1, 36),OLED_FONT_SMALL,OLED_WHITE,TXT[10]);
+}
+//_____________________________________________________________________________________________________________________ F U N C T I O N S
+
+int stringLength;
+function get_string_length(offset) { 
+    stringLength = 0;
+    do { 
+        offset++;
+        stringLength++;
+    } while (duint8(offset));
+    return stringLength;
+}
+
+function center_x(f_chars,f_font) {
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} ˙ªè∂Ç∫ã≤Ç≥Å∏èºçœ

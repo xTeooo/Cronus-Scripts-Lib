@@ -1,0 +1,122 @@
+// GPC Online Library
+// rainbow_six_siege_-_terrorist_hunt_afk_renown_[17k-18k-36k_a_day].gpc
+
+/*
+ -- FIRST SETUP --
+
+ Set to Bomb (or Hostage) (Attack) and set the map to House (Menu Button > Options Menu > Matchmaking Menu)
+ 
+ When in a match choose Recuit with Frag Granade (GIGN / Blue) then return to the main menu, this will save the selected loadout for whenever Recuit is selected as you need the frag to kill yourself
+ 
+ -- RUNNING THE SCRIPT --
+
+ When runing the script launch Lone Wolf Terrorist Hunt on Normal first then when in-game at the operator selection screen run the script immediately or with at least 4 seconds left on the selection screen when runing the script)
+
+ run/Stop the Script by pressing the Right Stick (RS) (will stop at the end of the current run)
+ 
+ Note: You can turn on V-Sync in the Options menu under the Video tab to limit the fps to 30 so it runs the game easier
+
+ Renown Gain per match is 36 (38 with year pass bonus) [Roughly 760 renown an hour with year pass bonus, 18k a day, can be doubled to 36k with a renown booster]
+ 
+ Script loop runtime aprox. 3 minutes
+
+*/
+
+int run;                 // Run Script
+int rumb_count;          // Rumble Activation
+int SCOREBOARD_BUTTON;   // PS4 Button Fix
+
+init {
+
+ set_led(LED_1,0);
+}
+
+main {
+
+ vm_tctrl(+7);   // 17 ms update time - Matches frame rate better and lowers CPU usage
+
+ if(get_ptime(XB1_RS) >= 255 && event_release(XB1_RS)) {  // Hold Right Stick to Start/Stop
+  run = !run;
+  rumble_notify(run); }
+
+ if(run)
+  combo_run(AFK_Renown);
+  else combo_stop(AFK_Renown);  // Remove this line if you want the current run finish before stopping
+
+ if(rumb_count)
+  combo_run(NOTIFY);
+}
+
+combo AFK_Renown { 
+ set_val(XB1_A,100);    // Select Spawn
+ wait(51);
+ wait(2006);            // Wait for loading
+ set_val(XB1_A,100);    // Start of Select Operator
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);
+ wait(51);
+ wait(323);
+ set_val(XB1_A,100);    // End of Select Operator
+ wait(51);
+ wait(11509);           // Loading after Selection Screen
+ set_val(XB1_RY,-100);
+ wait(1003);
+ wait(30006);           // Start of wait in match time (before holding grenade)
+ wait(30006);
+ wait(30006);
+ wait(30006);
+ wait(22100);           // End of wait in match time (before holding grenade)
+ set_val(XB1_LB,100);
+ wait(4514);            // Hold grenade time
+ wait(18989);           // After death (game end) load time
+ set_val(XB1_RB,100);   // RB press to switch to "Bonus"/retry screen faster (prevents possible issues)
+ wait(51);
+ wait(1003);
+ set_val(XB1_B,100);    // Back out of any random pop-ups that redirect you to another app (just in-case)
+ wait(51);
+ wait(85);
+ set_val(XB1_B,100);    // Repeats of previous
+ wait(85);
+ wait(85);
+ set_val(XB1_B,100);
+ wait(85);
+ wait(765);             // Wait on End Screen
+ set_val(XB1_A,100);    // Press Vote for Retry Button
+ wait(51);
+ wait(10200); }         // Reloading match time
+
+combo NOTIFY {
+ set_rumble(RUMBLE_A,10);
+ set_rumble(RUMBLE_B,10);
+ set_rumble(RUMBLE_LT,10);
+ set_rumble(RUMBLE_RT,10);
+ wait(187);
+ reset_rumble();
+ wait(187);
+ rumb_count--; }
+
+function rumble_notify(r_count) {
+ if(r_count) rumb_count = r_count;
+ else rumb_count = 2; }

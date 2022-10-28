@@ -1,0 +1,469 @@
+// DoGz TimeZ Aim Assist + Progression Head Shot Assist Mod - Version 1.1
+
+/*  === Version 1.1 CHANGELOG ===
+
+1•  Added another method of Aim Assist == Don't At Me Polar [DoGz Version 2.0] Includes Strafe Assist {Optional} [Only Enable One AA Method DoGz Timez Or Polar]
+2•  Added Instant Edit And Reset
+3•  Added Quick Edit Assist
+4•  Added Fast Reset
+5•  Added Instant Pickaxe
+6•  Added Builder Pro
+7•  Added Build Tracker (Auto Sync Timer Included)
+8•  Added Edit Tracker
+9•  Added TouchPad Fix On PC/Xbox
+10• Added Hair Triggers
+
+    === END OF CHANGELOG === */
+
+define AimY   = PS4_RY;  // Vertical Aim Axis In Game
+define AimX   = PS4_RX;  // Horizontal Aim Axis In Game
+define Strafe = PS4_LX;  // Horizontal Walk Axis In Game
+//Combat Buttons
+define Fire     = PS4_R2;       // Fire In Game
+define Ads      = PS4_L2;       // Ads In Game
+define Pickaxe  = PS4_TRIANGLE; // Pickaxe In Game
+define N_Weapon = PS4_R1;       // Next Weapon In Game
+define P_Weapon = PS4_L1;       // Previous Weapon In Game
+
+// Build Buttons
+define Build    = PS4_CIRCLE;	// Build In Game {Switch/Edit or Switch}
+define Switch   = PS4_LEFT;     // Switch In Game {Switch Only} [Used In Builder Pro Mod]
+define Wall     = PS4_R2;		// Wall In Game
+define Floor    = PS4_R1;		// Floor In Game
+define Ramp     = PS4_L2;		// Ramp In Game
+define Trap     = PS4_SQUARE;	// Trap In Game
+define Roof     = PS4_L1;		// Roof In Game
+
+// Edit Buttons
+define Edit     = PS4_CIRCLE;   // Edit In Game (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+define Select   = PS4_R2;       // Edit Select Piece In Game
+define Confirm  = PS4_CIRCLE; 	// Edit Confirm In Game	
+define Reset    = PS4_R3;       // Edit Reset In Game
+
+int DamAngle,DamCos,DamSin,DamX,DamY,ActualMagnitude,MaxMagnitude,RadiusDam,AngleDam,AAT,Axis,Head,BuildTrack,BuildCount,Edit1,Edit2,EditT,Axe,BuildPro;
+
+// Instant Pickaxe
+define InstantPickaxe = TRUE;  // [ On / Off ] Instant Pickaxe
+
+// Instant Edit + Reset 
+define InstaEditReset = TRUE; // [ON / OFF] Normal Instant Edit/Reset
+define EditHold       = TRUE; // [ON / OFF] SET On WHEN USING EDIT HOLD TIME TO EDIT ( MATCH TO IN GAME SETUP ) [Off = INSTANT PRESS]
+define EditHoldTime   = 130;  // Time If Using Hold to Edit In game [Setting To Be Matched To In Game Time]
+
+// Fast Reset (One Button)
+define InstaFastReset = TRUE;      // Fast Reset [ON / OFF]
+define FastReset      = PS4_TOUCH; // FAST RESET BUTTON [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ]
+
+// Quick Edit Assist
+define QuickEditAssist = TRUE;   // [ON / OFF] Edit Assist
+define EditDelay       = 20;     // Edit Assist Hold Delay On Select
+define EditAssist      = PS4_L3; // EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+
+// Button Press Time [20- 50ms]
+define ButtonTime = 20;      // Button Press Time (Edit Combo's + Instant Pickaxe)
+
+//DoGz TimeZ V1.0 Aim Assist	=>{* ONLY ENABLE DoGz TimeZ AA or Don't At Me Polar*}<=
+define AimAssist    = TRUE;  // Aim Assist [ON / OFF]
+define AimAssistHip = TRUE;  // Operate on Fire Or Ads [If FALSE It Will Only Run On ADS]
+define AATimed      = FALSE; // Aim Assist Will Cut Out After 2 seconds By Default (Change Below)
+
+define Power  = 1;    // DoGz TimeZ Aim Assist Power [1,2,3] ==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+define AATime = 2000; // DoGz TimeZ Aim Assist Will Cut Out After Time [1000] = 1 Second, [2000] = 2 Second
+
+// Don't At Me Polar [DoGz Version 2.0]   =>{* ONLY ENABLE DoGz TimeZ AA or Don't At Me Polar*}<=
+define PolarAssist     = FALSE; // [ON / OFF] = Master Toggle For Don't At Me's Polar Aim Assist DoGz Style V4
+define PolarBoost      = TRUE;  // [ON / OFF] = Boost On Radius + Angle While Firing
+define PolarHipFire    = TRUE;  // [ON / OFF] = {Operates on Ads Or Fire Alone}
+define StrafeShake     = TRUE;  // [ON / OFF] = Strafe Aim Assist Included (Set Strafe Assist Delay Above)
+							 
+define Radius          = 15;    // [1 - 50] = Power/Strength
+define Angle           = 20;    // [1 - 180] = Speed/Step
+define RadiusBoost     = 6;     // [1 - 50] = Boost Power/Strength 
+define AngleBoost      = 9;     // [1 - 180] = Boost Speed/Step
+
+define StrafePower      = 12;   // [1 - 50] = Power/Strength
+define StrafeAssistWait = 10;   // [10 - 50] = Strafe Assist Delay
+// Progression Head Shot Assist
+define HeadAssist    = TRUE; // Main Toggle ON/OFF
+define HeadHipAssist = TRUE; // Operate on Fire Only [If FALSE It Will Only Run On ADS & FIRE]
+
+define HeadStep = 2;  // Step Increment Increasing Until Its Reached HeadMax
+define HeadMax  = 30; // Max Head Assist Value
+
+// Build Monitor
+define BuildTracker  = TRUE; // Isolate Aim Assist And Head Shot Mod In Build Mode
+define BuildSyncTime = 2000; // Auto De-Sync After 2 Seconds Of being Idol [Pickaxe == Manual Re-Sync]
+
+// Builder Pro
+define BuilderPro = FALSE; // Hold Button/Paddle To Place Builds (Release Exits Build Mode)
+
+// Playstation On PC/Xbox
+define PlayStationOnXbox = TRUE; // [ON / OFF] DS4/5 On PC/Xbox [Touchpad Button Fix]
+
+// Hair Triggers
+define HairTriggers = TRUE; // Instant Triggers [100%]
+
+main {	
+	
+	if (PlayStationOnXbox && get_console() == PIO_XB360 && get_controller() == PIO_PS4) { 
+	
+		swap(PS4_TOUCH,PS4_SHARE);
+	}
+	
+	if (HairTriggers) { 
+   		
+   		deadzone(PS4_L2,PS4_R2,100,100);
+   	}
+
+	if (QuickEditAssist) {
+	 	
+	 	if (get_val(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = TRUE;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = 0;	
+			Edit1 = FALSE;
+		}
+	}
+
+    if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       	
+    		combo_run(FastReset);
+    	}
+    }	
+
+	if (InstaEditReset) {
+        
+        if (EditHold) {
+        	
+        	if (get_val(Edit) && get_ptime(Edit) > EditHoldTime) {
+        
+            	Edit1 = TRUE;
+            	Edit2 = TRUE;
+			}
+        }
+        	
+        else if (event_press(Edit)) {
+        			
+        		Edit1 = TRUE;
+            	Edit2 = TRUE;
+		}
+		
+		if (Edit2) {
+            
+            if (event_release(Select)) {  
+                
+                Edit1 = FALSE;
+                Edit2 = FALSE;
+                BuildTrack = FALSE;
+            }
+		}
+    }
+
+    if (Edit1 || Edit2) {
+        
+        if (event_press(Reset)) {  
+            
+            combo_run(InstantReset);
+            Edit1 = FALSE;
+            Edit2 = FALSE;
+            BuildTrack = FALSE;
+        }
+
+        if (event_press(Pickaxe)) {
+            
+            Edit1 = FALSE;
+            Edit2 = FALSE;
+            BuildTrack = FALSE;
+		}
+    }
+	
+	if (BuilderPro) {
+            
+		if (get_val(Switch)) {    
+			
+			BuildPro = TRUE;
+			
+			if (BuildTracker) 
+				
+				BuildTrack = TRUE;
+        } 
+            
+        if (BuildPro && event_release(Switch)) {
+        
+        	combo_run(BuildPro);
+        	BuildPro = FALSE;
+        	
+        	if (BuildTracker) 
+				
+				BuildTrack = FALSE;
+        }        
+    }
+    
+	if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack && !BuildPro) {
+            
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                
+                BuildTrack = FALSE;
+                BuildCount = 0;
+            }
+            
+            if (get_val(Roof) || get_val(Floor) || get_val(Ramp) || get_val(Wall) || get_val(Trap)) 
+                
+                BuildCount = 0;
+        }
+    }
+	
+	if (!BuildTrack && !Edit1 && !Edit2) {
+	
+	    if (InstantPickaxe) {
+                    
+        	if (event_press(Pickaxe)) {
+                        
+            	Axe = TRUE;
+            }
+                	
+            if (Axe) {
+                        
+            	if (event_press(Build) || event_press(Switch) || event_press(Ads) || event_press(N_Weapon) || event_press(P_Weapon)) { 
+                            
+                 	Axe = FALSE;
+                }
+                        
+                if (event_release(Fire)) {
+                            
+                	combo_run(Pickaxe);
+                }
+            }
+        }
+	    
+	    if (AimAssist) {
+	    	
+	    	if (AATimed) {
+	    	
+	    		if (get_val(Ads) && get_ptime(Ads) <= AATime || AimAssistHip && get_val(Fire) && get_ptime(Fire) <= AATime) {
+	        	
+	        		AimAssist();
+	        	}
+	        	
+	        } else if (get_val(Ads)|| AimAssistHip && get_val(Fire)) {
+	        	
+	        		AimAssist();
+	        }
+	        
+	        if (!get_val(Ads) && !get_val(Fire)) {
+	        
+	        	AAT = 0;
+	        	Axis = 0;
+	        }
+	    }
+	    
+	    if (HeadAssist) {
+	        
+	        if (get_val(Ads) && get_val(Fire) || HeadHipAssist && get_val(Fire)) {
+	        
+	        	if (abs(get_val(AimY)) < HeadMax) { 
+	        		
+	        		Head += HeadStep;
+	        		combo_run(HeadAssist);
+	        	}	
+	        }
+	        
+	        if (!get_val(Fire)) Head = 0;
+	        	
+	        if (Head >= HeadMax) combo_stop(HeadAssist);
+	    }
+	
+		if (PolarAssist) {
+            
+            if (get_val(Ads) || (PolarHipFire && get_val(Fire))) {
+            
+                DamX = get_val(AimX);   
+                DamY = get_val(AimY);           
+                ActualMagnitude = isqrt(pow(DamX,2) + pow(DamY,2));  
+                MaxMagnitude = (ActualMagnitude < 100);                      
+            
+                if (PolarBoost && get_val(Fire)) {
+                        
+                    RadiusDam = Radius + RadiusBoost;
+                    AngleDam = AngleBoost;
+                    
+                } else {
+                        
+                    RadiusDam = Radius;
+                    AngleDam = 0;
+                }
+                
+                DamAngle += Angle + AngleDam;                                                 
+                DamAngle = DamAngle % 360;                                            
+                DamSin = DamPolar[DamAngle % 360];                           
+                DamCos = DamPolar[(DamAngle + 270) % 360];                  
+                DamCos = (DamCos * RadiusDam) / 100;                         
+                DamSin = (DamSin * RadiusDam) / 100;                          
+            
+                if (ActualMagnitude <= 10) {                                                      
+                    
+                    DamSin -= DamY;                                                              
+                    DamCos -= DamX;                                                                 
+                
+                } else {                                                                                       
+                        
+                    DamSin = (DamSin * (200 - ((abs(DamY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; 
+                    DamCos = (DamCos * (200 - ((abs(DamX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; 
+                }                                                  
+                
+                set_val(AimX,clamp(DamX + DamCos, -100,100));
+                set_val(AimY,clamp(DamY + DamSin, -100,100)); 
+            	
+            	if (StrafeShake) combo_run(StrafeAxis);
+            }
+        }
+    }
+}
+
+combo HeadAssist{
+
+	set_val(AimY,inv(Head) + get_val(AimY));
+}
+
+combo StrafeAxis {
+   
+	set_Val(Strafe,inv(StrafePower));
+    wait(StrafeAssistWait);
+    set_Val(Strafe,StrafePower);
+    wait(StrafeAssistWait);
+}
+
+combo Pickaxe {
+    
+    set_val(Pickaxe,100);
+    wait(ButtonTime);
+    Axe = FALSE;
+}
+
+combo BuildPro {   
+    
+    set_val(Switch,0);
+    wait(50);      
+    set_val(Switch,100);
+    wait(50);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(ButtonTime)
+    set_val(Reset,100);        
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+function AimAssist() {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10 * 2);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10 * 2);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10 * 2));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10 * 2));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+        
+    return; 
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        
+        if (get_val(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		Press(Select);
+        }
+}
+
+function Press (Button) {
+
+    if (get_val(Button))
+        
+   		return;
+            
+            set_val(Button,100);
+}
+
+function clamp(int v,int lo,int hi) {
+  	
+  	if(v < lo) return lo;
+  	if(v > hi) return hi;
+  	
+  	return v;
+}
+ 
+const char DamPolar[]= {
+    100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,
+    71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,
+    -8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,
+    -65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,
+    -97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,
+    -94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,
+    -56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,
+    11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,
+    81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+};

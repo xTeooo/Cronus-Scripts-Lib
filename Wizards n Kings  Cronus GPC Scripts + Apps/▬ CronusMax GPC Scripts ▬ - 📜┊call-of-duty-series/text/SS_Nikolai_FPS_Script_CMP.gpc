@@ -1,0 +1,618 @@
+																																																																										/*
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+												Credits :
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- TaylorDrift21 for Customizing DNAM Polar with multiple shapes, Rumble Recoil & Slide Cancel modes!
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- DoGzTheFiGhTeR For Rumble Detection Code When Adjusting Anti Recoil Values
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- Batts for Strafe Assist feature
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- The community forums & servers for the Rapid Fire code
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+							- Me, SS_Nikolai for putting all this together into one great script :)
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+								IMPORTANT BELOW FOR ANTI RECOIL ADJUSTMENTS WHILE IN-GAME
+					 ===============================================================================
+					 === Hold L1 And Press UP For +1 to Vertical and DOWN For -1                 ===
+					 === Hold L1 And Press RIGHT For +1 to Horizontal and LEFT For -1            ===
+					 === Heavy Rumble = Increase  -  Light Rumble = Decrease                     ===
+					 =============================================================================*/
+
+//--Buttons ---> Customize To Your Layout <---
+	define ADS				= PS4_L2; 		// XB1_LT
+	define FIRE				= PS4_R2; 		// XB1_RT
+	define TACTICAL			= PS4_L1; 		// XB1_LB
+	define LETHAL			= PS4_R1; 		// XB1_RB
+	define SPRINT			= PS4_L3; 		// XB1_LS
+	define MELEE			= PS4_R3; 		// XB1_RS
+	define SWAP				= PS4_TRIANGLE;	// XB1_Y
+	define PRONE			= PS4_CIRCLE;	// XB1_B
+	define JUMP				= PS4_CROSS;	// XB1_A
+	define RELOAD			= PS4_SQUARE;	// XB1_X
+	define PING				= PS4_UP;		// XB1_UP
+
+//--Sticks ---> Customize To Your Layout <---
+	define AIM_X			= PS4_RX;		// XB1_RX
+	define AIM_Y			= PS4_RY;		// XB1_RY
+	define STRAFE			= PS4_LX;		// XB1_LX
+	define WALK				= PS4_LY;		// XB1_LY
+
+//--Deadzone Value To Remove Any Unwanted Stick Movement
+	define DeadZone			= 10;
+
+//--If TRUE Then All Rumbles To Controller Will Be Blocked But Keep In-Game Vibration Enabled For Rumble Recoil To Work.
+	define BlockRumble		= FALSE;
+
+//--Hair Triggers ( IF L2/LT OR R2/RT IS HELD MORE THEN 10% IT'LL REGISTER AS 100% IN THE GAME )
+	define HairTriggers		= TRUE;
+
+//--Aim Assist Shape
+	define TaylorShapes		=    1; // 0 = Disabled, 1 = Circular, 2 = Tall Oval, 3 = Wide Oval, 4 = Spiral, 5 = Helix, 6 = Spiral Oval
+	int    AngleDirection	= TRUE; // Reverses the Shape Direction
+	define TaylorRadius		=   15; // Strength - I Usually Set This Value About 1 Or 2 Higher Then My In-Game Deadzone As To Not Get Too Much Shake
+	define TaylorSpeed		=   15; // Speed - I Personally Either Use 15 or 20 But Again Feel Free To Play With
+
+//--ADS Speed Strafe
+	define SpeedStrafe		= TRUE; // Main Toggle
+	define StrafeRadius		=   20; // 15 To 25 Seem To Be A Good Value But Feel Free To Play With It
+
+//--Taylors Rumble AR
+	define ToggleTaylorAR	= TRUE; // Main Toggle
+	int    TaylorARVert		=   30; // Vertical Strength
+	int    TaylorARHoriz	=   -2; // Horizontal Strength
+
+//--Rapid Fire - Change FALSE to TRUE If You Want Rapid Fire On By default
+	int    RapidFire		= FALSE; // Main Toggle - Hold L2 & Tap RIGHT To Enable/Disable In-Game
+	define HoldTime			=	 60;
+	define RestTime			=	 30;
+
+//--Drop Shot Mod - Change FALSE to TRUE If You Want Drop Shot On By default
+	int    DropShot			= FALSE; // Main Toggle - Hold L2 & Tap DOWN To Enable/Disable In-Game
+	define DropShotSpeed	= 	 75;
+																																																																												/*
+	Only Choose ONE Slide Cancel Mode From Below. Making Both True Will Result In Issues
+																																																																												*/
+//--Works in Warzone, Modern Warfare and Vanguard \\
+	define SlideCancelMW	= TRUE;
+	define SlideDelayMW		=  140;
+
+//--Works in Cold War \\
+	define SlideCancelCW	= FALSE;
+	define SlideDelayCW		=   110;
+
+//--Threshold ( Percentage Of Pressure Applied To Walk Axis Before Activating Slide Cancel, Ideally 80, 85 Is A Good Value. )
+	define THRESHOLD		= 80;
+
+//--Auto Ping
+	define AutoPing			= FALSE; // Main Toggle - If TRUE it will be on by default otherwise it's off
+	define AutoPingDelay	=  2000;
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | I | N | I | T | I | L | I | Z | A | T | I | O | N | | | | | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
+init { InitializeScript(); }
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {
+	RemoveStickNoise();
+
+	if(HairTriggers)
+	{
+		if(get_val(PS4_R2) > 10) // We don't assign these as ADS, FIRE variable because ONLY L2/LT and R2/RT can have a hair triggers to them
+			set_val(PS4_R2, 100);
+
+		if(get_val(PS4_L2) > 10)
+			set_val(PS4_L2, 100);
+	}
+
+	if(BlockRumble)
+	{
+		block_rumble();
+	}
+
+	if(TaylorShapes)
+	{
+		if(AngleDirection)
+		{ 
+			AngleDirection = (get_val(AIM_X) > 0);
+		}
+
+		RX = get_val(AIM_X);
+		RY = get_val(AIM_Y);
+
+		ActualMagnitude = isqrt(pow(RX, 2) + pow(RY, 2));
+		MaxMagnitude    = (ActualMagnitude < 100);
+
+		Angle   += TaylorSpeed;
+		Angle    = Angle % 360;
+		COSAngle = PolarArray[(Angle + 270) % 360];
+		SINAngle = PolarArray[Angle % 360];
+
+		if(get_val(ADS) || get_val(FIRE))
+		{
+			if(ActualMagnitude < TaylorRadius)
+			{
+				SINAngle -= RY;
+				COSAngle -= RX;
+			}
+			else
+			{
+				SINAngle = (SINAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				COSAngle = (COSAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+			}
+				ShapesV3(TaylorRadius);
+		}
+	}
+
+	if(ToggleTaylorAR && get_val(ADS) && get_val(FIRE))
+	{
+		SmartRumble = get_rumble(RumbleToUse());
+
+		if(SmartRumble > 10 && SmartRumble < 90)
+		{
+			AntirecoilStrength = TaylorARVert + SmartRumble / 2;
+		}
+
+		if(SmartRumble < 10)
+		{
+			Set_Val(AIM_Y, TaylorARVert);
+			Set_Val(AIM_X, TaylorARHoriz);
+		}
+		else
+		{
+			Set_Val(AIM_Y, AntirecoilStrength);
+			Set_Val(AIM_X, TaylorARHoriz);
+		}
+			AntirecoilStrength  = 0;
+			SmartRumble         = 0;
+	}
+
+	if(SpeedStrafe && get_val(FIRE))
+	{
+		Set_Val(STRAFE, RotationalAssist());
+		Set_Val(WALK  , RotationalAssist());
+	}
+
+	if(get_val(ADS) && event_press(PS4_RIGHT))
+	{
+		LedBlink(RapidFire);
+		RapidFire = !RapidFire;
+		blockBTN  = PS4_RIGHT;
+		VibA      = TRUE;
+		combo_run(Rumble);
+	}
+		if(RapidFire && get_val(FIRE))
+		{
+			combo_run(cRapidFire);	
+		}
+		else if(event_release(FIRE))
+		{
+			combo_stop(cRapidFire);
+		}
+
+	if(get_val(ADS) && event_press(PS4_DOWN))
+	{
+		LedBlink(DropShot);
+		DropShot = !DropShot;
+		blockBTN = PS4_DOWN;
+		VibA     = TRUE;
+		combo_run(Rumble);
+	}
+		if(DropShot && get_val(FIRE))
+		{
+			combo_run(cDropShot);
+		}
+		else if(event_release(FIRE))
+		{
+			combo_stop(cDropShot);
+		}
+
+	if(AutoPing && get_val(FIRE))
+	{
+		combo_run(AutoPing);
+	}
+	else if(event_release(FIRE))
+	{
+		combo_stop(AutoPing);
+	}
+
+	if(SlideCancelMW || SlideCancelCW)
+	{
+		if(!get_val(ADS) && (get_val(WALK) < -THRESHOLD) || (get_val(WALK) > THRESHOLD) || (get_val(STRAFE) < -THRESHOLD) || (get_val(STRAFE) > THRESHOLD))
+		{
+			if(SlideCancelMW && event_release(PRONE))
+				combo_run(CancelSlideMW);
+			else if(SlideCancelCW && event_release(PRONE))
+				combo_run(CancelSlideCW);
+
+			if(SlideCancelMW && combo_running(CancelSlideMW) && (get_val(ADS) && event_release(PRONE)))
+				combo_stop(CancelSlideMW);
+
+			if(SlideCancelCW && combo_running(CancelSlideCW) && (get_val(ADS) && event_release(PRONE)))
+				combo_stop(CancelSlideCW);
+		}
+	}
+
+	if(get_val(TACTICAL) && get_ptime(TACTICAL) >= 600)
+	{
+		if(event_press(PS4_UP))
+		{
+			blockBTN     = PS4_UP;
+			TaylorARVert = Cycle(TaylorARVert + 1, 0, 100);
+			VibA         = TRUE;
+			combo_run(Rumble);
+		}
+
+		if(event_press(PS4_DOWN))
+		{
+			blockBTN     = PS4_DOWN;
+			TaylorARVert = Cycle(TaylorARVert - 1, 0, 100);
+			VibB         = TRUE;
+			combo_run(Rumble);
+		}
+
+        if(event_press(PS4_LEFT))
+		{
+			blockBTN      = PS4_LEFT;
+			TaylorARHoriz = Cycle(TaylorARHoriz + 1, -100, 100);
+			VibA          = TRUE;
+			combo_run(Rumble);
+		}
+
+		if(event_press(PS4_RIGHT))
+		{
+			blockBTN      = PS4_RIGHT;
+			TaylorARHoriz = Cycle(TaylorARHoriz - 1, -100, 100);
+			VibB          = TRUE;
+			combo_run(Rumble);
+		}
+	}
+
+	if(blockBTN)
+	{
+		if(event_release(blockBTN))
+		{
+			blockBTN = 0;
+		}
+		else
+		{
+			set_val(blockBTN, 0);
+		}
+	}
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | | | 
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
+combo CancelSlideMW {
+	set_val(PRONE, 100);
+	wait(SlideDelayMW);
+	set_val(PRONE, 0);
+	wait(60);
+	set_val(PRONE, 100);
+	wait(50);
+	set_val(PRONE, 100);
+	set_val(JUMP, 100);
+	wait(60);
+	set_val(PRONE, 0);
+	set_val(JUMP, 100);
+	wait(10);
+	set_val(JUMP, 0);
+} 
+
+combo CancelSlideCW {
+	set_val(PRONE, 100);
+	wait(SlideDelayCW);
+	set_val(PRONE, 0);
+	wait(20);
+	set_val(SPRINT, 0);
+	set_val(PRONE, 100);
+	set_val(SPRINT, 100);
+	wait(20);
+	set_val(PRONE, 0);
+	set_val(SPRINT, 0);
+	wait(20);
+}
+
+combo AutoPing {
+	set_val(PS4_UP, 100);
+	wait(20)
+	set_val(PS4_UP, 0); 
+	wait(AutoPingDelay); 
+}
+
+combo cRapidFire {
+    set_val(FIRE, 100);
+    wait(HoldTime);
+    set_val(FIRE, 0);
+    wait(RestTime);
+}
+
+combo cDropShot {
+    set_val(PRONE, 100); 
+    wait(50);
+    set_val(PRONE, 0);
+    wait(DropShotSpeed);
+}
+
+combo FlashGreen {
+	led(0);
+	wait(100);
+	led(2);
+	wait(100);
+	led(0);
+	wait(100);
+	led(2);
+	wait(100);
+	led(0);
+	wait(1500);
+	led(2);
+}
+
+combo FlashRed {
+	led(1);
+	wait(100);
+	led(2);
+	wait(100);
+	led(1);
+	wait(100);
+	led(2);
+	wait(100);
+	led(1);
+	wait(1500);
+	led(2);
+}
+
+combo Rumble {
+	if(VibA)
+		set_rumble(RUMBLE_A, 90);
+
+	else if(VibB)
+		set_rumble(RUMBLE_B, 90);
+
+	wait(250);
+
+	VibA = FALSE;
+	VibB = FALSE;
+
+	reset_rumble();
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
+function Cycle(Value, Min, Max) {
+	if(Value > Max)
+		return Min;
+	if(Value < Min)
+		return Max;
+	return Value;
+}
+
+function clamp(A, B, C) {
+	if(A < B)
+	{
+		return B;
+	}
+		if(A > C)
+		{
+			return C;
+		}
+	return A;
+}
+
+function LedBlink(Toggle) {
+    if(Toggle)
+        combo_run(FlashGreen);
+    else
+        combo_run(FlashRed);
+}
+
+function RumbleToUse() {
+	if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B))
+	{
+		return RUMBLE_A;
+	}
+		if(get_rumble(RUMBLE_A) == 100)
+		{
+			return RUMBLE_B;
+		}
+			if(get_rumble(RUMBLE_B) == 100)
+			{
+				return RUMBLE_A;
+			}
+				if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B))
+				{
+					return RUMBLE_A;
+				}
+					if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B))
+					{
+						return RUMBLE_B;
+					}
+	return 0;
+}
+
+function Set_Val(Stick, Value) {
+    set_val(Stick, clamp(Value * (100 - abs(get_val(Stick))) / 100 + get_val(Stick), -100, 100));
+        return;
+}
+
+function RotationalAssist() {
+	strafeVal += strafeInc;
+
+	if(abs(strafeVal) == StrafeRadius)
+	{
+		strafeInc = inv(strafeInc);
+	}
+		return get_val(STRAFE && WALK) + strafeVal;
+}
+
+function ShapesV3(x_Var) { 
+ 	if(TaylorShapes == 1)
+	{
+		if(AngleDirection)
+		{
+        	RX += (get_val(AIM_X))  + ( (SINAngle * x_Var) ) / 100;
+            RY += (get_val(AIM_Y))  + ( (COSAngle * x_Var) ) / 100;
+        }
+        else
+        {
+        	RY = (get_val(AIM_Y))  + ( (SINAngle * x_Var) ) / 100;
+            RX = (get_val(AIM_X))  + ( (COSAngle * x_Var) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 2)
+	{
+		if(AngleDirection)
+		{
+            RX = (get_val(AIM_X))  + ( (SINAngle * x_Var / 2) ) / 100;
+            RY = (get_val(AIM_Y))  + ( (COSAngle * x_Var) )     / 100;
+        }
+		else
+		{
+        	RY = (get_val(AIM_Y))  + ( (SINAngle * x_Var) )     / 100;
+        	RX = (get_val(AIM_X))  + ( (COSAngle * x_Var / 2) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 3)
+	{
+		if(AngleDirection)
+		{
+        	RY = (get_val(AIM_Y))  + ( (COSAngle * x_Var / 2) ) / 100;
+        	RX = (get_val(AIM_X))  + ( (SINAngle * x_Var) )     / 100;
+        }
+		else
+		{
+        	RX = (get_val(AIM_X))  + ( (COSAngle * x_Var) )     / 100;
+       		RY = (get_val(AIM_Y))  + ( (SINAngle * x_Var / 2) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 4)
+	{
+		Spiral(x_Var);
+
+		if(AngleDirection)
+		{
+        	RX = (get_val(AIM_X))  + ( (SINAngle * OuterSpiral) ) / 100;
+            RY = (get_val(AIM_Y))  + ( (COSAngle * InnerSpiral) ) / 100;
+        }
+        else
+        {
+        	RY = (get_val(AIM_Y))  + ( (SINAngle * InnerSpiral) ) / 100;
+       	    RX = (get_val(AIM_X))  + ( (COSAngle * OuterSpiral) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 5)
+	{
+		if(Position == 0 || Position == 1)
+    	{
+		    RX = (get_val(AIM_X)) + ((COSAngle * x_Var)) / 100;
+		}
+	    if(Position == 2 || Position == 3)
+		{
+		    RY = (get_val(AIM_Y)) + ((SINAngle * x_Var)) / 100;
+		}
+
+		Position++;
+
+		if(Position == 4)
+		{
+			Position = 0;
+		}
+	}
+
+	if(TaylorShapes == 6)
+	{
+		Spiral(x_Var);
+
+		if(AngleDirection)
+		{
+        	RX = (get_val(AIM_X)) + ( (OuterSpiral * SINAngle) ) / 100;
+            RY = (get_val(AIM_Y)) + ( (InnerSpiral * COSAngle) ) / 100;
+        }
+        else
+        {
+        	RX = (get_val(AIM_X)) + ( (InnerSpiral * COSAngle) ) / 100;
+            RY = (get_val(AIM_Y)) + ( (OuterSpiral * SINAngle) ) / 100;
+        }
+	}
+		set_val(AIM_X, clamp(RX, -100, 100));
+		set_val(AIM_Y, clamp(RY, -100, 100));
+}
+
+function Spiral(x_Var) {
+    if(!SpiralPosition1)
+	{
+		InnerSpiral -= 1;
+
+		if(InnerSpiral < x_Var / 2)
+			SpiralPosition1 = TRUE;
+	}
+	else
+	{
+	    InnerSpiral += 1;
+
+		if(InnerSpiral > x_Var)
+			SpiralPosition1 = FALSE;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+
+		if(OuterSpiral < x_Var / 2)
+			SpiralPosition2 = TRUE;
+	}
+	else
+	{
+		OuterSpiral += 1;
+
+		if(OuterSpiral >  x_Var)
+			SpiralPosition2 = FALSE;
+	}
+}
+
+function led(x_Color) {
+	for(i = 0; i <= 3; i++) 
+	{
+		set_led(i, dbyte((x_Color * 4) + i));
+	}
+}
+
+function RemoveStickNoise() {
+	if(isqrt(pow(get_val(AIM_Y), 2) + pow(get_val(AIM_X), 2)) <= DeadZone)
+	{
+		set_val(AIM_Y, 0);
+		set_val(AIM_X, 0);
+	}
+
+	if(isqrt(pow(get_val(STRAFE), 2) + pow(get_val(WALK), 2)) <= DeadZone)
+	{
+		set_val(STRAFE, 0);
+		set_val(WALK  , 0);
+	}
+}
+
+function InitializeScript() {
+	if(TaylorShapes == 6)
+	{
+		InnerSpiral = TaylorRadius / 2;
+		OuterSpiral = TaylorRadius;
+	}
+}
+
+int i;
+int blockBTN;
+int strafeVal;
+int VibA, VibB;
+int strafeInc = 5;
+int SmartRumble, AntirecoilStrength;
+int RX, RY, Angle, COSAngle, SINAngle, SpiralPosition1, SpiralPosition2, InnerSpiral, OuterSpiral, ActualMagnitude, MaxMagnitude, Position;
+	  //Green	   // Red      // Off
+data( 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 );
+const char PolarArray[] = { 100, 100, 100, 100, 100, 100, 100, 100, 99, 99, 99, 99, 98, 98, 97, 97, 97, 96, 95, 95, 94, 94, 93, 92, 92, 91, 90, 89, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 75, 74, 73, 72, 71, 70, 69, 67, 66, 65, 63, 62, 61, 59, 58, 56, 55, 53, 52, 50, 49, 47, 46, 44, 43, 41, 40, 38, 36, 35, 33, 31, 30, 28, 26, 25, 23, 21, 20, 18, 16, 14, 13, 11, 9, 7, 6, 4, 2, 0, -1, -3, -5, -7, -8, -10, -12, -13, -15, -17, -19, -20, -22, -24, -25, -27, -29, -30, -32, -34, -35, -37, -39, -40, -42, -43, -45, -46, -48, -50, -51, -53, -54, -55, -57, -58, -60, -61, -62, -64, -65, -66, -68, -69, -70, -71, -73, -74, -75, -76, -77, -78, -79, -80, -81, -82, -83, -84, -85, -86, -87, -88, -89, -89, -90, -91, -92, -92, -93, -93, -94, -95, -95, -96, -96, -97, -97, -97, -98, -98, -99, -99, -99, -99, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -99, -99, -99, -98, -98, -98, -97, -97, -96, -96, -95, -94, -94, -93, -93, -92, -91, -90, -90, -89, -88, -87, -86, -85, -84, -83, -82, -81, -80, -79, -78, -77, -76, -75, -74, -72, -71, -70, -69, -67, -66, -65, -63, -62, -61, -59, -58, -56, -55, -53, -52, -50, -49, -47, -46, -44, -43, -41, -40, -38, -36, -35, -33, -31, -30, -28, -26, -25, -23, -21, -20, -18, -16, -14, -13, -11, -9, -7, -6, -4, -2, 0, 2, 4, 6, 7, 9, 11, 13, 14, 16, 18, 20, 21, 23, 25, 26, 28, 30, 31, 33, 35, 36, 38, 40, 41, 43, 44, 46, 47, 49, 51, 52, 54, 55, 56, 58, 59, 61, 62, 63, 65, 66, 67, 69, 70, 70, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 89, 90, 91, 92, 92, 93, 94, 94, 95, 95, 96, 97, 97, 97, 98, 98, 99, 99, 99, 99, 100, 100, 100, 100, 100, 100, 100 };
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | D | | | | | | | | | |S | S | _ | N | i | k | o | l | a | i| |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

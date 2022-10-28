@@ -1,0 +1,320 @@
+//Posted by itsmestevieb, a member of the community in the CronusMAX Forums - https://cronusmax.com/forums
+ 
+//Posted : Wednesday 24th of April, 2019 21:03 UTC  
+ 
+/* = = = = = = = = = = = = = = = = = = = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = /\/\/\  Made By ItzSnack  /\/\/\  = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = = = = = = = = = = = = = = = = = = = 
+ 
+ ==============================================
+ === THANKS TO Fortnite79,Zack Vigue,Batts, === 
+ === Mrorion,Legitclouds                    ===             
+ ==============================================
+ 
+ ================                                                        
+ === FEATURES ===
+ ================
+ Aim Abuse
+ Aim Assist
+ Ghost Peek
+ Rapid Fire
+ 100% ACCURACY
+ Drop Shot
+ Insta Edit
+ 
+ =================
+ === Important ===
+ =============================================================
+ === Some features will have to be turned on in the script ===
+ =============================================================
+ 
+ ===================================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                           ===
+ ===================================================================================
+ === Hold L2/LT And Press R3/RS For Rapid Fire                                   ===
+ === 1 Rumbles = ON 2 = OFF                                                      ===
+ ===================================================================================
+ === Hold L2/LT And Hold/Tap R1/RB For 100% ACCURACY                             ===
+ =================================================================================== 
+ === Hold L2/LT And Press Square/X For Drop Shot                                 ===
+ ===================================================================================
+ === Hold L2/LT And Tap D-PAD LEFT For Ghost Peek                                ===
+ ===================================================================================
+*/
+ 
+ 
+//BUTTON LAYOUT
+//PS/XBOX
+define   FIRE  = /**/4/**/; //R2/RT
+define   ADS  = /**/7/**/; //L2/LT
+define   RBUMP  = /**/3/**/; //R1/RB
+define   LBUMP  = /**/6/**/; //L1/LB
+define   CROUCH  = /**/5/**/; //R3/RS
+define   SPRINT  = /**/8/**/; //L3/LS
+define   JUMP  = /**/19/**/; //X/A
+define   RELOAD  = /**/20/**/; //square/X
+define   PICKAXE = /**/17/**/; //triangle/Y
+define   BUILD  = /**/18/**/; //circle/B
+define   EDIT    =/**/18/**/ ;
+define   UP   = /**/13/**/; //Up
+define   DOWN  = /**/14/**/; //Down
+define   LEFT  = /**/15/**/; //Left
+define   RIGHT  = /**/16/**/; //Right
+define   TOUCHPAD = 27;//Touchpad
+define   R_X = 9; // PS4 RX / Xbox RX
+define   R_Y = 10; //PS4 RY / Xbox RY
+define   L_X = 11; //XB1_LX //PS4_LX
+define   L_Y = 12; //XB1_LY //PS4_LY
+ 
+ 
+//Insta Edit
+int EDIT_BUTTON =  /**/BUILD/**/;  //Insta edit will allow you to confirm the edit quickly
+int EDIT_BUTTON_HOLD =  /**/TRUE/**///Does your edit button has a hold delay? True means Yes -- False mean No
+int HOLD_TIME =  /**/100/**/;  // Type the hold time which is shown in Fortnite settings, in hundereds because cronusmax already know its in MS. |0.10 = 100| |0.25 = 250|
+int RESET_EDIT_BUTTON = /**/CROUCH/**///Insta Reset will allow you to confirm the edit reset quickly
+int smgTime;
+int edit = FALSE;
+int aimMod = TRUE;                                                                                                                                              
+int WAIT;                                                                                
+int num, i, a;
+int button;
+int pressedIt[6];
+int tap;
+ 
+ 
+//Drop Shot 
+int DropshotToggle    = FALSE; //Change FALSE TO TRUE If you want Drop Shot on as default                
+int DropshotDown      = 70                                       
+int DropshotUp        = 30  
+ 
+ 
+//Aim Assist
+int AimAssist = TRUE; //Change TRUE TO FALSE If you dont want Aim Assist
+int aav  = 19;
+int aav2 = -19;
+int value  = 19;
+int value2 = -19;
+int delay  = 20;
+ 
+ 
+//Aim Abuse
+int AB = TRUE; //Change TRUE TO FALSE If you dont want Aim Abuse
+int AimAbuse_HOLD = 180; //Change 180 to 230 if Aim Abuse isn't working well for you 
+int AimAbuse_RELEASE = 20;
+ 
+ 
+//Toggles/Rumbles
+int rumble_type = RUMBLE_A;
+int roblox; 
+int rumble;
+int R1L1 = FALSE;  //Change FALSE TO TRUE If you play with Flipped
+ 
+ 
+main {
+ 
+ 
+//Flipped
+    if(R1L1) {
+        swap(RBUMP, FIRE); 
+        swap(LBUMP, ADS);}
+ 
+//Aim Assist
+if (AimAssist) {
+   if (get_val(ADS)) {
+   combo_run(AimAssist);}}
+   if (get_val(R_X)<value2||get_val(R_X)>value||get_val(R_Y)<value2||get_val(R_Y)>value||get_val(R_X)<value2||get_val(R_X)>value||get_val(R_Y)<value2||get_val(R_Y)>value){
+         combo_stop(AimAssist);}       
+ 
+//Insta Edit
+   if(EDIT_BUTTON_HOLD)
+   {
+    if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME)
+    {
+    edit = TRUE;
+    }
+   }
+   else if(!EDIT_BUTTON_HOLD)
+   {
+    if(get_val(EDIT_BUTTON))
+    {
+    edit = TRUE;
+    }
+   }
+    if (edit == TRUE) {
+  resetPress(0,1,0,0,0,0);
+  if (get_val(BUILD)) {
+   aimMod = TRUE;
+  }
+  if (event_release(FIRE) || get_val(RESET_EDIT_BUTTON) || get_val(PICKAXE)) {
+   set_click(BUILD, 1, 0);
+   edit = FALSE;
+  }
+    }
+    if (event_press(BUILD)) 
+    {
+  resetPress(0,1,0,0,0,0);
+  aimMod = !aimMod;
+  edit = FALSE;
+    }    
+    if (get_val(PICKAXE)) 
+    {
+  resetPress(0,1,0,0,0,0);
+  aimMod = TRUE;
+    }
+if (a) {
+    if (i < num) {
+  if (!combo_running(master)) {
+   combo_run(master);
+   }
+  } else if 
+  (i > num) {a = FALSE;
+  }
+    }      
+ 
+//Ghost Peek
+if (get_val(ADS) && get_val(LEFT)) {
+set_val(LEFT,0);
+ combo_run(GhostPeek);}                                                                          
+ 
+//100% ACCURACY
+if (get_val(ADS) && get_val(RBUMP)) {
+set_val(RBUMP,0);
+  combo_run(PerfectAccuracy);
+      } else {
+  combo_stop(PerfectAccuracy);}
+ 
+//Aim Abuse
+if (AB) 
+   if(get_val(ADS)> 95){
+      combo_run(AimAbuse);}
+   if(event_release(ADS)){ combo_stop(AimAbuse);}
+ 
+ 
+//Rapid Fire
+if(get_val(ADS) && event_press(CROUCH)) { 
+        roblox = !roblox;
+        rumble(roblox);}
+  if(roblox && get_val(FIRE)) 
+  combo_run(RapidFire);
+ 
+   if(rumble)
+        combo_run(RUMBLE)
+ 
+   if(event_press(PS4_CIRCLE))
+   roblox = FALSE;
+ 
+//Drop Shot 
+if(get_val(ADS) && event_press(RELOAD)){                                        
+DropshotToggle =! DropshotToggle;                                                       
+rumble_A_if_true(DropshotToggle);}                                                       
+ 
+if(DropshotToggle){                                                                      
+if(get_val(ADS)&&get_val(FIRE)){combo_run(DropShot);}}}                                                          
+ 
+combo GhostPeek {                                                                            
+set_val(CROUCH, 100);                                                                    
+wait(15);                                                                                    
+wait(15);                                                                                    
+set_val(FIRE, 100);                                                                     
+wait(15);                                                                                    
+wait(15);                                                                                    
+set_val(CROUCH, 100);                                                                    
+wait(15);                                                                                    
+wait(5);}                                                                                     
+ 
+combo DropShot{                                                                              
+set_val(CROUCH,100);                                                                     
+wait(DropshotDown);                                                                          
+wait(DropshotUp);                                                                            
+set_val(CROUCH,100);} 
+ 
+combo AimAssist {
+set_val(R_Y, (aav));
+wait(delay)
+set_val(R_X, (aav));
+wait(delay)
+set_val(R_Y, (aav2));
+wait(delay)
+set_val(R_X, (aav2));
+wait(delay)
+set_val(R_Y, (aav));
+wait(delay)
+set_val(R_X, (aav));
+wait(delay)
+set_val(R_Y, (aav2));
+wait(delay)
+set_val(R_X, (aav2));
+wait(delay)}
+ 
+ 
+combo PerfectAccuracy {
+set_val(FIRE,100);
+wait(100);
+wait(250);
+set_val(FIRE,100);}
+ 
+combo AimAbuse {
+set_val(ADS, 100);
+wait(AimAbuse_HOLD);
+set_val(ADS, 0);
+wait(AimAbuse_RELEASE);}
+ 
+combo RapidFire {
+ set_val(FIRE,100);
+ wait(40);
+ set_val(FIRE,0);
+ wait(40);}
+ 
+combo Vibrate {
+set_rumble(rumble_type, 100);
+wait(300);
+reset_rumble();}
+ 
+function rumble_A_if_true(var) {
+if (var) rumble_type = RUMBLE_A;
+else rumble_type = RUMBLE_B;
+combo_run(Vibrate);}
+ 
+combo RUMBLE {
+    set_rumble(RUMBLE_A,100);
+    wait(250);
+    reset_rumble();
+    wait(200);
+    rumble--;}
+function rumble(f_bln) {
+    if(f_bln)
+        rumble = 1;
+    else
+        rumble = 2;}
+ 
+        combo wait1 {
+    wait(50);
+    wait(55);}
+ 
+ 
+combo master {
+    wait(WAIT);
+    set_val(button, 100);
+    wait(28);
+    set_val(button, 0);
+    wait(28);
+    i = i + 1;}
+ 
+ 
+function set_click(B, Num, Wait) {
+    WAIT = Wait;
+    i = 0;
+    button = B;
+    num = Num;
+    a = TRUE;}
+ 
+ 
+function resetPress(P0,P1,P2,P3,T,S) {
+ 
+    if(!P0){pressedIt[0] = FALSE;}    else if(P0) {pressedIt[0] = TRUE;}
+    if(!P1){pressedIt[1] = FALSE;}    else if(P1) {pressedIt[1] = TRUE;}    
+    if(!P2){pressedIt[2] = FALSE;}    else if(P2) {pressedIt[2] = TRUE;}    
+    if(!P3){pressedIt[3] = FALSE;}    else if(P3) {pressedIt[3] = TRUE;}
+    if(!T){tap = FALSE;}  else if (T){tap = TRUE;}}

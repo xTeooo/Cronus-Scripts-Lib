@@ -1,0 +1,466 @@
+/* 
+Made by SwiftAim 
+introducing Anti Bloom
+Scirpt 
+
+How dose it work. With the power of thr op Aim assists you get ans\ anti recoil it makes a massive pull 
+down on a guy your tracking to make the kill More smooth. These mods are working on the new guns
+giving a massive advantage when fighting. 
+
+
+
+   _____         _  __ _            _                    
+  / ____|       (_)/ _| |     /\   (_)                   
+ | (_____      ___| |_| |_   /  \   _ _ __ ___           
+  \___ \ \ /\ / / |  _| __| / /\ \ | | '_ ` _ \          
+  ____) \ V  V /| | | | |_ / ____ \| | | | | | |         
+ |_____/ \_/\_/ |_|_|_ \__/_/  _ \_\_|_| |_| |_|         
+     /\         | | (_) |  _ \| |                        
+    /  \   _ __ | |_ _  | |_) | | ___   ___  _ __ ___    
+   / /\ \ | '_ \| __| | |  _ <| |/ _ \ / _ \| '_ ` _ \   
+  / ____ \| | | | |_| | | |_) | | (_) | (_) | | | | | |  
+ /_/    \_\_| |_|\__|_| |____/|_|\___/ \___/|_| |_| |_|  
+                                       (_)          | |  
+  _ __ ___   ___  __ _  __ _   ___  ___ _ _ __ _ __ | |_ 
+ | '_ ` _ \ / _ \/ _` |/ _` | / __|/ __| | '__| '_ \| __|
+ | | | | | |  __/ (_| | (_| | \__ \ (__| | |  | |_) | |_ 
+ |_| |_| |_|\___|\__, |\__,_| |___/\___|_|_|  | .__/ \__|
+                  __/ |                       | |        
+                 |___/                        |_|        
+
+
+												-----------------/
+												Mods: Aim assist
+												anti recoil
+												bloom reducer
+												Expo Aim assist
+												Linear Aim Assist
+												Aim Assist 1 
+												Aim Assist 2 
+												BuildTracker (no shake when building)
+												------------------/
+*/	
+define Fire = XB1_RT;
+define Ads = XB1_LT;
+define PickupB = XB1_X;
+define N_Weapon = XB1_RB;
+define P_Weapon = XB1_LB;
+define Pickaxe = XB1_B;
+define Jump = XB1_A;
+define Crouch = XB1_RS
+define Ping = XB1_RIGHT;
+define Edit = XB1_Y; 
+define Build = XB1_LS;           
+define Wall = XB1_RT;
+define Floor = XB1_RB;
+define Ramp = XB1_LT
+define Roof = XB1_LB;
+define Select = XB1_RT;
+define Confirm = XB1_LT;
+define Reset = XB1_RS;
+define AimX = PS4_RX;
+define AimY = PS4_RY;
+define PS   = POLAR_RS;
+define On   = TRUE
+define Off  = FALSE
+define Trap   = XB1_X
+//buildtracker
+ int BuildTracker = TRUE int BuildTrack = TRUE int BuildPro = TRUE int BuildCount int POLAR = TRUE int WIDTH int HEIGHT int S_RS 
+ int BuildSyncTime = 2000
+ //expo Aim Assist
+//to turn off put everything to zero
+int ExpoAimAssist = 0;  // Power
+int Angle  =  0;  // Speed
+int R = 0; // Release/Cut-out value
+int Speed;
+
+int RX   = PS4_RX;
+int RY   = PS4_RY;
+
+int LinearAssist = Off;
+int BaseSpeed = 11;
+int ZoneSpeed = 14;
+int FireSpeed = 20;
+int BasePower = 11;
+int ZonePower = 15;
+int FirePower = 17;
+
+int DeadZone  =  6;
+
+int angle,cos_angle,sin_angle,actual_X,actual_Y,actual_Magnitude,max_Magnitude,Radius,G_RX,G_RY,Set_val
+int AA1    = TRUE;  // Aim Assist [ON / OFF]
+int AA1HipAssist = TRUE;  // Operate on Fire Or Ads [If FALSE It Will Only Run On ADS]
+int AimAssistTimed       = TRUE; // Aim Assist Will Cut Out After 2 seconds By Default (Change Below)
+int AAT,Axis;
+int Power  = 2;    //  Aim Assist Power [1,2,3] ==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+int AATime = 1000; // 
+
+define AntiBloom     = TRUE;
+int Vertical_Value   =   31;
+int Horizontal_Value =   -4;
+
+int AntirecoilVertical;
+int AntirecoilHorizontal;
+define MinARecoilPercent = 20;
+int MinARecoilFactor;
+int MinARecoilToApply;
+int MovementARecoilToApply
+
+define POLAR_ASSIST       =  On;
+	define LEGACY_ASSIST      =  Off;
+define D_RX = 5;
+	define D_RY = 5;
+	int STEADY_AIM = 15; 
+define A_RY = PS4_RY;
+	define A_RX = PS4_RX;
+	define P_RX = POLAR_RX;
+	define P_RY = POLAR_RY;
+	define P_RS = POLAR_RS;
+init { 
+	STEADY_AIM = (360 / STEADY_AIM) / 2; 
+	}
+
+main {
+    if(AntiBloom) {
+      if(get_val(PS4_R2)) {
+    	AntirecoilVertical   = dz(PS4_RY,0);
+    	AntirecoilHorizontal = dz(PS4_RX,0); }
+      if(get_val(PS4_L2) && get_val(PS4_R2)) {
+    	AntiRecoil(PS4_RY, Vertical_Value);
+    	offset(PS4_RX, Horizontal_Value); }
+    }
+
+if (get_ival(Ads) || get_ival(Fire)) {
+  	
+  if (abs(get_ival(AimX)) <= R && abs(get_ival(AimY)) <= R) {
+    
+    set_polar(PS,Speed = (Speed + Angle) % 360,ExpoAimAssist * 328);
+		
+    }
+  }
+
+	
+	block_rumble();
+	
+	deadzone(Ads,Fire,100,100);
+
+	if (LinearAssist) {
+	
+		if ((get_ival(Ads) || get_ival(Fire)) && abs(get_ival(RX)) <= DeadZone && abs(get_ival(RY)) <= DeadZone) {
+			
+			Speed += Angle;
+		
+		if (Speed >= 360) Speed = 0;
+
+			if (get_ival(Fire)) {
+                
+                Radius = FirePower;
+            	Angle  = FireSpeed;
+            }
+                
+                else {
+                    
+                    Radius = BasePower;
+                	Angle  = BaseSpeed;
+                }
+                
+		set_polar(POLAR_RS,Speed,(abs(get_ival(POLAR_RX)) + abs(get_ival(POLAR_RY))) / 3 + Radius * 327);
+	}
+	    
+		if ((get_ival(Ads) || get_ival(Fire)) && (abs(get_ival(RX)) > DeadZone || abs(get_ival(RY)) > DeadZone)) {
+            
+        	actual_X = get_ival(RX);
+        	actual_Y = get_ival(RY);
+        	actual_Magnitude = isqrt(pow(actual_X,2) + pow(actual_Y,2));
+        	max_Magnitude = (actual_Magnitude < 100);
+
+    		if (get_ival(Fire)) {
+                
+         		Radius = FirePower;
+            	Angle  = FireSpeed;
+        	}
+                
+        		else {
+                    
+            		Radius = ZonePower;
+                	Angle  = ZoneSpeed;
+            	}
+            
+			angle += Angle;
+        	angle = angle % 360;
+        	sin_angle = DamPolar[angle % 360];
+        	cos_angle = DamPolar[(angle + 270) % 360];
+        	cos_angle = (cos_angle * Radius) / 100;
+        	sin_angle = (sin_angle * Radius) / 100;
+
+        	if (actual_Magnitude <= 20) { 
+                
+        		sin_angle -= actual_Y; 
+            	cos_angle -= actual_X; 
+        	}
+            	else { 
+                    
+            		sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+                	cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude; 
+            	} 
+
+        		Set_Val(RX,cos_angle);
+        		Set_Val(RY,sin_angle); 
+    	}
+    	
+    }
+if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack && !BuildPro) {
+            
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                
+                BuildTrack = Off;
+                BuildCount = 0;
+            }
+            
+            if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) 
+                
+                BuildCount = 0;
+        }
+    }
+if (AA1) {
+		
+		if (AimAssistTimed) {
+		
+			if (get_ival(Ads) && get_ptime(Ads) <= AATime || AA1HipAssist && get_ival(Fire) && get_ptime(Fire) <= AATime) {
+	    	
+	    		AimAssist();
+	    	}
+	    	
+	    } else if (get_ival(Ads)|| AA1HipAssist&& get_ival(Fire)) {
+	    	
+	    		AimAssist();
+	    }
+	    
+	    if (!get_ival(Ads) && !get_ival(Fire)) {
+	    
+	    	AAT = 0;
+	    	Axis = 0;
+	    }
+	}
+if (POLAR_ASSIST) {
+  	if ((get_ival(Fire) && abs(get_ival(A_RX)) < P_RE  && abs(get_ival(A_RY)) < P_RE) || 
+  	    (get_ival (Ads) && abs(get_ival(A_RX)) < P_RE  && abs(get_ival(A_RY)) < P_RE)) {
+		
+		POLAR     = On;
+		WIDTH  = W_RX;
+  		HEIGHT = W_RY;
+  
+  		S_RS = (S_RS + A_RS) % 360;
+  
+  		RX =  abs(get_ival(A_RX) / 3);
+  		RY =  abs(get_ival(A_RY) / 3);
+    
+    if ((abs(get_ival(A_RX)) > D_RX) || (abs(get_ival(A_RY)) > D_RY)) {
+  		WIDTH  = (WIDTH  + -RX);
+  		HEIGHT = (HEIGHT + -RY);
+  	}
+  	else {
+  		WIDTH  = (WIDTH);
+  		HEIGHT = (HEIGHT);
+	}	
+		
+		set_polar(P_RS,S_RS,WIDTH);
+
+  	if (get_ival(A_RX) > 0) {
+  		set_polar(P_RS,S_RS,WIDTH);
+  		G_RX = get_val(P_RX) + RX;
+  	}
+  
+  	if (get_ival(A_RX) < 0) {
+  		set_polar(P_RS,S_RS,WIDTH);
+  		G_RX = get_val(P_RX) + -RX;
+  	}
+  
+  	if (get_ival(A_RY) > 0) {
+  		set_polar(P_RS,S_RS,HEIGHT);
+  		G_RY = get_val(P_RY) + RY;
+  	}
+  
+  	if (get_ival(A_RY) < 0) {
+  		set_polar(P_RS,S_RS,HEIGHT);
+  		G_RY = get_val(P_RY) + -RY;
+  	}
+  
+  	if (get_ival(A_RX) > 0) {
+  		set_val(P_RX,get_ival(P_RX) + RX);
+  	}
+  	
+  	if (get_ival(A_RX) < 0) {
+  		set_val(P_RX,get_ival(P_RX) + -RX);
+  	}
+  
+  	if (get_ival(A_RY) > 0) {
+  		set_val(P_RY,get_ival(P_RY) + RY);
+	}
+  	
+  	if (get_ival(A_RY) < 0) {
+  		set_val(P_RY,get_ival(P_RY) + -RY);
+  	}
+  
+  	if (get_ival(A_RX) > 0) {
+  		set_val(A_RX,G_RX + RX);
+  	}
+  	
+  	if (get_ival(A_RX) < 0) {
+  		set_val(A_RX,G_RX + -RX);
+  	}
+  
+  	if (get_ival(A_RY) > 0) {
+  		set_val(A_RY,G_RY + RY);
+  	}
+  	
+  	if (get_ival(A_RY) < 0) {
+  		set_val(A_RY,G_RY + -RY);
+  		}
+	}
+	else {
+		POLAR = Off;
+	}
+}
+    if (!POLAR && LEGACY_ASSIST) {
+    if ((get_ival(Ads)  && abs(get_ival(A_RX)) < L_RE && (abs(get_ival(A_RY)) <  L_RE)) || 
+    	(get_ival(Fire) && abs(get_ival(A_RX)) < L_RE && (abs(get_ival(A_RY)) <  L_RE))) {
+    	
+    	combo_run(LEGACY);
+	}
+	else {
+		combo_stop(LEGACY);
+	}
+}
+}  
+function dz(f_axis,f_val) {
+    f_val = get_val(f_axis);
+    if(abs(f_val) < 10) {
+    set_val(f_axis,0);
+    return 0; }
+    return f_val;
+}
+function AntiRecoil(AxisToApply, ARecoilToApply) {
+    AntirecoilHorizontal   = get_val(PS4_RX);
+    AntirecoilVertical     = get_val(PS4_RY);
+    MinARecoilFactor       = MinARecoilPercent / 100;
+    MinARecoilToApply      = MinARecoilFactor * ARecoilToApply;
+    MovementARecoilToApply = (1 - MinARecoilFactor) * ((ARecoilToApply * (100 - isqrt(AntirecoilHorizontal * AntirecoilHorizontal + AntirecoilVertical * 
+    AntirecoilVertical))) / (100 + abs(AntirecoilHorizontal) + ((AntirecoilVertical*AntirecoilVertical)/2)));
+    set_val(AxisToApply, clamp(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply), -100, 100 - MinARecoilToApply));
+}
+function offset(axis, offset_val) {
+    set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+}
+function Set_Val(Input,Output) {
+
+      set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        return; 
+}
+function AimAssist() {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10 * 2);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10 * 2);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10 * 2));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10 * 2));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+
+}
+ function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+    return; 
+} 
+function Set_polar (stick,angle,radius,offset) {
+if (angle < 0) angle = 360 + (angle % 360);
+  	angle = (angle + 90) % 360;
+
+	sin_angle = dint8(angle);
+  	cos_angle = dint8((angle + 90) % 360);
+
+if (offset) {
+    OS(7 + stick,(cos_angle * radius) / 100);
+    OS(8 + stick,(sin_angle * radius) / 100);
+  } 
+else {
+    set_val(7 + stick, (cos_angle * radius) / 100);
+    set_val(8 + stick, (sin_angle * radius) / 100);
+  }
+  	return;
+}
+
+function OS (axis,offset_val) {
+  	set_val(axis,clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis),-100, 100));
+  		return
+}
+const int8 DamPolar[]= {
+    100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,
+    71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,
+    -8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,
+    -65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,
+    -97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,
+    -94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,
+    -56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,
+    11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,
+    81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+combo LEGACY {
+	Set_val(A_RX,L_PR);
+	Set_val(A_RY,L_PR);
+	wait(L_WT);
+	Set_val(A_RX,L_PR * -1);
+	Set_val(A_RY,L_PR * -1);
+	wait(L_WT);
+} 
+function Set_val(Input,Value) {
+  	set_val(Input,Return(Value * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100, 100));
+		return; 
+}
+function Return(Val,Low,High) {
+	if(Val < Low) 
+		return Low;
+	if(Val > High) 
+		return High;
+  return Val;
+  }
+int W_RX  =   22;   define W_RX_MIN =    5,   W_RX_MAX =   40;// POLAR RADIUS WIDTH VALUE  (RX) 			W_RX  =   15; 
+	int W_RY  =   22;   define W_RY_MIN =    5,   W_RY_MAX =   40;// POLAR RADIUS HEIGHT VALUE (RY)				W_RY  =   15;
+	int A_RS  =   20;   define A_RS_MIN =    5,   A_RS_MAX  =  60;// POLAR ANGLE VALUE							A_RS  =   40;
+	int P_RE  =   25;   define P_RE_MIN =   10,   P_RE_MAX =   40;// POLAR RELEASE VALUE						P_RE  =   20;
+	
+	int L_PR  =   12;   define L_PR_MIN =    5,   L_PR_MAX =   80;// LEGACY STRENGTH VALUE (RX & RY)			L_PR  =   12;
+	int L_WT  =   10;   define L_WT_MIN =   10,   L_WT_MAX =   50;// LEGACY WAIT VALUE							L_WT  =   10;
+	int L_RE  =   75;   define L_RE_MIN =   10,   L_RE_MAX =   90;// LEGACY RELEASE VALUE						L_RE  =   75;

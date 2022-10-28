@@ -1,0 +1,1322 @@
+
+ const int aas[][]={ 
+{0,20},
+{20,0},
+{0,-20},
+{-20,0},
+{0,0}
+
+}
+int aim_assist_zone=20
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ int primary_weapon[5];
+ int secondary_weapon[5];
+ int pistol_weapon[5];
+ int profile,angle,hold_time,run_fire,afk,button_swap,run_fire2,recoil,sens_boost;
+ function block_all_input() {
+
+set_val(PS4_UP     , 0 ); 	set_val(PS4_DOWN  , 0 ); 	set_val(PS4_LEFT  , 0 );	set_val(PS4_RIGHT   , 0);
+set_val(PS4_CROSS  , 0 ); 	set_val(PS4_CIRCLE, 0 ); 	set_val(PS4_SQUARE, 0 ); 	set_val(PS4_TRIANGLE, 0);
+set_val(PS4_L1     , 0 ); 	set_val(PS4_R1    , 0 ); 	set_val(PS4_L3    , 0 ); 	set_val(PS4_R3      , 0);
+set_val(PS4_OPTIONS, 0 ); 	set_val(PS4_SHARE , 0 );	set_val(PS4_TOUCH , 0 );	set_val(PS4_PS      , 0);
+set_val(PS4_LX, 0); 		set_val(PS4_LY, 0); 		set_val(PS4_RX, 0); 		set_val(PS4_RY, 0);
+set_val(PS4_L2, 0); 		set_val(PS4_R2, 0);
+}
+int sens_scope_rx,sens_scope_ry,sens_cam_rx,sens_cam_ry,sens_settings
+
+ data(
+//  0 Blue    1 Pink   2 SkyBlue  3 Green         
+    1,0,0,0,  0,0,0,1,  1,0,1,0,  0,0,1,0,
+//  4 Yellow  5 White   6 Red      7 OFF         
+    0,1,1,0,  1,1,1,0,  0,1,0,0,  0,0,0,0 ); 
+/////////////////////////////////////////////////////////////////////////////
+function led_red(){
+   set_led(LED_1, 0);   set_led(LED_2, 2);   set_led(LED_3, 0);   set_led(LED_4, 0);
+ }
+function led_green(){
+   set_led(LED_1, 0);   set_led(LED_2, 0);   set_led(LED_3, 2);   set_led(LED_4, 0);
+ }
+function led_pink(){
+   set_led(LED_1, 0);   set_led(LED_2, 0);   set_led(LED_3, 0);   set_led(LED_4, 2);
+ }
+function led_yellow(){
+   set_led(LED_1, 0);   set_led(LED_2, 1);   set_led(LED_3, 1);   set_led(LED_4, 0);
+ }
+function led_white(){
+   set_led(LED_1, 2);   set_led(LED_2, 2);   set_led(LED_3, 2);   set_led(LED_4, 0);
+ }
+ int ix,iy
+function i()
+{
+	combo_run(move)
+	combo_run(i)
+	
+
+}
+
+int cx,cy
+function move()
+{
+
+if(cx - ix < 0) ix--
+if(cx - ix > 0) ix++
+if(cy - iy < 0) iy--
+if(cy - iy > 0) iy++
+
+}
+combo i 
+{
+	cls_oled(0)
+	circle_oled(50, 32, 20, 1, 1);
+	circle_oled(80, 32, 20, 1, 1);
+	if(TRUE){
+
+	circle_oled(50+ix, 32+iy, 10, 1, 0);
+	circle_oled(80+ix, 32+iy, 10, 1, 0);
+	circle_oled(50+ix, 32+iy, 2, 1, 1);
+	circle_oled(80+ix, 32+iy, 2, 1, 1);
+
+	}
+	
+	wait(10)
+
+}
+combo move
+{
+
+move()
+wait(250)
+cx=random(-5,5)
+cy=random(-5,5)
+}
+ ///////////////////////////////////////////////////////////////////////////////
+function save(){
+	set_pvar(SPVAR_49,profile);
+	set_pvar(SPVAR_50,button_swap);
+	set_pvar(SPVAR_51,auto_run);
+	set_pvar(SPVAR_52,angle)
+	set_pvar(SPVAR_53,hold_time)
+	set_pvar(SPVAR_54,run_fire)
+	set_pvar(SPVAR_55,afk)
+	set_pvar(SPVAR_56,run_fire2)
+	set_pvar(SPVAR_57,recoil)
+	set_pvar(SPVAR_58,sens_scope_rx)
+	set_pvar(SPVAR_59,sens_scope_ry)
+	set_pvar(SPVAR_60,sens_cam_rx)
+	set_pvar(SPVAR_61,sens_cam_ry)
+	set_pvar(SPVAR_62,sens_boost)
+	set_pvar(SPVAR_64,aim_assist)
+}
+init{
+	profile=get_pvar(SPVAR_49,0,3,0);
+	button_swap=get_pvar(SPVAR_50,0,1,0);
+	auto_run=get_pvar(SPVAR_51,0,1,0);
+	angle=get_pvar(SPVAR_52,40,100,90)
+	hold_time=get_pvar(SPVAR_53,50,200,50)
+	run_fire=get_pvar(SPVAR_54,0,5,0)
+	afk=get_pvar(SPVAR_55,0,1,0)
+	//run_fire2=get_pvar(SPVAR_56,0,4,3)
+	recoil=get_pvar(SPVAR_57,0,3,0)
+	sens_scope_rx=get_pvar(SPVAR_58,-100,100,0)
+	sens_scope_ry=get_pvar(SPVAR_59,-100,100,0)
+	sens_cam_rx=get_pvar(SPVAR_60,-100,100,0)
+	sens_cam_ry=get_pvar(SPVAR_61,-100,100,0)
+	sens_boost=get_pvar(SPVAR_62,0,1,0)
+	ads_time=get_pvar(SPVAR_63,0,100,0)
+	aim_assist=get_pvar(SPVAR_55,0,1,0)
+	load_recoil();
+	unpacking();
+	combo_run(screen_cleaner)
+	ads_time++
+	cx=random(-5,5)
+	cy=random(-5,5)
+	set_pvar(SPVAR_63,ads_time)
+
+} 
+function save_recoil(){
+if(primary && !pistol){
+primary_weapon[0]=x
+primary_weapon[1]=y
+primary_weapon[2]=anti_recoil
+primary_weapon[3]=rapid
+}
+if(secondary && !pistol){
+secondary_weapon[0]=x
+secondary_weapon[1]=y
+secondary_weapon[2]=anti_recoil
+secondary_weapon[3]=rapid
+}
+if(pistol){
+pistol_weapon[0]=x
+pistol_weapon[1]=y
+pistol_weapon[2]=anti_recoil
+pistol_weapon[3]=rapid
+}
+if(profile==0){//profile1
+		set_pvar(SPVAR_1,primary_weapon[0]);    set_pvar(SPVAR_2,primary_weapon[1]);     set_pvar(SPVAR_3,primary_weapon[2]);     set_pvar(SPVAR_4,primary_weapon[3]);
+		set_pvar(SPVAR_5,secondary_weapon[0]);  set_pvar(SPVAR_6,secondary_weapon[1]);   set_pvar(SPVAR_7,secondary_weapon[2]);   set_pvar(SPVAR_8,secondary_weapon[3]);
+		set_pvar(SPVAR_9,pistol_weapon[0]);     set_pvar(SPVAR_10,pistol_weapon[1]);     set_pvar(SPVAR_11,pistol_weapon[2]);     set_pvar(SPVAR_12,pistol_weapon[3]);
+		}
+
+	if(profile==1){//profile2
+		set_pvar(SPVAR_13,primary_weapon[0]);     set_pvar(SPVAR_14,primary_weapon[1]);     set_pvar(SPVAR_15,primary_weapon[2]);     set_pvar(SPVAR_16,primary_weapon[3]);
+		set_pvar(SPVAR_17,secondary_weapon[0]);   set_pvar(SPVAR_18,secondary_weapon[1]);   set_pvar(SPVAR_19,secondary_weapon[2]);   set_pvar(SPVAR_20,secondary_weapon[3]);
+		set_pvar(SPVAR_21,pistol_weapon[0]);      set_pvar(SPVAR_22,pistol_weapon[1]);      set_pvar(SPVAR_23,pistol_weapon[2]);      set_pvar(SPVAR_24,pistol_weapon[3]);
+	} 
+
+	if(profile==2){///profile3
+		set_pvar(SPVAR_25,primary_weapon[0]);     set_pvar(SPVAR_26,primary_weapon[1]);     set_pvar(SPVAR_27,primary_weapon[2]);     set_pvar(SPVAR_28,primary_weapon[3]);
+		set_pvar(SPVAR_29,secondary_weapon[0]);   set_pvar(SPVAR_30,secondary_weapon[1]);   set_pvar(SPVAR_31,secondary_weapon[2]);   set_pvar(SPVAR_32,secondary_weapon[3]);
+		set_pvar(SPVAR_33,pistol_weapon[0]);      set_pvar(SPVAR_34,pistol_weapon[1]);      set_pvar(SPVAR_35,pistol_weapon[2]);      set_pvar(SPVAR_36,pistol_weapon[3]);
+		} 
+
+	if(profile==3){//profile4
+		set_pvar(SPVAR_37,primary_weapon[0]);     set_pvar(SPVAR_38,primary_weapon[1]);     set_pvar(SPVAR_39,primary_weapon[2]);     set_pvar(SPVAR_40,primary_weapon[3]);
+		set_pvar(SPVAR_41,secondary_weapon[0]);   set_pvar(SPVAR_42,secondary_weapon[1]);   set_pvar(SPVAR_43,secondary_weapon[2]);   set_pvar(SPVAR_44,secondary_weapon[3]);
+		set_pvar(SPVAR_45,pistol_weapon[0]);      set_pvar(SPVAR_46,pistol_weapon[1]);      set_pvar(SPVAR_47,pistol_weapon[2]);      set_pvar(SPVAR_48,pistol_weapon[3]);
+		}	
+	
+}
+function load_recoil(){
+if(profile==0){//  profile1
+		primary_weapon[0]=get_pvar(SPVAR_1,-100,100,0);      primary_weapon[1]=get_pvar(SPVAR_2,-100,100,20);       primary_weapon[2]=get_pvar(SPVAR_3,0,1,1);       primary_weapon[3]=get_pvar(SPVAR_4,0,1,0);
+		secondary_weapon[0]=get_pvar(SPVAR_5,-100,100,0);    secondary_weapon[1]=get_pvar(SPVAR_6,-100,100,20);     secondary_weapon[2]=get_pvar(SPVAR_7,0,1,0);     secondary_weapon[3]=get_pvar(SPVAR_8,0,1,0);
+		pistol_weapon[0]=get_pvar(SPVAR_9,-100,100,0);       pistol_weapon[1]=get_pvar(SPVAR_10,-100,100,20);       pistol_weapon[2]=get_pvar(SPVAR_11,0,1,0);       pistol_weapon[3]=get_pvar(SPVAR_12,0,1,0);
+		}
+
+	if(profile==1){// profile2
+		primary_weapon[0]=get_pvar(SPVAR_13,-100,100,0);      primary_weapon[1]=get_pvar(SPVAR_14,-100,100,20);       primary_weapon[2]=get_pvar(SPVAR_15,0,1,1);      primary_weapon[3]=get_pvar(SPVAR_16,0,1,0);
+		secondary_weapon[0]=get_pvar(SPVAR_17,-100,100,0);    secondary_weapon[1]=get_pvar(SPVAR_18,-100,100,20);     secondary_weapon[2]=get_pvar(SPVAR_19,0,1,0);    secondary_weapon[3]=get_pvar(SPVAR_20,0,1,0);
+		pistol_weapon[0]=get_pvar(SPVAR_21,-100,100,0);       pistol_weapon[1]=get_pvar(SPVAR_23,-100,100,20);        pistol_weapon[2]=get_pvar(SPVAR_23,0,1,0);       pistol_weapon[3]=get_pvar(SPVAR_24,0,1,0);
+		}
+
+	if(profile==2){// profile3
+		primary_weapon[0]=get_pvar(SPVAR_25,-100,100,0);      primary_weapon[1]=get_pvar(SPVAR_26,-100,100,20);       primary_weapon[2]=get_pvar(SPVAR_27,0,1,1);      primary_weapon[3]=get_pvar(SPVAR_28,0,1,0);
+		secondary_weapon[0]=get_pvar(SPVAR_29,-100,100,0);    secondary_weapon[1]=get_pvar(SPVAR_30,-100,100,20);     secondary_weapon[2]=get_pvar(SPVAR_31,0,1,0);    secondary_weapon[3]=get_pvar(SPVAR_32,0,1,0);
+		pistol_weapon[0]=get_pvar(SPVAR_33,-100,100,0);       pistol_weapon[1]=get_pvar(SPVAR_34,-100,100,20);        pistol_weapon[2]=get_pvar(SPVAR_35,0,1,0);       pistol_weapon[3]=get_pvar(SPVAR_36,0,1,0);
+		}
+
+	if(profile==3){// profile4
+		primary_weapon[0]=get_pvar(SPVAR_37,-100,100,50);      primary_weapon[1]=get_pvar(SPVAR_38,-100,100,50);       primary_weapon[2]=get_pvar(SPVAR_39,0,1,1);      primary_weapon[3]=get_pvar(SPVAR_40,0,1,0);
+		secondary_weapon[0]=get_pvar(SPVAR_41,-100,100,0);    secondary_weapon[1]=get_pvar(SPVAR_42,-100,100,20);     secondary_weapon[2]=get_pvar(SPVAR_43,0,1,0);    secondary_weapon[3]=get_pvar(SPVAR_44,0,1,0);
+		pistol_weapon[0]=get_pvar(SPVAR_45,-100,100,0);       pistol_weapon[1]=get_pvar(SPVAR_46,-100,100,20);        pistol_weapon[2]=get_pvar(SPVAR_47,0,1,0);       pistol_weapon[3]=get_pvar(SPVAR_48,0,1,0);
+		}
+
+}
+const string num[]={"-100","-99","-98","-97","-96","-95","-94","-93","-92","91","-90","-89","-88","-87","-86","-85",
+"-84","-83","-82","-81","-80","-79","-78","-77","-76","-75","-74","-73","-72","-71","-70","-69","-68","-67","-66","-65","-64",
+"-63", "-62","-61","-60","-59","-58","-57","-56","-55","-54","-53","-52","-51","-50","-49","-48","-47","-46","-45","-44","-43","-42",
+"-41","-40","-39","-38","-37","-36","-35","-34","-33","-32","-31","-30","-29","-28","-27","-26","-25","-24","-23","-22", "-21", "-20",
+"-19","-18","-17","-16","-15","-14","-13", "-12","-11","-10","-9","-8","-7","-6","-5","-4","-3","-2","-1",
+"0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25",
+"26 ","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50",
+"51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75",
+"76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100"}
+int killer,main_screen=TRUE,settings;
+const string killer_str[]={"KILLER","CIRCLE x2 TO LEAVE"}
+function killer(){
+	cls_oled(0);
+	led_red();
+	printf( 17, 20 , 2, 1, killer_str[0]);
+	printf( 0, 55 , 0, 1, killer_str[1]);
+}
+const string settings_str[] = {   "WEAPONS PROFILE","   SENSITIVITY","     STRAFE ", "    AUTO RUN",  "   ANTIRECOIL",  "   SENSBOOST",   "  AIM ASSIST",    "   BUTTON SWAP", "   RAPID FIRE",   " STICKS CHECKER" }
+const string settings_down1_str[] = {"  CHOOSE  ",      " ADS & CAM",   "  CHOOSE  ",     "  CHOOSE",     "  CHOOSE",       "BOOST SENS",      "   BETA* " ,    "SWAP R2&L2",    "  CHOOSE  ",     " UR STICK"     }
+const string settings_down2_str[] = {"  PROFILE" ,     "    SENS",      "  UPGRADE  ",   "   ANGLE",      "    TYPE",       "TO FIRE BTN",     "    TEST",       " TO L1&R1",     " HOLD TIME",     " DRIFTING?"    }
+const string arrows[]={"<",">"} 
+const string on_off[]={"ON","OFF"}
+const string yes_no[]={"NO","YES"}
+const string runplus[]={"    NO","left cat","right cat"," auto cat","auto xbox","like AWD"}
+const string recoils[]={"  Casual","SmartSens","Progrsiv","CntrShift"}
+const string save[]={"TRIANGLE TO SAVE"}
+const string sensetivity[]={"ADS sense","CAM sense"}
+const int Step_Min_Max_Options [][]={
+//step/min/max
+{1,0,3},          //profile
+{1,0,1},          //ADS & CAM sens
+{1,0,5},         //strafe
+{5,40,100},      //angle
+{1,0,3},          //anti recoil
+{1,0,1},         //sens-boost
+{1,0,1},         //aim assist
+{1,0,1},         //buttom swap
+{10,50,100},     //rapid speed
+{0,0,0}         //sticks cheker
+}
+int choice=0,choice_settings,pik,max,min,step,sticks_checker,ads_time;
+function pick_load(choice){
+	if(choice==0 ) pik=get_pvar(SPVAR_49,0,3,0);          //prifile
+	if(choice==1 ) pik=0                                  // sens
+	if(choice==2 ) pik=get_pvar(SPVAR_54,0,5,0)           //strf
+	if(choice==3 ) pik=get_pvar(SPVAR_52,40,100,90)       // angle
+	if(choice==4 ) pik=get_pvar(SPVAR_57,0,3,0);          //recoil
+	if(choice==5 ) pik=get_pvar(SPVAR_62,0,1,0);          // sens boost
+	if(choice==6 ) pik=get_pvar(SPVAR_55,0,1,0)           //aim assist
+	if(choice==7 ) pik=get_pvar(SPVAR_50,0,1,0);          // swap
+	if(choice==8 ) pik=get_pvar(SPVAR_53,50,100,50)       //rapid
+	//sticks checer == 9
+	
+	step=Step_Min_Max_Options[choice][0]
+	min=Step_Min_Max_Options[choice][1]
+	max=Step_Min_Max_Options[choice][2]
+}
+function pik_save(){
+	if(choice==0 ){
+		profile=pik
+		load_recoil()
+		unpacking()
+		}
+	if(choice==1) {
+		if(x_ads) sens_scope_rx=sens_pik
+		if(y_ads) sens_scope_ry=sens_pik
+		if(x_cam) sens_cam_rx=sens_pik
+		if(y_cam) sens_cam_ry=sens_pik
+	}
+	if(choice==2 )run_fire=pik
+	if(choice==3 )angle=pik
+	if(choice==4 )recoil=pik
+	if(choice==5 )sens_boost=pik
+	if(choice==6 )aim_assist=pik                                                                  //
+	if(choice==7 )button_swap=pik
+	if(choice==8 )hold_time=pik
+	// sticks cheker
+	
+}
+function choice(choice){
+	rect_oled(0, 19, 128, 63, 1, 1);
+	rect_oled(12, 21, 104, 31,0, 0);
+	printf( 7, 55 , 0, 0, save[0])
+	if(pik>=max)pik=max
+	if(pik<=min)pik=min
+	if(pik>min)printf( 1, 28 , 1, press_left, arrows[0])
+	if(pik<max)printf( 117, 28 , 1, press_right, arrows[1])
+	if(choice==0 )printf( 55, 28 , 1, 0, num[pik + 101])                  //prifile
+	if(choice==1 )printf(15, 28 , 1, 0, sensetivity[pik])                 //sens
+	if(choice==2 )printf( 15, 28 , 1, 0, runplus[pik])	                  //strf
+	if(choice==3 )
+	{
+		if(pik==40) printf( 15, 28 , 1, 0, recoils[0])
+		else printf( 55, 28 , 1, 0, num[100+pik])  
+	}//angle
+	if(choice==4 )printf(15, 28 , 1, 0, recoils[pik])                     //antirecoil
+	if(choice==5) printf( 52, 28 , 1, 0, yes_no[pik]);                    //sens boost
+	if(choice==6) printf( 52, 28 , 1, 0, yes_no[pik]);                    //aim assist
+	if(choice==7) printf( 52, 28 , 1, 0, yes_no[pik]);                    //swap
+	if(choice==8) printf( 55, 28 , 1, 0, num[100+pik])                    //rapid
+	 // choise=9 sticks cheker
+	
+	if(event_press(PS4_CIRCLE))choice_settings=FALSE
+	if(event_press(PS4_LEFT))
+	{
+			pik-=step
+			combo_run(press_button_left)
+	}
+	if(event_press(PS4_RIGHT))
+	{
+			pik+=step
+			combo_run(press_button_right)
+	}
+	if(event_press(PS4_TRIANGLE) ){
+			if(choice==1 ) 
+			{
+				sens_settings=TRUE
+				x_cam=FALSE
+				y_cam=FALSE
+				x_ads=FALSE
+				y_ads=FALSE
+			}
+			else
+			{
+			choice_settings=FALSE
+			pik_save()
+			combo_run(success)	
+			}
+		}
+}
+function settings(){
+	
+	block_all_input()
+	cls_oled(0);
+	led_white();
+	rect_oled(0, 0, 128, 19, 0, 1);
+	rect_oled(0, 0, 128, 64, 0, 1);
+	printf( 10, 6 , 0, 1, settings_str[choice]);
+	printf( 10, 25 , 1, 1, settings_down1_str[choice]);
+	printf( 5, 45 , 1, 1, settings_down2_str[choice]);
+	if(choice<=0)choice=0
+	if(choice>=9)choice=9
+	if(!choice_settings)
+	{
+		if(choice<9)printf( 117, 1 , 1, press_left, arrows[1])
+		if(choice>0)printf( 1, 1 , 1, press_right, arrows[0])
+		if(event_press(PS4_LEFT))
+		{
+			choice-=1
+			combo_run(press_button_right)
+		}
+		if(event_press(PS4_RIGHT))
+		{
+			choice+=1
+			combo_run(press_button_left)
+		}
+		if(event_press(PS4_CIRCLE))
+		{
+			settings=FALSE
+			combo_run(screen_cleaner)
+		}
+		if(event_press(PS4_CROSS) ){                                                                                                      
+			if(choice==9 ) 
+			{
+				sticks_checker=TRUE
+				circle=FALSE
+			}
+			else
+			{
+				choice_settings=TRUE
+				pick_load(choice)
+			}
+		}
+	}
+	if(choice_settings) choice(choice)
+}
+int auto_run,anti_recoil,strafe,rapid,vbr,recoil_settings,aim_assist;
+
+main{
+
+	
+				
+				
+
+
+
+   if((event_press(PS4_SQUARE) && get_brtime(PS4_SQUARE) < 300)) 
+			    {
+			        combo_run(RELOAD);
+			    }
+
+
+
+
+
+if(sticks_checker) 
+	{
+		settings=FALSE
+		sticks_checker();
+		if(event_press(PS4_CIRCLE) && get_brtime(PS4_CIRCLE)<200) 
+		{
+			settings=TRUE
+			sticks_checker=FALSE
+		}
+	}
+	if(sens_settings)
+	{
+		settings=FALSE
+		if(pik == 0) ads_sensitivity();
+		if(pik == 1) cam_sensitivity();
+		if(event_press(PS4_CIRCLE) && get_brtime(PS4_CIRCLE)<200 )
+		{
+			sens_settings=FALSE
+			settings=TRUE
+		}
+	}
+	if(button_swap)
+	{
+	swap(PS4_L1,PS4_L2)
+    swap(PS4_R1,PS4_R2)
+    } 	
+	if(killer)
+	{
+		killer();
+		if(event_press(PS4_CIRCLE) && get_brtime(PS4_CIRCLE)<200 )
+		{
+			killer=FALSE;
+			combo_run(screen_cleaner);
+		}
+	}
+	
+	if ((pow(get_val(PS4_LX),2) + pow(get_val(PS4_LY),2)<900) && (pow(get_val(PS4_RX),2) + pow(get_val(PS4_RY),2)<900) && !get_val(PS4_CROSS) && ads_time>25){    
+		combo_run(anti_recoil)
+	}
+	else combo_stop(anti_recoil)
+	if((event_press(PS4_PS) || event_press(PS4_OPTIONS))  && !get_ival(PS4_L2) && !settings && !sens_settings && !sticks_checker) killer=TRUE;
+
+	if(get_val(PS4_TOUCH) && get_val(PS4_FINGER1X)>0 && get_val(PS4_FINGER1Y)>0)                                          
+	{                                             
+		set_val(PS4_TOUCH,0)
+		primary=TRUE
+		secondary=FALSE
+		pistol=FALSE
+		combo_run(primary_weapon)
+		unpacking()
+	} 
+	if(settings)
+	{
+			settings();
+			unpacking();
+		}	
+	if(get_ival(PS4_L2))
+	{
+		if(event_press(PS4_OPTIONS) && get_brtime(PS4_OPTIONS)<200){
+			settings=TRUE
+			combo_run(mini_vib)
+		}
+	}
+
+	if( event_press(PS4_DOWN) && get_brtime(PS4_DOWN)<300 && !get_val(PS4_L2) && !sens_settings) killer=TRUE
+	if(!killer && !settings && !sticks_checker && !sens_settings)
+	{
+if(get_val(PS4_L2)){
+	sensitivity(PS4_RX, 50, 100 + sens_scope_rx)
+	sensitivity(PS4_RY, 50, 100 + sens_scope_ry)
+}
+else
+{
+	sensitivity(PS4_RX, 50, 100 + sens_cam_rx)
+	sensitivity(PS4_RY, 50, 100 + sens_cam_ry)
+}
+
+if(get_val(PS4_L2) && !get_val(PS4_CROSS))
+	{ 
+	set_val(PS4_LEFT,0)
+	set_val(PS4_RIGHT,0)
+	set_val(PS4_UP,0)
+	set_val(PS4_DOWN,0) 
+	if (event_press(PS4_DOWN))
+	{                                                                                                       
+		anti_recoil=!anti_recoil
+		vbr=anti_recoil
+		combo_run(vibr)
+	}
+////////////////////////////// /////////////////////////////////////////////                                                                         
+	if (event_press(PS4_LEFT))
+	{ 
+		strafe=!strafe
+		vbr=strafe
+		combo_run(vibr)
+	}
+                                                                                                 	    
+	if (event_press(PS4_RIGHT))
+	{  
+		auto_run=!auto_run
+		vbr=auto_run
+		combo_run(vibr)
+}                                                                                                	     
+	if (event_press(PS4_UP))
+	{      
+		rapid=!rapid
+		vbr=rapid
+		combo_run(vibr)
+	}
+
+	}
+	if(get_val(PS4_CROSS))
+	{
+		if(get_val(PS4_L2))
+		{ 
+			set_val(PS4_LEFT,0)
+			set_val(PS4_RIGHT,0)
+			set_val(PS4_UP,0)
+			set_val(PS4_DOWN,0) 
+			recoil_settings()
+		}
+	}	
+if(event_press(PS4_TRIANGLE))
+{                                                                                  
+	if(pistol){
+		pistol=FALSE
+		}
+	else{
+	primary=!primary
+	secondary=!secondary
+	}
+	if(get_brtime(PS4_TRIANGLE)<200){
+		pistol=TRUE
+	}
+	unpacking()
+	if(primary && !pistol){
+		combo_run(primary_weapon)
+	}
+	if(secondary && !pistol){
+		combo_run(secondary_weapon)
+	}
+	if(pistol){
+		combo_run(pistol_weapon)
+	}
+	
+}
+
+if (anti_recoil)
+{   
+	if((get_val(PS4_L2)) && (get_val(PS4_R2))) {                                                                               
+		if(recoil==0) casual_anti_recoil();
+		if(recoil==1) smart_sens_anti_recoil();
+		if(recoil==2) progressive_anti_recoil();
+		if(recoil==3) center_shift_anti_recoil();
+}
+}
+ if(rapid)
+ {                                                                                                                   
+ 	if(get_val(PS4_R2) && get_val(PS4_L2)) combo_run(rapid_fire)
+	else combo_stop(rapid_fire)
+}
+if (ads_time> 30 && get_ptime(PS4_RIGHT)>1000 && event_release(PS4_RIGHT))medckit_push++
+
+if(auto_run)                                    
+{
+if (pow(get_val(PS4_LX),2) + pow(get_val(PS4_LY),2)>225 && !get_val(PS4_L2))
+{                        
+		set_val(PS4_L3,100)
+		if(angle > 40)  auto_run();
+		if(sens_boost || run_fire!=0)
+		{
+			if(get_val(PS4_R2))
+			{
+				set_val(PS4_R2,0)
+				if(sens_boost ) sensitivity(PS4_RX, 10, 200)
+				if(run_fire!=0) run_fire()
+			}
+			else
+			{
+			combo_stop(sl2);
+			combo_stop(sr2);
+			combo_stop(sl3);
+			combo_stop(sr3);
+			combo_stop(sl4);
+			combo_stop(sr4);
+			}
+		}
+		
+	}
+	else
+			{
+			combo_stop(sl2);
+			combo_stop(sr2);
+			combo_stop(sl3);
+			combo_stop(sr3);
+			combo_stop(sl4);
+			combo_stop(sr4);
+			}
+}
+if (strafe)                                       
+{																																
+	if (get_val(PS4_L2))
+	{ 
+		sensitivity(PS4_LX, 10, 200)
+		if(get_val(PS4_L2) && get_val(PS4_R2)) 
+	combo_run(STRAFESHOT);					
+	else
+	combo_stop(STRAFESHOT);
+	}
+}
+if(aim_assist)                                     
+{
+	if(get_val(PS4_L2) && !get_val(PS4_R2))
+    {
+		aim_assist()
+    }
+}
+}
+}
+
+int afk_time;
+const string afk_str[]={"AFK"}
+function afk()
+{
+	cls_oled(0)
+	afk_time=200+get_val(PS4_FINGER1Y)
+	combo_run(afk)
+	printf( 40, 20 , 2, 1, afk_str[0])
+    printf( 60, 45 , 0, 1, num[200 + inv((afk_time - 100)/ 2)])
+}
+int lr;
+function run_fire()                                                 
+{
+if(run_fire==1){                                                     
+	if(get_val(PS4_LX)<0 )                       
+	{
+		set_val(PS4_LY,50)   
+		set_val(PS4_LX,-100)
+	}
+	if(get_val(PS4_LX)>0 )                         // парво врех
+	{
+		set_val(PS4_LY,-100)              // -100/-70
+		set_val(PS4_LX,100)
+		//set_val(PS4_RX,20)
+	}
+//sensitivity(PS4_RX, 10, 200)
+//combo_stop(sl2);combo_stop(sr2);combo_stop(sl3);combo_stop(sr3);combo_stop(sl4);combo_stop(sr4)
+}
+if(run_fire==2)                                                       //cat strf right
+{
+	if(get_val(PS4_LX)<0)                        // лево верх
+	{
+		set_val(PS4_LY,-100)             // -100/-70
+		set_val(PS4_LX,-100)
+		//set_val(PS4_RX,-20)
+	}
+	if(get_val(PS4_LX)>0 )                         // парво врех
+	{
+		set_val(PS4_LY,50)
+		set_val(PS4_LX,100)
+		//set_val(PS4_RX,20)
+	}
+}
+if(run_fire==3)                                                        
+{
+if(get_val(PS4_LX)<0)
+{combo_run(sl2);}
+else
+{combo_stop(sl2)}
+if(get_val(PS4_LX)>0)
+{combo_run(sr2);}
+else
+{combo_stop(sr2)}
+}
+if(run_fire==4)                                                            
+{                                                      
+
+if(get_val(PS4_LX)<0)
+{combo_run(sl3);}
+else
+{combo_stop(sl3)}
+if(get_val(PS4_LX)>0)
+{combo_run(sr3);}
+else
+{combo_stop(sr3)}
+}
+if(run_fire==5)                                                       
+{                                                      
+//sensitivity(PS4_RX, 10, 200)
+if(get_val(PS4_LX)<0)
+{
+combo_run(sl4)
+}
+else{combo_stop(sl4)}
+if(get_val(PS4_LX)>0)
+{combo_run(sr4);}
+else{combo_stop(sr4)}
+}   
+}
+int medckit_push
+function auto_run()                                                                     
+{
+	if (get_val(PS4_LX)<-5){
+		lr=-100}
+	if (get_val(PS4_LX)>5){
+		lr=100}
+	if (get_val(PS4_LY)<-15  &&  2*abs(get_val(PS4_LX)) < abs(get_val(PS4_LY))){                                                                                      //верх
+				set_val(PS4_LY,-100)          
+	}
+	if ( get_val(PS4_LY)<-10 && 2*abs(get_val(PS4_LX))>= abs(get_val(PS4_LY))  && abs(get_val(PS4_LX))<2*abs(get_val(PS4_LY))) {             // up			
+				set_val(PS4_LY,inv(angle))
+				set_val(PS4_LX,lr)
+				
+	}
+	if (abs(get_val(PS4_LX))>3*abs(get_val(PS4_LY)) ){                                                                                     // mdl
+				set_val(PS4_LX,lr)		
+	}
+}
+int primary=TRUE,secondary,pistol;
+const string weapons[]={"PRIMARY","SECONDARY","PISTOL"}
+function unpacking()                                                                            //распаковка, не притрагиваться 
+{
+	if(primary && !pistol)
+	{
+		x=primary_weapon[0]
+		y=primary_weapon[1]
+		anti_recoil=primary_weapon[2]
+		rapid=primary_weapon[3]
+	}
+	if(secondary && !pistol)
+	{
+		x=secondary_weapon[0]
+		y=secondary_weapon[1]
+		anti_recoil=secondary_weapon[2]
+		rapid=secondary_weapon[3]
+	}
+	if(pistol)
+	{
+		x=pistol_weapon[0]
+		y=pistol_weapon[1]
+		anti_recoil=pistol_weapon[2]
+		rapid=pistol_weapon[3]
+	}
+}
+combo primary_weapon
+{
+	cls_oled(0)
+	printf( 20, 25 , 1, 1, weapons[0])
+	set_rumble(RUMBLE_A,100)
+	wait(300)
+	cls_oled(0)
+	reset_rumble()
+}
+combo secondary_weapon
+{
+	cls_oled(0)
+	printf( 20, 25 , 1, 1, weapons[1])
+	set_rumble(RUMBLE_B,100)
+	wait(300)
+	cls_oled(0)
+	reset_rumble()
+}
+combo pistol_weapon
+{
+	cls_oled(0)
+	printf( 20, 25 , 1, 1, weapons[2])
+	set_rumble(RUMBLE_B,75)
+	set_rumble(RUMBLE_A,75)
+	wait(300)
+	cls_oled(0)
+	reset_rumble()
+}
+int x,y,x1,y1;
+const string x_y[]={"X:","Y:"}
+function recoil_settings()                                          
+{
+	cls_oled(0)
+	printf( 45, 10 , 2, 1, x_y[1])
+	printf( 75, 10 , 2, 1, num[100+y])
+	printf( 45, 40 , 2, 1, x_y[0])
+	if(x>0){
+	printf( 25, 38 , 2, 1, arrows[1])
+	}
+	if(x < 0){
+	printf( 25, 38 , 2, 1, arrows[0])
+	}
+	printf( 75, 40 , 2, 1, num[100+x])
+	if(event_press(PS4_UP)) {
+        y--
+       	combo_run(viby)
+	}
+    if(event_press(PS4_DOWN)) {
+       	y++
+        combo_run(viby)
+	}
+    if(event_press(PS4_LEFT)) {
+        x--
+       	combo_run(vibx)
+	}
+	if(event_press(PS4_RIGHT)) {
+		x++
+		combo_run(vibx)
+	}
+ 
+}
+function smart_sens_anti_recoil()                            
+{
+	x1=x+get_val(PS4_RX)
+	y1=y+get_val(PS4_RY)
+	if (x1 < -100) x1= -100
+	if (x1 > 100) x1= 100
+	if(get_val(PS4_RY)<0 && get_val(PS4_RY)> inv(y)) y1=y+get_val(PS4_RY)*2
+	if(get_val(PS4_RY)<= inv(y)) y1=get_val(PS4_RY)
+	if(get_val(PS4_RY)>0 && get_val(PS4_RY)< 2*y) y1=y+get_val(PS4_RY)/2
+	if(get_val(PS4_RY)>= 2*y) y1=get_val(PS4_RY)
+	set_val(PS4_RX,x1)
+	set_val(PS4_RY,y1)
+}
+function casual_anti_recoil()                                
+{
+	x1=x
+	y1=y
+	if (x1 < -100) x1= -100
+	if (x1 > 100) x1= 100
+	if (y1 < -100) y1= -100
+	if (y1 > 100) y1= 100
+	if(abs(get_val(PS4_RY))> abs(y)) y1=get_val(PS4_RY)
+	if(abs(get_val(PS4_RX))> abs(x)) x1=get_val(PS4_RX)
+	set_val(PS4_RX,x1)
+	set_val(PS4_RY,y1)
+}
+function center_shift_anti_recoil()                                
+{
+	x1=x+get_val(PS4_RX)
+	y1=y+get_val(PS4_RY)
+	if (x1 < -100) x1= -100
+	if (x1 > 100) x1= 100
+	if(get_val(PS4_RY)<=  -80) y1=get_val(PS4_RY)
+	if(get_val(PS4_RX)>90) x1=100
+	if(get_val(PS4_RX)<-90) x1=-100
+	set_val(PS4_RX,x1)
+	set_val(PS4_RY,y1)
+}
+function progressive_anti_recoil()                                  
+{
+	sensitivity(PS4_RY, 50, 100+ y )
+	sensitivity(PS4_RX, 50, 100+ x )
+}
+
+combo RELOAD {
+    wait(800); 
+    set_val(PS4_TRIANGLE,100);
+    wait(15);
+    }
+    
+
+
+
+combo rapid_fire 																	   
+{                                                                             									 
+    set_val(PS4_R2, 100)
+    wait(hold_time)
+    set_val(PS4_R2, 0)
+    wait(hold_time)
+}   
+combo mini_vib
+{
+	set_rumble(RUMBLE_B,75)
+	set_rumble(RUMBLE_A,75)
+	wait(100)
+	reset_rumble();
+	reset_leds();
+	cls_oled(0);
+}
+combo vibr 
+{                                                                                 											 
+	if (vbr)
+	{
+		cls_oled(0)
+		printf( 45, 20 , 2, 1,on_off[0])
+		set_rumble(RUMBLE_B,100)
+		led_green()
+	}
+	else 
+	{
+		cls_oled(0)
+	    printf( 40, 20 , 2, 1, on_off[1] )
+		set_rumble(RUMBLE_A,25)
+		led_red()
+	}
+	wait(400)
+	cls_oled(0)
+	save_recoil()
+	save()
+	reset_rumble()
+	reset_leds()
+}
+combo vibx
+{                                                                                                                           
+if (x>0)set_rumble(RUMBLE_B,abs(x))
+if (x<0)set_rumble(RUMBLE_A,abs(x))
+wait(250);
+reset_rumble()
+save_recoil()
+} 
+
+combo viby 
+{                                                                                                                             
+if (y<0)set_rumble(RUMBLE_B,abs(y))
+if (y>0)set_rumble(RUMBLE_A,abs(y))
+wait(250);
+reset_rumble()
+save_recoil()
+} 
+combo afk
+{
+    led_pink()
+	set_val(PS4_LY,-25)
+	set_val(PS4_LX,50)
+	wait(afk_time)
+	led_white()
+	set_val(PS4_LY,25)
+	set_val(PS4_LX,-50)
+	wait(afk_time)
+	reset_leds();
+	cls_oled(0)
+}
+
+const string success[]={"SUCCESS"}
+combo success
+{
+	cls_oled(0)
+	printf( 7, 20 , 2, 1,success[0])
+	set_rumble(RUMBLE_B,100)
+	set_rumble(RUMBLE_A,100)
+	led_green()
+	wait(400)
+	save()
+	unpacking()
+	cls_oled(0)
+	reset_rumble();
+	reset_leds();
+}
+int press_left,press_right;
+combo press_button_left
+{
+press_left=1
+wait(100)
+press_left=0
+}
+combo press_button_right
+{
+press_right=1
+wait(100)
+press_right=0
+}
+combo aim_assist{
+
+}
+combo sl2                      
+{
+combo_stop(sr2);combo_stop(sl3);combo_stop(sr3);combo_stop(sl4);combo_stop(sr4)
+set_val(PS4_LY,-100);         
+set_val(PS4_LX,-100) 
+set_val(PS4_L3,100)
+wait(300)
+set_val(PS4_LY,50);
+set_val(PS4_LX,-100)
+set_val(PS4_L3,100)
+wait(32000)
+}
+combo sr2
+{
+combo_stop(sl2);combo_stop(sl3);combo_stop(sr3);combo_stop(sl4);combo_stop(sr4)
+set_val(PS4_LY,-100);
+set_val(PS4_LX,100)
+set_val(PS4_L3,100)
+wait(300)
+set_val(PS4_LY,50);
+set_val(PS4_LX,100)
+set_val(PS4_L3,100)
+wait(32000)
+}
+
+combo sl3                 
+{
+combo_stop(sl2);combo_stop(sr2);combo_stop(sr3);combo_stop(sl4);combo_stop(sr4)
+set_val(PS4_LY,-100);
+set_val(PS4_LX,-100) 
+set_val(PS4_L3,00)
+wait(150)
+
+set_val(PS4_LY,50);
+set_val(PS4_LX,-100)
+set_val(PS4_L3,100)
+wait(32000)
+}
+combo sr3
+{
+combo_stop(sl2);combo_stop(sr2);combo_stop(sl3);combo_stop(sl4);combo_stop(sr4)
+set_val(PS4_LY,-100);
+set_val(PS4_LX,100)
+set_val(PS4_L3,00)
+wait(150)
+
+set_val(PS4_LY,50);
+set_val(PS4_LX,100)
+set_val(PS4_L3,100)
+wait(32000)
+}
+combo sl4                         
+{
+combo_stop(sl2);combo_stop(sr2);combo_stop(sl3);combo_stop(sr3);combo_stop(sr4)
+set_val(PS4_LY,-85);
+set_val(PS4_LX,-85) 
+set_val(PS4_L3,100)
+wait(290)                     
+
+set_val(PS4_LY,0);
+set_val(PS4_LX,-100)
+set_val(PS4_L3,100)
+wait(32000)
+}
+combo sr4
+{
+combo_stop(sl2);combo_stop(sr2);combo_stop(sl3);combo_stop(sr3);combo_stop(sl4);
+set_val(PS4_LY,-85);
+set_val(PS4_LX,85)
+set_val(PS4_L3,100)
+wait(290)
+
+set_val(PS4_LY,0);
+set_val(PS4_LX,100)
+set_val(PS4_L3,100)
+wait(32000)
+}   
+combo anti_recoil{
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+wait(30000)
+set_val(PS4_CIRCLE,100)
+wait(100)
+set_val(PS4_CIRCLE,0)
+wait(200)
+set_val(PS4_CIRCLE,100)
+wait(100)
+set_val(PS4_CIRCLE,0)
+wait(200)
+set_val(PS4_CIRCLE,100)
+wait(100)
+set_val(PS4_CIRCLE,0)
+wait(200)
+set_val(PS4_CIRCLE,100)
+wait(100)
+set_val(PS4_CIRCLE,0)
+wait(200)
+set_val(PS4_CIRCLE,100)
+wait(100)
+set_val(PS4_CIRCLE,0)
+wait(200)
+set_val(PS4_CIRCLE,100)
+wait(100)
+wait(1500)
+
+wait(100)
+wait(200)
+set_val(PS4_CIRCLE,100)
+wait(100)
+wait(100)
+
+}
+
+const string main_text[]={"LMS","CLAN","made by N0TRicK5"}
+function main_print(){
+	circle_oled(100, 29, 25, 1, 1)
+	
+	circle_oled(113, 24, 10, 1, 0);
+	circle_oled(87, 24, 10, 1, 0);
+	
+	circle_oled(113+cx, 24+cy, 2, 1, 1);
+	circle_oled(87+cx, 24+cy, 2, 1, 1);
+	
+	rect_oled(85, 40, 26, 5, 1, 0);
+	printf( 5, 17 , 1, 1, main_text[0])
+	printf( 20, 35 , 0, 1, main_text[1])
+	printf( 10, 55 , 0, 1, main_text[2])
+}
+combo screen_cleaner{
+	cls_oled(0)
+	set_rumble(RUMBLE_B,75)
+	set_rumble(RUMBLE_A,75)
+	wait(150)
+	main_print()
+	reset_rumble()
+	reset_leds()
+	unpacking()
+}
+int lx,ly,rx,ry,draw_sticks,circle
+const string let[]={"LX","LY","RX","RY"}
+const string show_sticks[]={"PRESS X TO" ,"SEE STICKS""}
+function sticks_checker()
+{
+
+	lx=get_val(PS4_LX)
+	ly=get_val(PS4_LY)
+	rx=get_val(PS4_RX)
+	ry=get_val(PS4_RY)
+	block_all_input()
+	if(event_press(PS4_CROSS)) draw_sticks=TRUE
+	if(draw_sticks)
+	{
+		combo_run(draw)
+		if(event_press(PS4_CIRCLE)) draw_sticks=FALSE
+		if(event_press(PS4_CROSS)) circle=!circle
+	}
+	else
+	{
+		show_sticks_stats()
+		combo_stop(draw)
+	}
+}
+function show_sticks_stats()
+{
+cls_oled(0)
+printf( 25,35 , 0, 1, show_sticks[0])
+printf( 25,45 , 0, 1, show_sticks[1])
+
+printf( 35,10 , 0, 1, num[100 + lx])       
+printf( 5, 10 , 0, 1, let[0])
+
+printf( 35, 20 , 0, 1, num[100 + ly])
+printf( 5, 20 , 0, 1, let[1])
+
+printf( 100, 10 , 0, 1, num[100 + rx])
+printf( 70, 10 , 0, 1, let[2])
+
+printf( 100, 20 , 0, 1, num[100 + ry])
+printf( 70, 20 ,0, 1, let[3])
+}
+combo draw
+{
+cls_oled(0)
+circle_oled(35, 32, 25, 0, 1);
+circle_oled(100, 32, 25, 0, 1);
+if(circle){
+circle_oled(35+(lx/4), 32+(ly/4), 5, 1, 1);
+circle_oled(100+(rx/4), 32+(ry/4), 5, 1, 1);
+}
+if(!circle){
+pixel_oled(35+(lx/4), 32+(ly/4), 1)
+pixel_oled(100+(rx/4), 32+(ry/4), 1)
+}
+wait(10)
+}    
+int sens_pik,x_ads,x_cam,y_ads,y_cam
+const string xy[]={"X","Y"}
+function ads_sensitivity()
+{
+x_cam=FALSE
+y_cam=FALSE
+block_all_input()
+
+cls_oled(0)
+printf( 12, 24 , 2, 1, xy[0])
+printf( 100, 24 , 2, 1, xy[1])
+printf( 80, 24 , 2, press_left, arrows[1])
+printf( 32, 24 , 2, press_right, arrows[0])
+	led_white();
+	rect_oled(0, 0, 128, 19, 0, 1);
+	rect_oled(0, 0, 128, 64, 0, 1);
+	rect_oled(0, 54, 128, 64, 1, 1);
+	printf( 7, 55 , 0, 0, save[0])
+	printf( 35, 6 , 0, 1, sensetivity[pik]);
+	if(event_press(PS4_LEFT))
+	{
+		x_ads=TRUE
+		y_ads=FALSE
+		sens_pik=get_pvar(SPVAR_58,-100,100,0)                  // ads x
+		combo_run(press_button_right)
+	}
+	if(event_press(PS4_RIGHT))
+	{
+		y_ads=TRUE
+		x_ads=FALSE
+		sens_pik=get_pvar(SPVAR_59,-100,100,0)                  // ads y
+		combo_run(press_button_left)
+		}
+	if(x_ads) x_sens()
+	if(y_ads) y_sens()
+}
+function cam_sensitivity()
+{
+x_ads=FALSE
+y_ads=FALSE
+
+block_all_input()
+cls_oled(0)
+printf( 12, 24 , 2, 1, xy[0])
+printf( 100, 24 , 2, 1, xy[1])
+printf( 80, 24 , 2, press_left, arrows[1])
+printf( 32, 24 , 2, press_right, arrows[0])
+	led_white();
+	rect_oled(0, 0, 128, 19, 0, 1);
+	rect_oled(0, 0, 128, 64, 0, 1);
+	rect_oled(0, 54, 128, 64, 1, 1);
+	printf( 7, 55 , 0, 0, save[0])
+	printf( 35, 6 , 0, 1, sensetivity[pik]);
+	if(event_press(PS4_LEFT)){
+			x_cam=TRUE
+			y_cam=FALSE
+			sens_pik=get_pvar(SPVAR_60,-100,100,0)                  // cam x
+			combo_run(press_button_right)
+		}
+	if(event_press(PS4_RIGHT)){
+			y_cam=TRUE
+			x_cam=FALSE
+			sens_pik=get_pvar(SPVAR_61,-100,100,0)                  // cam y
+			
+			combo_run(press_button_left)
+		}
+	if(x_cam) x_sens()
+	if(y_cam) y_sens()
+}
+function x_sens()
+{     
+rect_oled(1, 19, 126, 35, 1, 0);
+printf( 12, 24 , 2, 1, x_y[0])   
+	if(event_press(PS4_UP))  sens_pik=sens_pik + 5
+	if(event_press(PS4_DOWN)) sens_pik=sens_pik - 5
+	if(event_press(PS4_CIRCLE)) 
+	{
+		x_cam=FALSE
+		x_ads=FALSE
+	}
+	if(event_press(PS4_TRIANGLE))
+	{
+		pik_save()
+		save()
+		combo_run(success)
+	}
+	if(sens_pik < -100) sens_pik= -100
+	if(sens_pik >100) sens_pik= 100
+	printf( 50, 24 , 2, 1, num[sens_pik + 100])   
+}
+function y_sens()
+{   
+rect_oled(1, 19, 126, 35, 1, 0);
+printf( 12, 24 , 2, 1, x_y[1])   
+	if(event_press(PS4_UP))sens_pik=sens_pik + 5
+	if(event_press(PS4_DOWN))    sens_pik=sens_pik - 5
+	if(event_press(PS4_CIRCLE))  
+	{
+		y_cam=FALSE
+		y_ads=FALSE
+	}
+	if(event_press(PS4_TRIANGLE) )
+	{
+		pik_save()
+		save()
+		combo_run(success)
+	}
+	if(sens_pik < -100) sens_pik= -100
+	if(sens_pik >100) sens_pik= 100
+	printf( 50, 24 , 2, 1, num[sens_pik + 100])  
+}
+
+int xa,ya,aass,aim_as_st;
+
+combo asu{
+aim_as_st=0
+wait(50)
+aim_as_st=1.
+wait(50)
+aim_as_st=2
+wait(50)
+aim_as_st=3.
+wait(50)
+
+}
+
+
+combo STRAFESHOT{ 
+    set_val(PS4_LX, 100);
+    wait(500);
+    wait(50);
+    set_val(PS4_LX, -100);
+    wait(500);
+    wait(50);
+    } 
+    
+function aim_assist(){
+    	combo_run(asu)
+    	if(abs(get_val(PS4_RY)) < aim_assist_zone){
+    	ya=aas[aim_as_st][1]+get_val(PS4_RY)
+    	if(aas[aim_as_st][0]>0) ya=20 
+    	if(aas[aim_as_st][0]<0) ya=-20 
+    	set_val(PS4_RY,ya)
+    	}  
+    	if(abs(get_val(PS4_RX)) < aim_assist_zone){
+    		xa=aas[aim_as_st][0]+get_val(PS4_RX)
+    		if(aas[aim_as_st][0]>0) xa=20 
+    		if(aas[aim_as_st][0]<0) xa=-20 
+    	//	if(get_val(PS4_RX)>0 && aas[aim_as_st][0]<0) xa=-20 
+   		// if get_val(PS4_RX)<0 aas[aim_as_st][0]>0) xa=20 
+    	set_val(PS4_RX, xa)
+    	} 
+    if (abs(get_val(PS4_LX) ) < aim_assist_zone ) {
+        		xa=aas[aim_as_st][0]
+   
+    	set_val(PS4_LX, xa)
+    
+    }
+    	} ����������������

@@ -1,0 +1,189 @@
+/* UFC 4
+
+* Trigger 1 (Up) + Trigger 2 (Down)    = Activates Combo One ¦ Square -> Triangle -> L1 + Square ¦ 
+* Trigger 3 (Left) + Trigger 4 (Right) = Activates Combo Two ¦ Square -> Triangle -> Square + Cross ¦
+* Trigger Buttons Are Not Blocked To The Console
+* BlockMod = Hold L2 To Block Mod Mainly For Menu Use
+
+* ButtonPressTime = 50ms set below
+
+* Kill Switch = L2 & Share (Master Toggle For Both Combo's) (Share Will Be Blocked To The Console While Holding L2)
+
+* When Activating Kill Switch, If the Display Reads Kill Switch Enabled Combo's Will Be Off, Disabled Kill Switch Combo's Will Be On
+
+* Change The Buttons Or Time As Required Below, Combo Will Run Once Per Press Of Trigger
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Triggers                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define Trigger_1 = PS4_UP;
+define Trigger_2 = PS4_DOWN;
+define Trigger_3 = PS4_LEFT;
+define Trigger_4 = PS4_RIGHT;
+
+define BlockMod        = PS4_L2;
+
+define KillSwitchHold  = PS4_L2;
+define KillSwitchPress = PS4_SHARE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Button Hold Time                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+define ButtonPressTime = 50;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+const string MiscString [] = { "Disabled" , "Enabled" , "Mod Toggle On/Off" , "Master KillSwitch" };
+
+int KillSwitch,ToggleName,ToggleTime,ToggleT,Shunt,Modled;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+main {
+
+	if (get_ival(KillSwitchHold) && event_press(KillSwitchPress)) {
+		
+		KillSwitch = !KillSwitch;
+		Shunt = KillSwitchPress;
+		ToggleName = TRUE;
+        Toggle(KillSwitch,MiscString[3]);
+	}
+	
+	if (!KillSwitch) {
+	
+		if ((!get_ival(BlockMod)) && (event_press(Trigger_1) || event_press(Trigger_2))) {
+			combo_run(One);
+		}
+		
+		if ((!get_ival(BlockMod)) && (event_press(Trigger_3) || event_press(Trigger_4))) {
+			combo_run(Two);
+		}
+	}
+	
+	if (ToggleTime) {
+        TimeToggle();
+    }
+    
+	if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            Shunt = 0;
+        }
+            
+            else {
+                set_val(Shunt,0);
+            }
+    }
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+combo One {
+
+	set_val(PS4_SQUARE,100);
+	wait(ButtonPressTime);
+	set_val(PS4_TRIANGLE,100);
+	wait(ButtonPressTime);
+	set_val(PS4_L1,100);
+	set_val(PS4_SQUARE,100);
+	wait(ButtonPressTime);
+}
+
+combo Two {
+
+	set_val(PS4_SQUARE,100);
+	wait(ButtonPressTime);
+	set_val(PS4_TRIANGLE,100);
+	wait(ButtonPressTime);
+	set_val(PS4_SQUARE,100);
+	set_val(PS4_CROSS,100);
+	wait(ButtonPressTime);
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    }    
+        
+        else {
+            set_rgb(255,0,0);
+            set_rumble(RUMBLE_B,15);
+        }
+    
+    	wait(150);
+    	set_rgb(0,0,0);
+    	wait(150);
+    	reset_rumble();    
+    
+    if (Modled)
+        set_rgb(0,255,0);
+    
+        else
+            set_rgb(255,0,0);
+	
+		wait(150);
+		reset_leds();
+}    
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+function Toggle(ModT,ModP) {
+    
+     	Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = TRUE;
+	    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[2]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            printf(41,38,0,1,MiscString[1]);    
+        }
+            else {
+                printf(36,38,0,1,MiscString[0]);
+            }
+            
+            ToggleName = FALSE;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+        if (ToggleT >= 7000) {
+            cls_oled(0);
+            ToggleTime = FALSE;
+            ToggleT = 0;
+    	}
+}

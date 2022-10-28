@@ -1,0 +1,1202 @@
+#pragma METAINFO("Stick Assist", 7, 14, "Private")
+#include <PS4.gph>
+
+//Rapid Fire-------------------
+#define STANDARD_RF          1
+#define AKIMBO_RF            2
+//Anti Recoil Types------------
+#define DYNAMIC     		 1
+#define RUMBLE	   		 	 2
+//-----------------------------
+
+//--Button Layouts - START
+const uint8 btnLayoutArray[] ={
+	4, 7, 3,  6, 15, 14,  5, 8, // DEFAULT 						  = 0
+	4, 7, 3,  6, 15,  5, 14, 8, // TACTICAL 					  = 1
+	7, 4, 6,  3, 15, 14,  8, 5, // LEFTY 						  = 2
+	4, 3, 7,  6, 15, 14,  5, 8, // N0M4D/CHARLIE 				  = 3
+	4, 3, 7,  6, 15,  5, 14, 8, // N0M4D/CHARLIE TACTICAL 		  = 4
+	7, 6, 4,  3, 15, 14,  8, 5, // N0M4D/CHARLIE LEFTY 			  = 5
+	4, 7, 3, 15,  6, 14,  5, 8, // BUMPER JUMPER                  = 6
+	4, 7, 3, 15,  6,  5, 14, 8, // BUMPER JUMPER TACTICAL         = 7
+	6, 7, 4,  3, 15, 14,  5, 8, // ONE-HAND GUNSLINGER            = 8
+	4, 7, 3,  6,  5, 14, 15, 8, // STICK AND MOVE                 = 9
+	4, 7, 3,  6, 15, 14,  5, 8, // BRAWLER                        = 10
+	4, 7, 5, 15,  6, 14,  3, 8, // BEASTY                         = 11
+	3, 6, 4,  7, 15, 14,  5, 8, // DEFAULT SWAPPED                = 12
+	3, 6, 4,  7, 15,  5, 14, 8, // TACTICAL SWAPPED               = 13
+	3, 6, 4, 15,  7, 14,  5, 8, // BUMPER JUMPER SWAPPED          = 14
+	3, 6, 4, 15,  7,  5, 14, 8, // BUMPER JUMPER TACTICAL SWAPPED = 15
+	3, 6, 4,  7,  5, 14, 15, 8, // STICK AND MOVE SWAPPED         = 16
+	3, 6, 5, 15,  6, 14,  3, 8, // BEASTY SWAPPED                 = 17
+};
+
+int8 btnLayouts = 0;
+const uint8 Layout[] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+int8 FIRE_BUTTON;
+int8 ADS_BUTTON;
+int8 LETHAL_BUTTON;
+int8 TACTICAL_BUTTON;
+int8 JUMP_BUTTON;
+int8 CROUCH_BUTTON;
+int8 MELEE_BUTTON;
+int8 SPRINT_BUTTON;
+int8 RELOAD_BUTTON;
+int8 SWAP_BUTTON;
+int8 PING_BUTTON = 9; // Make This User Assigned Through GUI
+
+#define	AIM_X					21
+#define	AIM_Y					22
+#define	STRAFE					23
+#define	WALK					24
+//--Button Layout - END
+
+uint8 optAAShape            = FALSE; // 1 = Orbital, 2 = Tall Oval, 3 = Wide Oval, 4 = Helix, 5 = Spiral, 6 = Tartan Army, 7 = Jupiter
+uint8 optAntiRecoilType	    = FALSE; // Add 2 choices in GUI, Dynamic 1st, Rumble 2nd
+
+bool optADSStrafeBoost     = FALSE;
+bool optHairTrigger	   	   = FALSE;
+bool optPerfectAccuracy    = FALSE; // ADS + R1/RB
+bool optUservision		   = FALSE;
+bool optEasySprint		   = FALSE;
+bool optAutoMark		   = FALSE;
+bool optDropshot		   = FALSE;
+bool optJumpshot		   = FALSE;
+bool optStrafeshot		   = FALSE;
+bool optRapidfire		   = FALSE;
+bool optQuickscope		   = FALSE;
+bool optAutobreath		   = FALSE;
+bool optAutoreload		   = FALSE;
+bool optAimTracking		   = FALSE;
+bool optCookPotection	   = FALSE;
+bool optBunnyHop		   = FALSE;
+bool optAutoMelee		   = FALSE;
+bool optInvertVerticalLook = FALSE;
+bool optAkimbo			   = FALSE;
+bool optAutoADS			   = FALSE;
+bool optReloadCancel	   = FALSE;
+
+bool blockSprint		   = FALSE;
+bool blockAutoMark		   = FALSE;
+bool autoReloadFireCheck   = FALSE;
+
+uint16 optSlideCancel      = FALSE; // 0 So it's off by default
+uint16 SlideDelay          =   120; // Slide Cancel Delay Value
+
+bool INVERTED              = FALSE; // Inverted Option For Inverted Recoil Users
+
+uint16 reloadCancelTime     = 2000;
+
+uint8 lookSlowdownPercent   = 100;
+uint8 adsSlowdownPercent    = 100;
+uint8 bulletSlowdownStrengh = 100;
+
+fix32 aimAssistRadius 	   = 12.0; // Aim Assist Strength
+fix32 aimAssistSpeed  	   = 0.06; // Aim Assist Speed
+fix32 strafeStrength 	   = 15.0; // ADS Strafe Boost Strength
+fix32 strafeSpeed   	   = 30.0; // ADS Strafe Boost Speed
+fix32 AR_STRENGTH          = 20.0; // Anti Recoil Strength Variable For Both Dynamic AND Rumble
+
+// -------------- START OF KEEP CODE
+
+fix32 GVCAction   			  = 0.00;
+fix32 xRecoil     			  = 0.00;
+fix32 yRecoil     			  = 0.00;
+fix32 xTarget     			  = 0.00;
+fix32 yTarget     			  = 0.00;
+fix32 trgDistance 			  = 0.00;
+fix32 viewWidth   			  = 0.01;
+fix32 viewHeight  			  = 0.01;
+fix32 AADecay     			  = 0.10;
+
+uint8 accTier                 =   1;
+uint8 AAShotDistance          =  20;
+uint8 constantDetection       =   0;
+uint8 correctionRatePercent   = 100;
+uint8 correctionDistance      =  25;
+uint8 stopTrackThreshold      =  20;
+uint8 trackingRestrictPercent =  50;
+
+uint16 trackingDelay          = 200;
+
+bool AATShoot 				  = FALSE;
+bool isTracking 			  = FALSE;
+bool optATDisableOnLook 	  = FALSE;
+bool optATAutoShoot     	  = FALSE;
+bool optAALTTrack 			  = FALSE;
+bool restrictTrack 			  = FALSE;
+
+bool reloadCancel             = FALSE;
+bool isShooting               = FALSE;
+bool autoStickDriftRemoval    = TRUE;
+bool correctDeadzone		  = FALSE;
+
+fix32 deadzoneOffset = 10.00;
+fix32 deadzoneMin = 3f;
+
+
+// -------------- END OF KEEP CODE
+
+//--Script Variables
+fix32 aimAssistAngle; // Aim Assist Variable
+fix32 strafePower;    // ADS Strafe Boost Variable
+bool reload_time;
+int16 Drift_Calib_Cycle;
+fix32 T_RY;
+fix32 _ar_str;
+fix32 rx_drift;
+fix32 ry_drift;
+fix32 lx_drift;
+fix32 ly_drift;
+fix32 rs_b_drift;
+fix32 ls_b_drift;
+fix32 C_RX;
+fix32 C_RY;
+fix32 C_LX;
+fix32 C_LY;
+int Position; // Aim Assist Variable
+int i, inc, x, y; // Aim Assist Variable
+int CycleRefresh; // Aim Assist Variable
+int SpiralPosition1, InnerSpiral, OuterSpiral, SpiralPosition2; // Aim Assist Variable
+fix32 Max_Drift				= 15.0;
+int8 invert					=    1;
+int16 Max_Drift_Calib_Cycle =  100;
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |I|N|I|T| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+init {
+	loadButtons();
+
+	printf("<font color=#5864FF><b>Ready to play<font color=#000000>!</font></b></font>");
+
+	if(INVERTED)
+	{
+		invert = -1;
+	}
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {
+	// Hair Triggers
+   	if(optHairTrigger)
+	{
+		if(get_actual(FIRE_BUTTON) > 10f)
+			set_val(FIRE_BUTTON, 100);
+
+		if(get_actual(ADS_BUTTON) > 10f)
+			set_val(ADS_BUTTON, 100);
+   	}
+	
+	if (autoStickDriftRemoval) {
+		if(Drift_Calib_Cycle < Max_Drift_Calib_Cycle)
+		{
+			rx_drift = max(rx_drift, abs(get_actual(AIM_X))  + 1.0);
+			ry_drift = max(ry_drift, abs(get_actual(AIM_Y))  + 1.0);
+
+			lx_drift = max(lx_drift, abs(get_actual(STRAFE)) + 1.0);
+			ly_drift = max(ly_drift, abs(get_actual(WALK))   + 1.0);
+
+			rx_drift = min(rx_drift, Max_Drift);
+			ry_drift = min(ry_drift, Max_Drift);
+
+			lx_drift = min(lx_drift, Max_Drift);
+			ly_drift = min(ly_drift, Max_Drift);
+
+			Drift_Calib_Cycle++;
+
+			rx_drift = max(rx_drift, ry_drift);
+			lx_drift = max(lx_drift, ly_drift);
+
+			if(Drift_Calib_Cycle == Max_Drift_Calib_Cycle)
+			{
+				rx_drift   +=   1.0;
+				lx_drift   +=   1.0;
+				rs_b_drift /= 100.0;
+				ls_b_drift /= 100.0;
+			}
+		}
+	}
+
+	fix32 RX = get_actual(AIM_X);
+	fix32 RY = get_actual(AIM_Y);
+
+	C_RX = get_actual(AIM_X);
+	C_RY = get_actual(AIM_Y);
+
+	C_LX = get_actual(STRAFE);
+	C_LY = get_actual(WALK);
+	
+	if (autoStickDriftRemoval) {
+		if(!is_active(AIM_X) && C_RX < rx_drift)
+		{
+			C_RX = 0.0;
+		}
+
+		if(!is_active(AIM_Y) && C_RY < rx_drift)
+		{
+			C_RY = 0.0;
+		}
+
+		if(!is_active(STRAFE) && C_LX < lx_drift)
+		{
+			C_LX = 0.0;
+		}
+
+		if(!is_active(WALK) && C_LX < lx_drift)
+		{
+			C_LY = 0.0;
+		}
+	}
+	
+	if (correctDeadzone) {
+		if (abs(C_RX) < deadzoneOffset && abs(C_RX) >= deadzoneMin) {
+			C_RX = clamp(deadzoneOffset + C_RX, -100f, 100f);
+		} else {
+			if (abs(C_RX) <= deadzoneMin) {
+				C_RX = 0.00;
+			}
+		}
+		
+		if (abs(C_RY) < deadzoneOffset && abs(C_RY) >= deadzoneMin) {
+			C_RY = clamp(deadzoneOffset + C_RY, -100f, 100f);
+		} else {
+			if (abs(C_RY) <= deadzoneMin) {
+				C_RY = 0.00;
+			}
+		}
+	}
+
+	// ADS Strafe Boost
+	if(optADSStrafeBoost)
+	{
+		if(get_actual(ADS_BUTTON))
+		{
+			strafePower += strafeSpeed * (fix32)elapsed_time();
+
+			C_LX += (strafeStrength * cos(strafePower) * PI);
+			C_LY += (strafeStrength * sin(strafePower) * PI);
+		}
+	}
+	else
+	{
+		strafeSpeed = 0.0;
+	}
+
+
+	// Aim Assist
+	if(get_actual(ADS_BUTTON) || get_actual(FIRE_BUTTON))
+	{
+		if(optAAShape == 1)
+		{
+			C_RX += (aimAssistRadius * cos(aimAssistAngle)); // Orbital
+			C_RY += (aimAssistRadius * sin(aimAssistAngle)); // Orbital
+		}
+
+		if(optAAShape == 2)
+		{
+			C_RX += (aimAssistRadius * cos(aimAssistAngle) / 2f); // Tall Oval
+			C_RY += (aimAssistRadius * sin(aimAssistAngle)	   ); // Tall Oval
+		}
+
+		if(optAAShape == 3)
+		{
+			C_RX += (aimAssistRadius * cos(aimAssistAngle)     ); // Wide Oval
+			C_RY += (aimAssistRadius * sin(aimAssistAngle) / 2f); // Wide Oval
+		}
+
+		if(optAAShape == 4)
+		{
+			Helix();
+
+			C_RX += aimAssistRadius * (fix32)x / 100.00; // Helix
+			C_RY += aimAssistRadius * (fix32)y / 100.00; // Helix
+		}
+
+		if(optAAShape == 5)
+		{
+			Spiral();
+
+				C_RX += (((fix32)OuterSpiral * sin(aimAssistAngle)));
+				C_RY += (((fix32)InnerSpiral * cos(aimAssistAngle)));
+		}
+
+		if(optAAShape == 6)
+		{
+			if(Position == 0)
+			{
+				C_RX += aimAssistRadius * cos(420.00 + aimAssistAngle); // Tartan Army
+				C_RY += aimAssistRadius * sin(180.00 + aimAssistAngle); // Tartan Army
+			}
+
+			if(Position == 1)
+			{
+				C_RX += aimAssistRadius * cos(180.00 + aimAssistAngle); // Tartan Army
+				C_RY += aimAssistRadius * sin(420.00 + aimAssistAngle); // Tartan Army
+			}
+
+			Position ++;
+
+			if(Position == 2)
+			{
+				Position = 0;
+			}
+		}
+
+		if(optAAShape == 7)
+		{
+			C_RX += aimAssistRadius * cos(420.00 + aimAssistAngle); // Jupiter
+			C_RY += aimAssistRadius * sin(180.00 + aimAssistAngle); // Jupiter
+		}
+
+		if(get_actual(PS4_RX) >= 0.0)
+		{
+			aimAssistAngle -= aimAssistSpeed * (fix32)elapsed_time();
+		}
+		else
+		{
+			aimAssistAngle += aimAssistSpeed * (fix32)elapsed_time();
+		}
+	}
+	else
+	{
+		aimAssistAngle = 0.0;
+	}
+
+	// -------------- START OF KEEP CODE
+	if (xTarget > 0.00)
+	{
+		xTarget -= AADecay;
+
+		if (xTarget < 0.00)
+		{
+			xTarget = 0.00;
+		}
+	}
+	else
+	{
+		xTarget += AADecay;
+
+		if (xTarget > 0.00)
+		{
+			xTarget = 0.00;
+		}
+	}
+
+	if (yTarget > 0.00)
+	{
+		yTarget -= AADecay;
+
+		if (yTarget < 0.00)
+		{
+			yTarget = 0.00;
+		}
+	}
+	else
+	{
+		yTarget += AADecay;
+
+		if (yTarget > 0.00)
+		{
+			yTarget = 0.00;
+		}
+	}
+
+	trgDistance = sqrt( sq(viewWidth/2.00 - xTarget) + sq(viewHeight/2.00 - yTarget));
+
+	if (trgDistance < 0.00 || (xTarget == 0.00 && yTarget == 0.00))
+	{
+		trgDistance = 0.00;
+		AATShoot = FALSE;
+	}
+
+	isTracking = FALSE;
+
+	bool aimMoving = (
+		get_actual(AIM_Y) >=  5.00 ||
+		get_actual(AIM_Y) <= -5.00 ||
+		get_actual(AIM_X) >=  5.00 ||
+		get_actual(AIM_X) <= -5.00
+	);
+
+	bool trackTreshold = (
+		get_actual(AIM_Y) >= (fix32)stopTrackThreshold ||
+		get_actual(AIM_Y) <= (fix32)-stopTrackThreshold ||
+		get_actual(AIM_X) >= (fix32)stopTrackThreshold ||
+		get_actual(AIM_X) <= (fix32)-stopTrackThreshold
+	);
+
+	if(gcv_ready()) {
+		gcv_read(0, &GVCAction);
+		GVCAction = (fix32) round(GVCAction);
+
+		// Anti-Recoil from Screen Reader
+		if (GVCAction == 1.00 && accTier > 1) {
+			gcv_read(4, &AR_STRENGTH);
+
+			gcv_read(8, &optRapidfire);
+			gcv_read(9, &optQuickscope);
+			gcv_read(11, &optAAShape);
+			gcv_read(12, &optAutobreath);
+			gcv_read(13, &optAutoreload);
+			gcv_read(14, &optAimTracking);
+			gcv_read(15, &optATAutoShoot);
+			gcv_read(16, &restrictTrack);
+
+			gcv_read(18, &trackingRestrictPercent);
+			gcv_read(19, &trackingDelay);
+
+			printf("AR Strength %f:", AR_STRENGTH);
+			printf("Rapidfire: %i | Quickscope: %i | Aim Assist: %i | Autobreath: %i | Autoreload: %i", optRapidfire, optQuickscope, optAAShape, optAutobreath, optAutoreload);
+			printf("AAT: %i | AAT Auto Shoot: %i | AAT Shoot Distance: %i | AAT Restrict: %i | AAT Restricted  Percent: %i | AAT Delay: %i", optAimTracking, optATAutoShoot, AAShotDistance, restrictTrack, trackingRestrictPercent, trackingDelay);
+		}
+
+		// Aim Assisted Tracking
+		if (GVCAction == 2.00 && accTier > 1) {
+			gcv_read(4, &xRecoil);
+			gcv_read(8, &yRecoil);
+			gcv_read(12, &xTarget);
+			gcv_read(16, &yTarget);
+			gcv_read(20, &trgDistance);
+			gcv_read(24, &viewWidth);
+			gcv_read(28, &viewHeight);
+			gcv_read(32, &AATShoot);
+
+			// printf("ACTION: %f | RX: %f | RY: %f | TX: %f | TY: %f | D: %f | W: %f | H: %f | SHOOT: %i", GVCAction, xRecoil, yRecoil, xTarget, yTarget, trgDistance, viewWidth, viewHeight, AATShoot);
+
+			if (constantDetection && !get_val(ADS_BUTTON) && (xTarget != 0.00 || yTarget != 0.00)) {
+				isTracking = TRUE;
+			} else {
+				if (get_val(ADS_BUTTON) && (xTarget != 0.00 || yTarget != 0.00)) {
+					isTracking = TRUE;
+				}
+			}
+
+			if (isTracking && optInvertVerticalLook) {
+				yTarget = -yTarget;
+			}
+		}
+
+		// Setup Settings #1
+		if (GVCAction == 4.00) {
+			gcv_read(4, &optAimTracking);
+			gcv_read(5, &optAALTTrack);
+			gcv_read(6, &optATAutoShoot);
+			gcv_read(7, &optATDisableOnLook);
+			gcv_read(8, &restrictTrack);
+
+			gcv_read(11, &trackingDelay);
+			gcv_read(16, &stopTrackThreshold);
+			gcv_read(20, &trackingRestrictPercent);
+			gcv_read(24, &AAShotDistance);
+			gcv_read(28, &accTier);
+		}
+
+		// Setup Settings #2
+		if (GVCAction == 5.00) {
+			gcv_read(4, &optEasySprint);
+			gcv_read(5, &optAutoMark);
+			gcv_read(6, &optHairTrigger);
+			gcv_read(7, &optDropshot);
+			gcv_read(8, &optJumpshot);
+			gcv_read(9, &optStrafeshot);
+			gcv_read(10, &optRapidfire);
+			gcv_read(11, &optAkimbo);
+			gcv_read(12, &optAutoreload);
+			gcv_read(13, &optCookPotection);
+			gcv_read(14, &optBunnyHop);
+			gcv_read(15, &optAutoMelee);
+			gcv_read(16, &optInvertVerticalLook);
+			gcv_read(17, &optQuickscope);
+			gcv_read(18, &optAutobreath);
+			gcv_read(19, &constantDetection);
+			gcv_read(20, &optAAShape);
+
+			gcv_read(24, &lookSlowdownPercent);
+			gcv_read(28, &adsSlowdownPercent);
+			gcv_read(32, &bulletSlowdownStrengh);
+
+			gcv_read(33, &aimAssistRadius);
+			gcv_read(37, &aimAssistSpeed);
+
+			gcv_read(42, &btnLayouts);
+			gcv_read(43, &optSlideCancel);
+
+			gcv_read(46, &optAntiRecoilType);
+			gcv_read(47, &SlideDelay);
+			gcv_read(49, &autoStickDriftRemoval);
+			
+			gcv_read(50, &correctDeadzone);
+			gcv_read(51, &deadzoneOffset);
+
+			printf("Settings updated!");
+
+			loadButtons();
+		}
+
+		// Setup Settings #3
+		if (GVCAction == 7.00) {
+			gcv_read(4, &optAutoADS);
+			gcv_read(5, &optReloadCancel);
+			gcv_read(6, &reloadCancelTime);
+			gcv_read(8, &AADecay);
+			gcv_read(12, &optADSStrafeBoost);
+			gcv_read(13, &strafeStrength);
+			gcv_read(17, &strafeSpeed);
+			gcv_read(21, &optPerfectAccuracy);
+			gcv_read(23, &PING_BUTTON);
+			gcv_read(24, &AR_STRENGTH);
+			gcv_read(28, &deadzoneMin);
+		}
+
+		GVCAction = 0.00;
+	}
+
+	if (optAimTracking && accTier > 1 && time_active(ADS_BUTTON) >= trackingDelay) {
+		if (optATDisableOnLook && trackTreshold && aimMoving) {
+			// do nothing
+		} else {
+			C_RX += xTarget;
+			C_RY += yTarget;
+
+			if (restrictTrack && aimMoving && get_val(ADS_BUTTON) && trgDistance != 0.00) {
+				C_RX = C_RX * ((fix32)trackingRestrictPercent / 100.00);
+				C_RY = C_RY * ((fix32)trackingRestrictPercent / 100.00);
+			}
+		}
+
+		if (AATShoot && get_val(FIRE_BUTTON)) {
+			AATShoot = FALSE;
+		}
+
+		if (AATShoot && optATAutoShoot) {
+			set_val(FIRE_BUTTON, 100);
+		}
+	}
+
+	// -------------- END OF KEEP CODE
+
+	// Anti Recoil
+	if(get_actual(ADS_BUTTON) && get_actual(FIRE_BUTTON))
+	{
+		switch (optAntiRecoilType)
+		{
+			case DYNAMIC:
+				C_RY += ((Dynamic_EviL_AR(FIRE_BUTTON, AR_STRENGTH, C_RY, C_RX)) * (fix32)invert);
+			break;
+
+			case RUMBLE:
+				C_RY += ((Rumble_EviL_AR()) * (fix32)invert);
+			default:
+			break;
+		}
+	} else {
+		xRecoil = 0.00;
+		yRecoil = 0.00;
+	}
+
+	// Auto reload
+	if (optAutoreload && get_val(FIRE_BUTTON) && get_val(ADS_BUTTON))
+	{
+		autoReloadFireCheck = TRUE;
+	}
+
+	if (autoReloadFireCheck && optAutoreload && !get_val(ADS_BUTTON) && time_release(ADS_BUTTON) >= 1000)
+	{
+		blockSprint         = TRUE;
+		autoReloadFireCheck = FALSE;
+		combo_run(cAutoreload);
+		combo_run(cBlockSprintTimer);
+	}
+
+	if (cAutoreload && (get_val(FIRE_BUTTON) || get_val(ADS_BUTTON)))
+	{
+		combo_stop(cAutoreload);
+	}
+
+	// Easy Sprint
+	if (optEasySprint && !blockSprint && get_actual(WALK) <= -80.0)
+	{
+		combo_run(cAutoSprint);
+	}
+	else
+	{
+		combo_stop(cAutoSprint);
+	}
+
+	// Block Easy Sprint on Reload
+	if (optEasySprint && get_val(RELOAD_BUTTON))
+	{
+		blockSprint = TRUE;
+		combo_run(cBlockSprintTimer);
+	}
+
+	// Grenade Cook Protection
+	if (optCookPotection && get_val(LETHAL_BUTTON) && time_active(LETHAL_BUTTON) >= 3000)
+	{
+		combo_run(cReleaseCook);
+	}
+
+	// Auto Melee
+	if (optAutoMelee && get_val(MELEE_BUTTON))
+	{
+		combo_run(cAutoMelee);
+	}
+
+	if (optAutoADS && get_val(FIRE_BUTTON))
+	{
+		set_val(ADS_BUTTON, 100);
+	}
+
+	// Slide Cancel
+	if(optSlideCancel)
+	{
+		if(get_actual(WALK) < -80.00)
+		{
+			if(event_release(CROUCH_BUTTON))
+			{
+				combo_run(SLIDE_CANCEL);
+			}
+		}
+	}
+
+	// Perfect Accuracy
+	if(optPerfectAccuracy)
+	{
+		if (get_val(ADS_BUTTON) && get_val(LETHAL_BUTTON))
+		{
+			inhibit(LETHAL_BUTTON, (time_active(ADS_BUTTON)));
+			combo_run(cPerfectionAccuracy);
+		}
+	}
+
+	// Reload cancel
+	if (optReloadCancel)
+	{
+		if (get_actual(RELOAD_BUTTON))
+		{
+			reloadCancel = TRUE;
+
+			if (cReloadCancelTimer)
+			{
+				combo_stop(cReloadCancelTimer);
+			}
+		}
+
+		if (reloadCancel == TRUE)
+		{
+			if (!cReloadCancelTimer)
+			{
+				combo_run(cReloadCancelTimer);
+			}
+		}
+
+		if (event_release(FIRE_BUTTON))
+		{
+			isShooting = FALSE;
+		}
+
+		if(!isShooting && reloadCancel && get_actual(FIRE_BUTTON))
+		{
+			combo_run(cCancelReload);
+		}
+	}
+
+	// Toggle aim assisted tracking (double LT method)
+	if (optAALTTrack)
+	{
+		if (get_val(ADS_BUTTON) && event_active(ADS_BUTTON) && time_release(ADS_BUTTON) < 200)
+		{
+			combo_run(cVibrate);
+			optAimTracking = TRUE;
+		}
+
+		if (event_release(ADS_BUTTON))
+		{
+			combo_run(cVibrate);
+			optAimTracking = FALSE;
+		}
+	}
+
+	// Toggle aim assisted tracking
+	if (get_val(ADS_BUTTON) && event_active(PS4_DOWN) && time_release(PS4_DOWN) < 200)
+	{
+		if (optAimTracking)
+		{
+			combo_run(cVibrate);
+			optAimTracking = FALSE;
+			printf("Aim Assisted Tracking: <font color=RED>Disabled</font></b></font>");
+		}
+		else
+		{
+			combo_run(cVibrate);
+			optAimTracking = TRUE;
+			printf("Aim Assisted Tracking: <font color=GREEN>Enabled</font></b></font>");
+		}
+	}
+
+	// Toggle aim assisted tracking auto shoot
+	if (get_val(ADS_BUTTON) && event_active(PS4_LEFT) && time_release(PS4_LEFT) < 200)
+	{
+		if (optATAutoShoot)
+		{
+			combo_run(cVibrate);
+			optATAutoShoot = FALSE;
+			printf("Aim Assisted Tracking Auto Shoot: <font color=RED>Disabled</font></b></font>");
+		}
+		else
+		{
+			combo_run(cVibrate);
+			optATAutoShoot = TRUE;
+			printf("Aim Assisted Tracking Auto Shoot: <font color=GREEN>Enabled</font></b></font>");
+		}
+	}
+
+	// Toggle rapid fire
+	if (get_val(RELOAD_BUTTON) && event_active(PS4_LEFT) && time_release(PS4_LEFT) < 200)
+	{
+		if (optRapidfire)
+		{
+			combo_run(cVibrate);
+			optRapidfire = FALSE;
+			printf("Rapid Fire: <font color=RED>Disabled</font></b></font>");
+		}
+		else
+		{
+			combo_run(cVibrate);
+			optRapidfire = TRUE;
+			printf("Rapid Fire: <font color=GREEN>Enabled</font></b></font>");
+		}
+	}
+
+	// Toggle dropshot
+	if (get_val(RELOAD_BUTTON) && event_active(PS4_DOWN) && time_release(PS4_DOWN) < 200)
+	{
+		if (optDropshot)
+		{
+			combo_run(cVibrate);
+			optDropshot = FALSE;
+			printf("Dropshot: <font color=RED>Disabled</font></b></font>");
+		}
+		else
+		{
+			combo_run(cVibrate);
+			optDropshot = TRUE;
+			printf("Dropshot: <font color=GREEN>Enabled</font></b></font>");
+		}
+	}
+
+	// Toggle jump shot
+	if (get_val(RELOAD_BUTTON) && event_active(PS4_RIGHT) && time_release(PS4_RIGHT) < 200)
+	{
+		if (optJumpshot)
+		{
+			combo_run(cVibrate);
+			optJumpshot = FALSE;
+			printf("Jumpshot: <font color=RED>Disabled</font></b></font>");
+		}
+		else
+		{
+			combo_run(cVibrate);
+			optJumpshot = TRUE;
+			printf("Jumpshot: <font color=GREEN>Enabled</font></b></font>");
+		}
+	}
+
+	// Auto Mark
+	if (!blockAutoMark && optAutoMark && get_val(FIRE_BUTTON) && get_val(ADS_BUTTON))
+	{
+		blockAutoMark = TRUE;
+		combo_run(cAutoMark);
+	}
+
+	// Strafe shot
+	if (optStrafeshot && get_val(ADS_BUTTON))
+	{
+		combo_run(cStrafeshot);
+	}
+	else
+	{
+		combo_stop(cStrafeshot);
+	}
+
+	// Rapid Fire
+	if (optRapidfire && get_val(FIRE_BUTTON))
+	{
+		combo_run(cRapidfire);
+	}
+	else
+	{
+		combo_stop(cRapidfire);
+	}
+
+	// Quickscope
+	if (optQuickscope && get_val(ADS_BUTTON))
+	{
+		combo_run(cQuickscope);
+	}
+
+	// Jump shot
+	if (optJumpshot && get_val(FIRE_BUTTON) && get_val(ADS_BUTTON))
+	{
+		combo_run(cJumpshot);
+	}
+	else
+	{
+		combo_stop(cJumpshot);
+	}
+
+	// Bunny Hop
+	if(optBunnyHop && is_active(JUMP_BUTTON))
+	{
+		if (check_active(JUMP_BUTTON, 600))
+		{
+			combo_run(cBunnyHop);
+		}
+
+		if (event_release(JUMP_BUTTON))
+		{
+			combo_stop(cBunnyHop);
+		}
+	}
+
+	// Dropshot
+	if (optDropshot && get_val(FIRE_BUTTON) && get_val(ADS_BUTTON) && time_active(ADS_BUTTON) <= 500)
+	{
+		combo_run(cDropshot);
+	}
+
+	// Auto Breath
+	if (optAutobreath && get_val(ADS_BUTTON) && time_release(SPRINT_BUTTON) >= 100)
+	{
+		set_val(SPRINT_BUTTON, 100);
+
+		if (get_actual(SPRINT_BUTTON) == 100.00)
+		{
+			set_val(SPRINT_BUTTON, 0);
+		}
+	}
+
+	set_val(STRAFE, clamp(C_LX, -100.00, 100.00));
+	set_val(WALK  , clamp(C_LY, -100.00, 100.00));
+
+	if (optAntiRecoilType == 3 && (xRecoil || yRecoil) && xTarget == 0.00 && yTarget == 0.00) {
+		if (get_val(FIRE_BUTTON) && aimMoving) {
+			C_RX = (xRecoil * (100.0 - abs(get_val(AIM_X)))) / 100.0 + get_val(AIM_X);
+			C_RY = (yRecoil * (100.0 - abs(get_val(AIM_Y)))) / 100.0 + get_val(AIM_Y);
+		} else {
+			C_RX += xRecoil;
+			C_RY += yRecoil;
+		}
+	}
+
+	bool recoilMoving = (
+        get_actual(AIM_Y) >=  10.00 ||
+        get_actual(AIM_Y) <= -10.00 ||
+        get_actual(AIM_X) >=  10.00 ||
+        get_actual(AIM_X) <= -10.00
+    );
+
+    if (optAntiRecoilType == 4 && recoilMoving == FALSE && (xRecoil || yRecoil) && xTarget == 0.00 && yTarget == 0.00) {
+        if (abs(xRecoil) >= abs(RX)) {
+            C_RX += xRecoil;
+        }
+
+        if (abs(yRecoil) >= abs(RX)) {
+            C_RY += yRecoil;
+        }
+    }
+
+	set_val(AIM_X , clamp(C_RX, -100.00, 100.00));
+	set_val(AIM_Y , clamp(C_RY, -100.00, 100.00));
+
+	if (get_val(FIRE_BUTTON) && get_val(ADS_BUTTON) && aimMoving)
+	{
+		set_val(AIM_X, get_val(AIM_X) * ((fix32)bulletSlowdownStrengh / 100.00));
+		set_val(AIM_Y, get_val(AIM_Y) * ((fix32)bulletSlowdownStrengh / 100.00));
+	}
+	else if (get_val(ADS_BUTTON))
+	{
+		set_val(AIM_X, get_val(AIM_X) * ((fix32)adsSlowdownPercent / 100.00));
+		set_val(AIM_Y, get_val(AIM_Y) * ((fix32)adsSlowdownPercent / 100.00));
+	}
+	else
+	{
+		set_val(AIM_X, get_val(AIM_X) * ((fix32)lookSlowdownPercent / 100.00));
+		set_val(AIM_Y, get_val(AIM_Y) * ((fix32)lookSlowdownPercent / 100.00));
+	}
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo cVibrate {
+	ffb_set(FFB_2, 80.00, 250);
+	wait(450);
+	ffb_reset();
+}
+
+combo cAutoMelee {
+	set_val(MELEE_BUTTON, 0);
+	wait(200);
+	set_val(MELEE_BUTTON, 100);
+	wait(200);
+}
+
+combo cReleaseCook {
+	set_val(LETHAL_BUTTON, 0);
+	wait(200);
+}
+
+combo cAutoreload {
+	set_val(RELOAD_BUTTON, 0);
+	wait(20);
+	set_val(RELOAD_BUTTON, 100);
+	wait(200);
+	set_val(RELOAD_BUTTON, 0);
+}
+
+combo cPerfectionAccuracy {
+    set_val(FIRE_BUTTON, 100);
+    wait(35);
+    wait(265);
+}
+
+combo cStrafeshot {
+	Set_Val(STRAFE, -100.0);
+	wait(400);
+	Set_Val(STRAFE, 100.0);
+	wait(400);
+}
+
+combo cBlockSprintTimer {
+	wait(1500);
+	blockSprint ;
+}
+
+combo cDropshot {
+	set_val(CROUCH_BUTTON, 0);
+	wait(irand(20, 40));
+	set_val(CROUCH_BUTTON, 100);
+	wait(irand(800, 1000));
+}
+
+combo cRapidfire {
+	set_val(FIRE_BUTTON, 0);
+	wait(50);
+	set_val(FIRE_BUTTON, 100);
+	wait(50);
+}
+
+combo cQuickscope {
+	wait(300);
+	set_val(FIRE_BUTTON, 0);
+	wait(50);
+	set_val(FIRE_BUTTON, 100);
+	wait(800);
+}
+
+combo cJumpshot {
+	set_val(JUMP_BUTTON, 100);
+	wait(20);
+	set_val(JUMP_BUTTON, 0);
+}
+
+combo cReloadCancelTimer {
+	wait(reloadCancelTime);
+	reloadCancel = FALSE;
+}
+
+combo cCancelReload {
+	set_val(SWAP_BUTTON, 100);
+	wait(20);
+	set_val(SWAP_BUTTON, 0);
+	wait(20);
+	set_val(SWAP_BUTTON, 100);
+	wait(20);
+	set_val(SWAP_BUTTON, 0);
+	reloadCancel = FALSE;
+}
+
+combo cAutoSprint {
+	set_val(SPRINT_BUTTON, 100);
+	wait(irand(43, 67));
+	set_val(SPRINT_BUTTON, 0);
+	wait(irand(41, 69));
+}
+
+combo cAutoMark {
+	set_val(PING_BUTTON, 0);
+	wait(400);
+	set_val(PING_BUTTON, 100);
+	wait(50);
+	set_val(PING_BUTTON, 0);
+	wait(50);
+	set_val(PING_BUTTON, 100);
+	wait(50);
+	set_val(PING_BUTTON, 0);
+	wait(3000);
+
+	blockAutoMark = FALSE;
+}
+
+combo SLIDE_CANCEL {
+	set_val(CROUCH_BUTTON, 100);
+	wait(SlideDelay);
+	set_val(CROUCH_BUTTON, 0);
+	wait(60);
+	set_val(CROUCH_BUTTON, 100);
+	wait(50);
+	set_val(CROUCH_BUTTON, 100);
+	set_val(JUMP_BUTTON, 100);
+	wait(60);
+	set_val(CROUCH_BUTTON, 0);
+	set_val(JUMP_BUTTON, 100);
+	wait(10);
+	set_val(JUMP_BUTTON, 0);
+}
+
+combo cBunnyHop {
+	set_val(JUMP_BUTTON, 100);
+	wait(irand(37, 63));
+	set_val(JUMP_BUTTON, 0);
+	wait(irand(36, 64));
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+void Helix() {
+	inc = (i % 100);
+
+	if(Position == 0)
+	{
+		x = inc;
+		y = 100 - inc;
+	}
+	else if (Position == 1)
+	{
+		x = 100 - inc;
+		y = - inc;
+	}
+	else if (Position == 2)
+	{
+		x = -inc;
+		y = -100 + inc;
+	}
+	else if(Position == 3)
+	{
+		x = -100 + inc;
+		y = inc;
+	}
+
+	Position ++;
+
+	if(Position == 4)
+	{
+		Position = 0;
+	}
+}
+
+void Spiral() {
+	if(!(CycleRefresh++ % 4))
+	{
+		if(!SpiralPosition1)
+		{
+			InnerSpiral -= 1;
+
+			if((fix32)InnerSpiral < aimAssistRadius / 2.0)
+				SpiralPosition1 = TRUE;
+		}
+		else
+		{
+		    InnerSpiral += 1;
+
+			if((fix32)InnerSpiral > aimAssistRadius)
+				SpiralPosition1 = FALSE;
+		}
+		if(!SpiralPosition2)
+		{
+			OuterSpiral -= 1;
+
+			if((fix32)OuterSpiral < aimAssistRadius / 2.0)
+				SpiralPosition2 = TRUE;
+		}
+		else
+		{
+			OuterSpiral += 1;
+
+			if((fix32)OuterSpiral > aimAssistRadius)
+				SpiralPosition2 = FALSE;
+		}
+		CycleRefresh = 0;
+	}
+}
+
+fix32 Dynamic_EviL_AR(int8 button, fix32 ar_str, fix32 C_RY, fix32 C_RX) {
+    if(is_active(button))
+    {
+        T_RY = ((fix32)time_active(button) / (160.0));
+        _ar_str = ((AR_STRENGTH / 2.0) + AR_STRENGTH);
+
+        if(T_RY > _ar_str)
+        T_RY = _ar_str;
+
+        T_RY = T_RY + ar_str - ((abs(C_RX * C_RX) + abs(C_RY * C_RY)) / 1000.0);
+    }
+
+    return T_RY;
+}
+
+fix32 Rumble_EviL_AR() {
+	fix32 SSAnus = RumbleToUse();
+
+	if (SSAnus > 10.0 && SSAnus < 90.0)
+	{
+		return (SSAnus - AR_STRENGTH);
+	}
+
+	return 0.0;
+}
+
+fix32 RumbleToUse() {
+	if(ffb_get_actual(FFB_1, NULL) >= ffb_get_actual(FFB_2, NULL))
+    	return ffb_get_actual(FFB_1, NULL);
+	return ffb_get_actual(FFB_2, NULL);
+}
+
+int16 irand(int16 vmin, int16 vmax) {
+    return(((int16) (rand() * (fix32)(vmax + 1 - vmin))) + vmin);
+}
+
+void Set_Val(uint8 Stick, fix32 Value) {
+	set_val(Stick, clamp(Value * (100f - abs(get_val(Stick))) / 100f + get_val(Stick), -100f, 100f));
+		return;
+}
+
+void loadButtons() {
+	Memcpy(&Layout, &btnLayoutArray[8 * btnLayouts], 8);
+
+	FIRE_BUTTON		= Layout[0];
+	ADS_BUTTON		= Layout[1];
+	LETHAL_BUTTON	= Layout[2];
+	TACTICAL_BUTTON	= Layout[3];
+	JUMP_BUTTON		= Layout[4];
+	CROUCH_BUTTON	= Layout[5];
+	MELEE_BUTTON	= Layout[6];
+	SPRINT_BUTTON	= Layout[7];
+	RELOAD_BUTTON	= 16;
+	SWAP_BUTTON		= 13;
+}
+
+void Memcpy(uint8* dst, uint8* src, int size) {
+	int8* _src   = (int8*)src;
+	int8* _dest  = (int8*)dst;
+	int       i  =          0;
+	do {
+		_dest[i] = _src[i];
+	   }
+	while(++i<size);
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | |E|N|D| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

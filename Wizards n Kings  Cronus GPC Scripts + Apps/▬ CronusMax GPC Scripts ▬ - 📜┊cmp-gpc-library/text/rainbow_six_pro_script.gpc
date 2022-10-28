@@ -1,0 +1,153 @@
+// GPC Online Library
+// rainbow_six_''pro''_script.gpc
+
+//YouTube:Ziboq// //MADE BY ZIBOQ//                                                         #
+//                                      #     #  ##########           #############             ########    ####   ######
+//FEATURES//                             #   #      #                             #         #   #      #   #   #   #    #
+//Rapid Fire=Hold ADS=R1//                 #        #                            #          #   #      #   #   #   #    #
+//DropShot=Just Press Shoot ADS/R1//       #        #     ##########            #           #   #######    #   #   #    #
+//ANTI-RECOIL=HOLD ADS//                   #        #                          #            #   #     #    #   #   #    #
+//AutoSprint=Tap and hold//                #        #                         #             #   #     #    #   #   #    #
+//QuickLean//                                                                ###########    #   #######    #####   ######                                                                                                                          
+//--------------------------------------------------------------------------------------------------------//             #
+    // LAYOUT
+    
+    //DECLARARATIONS - define
+
+
+	define fire_button  = 3;	// 4 means RT/R2 - change for different layout:
+	                        	// write 3 instead of 4 if you shoot with RB/R1
+	                        
+	define scope_button = 6;	// 7 means LT/L2 - change for different layout:
+	                        	// write 6 instead of 7 if you aim with LB/L1
+	                        
+	define sprint_button = 8;   // 8 means LS/L3 - change for different layout
+	
+    //--------------------------------------------------------------------------------------------------------//    
+    // SENSITIVITY ADJUSTMENTS	 
+	 
+	define GEN_SENS = 100;  // General sensitivity - Default: 100 - Range [0 ~ 327]
+	                        // set a number below 100 for less sens - above 100 for more sens
+
+	define ADS_SENS = 100;  // Sensitivity while aiming - Default: 100 - Range [0 ~ 327]
+	                        // set a number below 100 for less sens - above 100 for more sens
+	                           
+	define RUN_SENS = 100; 	// Sensitivity while running - Default: 100 - Range [0 ~ 327]
+		                   	// set a number below 100 for less sens - above 100 for more sens 
+	                   
+    define MIDPOINT = 50;   /** MIDPOINT - Default: 50 - Range [0 ~ 100] Carefully read below:
+						    If you set a number below 50 you are defining a zone of high sensitivity range when close to rest position 
+						    (fast movements) and a low sensitivity range when far from rest position (better accuracy).
+						    if you set a number above 50 you are defining a zone of low sensitivity when close to the rest position
+						    (better accuracy), and a zone of high sensitivity when far from rest position (fast movements).**/
+
+
+    //--------------------------------------------------------------------------------------------------------//     
+	// ANTI RECOIL ADJUSTMENTS
+	
+    define ANTI_RECOIL       = 27;  // change this value to compensate vertical recoil (0 - 100)
+    define ANTI_RECOIL_LEFT  = 0;   // change this value to compensate to the left (0 - 100)
+    define ANTI_RECOIL_RIGHT = 0;   // change this value to compensate to the right (0 - 100)  
+
+    //--------------------------------------------------------------------------------------------------------//     
+	// RAPIDFIRE ADJUSTMENTS
+	
+    define RATE_OF_FIRE      = 24;  // Range: 1 to 25 RPS (Round/s) 
+                                    // Values higher than 25 would be so fast that the Game probably will not detect 100% of the events.
+                                    
+    //--------------------------------------------------------------------------------------------------------//
+    //--------------------------------------------------------------------------------------------------------//
+    
+	int AR_Release = ANTI_RECOIL + 10;    
+    int anti_recoil;
+    int anti_recoil_left;
+    int anti_recoil_right;     
+    int hold_time, rest_time;
+    
+    //--------------------------------------------------------------------------------------------------------// 
+    
+    init {
+     
+        hold_time = 500 / RATE_OF_FIRE;
+        rest_time = hold_time - 20;
+        if(rest_time < 0) rest_time = 0;
+    }
+    //--------------------------------------------------------------------------------------------------------//
+    
+    main {
+    
+        // ADS SENS
+        if (get_val(scope_button)) {        
+        sensitivity( 9, MIDPOINT, ADS_SENS);        
+        sensitivity(10, MIDPOINT, ADS_SENS); 
+        } else {
+        // GENERAL SENS
+        sensitivity( 9, MIDPOINT, GEN_SENS);
+        sensitivity(10, MIDPOINT, GEN_SENS);
+        }
+        // RUNNING SENS
+        if(get_val(sprint_button)) {
+        sensitivity( 9, MIDPOINT, RUN_SENS);
+        sensitivity(10, MIDPOINT, RUN_SENS);
+        }     
+        
+        if(get_val(fire_button)) {
+            combo_run(RapidFire);
+        } else if(combo_running(RapidFire)) {
+            combo_stop(RapidFire);
+        }
+        
+        if(get_val(fire_button)) {
+            combo_run(AntiRecoil);
+        }
+        
+    	if(abs(get_val(10)) > AR_Release || abs(get_val(9)) > AR_Release) {  
+            combo_stop (AntiRecoil);  
+        }
+    }
+    //--------------------------------------------------------------------------------------------------------//
+    
+    combo RapidFire {
+        set_val(fire_button, 100);
+        wait(hold_time);
+        set_val(fire_button, 0);
+        wait(rest_time);
+        set_val(fire_button, 0);
+    	}
+     
+    combo AntiRecoil {// This combo must be the last one
+        anti_recoil = get_val(10) + ANTI_RECOIL;
+        if(anti_recoil > 100) anti_recoil = 100;set_val(10, anti_recoil);
+        anti_recoil_left = get_val(9) -ANTI_RECOIL_LEFT;
+        if(anti_recoil_left > 100) anti_recoil_left = 100;set_val(9, anti_recoil_left);
+        anti_recoil_right = get_val(9) +ANTI_RECOIL_RIGHT;
+        if(anti_recoil_right > 100) anti_recoil_right = 100;set_val(9, anti_recoil_right);
+        }
+
+//COMBOS//
+
+//QUICK LEAN RIGHT COMBO 
+combo LeanRight {
+    set_val(PS4_L3, 100);
+    wait(40);
+    set_val(PS4_R3, 100);
+    set_val(PS4_L3, 100);
+    wait(90);
+    set_val(PS4_R3, 100);
+    set_val(PS4_L3, 0);
+    wait(10);
+    set_val(PS4_R3, 0);
+}
+
+//QUICK LEAN LEFT COMBO
+combo LeanLeft {
+    set_val(PS4_R3, 100);
+    wait(40);
+    set_val(PS4_L3, 100);
+    set_val(PS4_R3, 100);
+    wait(90);
+    set_val(PS4_L3, 100);
+    set_val(PS4_R3, 0);
+    wait(10);
+    set_val(PS4_L3, 0);
+}

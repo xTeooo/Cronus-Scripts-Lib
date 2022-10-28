@@ -1,0 +1,122 @@
+//////////CREATED BY DoGzTheFiGhTeR Thanks to ItzSnacks For On The Fly Adjustable Recoil 8 )
+
+		 /*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+		 | | | | | | | | |V|A|R|I|A|B|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | |  
+		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+	define VIEW  =  1;	define MENU  =  2;	define RB    =  3;	define RT    =  4;
+    define RS    =  5;	define LB    =  6;	define LT    =  7;	define LS    =  8;
+    define RX    =  9;	define RY    = 10;	define LX    = 11;	define LY    = 12;
+    define UP    = 13;	define DOWN  = 14;	define LEFT  = 15;	define RIGHT = 16;
+    define Y     = 17;	define B     = 18;	define A     = 19;	define X     = 20;
+                                                                                                                                                                
+	int TriggerSwap   = TRUE;/*>>TRIGGERSWAP ON BY DEFAULT<<*/
+	int HoldBreath    = TRUE;/*>>HOLDBREATH ON BY DEFAULT<<<*/
+	int AutoRun       = TRUE;/*>>AUTORUN ON BY DEFAULT<<<<<<*/
+	int AimAssist     = TRUE;/*>>AIM ASSIST ON BY DEFAULT<<<*/
+	int RapidFire     = TRUE;/*>>RAPID FIRE ON BY DEFAULT<<<*/	int RFW           = 40;//>>>>>>> RAPID FIRE WAIT TIME<<<<<<<<<<<<
+ 	int AntiRecoil    = TRUE;/*>>ANTI RECOIL ON BY DEFAULT<<*/	int ANTI_RECOIL   = 24;//>>>>>>> DEFAULT ANTI RECOIL VALUE<<<<<<<
+    int anti_recoil;            								int AR_Release    = 40;//>>>>>>> ANTI RECOIL RELEASE VALUE<<<<<<<                                                          
+    int AP       =  22;//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AIM ASSIST DOWN/RIGHT SHAKE<<<<<
+    int AM       = -22;//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AIM ASSIST UP/LEFT SHAKE<<<<<<<<
+    int Delay    =  20;//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AIM ASSIST DELAY SHAKE<<<<<<<<<<
+    int ARelease =  23;//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> AIM ASSIST RELEASE SHAKE<<<<<<<<
+
+ 		 /*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ 		 | | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
+	     +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+	main{
+	
+	if(TriggerSwap){
+		   swap(RT,RB); 	//SWAP BUMPERS/TRIGGERS
+		   swap(LT,LB);
+	}
+	if(get_val(LEFT) && event_press(LB)){ //AIM ASSIST = LEFT & LB = ON/OFF (LEFT & LT WHEN SWAPPED)
+		   AimAssist = !AimAssist;
+		   set_val(LEFT,0);
+		   set_val(LB,0);} 
+	if(AimAssist){
+	if(get_val(LT)){    	//AIM ASSIST
+ 		   combo_run(AS);}
+ 	}
+	if(HoldBreath){
+	if(get_val(LT)){		//AUTO HOLD BREATH
+		   set_val(LS,100);}
+	} 
+	if(AutoRun){
+	if(get_val(LY) == -100){//AUTO RUN
+		   set_val(LS,100);}
+	}
+    if(get_val(LEFT) && event_press(RB)){ //RAPID FIRE = LEFT & RB = ON/OFF (LEFT & RT WHEN SWAPPED)
+		   RapidFire = !RapidFire;
+		   set_val(LEFT,0);
+		   set_val(RB,0);}                                                      
+	if(RapidFire){                                                                             
+	if (get_val(LT) && get_val(RT)) {  //LT&RT  = USE RAPID FIRE <<FOR RAPID FIRE ON ONLY R2 REPLACE THE BEGINNING OF THIS LINE WITH>>   if (get_val (RT)){                              
+		   combo_run(RapidFire);}
+	}
+	if(get_val(LT) && event_press(LB)){ //ANTI RECOIL = LT & LB = ON/OFF 
+           AntiRecoil = !AntiRecoil;
+           set_val(LB,0);
+    }              
+    if (AntiRecoil){ 
+    if (get_val(LT) && event_press(LEFT)){     ////>>>> L2 & LEFT = RECOIL (24) <<< WILL ALWAYS REVERT RECOIL BACK TO THIS VALUE         
+           ANTI_RECOIL =  100 - 76 ;//== 24 RECOIL == MAKE EQUATION EQUAL TO THE DEFAULT VALUE
+           set_val(LEFT,0);
+    }              
+    if (get_val(LT) && event_press(UP)){        ////>>>> L2 & UP = RECOIL (30)  <<< WILL ALWAYS REVERT RECOIL BACK TO THIS VALUE      
+           ANTI_RECOIL = 100 - 70 ;//== 30 RECOIL
+           set_val(UP,0);
+    } 
+    if (get_val(LT) && event_press(RIGHT)){     ////>>>> L2 & RIGHT = RECOIL (34)<<< WILL ALWAYS REVERT RECOIL BACK TO THIS VALUE          
+           ANTI_RECOIL = 100 - 66;//== 34 RECOIL
+           set_val(RIGHT,0);
+    }
+    if(get_val(A) && event_press(UP)){			////>>>> A & UP = RECOIL  +1 TO THE CURRENT VALUE
+           ANTI_RECOIL = ANTI_RECOIL + 1;//<<SET THE NUMBER TO INCREASE BY
+           set_val(UP,0);
+           set_val(A,0);
+    }
+    if(get_val(A) && event_press(DOWN)){ 		////>>>> A & DOWN = RECOIL  -1 TO THE CURRENT VALUE
+           ANTI_RECOIL = ANTI_RECOIL - 1;//<<SET THE NUMBER TO DECREASE BY
+           set_val(DOWN,0);
+           set_val(A,0);
+    }
+    if(get_val(LT) && get_val(RT)){		//<< RECOILS IN USE USING LT & RT (LB & RB WHEN SWAPPED)
+  	       combo_run(AntiRecoil);}
+    }
+    if(abs(get_val(10))> AR_Release || abs(get_val(9))> AR_Release){ 
+        	combo_stop (AntiRecoil);}                                        
+  }                                                                   
+                             
+ 		 /*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+		 | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+		 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+                                   
+    combo AS{ 
+    	set_val(10,a_f(10,AP));
+    wait(Delay)
+    	set_val(9,a_f(9,AP));
+    wait(Delay)
+    	set_val(10,a_f(10,AM));
+    wait(Delay)
+    	set_val(9,a_f(9,AM));
+    wait(Delay)
+}                                                      
+	combo RapidFire{                                                                            
+		set_val(RT, 100);                                                                     
+	wait(120);                                                                                   
+		set_val(RT, 0);                                                                       
+	wait(RFW);
+}                                         
+   	combo AntiRecoil{                                   
+    if(AntiRecoil){                               
+	     anti_recoil = get_val(RY) + ANTI_RECOIL;        
+	if(anti_recoil >100) anti_recoil = 100;        
+	     set_val(RY, anti_recoil);}                                                
+} 
+    function a_f(p,m) {
+    if(abs(get_val(p)) < ARelease)
+    return m;
+    return get_val(p);
+}

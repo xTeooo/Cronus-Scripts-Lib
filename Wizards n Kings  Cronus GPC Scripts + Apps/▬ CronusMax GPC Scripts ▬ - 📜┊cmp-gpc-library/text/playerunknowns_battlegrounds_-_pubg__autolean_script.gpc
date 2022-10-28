@@ -1,0 +1,72 @@
+// GPC Online Library
+// playerunknown's_battlegrounds_-_pubg_|_autolean_script.gpc
+
+/******************************************************************
+*	PUBG Xbox One AutoLean (Left/Right) Script for CronusMax
+*
+*   Toggle Leaning Left/Right While ADS With Rumble Notify On/Off.
+*
+*   Made For Type-B Controller Layout (LT = ADS & LB = TARGETING)
+*
+*	Created by UnKnownEntity
+*
+******************************************************************/
+
+define ADS_BTN			     = XB1_LT;
+define TARGETING_BTN	     = XB1_LB;
+define LEFT_STICK			 = XB1_LS;
+define RIGHT_STICK			 = XB1_RS;
+
+int autolean_Right_onoff     = FALSE;
+int autolean_Left_onoff      = FALSE;
+
+int rumble_type;
+
+int ADS_Val = 75;// Adjust If You Have Hair Triggers
+
+main {
+
+    if(get_val(ADS_BTN) && event_press(RIGHT_STICK))
+    {
+        autolean_Right_onoff = !autolean_Right_onoff;
+		autolean_Left_onoff = FALSE;
+		set_rumble_type(autolean_Right_onoff);
+    }
+        
+    if (autolean_Right_onoff)
+    {
+	    if((get_val(ADS_BTN)) >= ADS_Val || get_val(TARGETING_BTN))
+	    {
+    	    set_val(RIGHT_STICK, 100);
+    	}
+    }
+		
+    if(get_val(ADS_BTN) && event_press(LEFT_STICK))
+    {
+        autolean_Left_onoff = !autolean_Left_onoff;
+		autolean_Right_onoff = FALSE;
+        set_rumble_type(autolean_Left_onoff);
+    }
+        
+    if (autolean_Left_onoff)
+    {
+	    if((get_val(ADS_BTN)) >= ADS_Val || get_val(TARGETING_BTN))
+	    {
+    	    set_val(LEFT_STICK, 100);
+    	}
+    }
+
+}
+
+// COMBO BlOCKS
+combo vibrate {                                      
+    set_rumble(rumble_type, 100);                    
+    wait(400);                                       
+    reset_rumble();                                  
+}                                                    
+ 
+function set_rumble_type ( val) {                    
+    if( val) rumble_type = RUMBLE_A ;                
+    else   rumble_type = RUMBLE_B ;                  
+    combo_run(vibrate);                              
+}

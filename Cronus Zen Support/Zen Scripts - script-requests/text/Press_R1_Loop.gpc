@@ -1,0 +1,38 @@
+define Time_Between_Shots = 1500;
+define Times_To_Run = 40;
+
+
+
+int toggle;
+int runs;
+
+
+
+main {
+
+
+  if(event_press(PS4_DOWN))
+    toggle = !toggle;
+
+  if(toggle && runs < Times_To_Run) {
+    combo_run(Press_R1);
+    set_hsb(112,100,75);
+  }
+  else {
+    combo_stop(Press_R1);
+    runs = 0;
+    toggle = FALSE;
+    set_hsb(1,100,75);
+  }
+
+
+}
+
+
+
+combo Press_R1 {
+  set_val(PS4_R1,100);
+  wait(40);
+  wait(Time_Between_Shots);
+  runs ++;
+}

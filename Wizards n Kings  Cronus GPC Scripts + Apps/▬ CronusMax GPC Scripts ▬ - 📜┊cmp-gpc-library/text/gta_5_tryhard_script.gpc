@@ -1,0 +1,321 @@
+// GPC Online Library
+// gta_5_tryhard_script.gpc
+
+ 
+ /*
+ = = = = = = = = = = = = = = = = = = = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = /\/\/\  Made By ItzSnack  /\/\/\  = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = = = = = = = = = = = = = = = = = = = 
+
+ ================                                                        
+ === FEATURES ===
+ ================
+ Auto Run
+ Auto Roll
+ Fast Ballistic Equipment
+ Fast Bull Shark
+ RPG Rapid Fire
+ Hair Trigger
+ 
+ =================
+ === Important ===
+ =============================================================
+ === Some features will have to be turned on in the script ===
+ =============================================================
+ 
+ ===================================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                           ===
+ ===================================================================================
+ === Double TAP RIGHT For Fast Bullshark                                         ===
+ ===================================================================================
+ === Double TAP LEFT For Fast Ballistic Equipment Must be on line 6              ===
+ ===================================================================================
+ === Hold L2/LT And Press OPTIONS For Strafe                                     ===
+ === 1 Rumbles = ON 2 = OFF                                                      ===
+ ===================================================================================
+ === Hold L1/LB And Press R3/RS For RPG Rapid Fire                               ===
+ === 1 Rumbles = ON 2 = OFF                                                      ===
+ === Must be in First Person - Not Stable                                        ===
+ ===================================================================================
+ === Hold L1/LB And Press UP For Auto Roll                                       ===
+ === 1 Rumbles = ON 2 = OFF                                                      ===
+ ===================================================================================
+ */
+
+    //Layout
+    define PS = 0;
+    define SHARE = 1;
+    define OPTIONS = 2;   
+    define R1 = 3;
+    define R2 = 4;        
+    define R3 = 5;        
+    define L1 = 6;       
+    define L2 = 7;      
+    define L3 = 8;    
+    define RX = 9;       
+    define RY = 10;      
+    define LX = 11;       
+    define LY = 12;      
+    define UP = 13;       
+    define DOWN = 14;    
+    define LEFT = 15; 
+    define RIGHT = 16;
+    define TRIANGLE = 17;
+    define CIRCLE = 18;  
+    define CROSS = 19;   
+    define SQUARE = 20
+    define TOUCHPAD = 27;
+
+    //Customize
+    int Flipped = OFF; //Change OFF TO ON If you play with Flipped Triggers
+    int RUN = OFF; //Change OFF TO ON If you want Auto Run
+    int HT = ON; //Change ON TO OFF If you don't want Hair Triggers
+    int RUN_Button = CROSS; //Your run button
+    
+    //Speed Of Features
+    int RUN_Speed = 40; //Auto Run Speed
+    int ROLL_Speed = 600; //Auto Roll Speed
+    /*NOTE:
+    Higher values = Slower
+    Lower values = Faster*/
+    
+    //Toggles
+    int tap;                                                                          
+    int ST_toggle;
+    int RPG_toggle;
+    int ROLL_toggle;
+    
+    main {
+    
+    if(get_controller() == XBOX) {   
+    swap(TOUCHPAD,SHARE);}
+    
+    if(Flipped) {
+    swap(R1,R2); 
+    swap(L1,L2);}
+    
+    if(RUN)
+    if(get_val(CROSS))
+    combo_run(AutoRun);
+    
+    if(HT)
+    deadzone(R2,L2,100,100);
+    
+    if(tap)
+    tap -= get_rtime();      
+    if(event_press(RIGHT)) {
+    if(tap) 
+    combo_run(BS):
+    tap = 160;}  
+    if(event_press(LEFT)) {
+    if(tap) 
+    combo_run(BE):
+    tap = 160;}
+    
+    if(get_val(L1) && event_press(R3))  { 
+    RPG_toggle=!RPG_toggle;
+    if(RPG_toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    if(RPG_toggle && get_val(R2))
+    combo_run(RPG);else combo_stop(RPG);
+    
+    if(get_val(L1) && event_press(UP))  { 
+    ROLL_toggle=!ROLL_toggle;
+    if(ROLL_toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    if(ROLL_toggle && get_val(L2) && get_val(R2))
+    combo_run(AutoRoll);else combo_stop(AutoRoll);
+    
+    if(get_val(L2) && event_press(OPTIONS))  { 
+    ST_toggle=!ST_toggle;
+    if(ST_toggle) combo_run(Flash_ON);
+    else combo_run(Flash_OFF);}
+    if(ST_toggle && get_val(L2))
+    combo_run(Strafe);else combo_stop(Strafe);    
+    if(abs(get_val(LX)) > 20 || abs(get_val(LY)) > 20) {
+    combo_stop(Strafe);}}
+
+    combo AutoRun {
+    set_val(RUN_Button, 100);
+    wait(40);
+    set_val(RUN_Button,0);
+    wait(RUN_Speed);}
+    
+    combo AutoRoll {
+    set_val(SQUARE,0);
+    wait(ROLL_Speed);
+    set_val(SQUARE,100);
+    wait(40);}
+    
+    combo RPG {
+    wait(320);
+    set_val(L1,100);
+    set_val(RY,-70);
+    set_val(RX,-70);
+    wait(100);
+    set_val(L1,0);
+    set_val(RY,-0);
+    set_val(RX,-0);
+    wait(100);
+    set_val(L1,100);
+    set_val(RX,-100);
+    wait(100);
+    set_val(L1,0);
+    set_val(RX,-0);
+    wait(100);}
+    
+    combo Strafe {
+    set_val(LY,0); 
+    set_val(LX,-100); 
+    wait(250);
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(250);
+    set_val(LY,0); 
+    set_val(LX,-100); 
+    wait(500); 
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(500);
+    set_val(LY,0); 
+    set_val(LX,-100); 
+    wait(500);
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(250);
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(500);
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(250);
+    set_val(LY,0); 
+    set_val(LX,-100); 
+    wait(250);
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(500);
+    set_val(LY,0); 
+    set_val(LX,-100); 
+    wait(500);
+    set_val(LY,0); 
+    set_val(LX,100); 
+    wait(250);}
+    
+	combo BS {
+    set_val(TOUCHPAD,100);
+	wait(400);
+	set_val(TOUCHPAD,0);
+	wait(40);
+	set_val(CROSS,100);
+	wait(40);
+	set_val(CROSS,0);
+	wait(140);
+	set_val(UP,100);
+	wait(40);
+	set_val(UP,0);
+	wait(40);
+	set_val(UP,100);
+	wait(40);
+	set_val(UP,0);
+	wait(40);
+	set_val(UP,100);
+	wait(40);
+	set_val(UP,0);
+	wait(40);
+	set_val(CROSS,100);
+	wait(40);
+	set_val(CROSS,0);
+	wait(40);
+	set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(CROSS,100);
+    wait(40);}
+    
+    combo BE {
+    set_val(TOUCHPAD,100);
+	wait(400);
+	set_val(TOUCHPAD,0);
+	wait(40);
+	set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(CROSS,100);
+    wait(40);
+    set_val(CROSS,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(DOWN,100);
+    wait(40);
+    set_val(DOWN,0);
+    wait(40);
+    set_val(CROSS,100);
+    wait(40);
+    set_val(CROSS,0);
+    wait(80);
+    set_val(CROSS,100);
+    wait(40);
+    set_val(CROSS,0);
+    wait(40);}
+	
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();
+    reset_leds();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();
+    reset_leds();}
+ 
+    function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+    
+    define ON = TRUE;
+    define OFF = FALSE;
+    define XBOX = PIO_XB1;

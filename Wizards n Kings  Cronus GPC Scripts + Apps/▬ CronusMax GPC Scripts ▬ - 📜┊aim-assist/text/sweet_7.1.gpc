@@ -1,0 +1,297 @@
+//###################################### Sweet_EviL_14 V7.10 ######################################
+//################################################################################################# 
+//################################################################################################# 
+//#######################################  Script parameters ###################################### 
+//################################################################################################# 
+ 
+ 
+//################################################################################################# 
+//
+// State machine variable
+// 
+	int Current_State          = 0;
+	int Aim_Abuse_State      = 2;
+ 
+ 
+	define Get_Last_Value     = 0;
+	define Get_Current_Value = 1;
+	define Aim_Correction      = 2;
+	define Aim_Boost          = 3;
+ 
+	define Aim_Perfection_Limit = 60;
+ 
+//
+//################################################################################################# 
+//######################################### Script variable ####################################### 
+//################################################################################################# 
+//
+// Dont't change!
+//
+	int X_Last_Value     = 0;
+	int Y_Last_Value     = 0;
+	int X_Current_Value  = 0;
+	int Y_Current_Value  = 0;
+ 
+	int mvt = 0;
+	int Aim_Boost_Val = 0; 
+	int Aim_Correction_Val = 0;
+//
+//################################################################################################# 
+//####################################### Batts anti-recoil ####################################### 
+//################################################################################################# 
+//
+//--Anti-Recoil Progression Adjustable Transition Point
+//
+//################################################################################################# 
+//
+//--Anti-Recoil values go from Starting_Anti_Recoil_Value to Mid_Point_Anti_Recoil_Value over Progression_Point_Percent of Total_Anti_Recoil_Time
+//--Anti-Recoil values then go from Mid_Point_Anti_Recoil_Value to Ending_Anti_Recoil_Value for the remaining Total_Anti_Recoil_Time percent 
+//--Ending_Anti_Recoil_Value is then applied until trigger release.
+//
+//--Zero's out controller input of less than 10
+//
+//################################################################################################# 
+// 
+//--Adjust These Values
+    define    Starting_Anti_Recoil_Value  = 20;    //--postive values only
+    define    Mid_Point_Anti_Recoil_Value = 28;
+    define    Ending_Anti_Recoil_Value    = 10;
+    define    Total_Anti_Recoil_Time      = 2500;  //-- 10ms increments (min - 2000)
+    define    Progression_Point_Percent   = 30;    //--percentage of total time to transition to mid to end values 10% increments
+//
+//################################################################################################# 
+//
+//--Do not alter sequence of the variables below.  Script uses in-direct reference to access the values (ex... inc[0] = inc , inc[1] = inc_2)
+//
+//################################################################################################# 
+//
+    int p,inc,inc_2,pr,pr_2,vm,vm_2; 
+    int loops,loops_2,vm_count,p_count,v,ar_y;
+//
+//################################################################################################# 
+//
+init {
+    loops = (Total_Anti_Recoil_Time / 100) * (Progression_Point_Percent / 10);
+    loops_2 = (Total_Anti_Recoil_Time / 10) - loops;
+    if(Starting_Anti_Recoil_Value < Mid_Point_Anti_Recoil_Value)
+        inc = 1;
+    else
+        inc = -1;
+    if(Mid_Point_Anti_Recoil_Value < Ending_Anti_Recoil_Value)
+        inc_2 = 1;
+    else
+        inc_2 = -1;
+    pr = abs(Starting_Anti_Recoil_Value - Mid_Point_Anti_Recoil_Value);
+    pr_2 = abs(Mid_Point_Anti_Recoil_Value - Ending_Anti_Recoil_Value);
+    vm = loops / pr;
+    vm_2 = loops_2 / pr_2;
+} 
+//
+//################################################################################################# 
+//############################################# MAIN ############################################## 
+//################################################################################################# 
+//
+main
+{
+ //update main every 8ms --> only for PS4
+   // vm_tctrl(-2); 
+ 
+    //--LT pulled 
+ 
+        if(get_val(PS4_L2)) 
+        {        
+            if (Current_State == Get_Last_Value)
+            {
+                X_Last_Value = get_lval(PS4_RX);
+                Y_Last_Value = get_lval(PS4_RY);
+ 
+                Current_State = Get_Current_Value;
+ 
+            }
+            else if (Current_State == Get_Current_Value)
+            {
+                X_Current_Value = get_val(PS4_RX);
+                Y_Current_Value = get_val(PS4_RY);
+ 
+                if(Aim_Abuse_State == Aim_Correction)
+                {    
+                    Current_State = Aim_Boost;
+                }
+                else
+                {
+                    Current_State = Aim_Correction;
+                }    
+            }
+            if (Current_State == Aim_Boost)
+            {
+                //Applying BOOST
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Boost;  
+            }
+            else if (Current_State == Aim_Correction)
+            {
+                //Applying CORRECTION
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Correction; 
+            } 
+        }
+        else //--LT not pulled
+        {
+            Current_State = Get_Last_Value;
+            Aim_Abuse_State = Aim_Correction; 
+        }
+ 
+//
+//################################################################################################# 
+//####################################### Batts anti-recoil ####################################### 
+//################################################################################################# 
+//
+		//--reset counters/pointers
+		if(!get_lval(PS4_R2)) 
+		{
+			p = 0;
+			vm_count = 0;
+			p_count = 0;
+			ar_y = Starting_Anti_Recoil_Value;
+		}
+ 
+		    //--anti recoil
+		if((get_val(PS4_R2) && !get_val(PS4_L2)) ||
+		((get_val(PS4_R2) && get_val(PS4_L2) && (Current_State == Get_Current_Value || Current_State == Get_Last_Value)))) 
+		{
+			p = p_cycle();
+			if(p != -1)
+				ar_y = p_val();
+			else
+				ar_y = Ending_Anti_Recoil_Value;
+			set_val(PS4_RY,y_val());
+		}  
+}
+//
+//################################################################################################# 
+//############################################# FUNC ############################################## 
+//################################################################################################# 
+//           
+ 
+function 
+Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) 
+    { 
+       mvt = abs(Last_Value) + abs(Current_Value);
+       Aim_Boost_Val = ( mvt + 1 )/2; //Rounding integer division (instead of truncating)
+       Aim_Correction_Val = Aim_Boost_Val + 4;
+ 
+       if(Aim_Boost_Val >= 10)
+       {
+           Aim_Boost_Val = 10;
+           Aim_Correction_Val = 14;
+       }
+       else if(Aim_Boost_Val == 0)
+       {
+            Aim_Boost_Val = 2
+            Aim_Correction_Val = 4;
+       }
+ 
+ 
+       if(mvt < Aim_Perfection_Limit) 
+       {
+            //--moving right
+            if(Last_Value < Current_Value)
+            {           
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Correction_Val));            
+                }
+            }
+            else //--moving left
+            {
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Correction_Val));            
+                }
+            }
+        }
+    } 
+ 
+//
+//################################################################################################# 
+//####################################### Batts anti-recoil ####################################### 
+//################################################################################################# 
+//	
+		//--return progression index
+	function 
+	p_cycle() 
+	{ 
+		vm_count++;
+		if (vm_count > loops[p]) 
+		{ 
+			if(!p) 
+			{
+				vm_count = 0;
+				return 1;
+			}
+			else
+			{
+				vm_count = loops_2; 
+				return -1;
+			} 
+		 }
+		 return p;
+	}
+	//--return current ar val
+	function 
+	p_val() 
+	{
+		p_count++;
+		if(p_count == vm[p]) 
+		{
+			p_count = 0;
+			ar_y += inc[p];
+		}
+		return ar_y;
+	}
+	//--return ar val + input or input if above release
+	function y_val() 
+	{
+		v = get_val(PS4_RY);
+		if(abs(v) < 10)
+			v = 0;
+		if(abs(v) > ar_y + 5)
+			return v;
+		return v + ar_y;           
+	}
+//
+//################################################################################################# 
+//############################################# END ############################################### 
+//#################################################################################################

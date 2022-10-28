@@ -1,0 +1,160 @@
+/*                              █████████████████████████████████████████████████████████████████████████
+                                ██                                                                     ██ 
+                                ██        m3344j                    snap//mjoood1211                   ██
+                                ██    Discord-- https://discord.gg/Wpjnwe6                             ██
+                                ██                                                                     ██
+                                █████████████████████████████████████████████████████████████████████████
+                                
+*/                               
+define 		R_X = 9; 	define 		R_Y = 10; 	define 		L_X = 11; 	define 		L_Y = 12;
+int Mjood15 = FALSE;	// DROP SHOT ***** L2 & LEFT ON/OFF SWITCHES OFF ON BUILD*****
+int Mjood = FALSE;      // RAPID FIRE O *****L2 & DOWN ON/OFF SWITCHES OFF ON BUILD OR PICKAXE***** 
+int FCB55= FALSE		// PUMP SWAP ***** L2 & RIGHT ON/OFF SWITCHES OF ON BUILD L2 TRIGGERS*****
+int FCB5 = FALSE;       // PUMP SWAP ***** L2 & RIGHT ON/OFF SWITCHES OF ON BUILD R2 TRIGGERS*****
+int m3344j4  = TRUE;	// AIM ASSIST ON
+int m3344j   = 144 ;	// AIM ABUSE HOLD TIME******
+int m3344j1  = 20 ;		// AIM ABUSE RELEASE TIME*****
+int m3344j5  = 19;		// AIM ASSIST STRENGTH
+int m3344j6  = 17;		// AIM ASSIST DELAY
+int aa_delay 			// RAPID FIRE = 0
+int mm 					// BUILD TRACK
+int H_6a;
+int a,b;
+int num, i
+int Col_ind;
+int colourled
+data(1,2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2,2,0,2,0,0,2,2,0,2,2,2,2,0,2,2,0,0,0,0,0);
+
+
+main {
+if (get_val(18)){				   //CIRCLE = BUILD TRACK ***TURNS MODS OFF/ON***
+     combo_run(mm);
+	 combo_stop(mm);
+if (!mm)colourled(2);
+}
+if(get_val(7) && event_press(14)){ //L2&&DOWN
+   Mjood =! Mjood;
+if(Mjood == TRUE){combo_run(Notify);a=0;b=2;}
+if(Mjood == FALSE){combo_run(Notify);a=2;b=0;}
+if (!Mjood)colourled(1);
+if (Mjood) colourled(3);
+}
+if(Mjood){
+if(get_val(4)){					   //R2 RAPID FIRE = TAP 0
+    combo_run(Mjood);}                                          
+}
+if (get_val(17)){				   //TRIANGLE =OFF
+if (!Mjood)colourled(1);
+       Mjood = FALSE;
+}
+if(get_val(7) && event_press(15)){ //L2&LEFT = DROP SHOT ON/OFF
+   Mjood15 =! Mjood15;
+if(Mjood15 == TRUE){combo_run(Mjood19);a=0;b=2;}
+if(Mjood15 == FALSE){combo_run(Mjood19);a=2;b=0;} 
+if (!Mjood15)colourled(1);
+if (Mjood15) colourled(3);}
+if(Mjood15){
+if(get_val(4)){						//R2 = RUN DROP SHOT
+   combo_run(Mjood15);} 
+} 
+if (get_val(18)){					//CIRCLE = DROP SHOT OFF WILL REQUIRER TURNING BACK ON
+   Mjood15 = FALSE;}
+      
+if(get_val(7) && event_press(16)){	//L2&RIGHT PUMP SWAP
+   FCB5 =! FCB5;
+   FCB55 =! FCB55;
+if(FCB5&&FCB55 == TRUE){combo_run(Notify);a=0;b=2;}
+if(FCB5&&FCB55 == FALSE){combo_run(Notify);a=2;b=0;} 
+if (!FCB5)colourled(1);
+if (FCB5) colourled(3);
+}
+if(FCB5){
+if(get_val(4)){		//R2 RUNS IT
+	combo_run(FCB5);}
+}
+if(FCB55){
+if (get_val(6)){	//L1 KEEP RUNNING
+     FCB5=TRUE
+if (FCB5) colourled(3);
+}
+
+if(get_val(7)> 85){	 //AIM ABUSE2\\
+    combo_run(m3344j7);}
+if(event_release(7)){ combo_stop(m3344j7);
+}
+if (m3344j4) {	     //AIM ASSIST\\
+if (get_val(7)> 95){ combo_run(m3344j4);}
+}
+if (abs(get_val(R_X)) > 19 || abs(get_val(R_Y)) > 19){ 
+	combo_stop(m3344j4);}
+}
+if(get_val(7)> 85){  //AIM ABUSE\\
+    combo_run(m3344j2);}
+}
+   
+
+combo m3344j2 {		  //AIM ABUSE\\
+set_val(7,100);		  //L2
+wait(m3344j);
+set_val(7,0);
+wait(m3344j1);
+}
+combo m3344j4  {	 //AIM ASSIST\\
+set_val(R_Y, (m3344j5)); wait(m3344j6)
+set_val(R_X, (m3344j5)); wait(m3344j6)
+set_val(R_Y, m3344j5 * -1); wait(m3344j6)
+set_val(R_X, m3344j5 * -1); wait(m3344j6)
+}
+combo m3344j7 {		  //AIM ABUSE2\\
+wait(1000);
+set_val(7,0);		//L2
+wait(50);
+set_val(7,100);
+wait(50);
+}
+combo FCB5 { 
+wait(50);
+set_val(4, 100);	//R2 PUMP
+wait(50);
+set_val(4, 0);
+wait(50);
+set_val(3, 100);	//R1 SWAP
+wait(50);
+set_val(3, 0);
+wait(50);
+FCB5 = FALSE;
+if (!FCB5)colourled(1);
+}
+combo Notify {
+set_rumble(RUMBLE_B, 100);
+wait(300);
+reset_rumble();
+}
+function colourled(Colour) {
+Col_ind = (Colour * 4) - 3;
+set_led(LED_1, dbyte(Col_ind));
+set_led(LED_2, dbyte(Col_ind + 1));
+set_led(LED_3, dbyte(Col_ind + 2));
+set_led(LED_4, dbyte(Col_ind + 3));
+}
+combo Mjood15 { 
+set_val(5,100);		  //R3
+wait(27);
+wait(115);
+set_val(5,100);
+}
+combo Mjood19 {
+set_rumble(RUMBLE_B, 100);
+wait(300);
+reset_rumble();
+}
+combo Mjood {          //R2
+set_val(4,100);
+wait(aa_delay);
+set_val(4,0);
+}
+combo mm {			   //KILL MODS
+FCB5 = FALSE
+FCB55 = FALSE
+Mjood15 = FALSE
+}

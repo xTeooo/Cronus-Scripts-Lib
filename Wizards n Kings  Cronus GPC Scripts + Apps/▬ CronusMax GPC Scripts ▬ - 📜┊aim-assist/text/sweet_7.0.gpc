@@ -1,0 +1,178 @@
+//###################################### Sweet_EviL_14 V7.00 ######################################
+//################################################################################################# 
+//################################################################################################# 
+//#######################################  Script parameters ###################################### 
+//################################################################################################# 
+ 
+ 
+//################################################################################################# 
+//
+// State machine variable
+//
+ 
+ 
+int Current_State          = 0;
+int Aim_Abuse_State      = 2;
+ 
+ 
+define Get_Last_Value     = 0;
+define Get_Current_Value = 1;
+define Aim_Correction      = 2;
+define Aim_Boost          = 3;
+ 
+ 
+define Aim_Perfection_Limit = 60;
+ 
+ 
+//
+//################################################################################################# 
+//######################################### Script variable ####################################### 
+//################################################################################################# 
+//
+// Dont't change!
+//
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+ 
+int mvt = 0;
+int Aim_Boost_Val = 0; 
+int Aim_Correction_Val = 0;
+ 
+ 
+//
+//################################################################################################# 
+//############################################# MAIN ############################################## 
+//################################################################################################# 
+//
+main
+{
+ //update main every 8ms --> only for PS4
+   // vm_tctrl(-2); 
+ 
+    //--LT pulled 
+ 
+        if(get_val(PS4_L2)) 
+        {        
+            if (Current_State == Get_Last_Value)
+            {
+                X_Last_Value = get_lval(PS4_RX);
+                Y_Last_Value = get_lval(PS4_RY);
+ 
+                Current_State = Get_Current_Value;
+ 
+            }
+            else if (Current_State == Get_Current_Value)
+            {
+                X_Current_Value = get_val(PS4_RX);
+                Y_Current_Value = get_val(PS4_RY);
+ 
+                if(Aim_Abuse_State == Aim_Correction)
+                {    
+                    Current_State = Aim_Boost;
+                }
+                else
+                {
+                    Current_State = Aim_Correction;
+                }    
+            }
+            if (Current_State == Aim_Boost)
+            {
+                //Applying BOOST
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Boost;  
+            }
+            else if (Current_State == Aim_Correction)
+            {
+                //Applying CORRECTION
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Correction; 
+            } 
+        }
+        else //--LT not pulled
+        {
+            Current_State = Get_Last_Value;
+            Aim_Abuse_State = Aim_Correction; 
+        }
+}
+//
+//################################################################################################# 
+//############################################# FUNC ############################################## 
+//################################################################################################# 
+//           
+ 
+function 
+Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) 
+    { 
+       mvt = abs(Last_Value) + abs(Current_Value);
+       Aim_Boost_Val = ( mvt + 1 )/2; //Rounding integer division (instead of truncating)
+       Aim_Correction_Val = Aim_Boost_Val + 4;
+ 
+       if(Aim_Boost_Val >= 10)
+       {
+           Aim_Boost_Val = 10;
+           Aim_Correction_Val = 14;
+       }
+       else if(Aim_Boost_Val == 0)
+       {
+            Aim_Boost_Val = 2
+            Aim_Correction_Val = 4;
+       }
+ 
+ 
+       if(mvt < Aim_Perfection_Limit) 
+       {
+            //--moving right
+            if(Last_Value < Current_Value)
+            {           
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Correction_Val));            
+                }
+            }
+            else //--moving left
+            {
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value - Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value - Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(PS4_RX, (Current_Value + Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(PS4_RY, (Current_Value + Aim_Correction_Val));            
+                }
+            }
+        }
+    } 
+//
+//################################################################################################# 
+//############################################# END ############################################### 
+//#################################################################################################

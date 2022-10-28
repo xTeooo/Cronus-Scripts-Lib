@@ -1,0 +1,350 @@
+// GPC Online Library
+// auxzifys__v23_leak.gpc
+
+/*
+_______________________________________________________________________________________________________
+| Please Read:                                                                                         |
+|              Current Version: V23                                                                    |
+|------------------------------------------------------------------------------------------------------|
+|              Description:                                                                            |
+|                          I created this script for the community. I enjoyed using community scripts  |
+|                          however I thought I'd have a go and create my own and it came out so much   |
+|                          better than I expected! The Aim Abuse is basically a flawless lock on and   |
+|                          it has even locked onto people through walls for me. I say all this whilst  |
+|                          being humble, this is the best script I have ever used. I appreciate all of |
+|                          the script makers in the community and I appreciate what they have done for |
+|                          us. If anyone has a problem with my script, please contact my discord.      |
+|------------------------------------------------------------------------------------------------------|
+|              Copyright Act 1978:                                                                     |
+|                                                                                                      |
+|                        The "Fair Use" doctrine allows limited copying of copyrighted works for       |
+|                        educational and research purposes. The copyright law provides that            |
+|                        reproduction "for purposes such as criticism, news reporting, teaching        |
+|                        (including multiple copies for classroom use), scholarship, or research" is   |
+|                        not an infringement of copyright. = If your code was used, I will credit      |
+|                        where ever needed.                                                            |
+|______________________________________________________________________________________________________|
+
+/*
+__________________________________________________________________________________________
+| TRUE = ON | FALSE = OFF                                                                 |
+|                                                                                         |
+| This only effects if the modification is enabled or disabled at the start of the script |
+|_________________________________________________________________________________________|
+*/
+
+//Headshot Assist - When changing from FALSE/TRUE, make sure you change the combos to TRUE aswell - lines 153 & 159.
+int HeavyHeadshot = TRUE; //- Temporary Disabled
+int SoftHeadshot = TRUE; //- Temporary Disabled
+
+//Dropshot
+int Dropshot          = FALSE;
+int DefenseMode       = FALSE;
+int AttackMode        = TRUE;
+
+//Auto Pick Up --- Enable "Tap to interact" in your Fortnite Settings if you can not open chests, llamas, etc.
+define Speed          = 50
+
+//Hair Trigger
+int HairTrigger       = TRUE;      
+
+//Anti Recoil
+int AntiRecoil        = FALSE;
+int antirecoil
+int antirecoilA       = 21;
+int antirecoilB       = 28;
+int delayA            = 14;                               
+
+//Ghost Peek
+int GhostPeek         = TRUE;
+int GhostPeek_R       = 111;
+
+//Aim Assist -- Always on
+int AimAssist         = FALSE;
+int aav               = 19;// AIM ASSIST VALUES
+int aav2              = -19;//AIM ASSIST VALUES
+
+int value             = 19;
+int value2            =-19;
+int delay             = 20;
+
+//Aim Abuse
+int AimAbuse          = TRUE;
+int AimAbuse_HOLD     = 250; //How long you HOLD ADS Button
+int AimAbuse_RELEASE  = 25;//How long you release ADS Button
+
+//100% Accuracy
+int PerfectAccuracy   = TRUE;
+ 
+//Rumble
+int rumble_type       = RUMBLE_A;
+int Notify            = TRUE
+
+//Jitter
+int Jitter            = FALSE;
+
+//LED
+int a; int b;
+
+//Layout
+define FIRE_BTN = 4;    //XB1_RB //PS4_R2
+define ADS_BTN = 7;     //XB1_LB //ADS_BTN
+define CROUCH_BTN = 5;  //XB1_RS //PS4_R3
+define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE
+define SPRINT_BTN = 8;  //XB1_LS //PS4_L3
+define JUMP_BTN = 19;   //XB1_A  //PS4_CROSS
+define NEXT_PIECE = 3;  //XB1_RT //PS4_R1
+define RIGHT_BUMP = 3;  // XB1_RB //PS4_R1
+define LEFT_BUMP = 6;   //ADS_BTN //PS4_L1
+define SWAP_BTN = 17;   //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18;  //XB1_B  //PS4_CIRCLE
+define R_X = 9;         //XB1_R_X //PS4_R_X
+define R_Y = 10;        //XB1_R_Y //PS4_R_Y
+define L_X = 11;        //XB1_L_X //PS4_L_X
+define L_Y = 12;        //XB1_L_Y //PS4_L_Y
+define UP = 13;         //XB1_UP //PS4_UP
+define DOWN = 14;       //XB1_DOWN //PS4_DOWN
+define LEFT = 15;       //XB1_LEFT //PS4_LEFT
+define RIGHT = 16;      //XB1_RIGHT //PS4_RIGHT
+  
+ main {
+
+//HEAVY HEADSHOT
+if(get_val(ADS_BTN) && get_ptime(ADS_BTN)> 150 && !HeavyHeadshot)combo_run(HeavyHeadshot);
+ 
+    if(event_release(ADS_BTN)){
+        HeavyHeadshot = TRUE;
+    }
+
+//SOFT HEADSHOT
+if(get_val(ADS_BTN) && get_ptime(ADS_BTN)> 150 && !SoftHeadshot)combo_run(SoftHeadshot);
+ 
+    if(event_release(ADS_BTN)){
+        SoftHeadshot = TRUE;
+    }
+    
+//AUTO PICK UP
+if (get_val(RELOAD_BTN)){
+    combo_run(AutoPickUp);
+    } 
+    
+//AIM ASSIST
+if (AimAssist) {
+   if (get_val(ADS_BTN)) {
+   combo_run(AimAssist);}}
+   if (get_val(R_X)<value2||get_val(R_X)>value||get_val(R_Y)<value2||get_val(R_Y)>value||get_val(R_X)<value2||get_val(R_X)>value||get_val(R_Y)<value2||get_val(R_Y)>value){
+         combo_stop(AimAssist);}
+         
+
+//HAIR TRIGGER
+if(HairTrigger){ 
+   if(get_val(FIRE_BTN))
+   set_val(FIRE_BTN, 100);
+   }
+         
+//ANTI-RECOIL      
+if(AntiRecoil){
+  if(get_val(FIRE_BTN) && get_val(ADS_BTN)){combo_run(Antirecoil);}
+  if(get_rumble(RUMBLE_A) <= 50){antirecoil = antirecoilA;}
+  if(get_rumble(RUMBLE_A) > 50){antirecoil = antirecoilB;}
+  if(abs(get_val(R_Y)) >= antirecoil+ 10){combo_stop(Antirecoil);}}
+         
+//100% ACCURACY
+if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+  combo_run(PerfectAccuracy);
+  combo_run(Notify);a=4;b=2;
+set_val(RIGHT_BUMP, 0);
+      } else {
+  combo_stop(PerfectAccuracy);
+}
+     
+//AIM ABUSE
+if(get_val(ADS_BTN) && event_press(LEFT)){
+   AimAbuse =! AimAbuse; 
+   if(AimAbuse == TRUE){combo_run(Notify);a=0;b=2;} 
+   if(AimAbuse == FALSE){combo_run(Notify);a=2;b=0;}
+    rumble_A_if_true(AimAbuse);
+}
+
+if(AimAbuse){
+   if(get_val(ADS_BTN)> 95){
+      combo_run(AimAbuse);}
+   if(event_release(ADS_BTN)){ combo_stop(AimAbuse);
+}
+
+//Ghost Peek
+if (GhostPeek) { 
+ if (get_val(ADS_BTN)) {if (get_val(LEFT_BUMP)) {
+ combo_run(GhostPeek); }
+ set_val(LEFT_BUMP, 0);
+}
+}}
+
+//Jitter
+if (get_val(ADS_BTN) && event_press(DOWN)) {
+        Jitter = !Jitter;
+    }
+    
+    if (event_press(NEXT_PIECE) || event_press(LEFT_BUMP) || event_press(ADS_BTN)) {
+        Jitter = FALSE;
+    }
+ 
+if (Jitter) {
+        if(get_val(FIRE_BTN)){
+            set_val(FIRE_BTN, 0);
+            combo_run(Jitter);
+        } else {
+            combo_stop(Jitter);
+        }
+       }    
+       
+//Dropshot
+if(get_val(ADS_BTN) && event_press(RELOAD_BTN)){
+   Dropshot =! Dropshot;
+   if(Dropshot == TRUE){combo_run(Notify);a=0;b=2;}
+   if(Dropshot == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(Dropshot){
+      if(DefenseMode){if(get_val(FIRE_BTN)==0&&get_rumble(RUMBLE_A)||get_rumble(RUMBLE_B)){combo_run(Dropshot);}}
+      if(AttackMode){if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);}}
+      }
+   }
+
+    
+
+//LEDs.
+// If the LED flashes Green, you have enabled a modification.
+// If the LED flashes Red, you have disabled a modification.
+// If the LED flashes Yellow, you are using an un-togglable modification.
+
+combo Notify {
+if(Notify){set_rumble(RUMBLE_B,65);}
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+}
+
+combo HeavyHeadshot {
+set_val(R_Y,-100);
+wait(30);// change this value
+HeavyHeadshot = FALSE;
+}
+
+combo SoftHeadshot {
+set_val(R_Y,-50);
+wait(25);// change this value
+SoftHeadshot = TRUE;
+}
+
+combo AutoPickUp {               
+wait(Speed);
+set_val(XB1_X, 0);
+wait(Speed);
+set_val(XB1_X, 0);
+}
+
+combo Dropshot{
+set_val(CROUCH_BTN,100);
+wait(40);
+wait(200);
+set_val(CROUCH_BTN,100);
+}
+
+combo AimAssist {
+set_val(R_Y, (aav));
+wait(delay)
+set_val(R_X, (aav));
+wait(delay)
+set_val(R_Y, (aav2));
+wait(delay)
+set_val(R_X, (aav2));
+wait(delay)
+set_val(R_Y, (aav));
+wait(delay)
+set_val(R_X, (aav));
+wait(delay)
+set_val(R_Y, (aav2));
+wait(delay)
+set_val(R_X, (aav2));
+wait(delay)
+
+}
+combo PerfectAccuracy {
+set_val(FIRE_BTN,100);
+wait(100);
+wait(250);
+set_val(FIRE_BTN,100);
+}
+
+combo AimAbuse {
+set_val(ADS_BTN, 100);
+wait(AimAbuse_HOLD);
+set_val(ADS_BTN, 0);
+wait(AimAbuse_RELEASE);
+}
+    
+combo Jitter {                    
+set_val(FIRE_BTN,  100);     
+wait(200);     
+set_val(RIGHT_BUMP,100);     
+wait(320);     
+set_val(FIRE_BTN,100);    
+wait(200);
+set_val(LEFT_BUMP,100)
+wait(320)
+}
+
+combo GhostPeek {
+set_val(CROUCH_BTN, 100);
+wait(25); wait(25);
+set_val(FIRE_BTN, 100);
+wait(25); wait(25);
+set_val(CROUCH_BTN, 100);
+wait(25); wait(GhostPeek_R);
+}
+
+combo Vibrate {
+set_rumble(rumble_type, 100);
+wait(300);
+reset_rumble();
+}
+
+combo Antirecoil {
+set_val(R_Y, antirecoil);
+wait(delayA);
+set_val(R_Y, antirecoil);
+wait(delayA);
+}
+
+function rumble_A_if_true(var) {
+if (var) rumble_type = RUMBLE_A;
+else rumble_type = RUMBLE_B;
+combo_run(Vibrate);
+}
+
+// Credits:
+             //Auxzify - Main development
+             //Everyone who purchases :)

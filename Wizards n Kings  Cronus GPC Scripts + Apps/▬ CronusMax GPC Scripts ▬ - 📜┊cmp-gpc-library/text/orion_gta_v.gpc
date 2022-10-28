@@ -1,0 +1,465 @@
+// GPC Online Library
+// orion_gta_v.gpc
+
+//----------------------
+//  Version   : 1.1
+//  Platform  : Multi                               
+//  Game      : GTA V                   
+//  Author    : Mrorion
+//---------------------
+int Menu_Button;
+int active = FALSE;
+int sprint;
+int tap;
+int tap2
+int Aim = FALSE; 
+int H = 135;
+int R = 16;
+int rumble_type = RUMBLE_A;
+int QWO   = FALSE;  
+int PassiveMode = FALSE;
+
+// Button Layout
+define VIEW_SHARE = 1;
+define MENU_OPTIONS  = 2;
+define RB_R1 =  3;
+define RT_R2 =  4;
+define RS_R3 =  5;
+define LB_L1 =  6;
+define LT_L2 =  7;
+define LS_L3 =  8;
+define RX    =  9;
+define RY    = 10;
+define LX    = 11;
+define LY    = 12;
+define UP    = 13;
+define DOWN  = 14;
+define LEFT  = 15;
+define RIGHT = 16;
+define Y_TRIANGLE = 17;
+define B_CIRCLE = 18;
+define A_CROSS = 19;
+define X_SQUARE = 20;
+define TOUCH = 27;
+/*
+Description
+-----------
+Welcome to my Gta V script made by: (Mrorion)
+Compilation completed with 0 warning(s)
+Total byte size: 3904 bytes (95.31%)
+Simple script...
+
+Auto Equip Heavy Armor
+Auto Equip Snacks
+Auto Way Out
+Rocket Spam/ Cancel Reload
+Auto Jog/Sprint
+Easy Roll
+Auto Off the Radar
+Auto Passive Mode
+Aim
+
+Script is almost at
+the Limit size 3904/4096
+no room for other
+features.
+..................
+This script Toggles
+are simple to change
+if you don't want
+to use my setup
+Look at the defines
+and add the button
+toggles you want
+EG:if(get_val(LT_L2)
+you don't want LT_L2
+change to..
+if(get_val(RT_R2)
+ect...
+...................
+
+Instructions
+------------
+// Heavy_Armor
+This will put on armor from your inventory quickly by Pressing
+LT/L2 + VIEW(XBOX)OR TOUCH (PS4)
+//Snacks 
+This will put on snacks from your iventory quickly by pressing
+LT/L2 + RB/R1 Will NOT consume any snacks
+// Quick way out
+Press LT/L2 + RIGHT to take the easy way out
+//Passive Mode
+quickly changes into or out of passive mode and leaves the interaction menu
+up so you can see what mode you're currently in LT_L2 + LEFT
+//Rocket Spam/Cancel reoload
+Make sure you have a grenade equipped in the weapon slots
+have a RPG, GRENADE LAUNCHER OR HOMING LAUNCHER IN YOUR HAND
+DOWN to enable. (Will unmap DOWN in game) RED LED = Active
+after shot a rocket hold RT then release now your explosive
+weapon is reloaded
+//Auto jog/Sprint
+hold Left Stick UP + press ones A/CROSS to jog
+hold Left Stick UP + double tap A/CROSS to sprint
+release of left stick will stop the jog/sprint
+// Easy Roll
+Double tap X/SQUARE will ROLL for you
+need to be holding a weapon
+// Off The Radar
+clicking RS/R3 will put you of the radar
+//Aim
+will aim in and out when LT/L2
+is being held down.. Default- OFF
+toggle off when in Cars
+By LT/L2 + X/SQUARE
+*/
+main{   
+
+// Heavy_Armor
+if((get_controller() == PIO_PS4) && (get_val(LT_L2)) && (get_val(PS4_TOUCH))) {
+        Menu_Button = 27;
+        combo_run(Equip_Heavy_Armor);
+    }
+if((get_controller() != PIO_PS4) && (get_val(LT_L2)) && (get_val(XB1_VIEW))) {
+        Menu_Button = 1;
+        combo_run(Equip_Heavy_Armor);}
+// End of Heavy_Armor
+       //snacks
+if((get_controller() == PIO_PS4) && (get_val(LT_L2)) && (get_val(RB_R1))) {
+        Menu_Button = 27;
+        combo_run(Snacks);
+    }
+if((get_controller() != PIO_PS4) && (get_val(LT_L2)) && (get_val(RB_R1))) {
+        Menu_Button = 1;
+        combo_run(Snacks);} 
+        //End of Snacks 
+// Quick way out
+if (get_val(LT_L2) && event_press(RIGHT)) {
+        QWO = !QWO;
+        combo_run(QWO); }
+// End of QWO
+
+//Passive Mode
+if (get_val(LT_L2) && event_press(LEFT)) {
+        PassiveMode = !PassiveMode;
+        combo_run(PassiveMode);}
+// End of Passive Mode
+
+// Rocket Spam
+if(event_press(DOWN))
+{
+active = !active
+}
+if(get_val(DOWN) == 100)
+{
+set_val(DOWN, 0)
+}
+if(active)
+{
+color(0,1,0,0)
+}
+else
+{
+color(1,0,0,0)
+}
+if(get_val(RT_R2)> 10 && active)
+{
+combo_run(Rockets)
+}
+else if(event_release(RT_R2))
+{
+combo_stop(Rockets)
+}// End of Rocket Spam
+
+//Auto jog/Sprint
+if( abs(get_val(12))>60 || abs(get_val(11))>60){
+if(event_press(A_CROSS) && tap<=0){
+tap = 300;
+if(sprint == 0) sprint = 1;
+else if(sprint == 1) sprint = 0;
+else if(sprint == 2) sprint = 0;
+}else if(event_press(A_CROSS) && tap){
+sprint = 2;
+}if(tap) tap = tap - get_rtime();
+if(sprint == 2){
+combo_run(SPRINT);
+}
+else if(sprint == 1)
+{
+set_val(A_CROSS,100);
+}
+}
+else {
+sprint = FALSE;
+sprint = FALSE;
+}if(combo_running(SPRINT) && get_val(4) || get_val(7)) { 
+combo_stop(SPRINT); 
+}// End of Jog/Sprint
+
+// Easy Roll
+if(tap2)
+        tap2 -= get_rtime();
+ 
+    if(event_press(20)) {
+        if(tap2) 
+        combo_run(Roll):
+          tap2 = 300;}
+// End of EASY roll
+
+// Off The Radar
+if(get_val(RS_R3)) combo_run(OFR);
+// End of Off The Radar
+
+//AIM
+if(get_val(LT_L2) && event_press(X_SQUARE)){
+Aim =! Aim; 
+if(Aim == TRUE){combo_run(Vibrate)}
+rumble_A_if_true(Aim);
+}
+if(Aim){
+if(get_val(LT_L2)> 95){
+combo_run(Aim);}
+if(event_release(LT_L2)){ combo_stop(Aim);
+}
+}
+}
+// Heavy_Armor
+combo Equip_Heavy_Armor {
+set_val(Menu_Button, 100);
+wait(500);
+set_val(Menu_Button, 0);
+wait(460);
+set_val(14, 100);
+wait(90);
+set_val(14, 100);
+set_val(19, 100);
+wait(20);
+set_val(14, 0);
+set_val(19, 100);
+wait(50);
+set_val(19, 0);
+wait(50);
+set_val(14, 100);
+wait(90);
+set_val(14, 0);
+wait(20);
+set_val(19, 100);
+wait(70);
+set_val(19, 0);
+wait(50);
+set_val(14, 100);
+wait(90);
+set_val(14, 0);
+wait(70);
+set_val(14, 100);
+wait(90);
+set_val(14, 0);
+wait(50);
+set_val(14, 100);
+wait(80);
+set_val(14, 0);
+wait(80);
+set_val(19, 100);
+wait(90);
+set_val(19, 0);
+}// End of Heavy_Armor
+combo QWO { // Quick way Out
+set_val(1,100);
+wait(400);
+set_val(1,0);
+wait(40);
+set_val(13, 100);
+wait(40);
+set_val(13, 0);
+wait(40);
+set_val(13, 100);
+wait(40);
+set_val(19, 100);}
+// End of Quick way out
+combo Rockets {
+wait(210)
+//Grenade Switch
+set_val(6, 100)
+wait(180)
+set_val(6, 100)
+set_val(RX, -85)
+set_val(RY, -85)
+wait(45)
+set_val(RX, 0)
+set_val(RY, 0)
+set_val(6, 0)
+wait(50)
+//RPG Switch
+set_val(6, 100)
+wait(180)
+set_val(6, 100)
+set_val(RX, -100)
+wait(45)
+set_val(6, 0) }
+// End of Rockets
+
+//Jog/Sprint
+combo SPRINT {
+set_val(19,100);
+wait(50);
+set_val(19,  0);
+wait(50);
+}// End of Jog/Sprint
+
+//Snacks
+combo Snacks {
+set_val(Menu_Button, 100);
+wait(500);
+set_val(Menu_Button, 100);
+wait(100);
+set_val(14, 100);
+wait(100);
+set_val(14, 0);
+wait(20);
+set_val(19, 100);
+wait(50);
+set_val(19, 0);
+wait(50);
+set_val(14, 100);
+wait(110);
+set_val(14, 0);
+wait(80);
+set_val(14, 100);
+wait(80);
+set_val(14, 0);
+wait(50);
+set_val(19, 100);
+wait(100);
+set_val(19, 0);
+}// End of Snacks
+combo Roll {	
+set_val(7, 100);
+wait(40);
+set_val(20, 100);
+wait(40);
+set_val(20,0);
+wait(40);
+set_val(7, 0);
+}
+//OfR
+combo OFR {
+set_val(13, 100);
+wait(130);
+set_val(13, 0);
+wait(690);
+set_val(13, 100);
+wait(70);
+set_val(13, 0);
+wait(150);
+set_val(16, 100);
+wait(110);
+set_val(16, 0);
+wait(50);
+set_val(19, 100);
+wait(100);
+set_val(19, 0);
+wait(450);
+set_val(13, 100);
+wait(100);
+set_val(13, 0);
+wait(230);
+set_val(13, 100);
+wait(100);
+set_val(13, 0);
+wait(190);
+set_val(13, 100);
+wait(90);
+set_val(13, 0);
+wait(190);
+set_val(13, 100);
+wait(90);
+set_val(13, 0);
+wait(180);
+set_val(13, 100);
+wait(100);
+set_val(13, 0);
+wait(210);
+set_val(13, 100);
+wait(90);
+set_val(13, 0);
+wait(230);
+set_val(13, 100);
+wait(80);
+set_val(13, 0);
+wait(190);
+set_val(13, 100);
+wait(80);
+set_val(13, 0);
+wait(140);
+set_val(13, 100);
+wait(80);
+set_val(13, 0);
+wait(230);
+set_val(13, 100);
+wait(60);
+set_val(13, 0);
+wait(220);
+set_val(13, 100);
+wait(80);
+set_val(13, 0);
+wait(210);
+set_val(13, 100);
+wait(100);
+set_val(13, 0);
+wait(360);
+set_val(19, 100);
+wait(100);
+set_val(19, 0);
+wait(4000);
+wait(2080);
+set_val(14, 100);
+wait(110);
+set_val(14, 0);
+wait(100);
+set_val(14, 100);
+wait(90);
+set_val(14, 0);
+wait(340);
+set_val(19, 100);
+wait(100);
+set_val(19, 0);
+}// End of OFR
+
+// Passive Mode
+combo PassiveMode {                                                            
+set_val(1, 100);                                                          
+wait(650);                                                                 
+wait(100);                                                                
+set_val(13, 100);                                                          
+wait(100);                                                                 
+wait(175);                                                                 
+set_val(19, 100);                                                          
+wait(100);
+}// End of Passive Mode
+
+//Aim Mode
+combo Aim {
+set_val(7, 100);
+wait(H);
+set_val(7, 0);
+wait(R);
+}// End of Aim Mode
+
+combo Vibrate {
+set_rumble(rumble_type, 100);
+wait(300);
+reset_rumble();
+}
+//Rumble Function
+function rumble_A_if_true(var) {
+if (var) rumble_type = RUMBLE_A;
+else rumble_type = RUMBLE_B;
+combo_run(Vibrate);
+}
+//Set LED Colors
+function color(c1, c2, c3, c4) 
+{
+set_led(LED_1, c1);
+set_led(LED_2, c2);
+set_led(LED_3, c3);
+set_led(LED_4, c4);
+}

@@ -1,0 +1,491 @@
+//#############################################4.60################################################ 
+//################################################################################################# 
+//#######################################  Script parameters ###################################### 
+//################################################################################################# 
+//
+// Use device monitor on Cronus Pro software to determinate the right joystick shift. 
+// Keep it at 0 if you're not sure what you're doing
+//
+// Joystick calibration value
+int RX_Axis_Joystick_calibrate = 0; 
+int RY_Axis_Joystick_calibrate = 0; 
+//
+//################################################################################################# 
+//
+// Define the refresh rate of the combo
+// Big value --> effect not perceived
+// Small value --> cause aim jitter  
+//
+define Sampling_Time = 10;
+//
+//################################################################################################# 
+// 
+// Add speed boost to initial joystick movement
+// Big value --> you loose sticky aim bubble
+//
+define Aim_Boost = 7;
+//
+//################################################################################################# 
+//
+// Compensate the acceleration of the movement introduced by the boost by reducing this value
+//
+define Aim_Correction = 12;
+//
+//################################################################################################# 
+//
+// the algorithm saves two movements positions. the current position and the previous position. 
+// sampling frequency is defined by Sampling_Time. 
+// if the difference between the current value and the preceding value doesn't exceeds Aim_Perfection_Limit. 
+// the aimbot algorithm will execute
+// i add this parameter to avoid floaty movement when you try to track a target
+//
+define Aim_Perfection_Limit = 30;
+//
+//################################################################################################# 
+//
+//operating aim perfection interval
+//
+define POS_Aim_Limit = 70;
+define NEG_Aim_Limit = -70;
+//
+//################################################################################################# 
+//
+//operating spiroide aim assist interval
+//
+define POS_Micro_MVT_Limit = 25;
+define NEG_Micro_MVT_Limit = -25;
+//
+//################################################################################################# 
+//######################################### Script variable ####################################### 
+//################################################################################################# 
+//
+// Dont't change!
+//
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+int Sampling_Done = FALSE;
+int micro_mvt = FALSE;
+//
+int spiroide_pulse = 0;
+int fine_pulse = 0;
+//
+int Joystick_calibration = FALSE;
+//
+//################################################################################################# 
+//############################################# MAIN ############################################## 
+//################################################################################################# 
+//
+main {
+ //update main every 8ms --> only for PS4
+    vm_tctrl(-2); 
+ 
+        if (Joystick_calibration == FALSE)
+            {
+                RX_Axis_Joystick_calibrate = get_val(PS4_RX); 
+                RY_Axis_Joystick_calibrate = get_val(PS4_RY); 
+                Joystick_calibration = TRUE;     
+            }
+ 
+        X_Last_Value = X_Current_Value;
+        Y_Last_Value = Y_Current_Value;
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate;
+ 
+        if(get_val(PS4_L2))
+            {
+                if(get_lval(PS4_RX) > NEG_Micro_MVT_Limit || get_lval(PS4_RX) < POS_Micro_MVT_Limit || get_lval(PS4_RY) > NEG_Micro_MVT_Limit || get_lval(PS4_RY) < POS_Micro_MVT_Limit
+                || get_lval(PS4_RX) > NEG_Micro_MVT_Limit || get_lval(PS4_RX) < POS_Micro_MVT_Limit || get_lval(PS4_RY) > NEG_Micro_MVT_Limit || get_lval(PS4_RY) < POS_Micro_MVT_Limit)
+                    {
+                       if ((X_Last_Value >=0 && X_Current_Value >=0) || (X_Last_Value <=0 && X_Current_Value <=0))
+           				 {
+			                if (abs(abs(X_Last_Value)-abs(X_Current_Value))<15)
+			                    {
+			                        micro_mvt = TRUE;
+			                    }
+			                else
+			                    {
+			                        micro_mvt = FALSE;
+			                    }        
+			            }
+			        else if ((X_Last_Value <=0 && X_Current_Value >=0) || (X_Last_Value >=0 && X_Current_Value <=0))
+			            {
+ 
+			                if (abs(X_Last_Value)+abs(X_Current_Value)<15)
+			                    {
+			                        micro_mvt = TRUE;
+			                    }
+			                else
+			                    {
+			                        micro_mvt = FALSE;
+			                    }        
+			            }
+			        else{
+			                micro_mvt = FALSE;
+			            }
+ 
+                       if(micro_mvt == TRUE)
+                               {
+                                   combo_stop(Aim_Assist_Perfection);
+                                Sampling_Done = FALSE;
+                               }
+                           if (!combo_running(Aim_Assist_Perfection))
+                               {
+                                   if (get_val(PS4_R2)>95)
+                                {
+                                    combo_stop(Fine_Tune_Aim);
+                                    fine_pulse = 0;
+                                    combo_run(spiroide_Aim_Assit);
+                                }
+                                else
+                                {
+                                    combo_stop(spiroide_Aim_Assit);
+                                    spiroide_pulse = 0;
+                                    combo_run(Fine_Tune_Aim);
+                                }
+                               }                      
+ 
+                    }
+                else if( get_lval(PS4_RX) > NEG_Aim_Limit || get_lval(PS4_RX) < POS_Aim_Limit|| get_lval(PS4_RY) > NEG_Aim_Limit || get_lval(PS4_RY) < POS_Aim_Limit
+                      || get_lval(PS4_RX) > NEG_Aim_Limit|| get_lval(PS4_RX) < POS_Aim_Limit || get_lval(PS4_RY) > NEG_Aim_Limit || get_lval(PS4_RY) < POS_Aim_Limit)
+                    {
+                        combo_stop(Fine_Tune_Aim);
+                        combo_stop(spiroide_Aim_Assit);
+                        spiroide_pulse = 0;
+                        fine_pulse = 0;
+                        combo_run(Aim_Assist_Perfection);
+ 
+                    }
+                else 
+                    {
+                        combo_stop(Fine_Tune_Aim);
+                        combo_stop(spiroide_Aim_Assit);
+                        combo_stop(Aim_Assist_Perfection);
+                        spiroide_pulse = 0;
+                        fine_pulse = 0;
+                        Sampling_Done = FALSE;    
+                    }
+            }
+        else
+            {
+                combo_stop(Fine_Tune_Aim);
+                combo_stop(spiroide_Aim_Assit);
+                combo_stop(Aim_Assist_Perfection);
+                spiroide_pulse = 0;
+                fine_pulse = 0;
+                Sampling_Done = FALSE;    
+ 
+            }
+        }
+ 
+//
+//################################################################################################# 
+//############################################ COMBO ############################################## 
+//################################################################################################# 
+//           
+combo Aim_Assist_Perfection 
+    {        
+        // Save the first joystick position 
+        X_Last_Value = X_Current_Value
+        Y_Last_Value = Y_Current_Value
+ 
+        // Sampling frequency 
+        wait(Sampling_Time);
+ 
+        // Save the second joystick position 
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+ 
+     if (Sampling_Done == TRUE )
+         {
+         if (X_Last_Value > 0 && X_Current_Value > 0)
+            {  
+                if (X_Last_Value > X_Current_Value)
+                    {
+                        if ( X_Last_Value - X_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value + Aim_Boost)); 
+                            }
+                    }
+                else
+                    {
+                        if ( X_Current_Value - X_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value - Aim_Boost)); 
+                            }
+                    }
+            }
+         else if (X_Last_Value > 0 && X_Current_Value < 0)
+            {
+                    if ( X_Last_Value + X_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value + Aim_Boost)); 
+                            }     
+            }
+        else if (X_Last_Value < 0 && X_Current_Value > 0)
+            {
+                if (  X_Current_Value - X_Last_Value < Aim_Perfection_Limit)
+                    {
+                         set_val(PS4_RX, (X_Current_Value - Aim_Boost)); 
+                    }                
+            }
+        else 
+            {
+                if (X_Last_Value > X_Current_Value)
+                    {
+                        if ( X_Last_Value - X_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value - Aim_Boost)); 
+                            }
+                    }
+                else
+                    {
+                        if ( X_Current_Value - X_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value + Aim_Boost)); 
+                            } 
+                    }
+            }
+ 
+ 
+         if (Y_Last_Value > 0 && Y_Current_Value > 0)
+            {  
+                if (Y_Last_Value > Y_Current_Value)
+                    {
+                        if ( Y_Last_Value - Y_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value + Aim_Boost)); 
+                            }
+                    }
+                else
+                    {
+                        if ( Y_Current_Value - Y_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value - Aim_Boost)); 
+                            }
+                    }
+            }
+         else if (Y_Last_Value > 0 && Y_Current_Value < 0)
+            {
+                    if ( Y_Last_Value + Y_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value + Aim_Boost)); 
+                            }     
+            }
+        else if (Y_Last_Value < 0 && Y_Current_Value > 0)
+            {
+                if (  Y_Current_Value - Y_Last_Value < Aim_Perfection_Limit)
+                    {
+                         set_val(PS4_RY, (Y_Current_Value - Aim_Boost)); 
+                    }                
+            }
+        else 
+            {
+                if (Y_Last_Value > Y_Current_Value)
+                    {
+                        if ( Y_Last_Value - Y_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value - Aim_Boost)); 
+                            }
+                    }
+                else
+                    {
+                        if ( Y_Current_Value - Y_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value + Aim_Boost)); 
+                            } 
+                    }
+            }
+ 
+        }
+ 
+        X_Last_Value = X_Current_Value;
+        Y_Last_Value = Y_Current_Value;
+ 
+        // Sampling frequency 
+        wait(Sampling_Time);
+ 
+        // Save the second joystick position 
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE )
+        {
+         if (X_Last_Value > 0 && X_Current_Value > 0)
+            {  
+                if (X_Last_Value > X_Current_Value)
+                    {
+                        if ( X_Last_Value - X_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value - Aim_Correction)); 
+                            }
+                    }
+                else
+                    {
+                        if ( X_Current_Value - X_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value + Aim_Correction)); 
+                            }
+                    }
+            }
+         else if (X_Last_Value > 0 && X_Current_Value < 0)
+            {
+                    if ( X_Last_Value + X_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value - Aim_Correction)); 
+                            }     
+            }
+        else if (X_Last_Value < 0 && X_Current_Value > 0)
+            {
+                if (  X_Current_Value - X_Last_Value < Aim_Perfection_Limit)
+                    {
+                         set_val(PS4_RX, (X_Current_Value + Aim_Correction)); 
+                    }                
+            }
+        else 
+            {
+                if (X_Last_Value > X_Current_Value)
+                    {
+                        if ( X_Last_Value - X_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value + Aim_Correction)); 
+                            }
+                    }
+                else
+                    {
+                        if ( X_Current_Value - X_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RX, (X_Current_Value - Aim_Correction)); 
+                            } 
+                    }
+            }
+ 
+ 
+         if (Y_Last_Value > 0 && Y_Current_Value > 0)
+            {  
+                if (Y_Last_Value > Y_Current_Value)
+                    {
+                        if ( Y_Last_Value - Y_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value - Aim_Correction)); 
+                            }
+                    }
+                else
+                    {
+                        if ( Y_Current_Value - Y_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value + Aim_Correction)); 
+                            }
+                    }
+            }
+         else if (Y_Last_Value > 0 && Y_Current_Value < 0)
+            {
+                    if ( Y_Last_Value + Y_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value - Aim_Correction)); 
+                            }     
+            }
+        else if (Y_Last_Value < 0 && Y_Current_Value > 0)
+            {
+                if (  Y_Current_Value - Y_Last_Value < Aim_Perfection_Limit)
+                    {
+                         set_val(PS4_RY, (Y_Current_Value + Aim_Correction)); 
+                    }                
+            }
+        else 
+            {
+                if (Y_Last_Value > Y_Current_Value)
+                    {
+                        if ( Y_Last_Value - Y_Current_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value + Aim_Correction)); 
+                            }
+                    }
+                else
+                    {
+                        if ( Y_Current_Value - Y_Last_Value < Aim_Perfection_Limit)
+                            {
+                                 set_val(PS4_RY, (Y_Current_Value - Aim_Correction)); 
+                            } 
+                    }
+            }
+        }
+ 
+        Sampling_Done = TRUE; 
+        wait(Sampling_Time);
+    }
+ 
+ 
+ 
+combo Fine_Tune_Aim {
+ 
+    set_val(PS4_RX,(4 + fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-4 - fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    fine_pulse = fine_pulse + 2;
+ 
+ 
+    if ( fine_pulse > 10)
+       {
+            fine_pulse = 0;   
+        }
+   }
+ 
+    combo spiroide_Aim_Assit {
+ 
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(4 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-4 - spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    spiroide_pulse = spiroide_pulse + 2;
+ 
+ 
+    if ( spiroide_pulse > 10)
+       {
+            spiroide_pulse = 0;   
+        }
+   }
+//
+//################################################################################################# 
+//############################################# END ############################################### 
+//#################################################################################################
