@@ -1,0 +1,65 @@
+// Don't At Me's Zen Polar V2.0 DoGz Style {AKA[ME.]} 
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+define PY       = POLAR_RY;
+define PX       = POLAR_RX;
+define PS       = POLAR_RS;
+
+define On       = TRUE;
+define Off      = FALSE;
+
+int DoGzVIRadius,DoGzVIAngle,VISpeed;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                  Mod Values                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int PolarRadius      = 15;
+int PolarAngle       = 20;
+int PolarRadiusBoost = 5;
+int PolarAngleBoost  = 10;
+int PolarRelease     = 20;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define PolarVIAssist = On;
+define PolarVIBoost  = On;
+define PolarVIAAHip  = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+
+    if (PolarVIAssist) {
+    
+        if (get_ival(Ads) || (PolarVIAAHip && get_ival(Fire))) { 
+        
+            if (abs(get_ival(AimX)) <= PolarRelease && abs(get_ival(AimY)) <= PolarRelease) {
+            
+                if (PolarVIBoost && get_ival(Fire)) {
+                    
+                    DoGzVIRadius = PolarRadius + PolarRadiusBoost;
+                    DoGzVIAngle = PolarAngle + PolarAngleBoost;
+                
+                } else {
+                    
+                    DoGzVIRadius = PolarRadius;
+                    DoGzVIAngle = PolarAngle;
+                }
+            
+                set_polar(PS,VISpeed = (VISpeed + DoGzVIAngle) % 360,(abs(get_ival(PX)) + abs(get_ival(PY))) / 4 + DoGzVIRadius * 328);
+            }
+        }
+    }
+}
