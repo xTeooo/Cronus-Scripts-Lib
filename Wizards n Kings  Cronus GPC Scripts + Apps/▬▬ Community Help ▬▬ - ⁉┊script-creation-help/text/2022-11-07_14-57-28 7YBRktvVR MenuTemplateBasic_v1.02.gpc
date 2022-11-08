@@ -1,0 +1,457 @@
+/*
+Define your buttons for the menu - mods etc 
+*/
+define AdsBtn		  = PS4_L2;
+define FireBtn		  = PS4_R2;
+define CrouchBtn 	  = PS4_R3;  
+define JumpBtn  	  = PS4_L1;
+define SprintBtn	  = PS4_L3;
+define PingBtn		  = PS4_UP; 
+
+const string Toggle  []              = {"Off","On"};
+const string misc[]                  = {"Title Screen",""}; 
+
+// Main Menu String Names For your categories 
+const string MainMenuId[]  = {
+"Category 1",
+"Category 2",
+"Category 3",
+"Category 4",
+"Category 5",
+""};
+define maxAmountOfCategory = 4; // Max Amount of Categories In the menu ( 0 - 1 - 2 - 3 - 4  ) 
+
+// Mod Menu String Names - Below I have made it so you can see which strings are for which category!
+
+// This way you can see what mod numbers are for which mods.. remember always start at 0 for your first mod.
+
+// You can also see how we limit the mods by their number... 
+const string modNames[] = {
+		"Mod 1","Mod 2","Mod 3", // Category 1 Strings  // You can choose how many mods you want per Category // This is to make it easier to see what mods you want per category \\
+//ModIdx   0       1       2     // ModNameIdx Number		
+		"Mod 4","Mod 5",         // Category 2 Strings  // You can choose how many mods you want per Category // This is to make it easier to see what mods you want per category \\
+//ModIdx   3       4             // ModNameIdx Number			
+		"Mod 6","Mod 7",         // Category 3 Strings  // You can choose how many mods you want per Category // This is to make it easier to see what mods you want per category \\
+//ModIdx   5       6             // ModNameIdx Number
+		"Mod 8","Mod 9",         // Category 4 Strings  // You can choose how many mods you want per Category // This is to make it easier to see what mods you want per category \\
+//ModIdx   7       8             // ModNameIdx Number
+		"Mod 10",                // Category 5 Strings  // You can choose how many mods you want per Category // This is to make it easier to see what mods you want per category \\
+//ModIdx   9                     // ModNameIdx Number
+""};  
+define maxAmountOfMods = 9; // This is in total of how many mods you have 
+
+// Edit menu string names - 
+const string valNames[] = {
+"Val 1","Val 2", // Mod 1 
+"Val 3","Val 4", // Mod 2
+"Val 5","Val 6", // Mod 3
+""}; 
+define maxAmountOfValues = 5; 
+
+int mainMenu,modMenu,editMenu; 
+int mainNameIdx,modNameIdx,valNameIdx;
+int screenSaver,blankScreen;
+int displayTitle = TRUE;
+int updateDisplay;
+int killScript; 
+
+/* 
+=================================
+Toggle Variables For Mod Menu 
+=================================
+*/
+int toggleOne;
+int toggleTwo;
+int toggleThree;
+int toggleFour;
+
+/*
+==================================
+Edit Value Variables For Edit Menu
+==================================
+*/
+int val1;
+int val2;
+int val3;
+main { 
+    
+	if(get_ival(AdsBtn)){ 
+		if(event_press(PS4_OPTIONS)){
+			updateDisplay = TRUE;
+			mainMenu      = TRUE;
+			displayTitle  = FALSE;
+			if(!mainMenu){ 
+				modMenu       = FALSE;
+				updateDisplay = FALSE;
+				displayTitle  = TRUE;
+		    } 
+		}
+		if(event_press(PS4_SHARE)){ 
+        	killScript = !killScript; 
+        	//combo_run(KillSwitch) 
+        } 	
+		set_val(PS4_OPTIONS,0);
+	}
+	if(!displayTitle){ 
+		if(mainMenu){ 
+			vm_tctrl(0);
+			mainNameIdx = menuNavigation(mainNameIdx,0,maxAmountOfCategory);
+		} 
+		if(modMenu){
+			vm_tctrl(0);
+			// menuNavigation is the function to handle moving around the menu \\
+			modNameIdx = menuNavigation(modNameIdx,0,maxAmountOfMods);
+			
+			// toggleSwitch(modNameNumber - minToggle - maxToggle ) 
+			toggleOne   = toggleSwitch(toggleOne  ,0,0,1); // Mod 1
+			toggleTwo   = toggleSwitch(toggleTwo  ,1,0,1); // Mod 2
+			toggleThree = toggleSwitch(toggleThree,2,0,1); // Mod 3
+			toggleFour  = toggleSwitch(toggleFour ,3,0,1); // Mod 4
+			// and so on etc....
+			
+			// Now we need to use limits to what mods we want to see per category for the mod menu...
+			
+			if(mainNameIdx == 0) modNameIdx = rotateVar(modNameIdx,0,2); // Category 1 / 
+			if(mainNameIdx == 1) modNameIdx = rotateVar(modNameIdx,3,4); // Category 2 /
+			if(mainNameIdx == 2) modNameIdx = rotateVar(modNameIdx,5,6); // Category 3 /
+			if(mainNameIdx == 3) modNameIdx = rotateVar(modNameIdx,7,8); // Category 4 / 
+			if(mainNameIdx == 4) modNameIdx = rotateVar(modNameIdx,9,9); // Category 5 / 	
+		} 
+		if(editMenu){ 
+			vm_tctrl(0);
+			// menuNavigation is the function to handle moving around the menu \\
+			valNameIdx = menuNavigation(valNameIdx,0,maxAmountOfValues);
+			// Edit Values In Edit Menu... 
+			val1              = editValues(val1,0, 0, 99); 
+	        val2              = editValues(val2,1, 0, 99); 
+	        val3              = editValues(val3,2, 0, 99); 
+	        // and so on etc... 
+	        // Now we need to use limits to what edit values we want to see per on the mod you enter values for...
+	        if(modNameIdx == 0) valNameIdx = rotateVar(valNameIdx,0,1); // Mod 1 / 
+			if(modNameIdx == 1) valNameIdx = rotateVar(valNameIdx,2,2); // Mod 2 /
+		}
+		if(updateDisplay){ // UPDATE DISPLAY - THIS IS WHERE WE DISPLAY THE MENU - WHEN WE NAVIGATE THE MENU - OR ENTER INTO ANOTHER MENU - THIS IS WHERE WE DISPLAY 
+			cls_oled(OLED_BLACK); // CLEAR OLED WHEN UPDATE DISPLAY IS TRUE - THIS CLEARS ANY PREVIOUS TEXT ON SCREEN 
+			rect_oled(0,0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); // RECTANGLE OLED BOX AROUND THE TEXT 
+			
+			if(editMenu){ // EDIT MENU STRING NAMES
+				print(centerPosition(getStringLength(valNames[valNameIdx]) ,OLED_FONT_SMALL_WIDTH), 4  ,OLED_FONT_SMALL , OLED_WHITE , valNames[valNameIdx]);
+			}
+			else if(modMenu) { // MOD MENU STRING NAMES
+				print(centerPosition(getStringLength(modNames[modNameIdx]) ,OLED_FONT_SMALL_WIDTH), 4  ,OLED_FONT_SMALL , OLED_WHITE , modNames[modNameIdx]);
+			}
+			else {  // MAIN MENU STRING NAMES
+			    print(centerPosition(getStringLength(MainMenuId[mainNameIdx]) ,OLED_FONT_SMALL_WIDTH), 4  ,OLED_FONT_SMALL , OLED_WHITE ,MainMenuId[mainNameIdx]);	
+			} 
+			updateDisplay = FALSE; // UPDATE FALSE WHEN NOTHING IS BEING CHANGED IN THE MENU - THIS PREVENTS HIGH CPU USAGE BECAUSE IT DOESN'T NEED TO UPDATE ON EVERY LOOP 
+		}
+	} 
+	if(!mainMenu && !modMenu && !editMenu){ // WHEN WE ARE NOT IN ANY MENUS 
+		if(displayTitle){  // DISPLAY TITLE SCREEN 
+			cls_oled(0);
+			displayTitle = FALSE;
+	   	    screenSaver  = TRUE;
+	   	    rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE);
+			print(centerPosition(getStringLength(misc[0]) ,OLED_FONT_SMALL_WIDTH), 8  ,OLED_FONT_SMALL, OLED_WHITE , misc[0]);
+		}
+		if(screenSaver){  // IF SCREEN SAVER BECOMES TRUE
+    		blankScreen += get_rtime();
+    	
+			if(blankScreen >= 10000)
+			{
+				cls_oled(OLED_BLACK);
+				blankScreen = 0;
+				screenSaver = FALSE;
+	    	} 
+	    }
+	    if(!killScript){ // IF KILL SWITCH HAS NOT BEEN ACTIVATED - 
+	    	/*
+	    	ALL MODS CODE GOES HERE 
+	        */
+	    } // END OF KILLSWITCH
+	} // END OF MENU
+}// END OF MAIN SECTION {} 
+function menuNavigation(indexVar,fMin,fMax){ 
+	if(mainMenu){ 
+    	if(event_press(PS4_UP)){
+            indexVar -= 1;
+        	updateDisplay = TRUE;
+    	}
+    	if(event_press(PS4_DOWN)){
+        	indexVar += 1;
+            updateDisplay = TRUE; 
+    	}
+    }
+	if(!get_ival(AdsBtn)){ 
+		if(event_press(PS4_RIGHT)){ 
+			indexVar  += 1;
+			updateDisplay = TRUE;
+		}
+		if(event_press(PS4_LEFT)){ 
+			indexVar  -= 1;
+			updateDisplay = TRUE;
+		}
+	}
+	if(event_release(PS4_CROSS)){
+    	if(mainMenu){
+    		modNameIdx = maxAmountOfMods + 1;
+    		updateDisplay = TRUE;
+    		mainMenu      = FALSE;
+    		modMenu       = TRUE;
+			cls_oled(OLED_BLACK);	
+    	}
+    }
+	if(event_press(PS4_CROSS)){ 
+		if(modMenu){ 
+			updateDisplay = TRUE;
+			mainMenu      = FALSE;
+			modMenu       = FALSE;
+			editMenu      = TRUE; 
+			valNameIdx  = maxAmountOfValues + 1;	 	 		
+		}
+	} 
+	if(event_press(PS4_CIRCLE)){ 
+		if(mainMenu){ 
+			updateDisplay = FALSE;
+			mainMenu      = FALSE;
+			modMenu       = FALSE;
+			editMenu      = FALSE;
+			displayTitle  = TRUE;
+		} 
+		else if(modMenu){ 
+			updateDisplay = TRUE;
+			mainMenu      = TRUE;
+			modMenu       = FALSE;
+			editMenu      = FALSE;
+		}
+		else if(editMenu){ 
+			updateDisplay = TRUE;
+			modMenu       = TRUE;
+			editMenu      = FALSE;
+			mainMenu      = FALSE;
+		}
+	} 
+	if(mainMenu || modMenu || editMenu){ 
+		BlockButtonPress ();
+	}
+	indexVar = rotateVar(indexVar,fMin,fMax);
+	return indexVar;
+}
+function toggleSwitch(fVar,fIdx,fMin,fMax){ 
+	if(modNameIdx == fIdx){ 
+		if(event_press(PS4_UP)){ 
+			fVar = rotateVar(fVar + 1,fMin,fMax);  
+			updateDisplay = TRUE;
+			
+			if(!fVar)
+				combo_run(rumbleOff);
+			else
+				combo_run(rumbleOn); 
+		}
+		if(event_press(PS4_DOWN)){ 
+			fVar = rotateVar(fVar - 1,fMin,fMax);  
+			updateDisplay = TRUE;
+			
+			if(!fVar)
+				combo_run(rumbleOff);
+			else
+				combo_run(rumbleOn); 
+		}
+		else { 
+			
+			if(fVar == 1)
+				print(centerPosition(getStringLength(Toggle[1]),OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,Toggle[1])	
+			else
+				print(centerPosition(getStringLength(Toggle[0]),OLED_FONT_MEDIUM_WIDTH),30,OLED_FONT_MEDIUM,OLED_WHITE,Toggle[0])	
+		}
+	}
+	return fVar; 
+} 
+
+function editValues(fVar,fIdx,fMin,fMax){ 
+	if(valNameIdx == fIdx){ 
+		if(get_ival(AdsBtn)){ 
+			if(event_press(PS4_RIGHT)){ 
+				fVar += 1   // INCREASE BY 1 VALUE  // FEEL FREE TO CHANGE THIS OR ADD TO PARAMETER FOR FUNCTION // I WILL MAKE EXAMPLE BELOW 
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_LEFT)){ 
+				fVar -= 1   // DECREASE BY 1 VALUE  // FEEL FREE TO CHANGE THIS OR ADD TO PARAMETER FOR FUNCTION // I WILL MAKE EXAMPLE BELOW
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_UP)){ 
+				fVar += 10 // INCREASE BY 10 VALUES // FEEL FREE TO CHANGE THIS OR ADD TO PARAMETER FOR FUNCTION // I WILL MAKE EXAMPLE BELOW
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_DOWN)){  
+				fVar -= 10 // DECREASE BY 10 VALUES // FEEL FREE TO CHANGE THIS OR ADD TO PARAMETER FOR FUNCTION // I WILL MAKE EXAMPLE BELOW
+				updateDisplay = TRUE;
+			}
+		}
+		fVar = clamp(fVar,fMin,fMax); // CLAMP THE MIN AND MAX VALUES FOR EACH EDITABLE VALUE
+		 
+		NumberToString(fVar,FindDigits(fVar));// PRINT NUMBER FOR EDITABLE VALUES		
+	}
+	return fVar;
+}
+/*
+EXAMPLE FUNCTION FOR EDIT MENU SO YOU CAN ADD PARAMETERS TO YOUR EDIT VALUE FUNCTION 
+
+THIS IS HOW YOU WOULD THEN CALL FOR THIS FUNCTION IN EDIT MENU 
+
+fVar                 fVar - fIdx - fMin - fMax - fIncMin  - fIncMax   << These are the parameters to editValues 
+
+val1    = editValues(val1 ,   0  ,   0  ,  99       1     ,    10    ); 
+val2    = editValues(val2 ,   0  , -99  ,  99       1     ,    10    );
+val3    = editValues(val3 ,   0  ,   0  ,  99       1     ,    10    ); 
+
+function editValues(fVar,fIdx,fMin,fMax,fIncMin,fDecMin,fIncMax,fDecMax){ 
+	if(valNameIdx == fIdx){ 
+		if(get_ival(AdsBtn)){ 
+			if(event_press(PS4_RIGHT)){ 
+				fVar += fIncMin       // ADDED PARAMETER  
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_LEFT)){ 
+				fVar -= fIncMin       // ADDED PARAMETER 
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_UP)){ 
+				fVar += fIncMax     // ADDED PARAMETER 
+				updateDisplay = TRUE;
+			}
+			if(event_press(PS4_DOWN)){ 
+				fVar -= fIncMax     // ADDED PARAMETER
+				updateDisplay = TRUE;
+			}
+		}
+		fVar = clamp(fVar,fMin,fMax); // CLAMP THE MIN AND MAX VALUES FOR EACH EDITABLE VALUE
+		 
+		NumberToString(fVar,FindDigits(fVar));// PRINT NUMBER FOR EDITABLE VALUES		
+	}
+	return fVar;
+}
+END OF EXAMPLE FUNCTION 
+*/
+
+combo rumbleOn {
+set_ledx(2, 2);
+set_rumble(RUMBLE_B, 50);
+wait(200);
+reset_rumble();
+wait(200);
+set_rumble(RUMBLE_B, 50);
+wait(800);
+reset_rumble();
+}
+combo rumbleOff {						
+set_ledx(1, 1);
+set_rumble(RUMBLE_A, 50);
+wait(400);
+reset_rumble();
+wait(600);
+}
+function displayMainIdx(activeString,previousString,nextString){
+	if(mainNameIdx == activeString){ 
+		print(centerPosition(getStringLength(MainMenuId[activeString]),OLED_FONT_SMALL_WIDTH),21,OLED_FONT_SMALL,OLED_BLACK,MainMenuId[activeString])
+		print(centerPosition(getStringLength(MainMenuId[nextString]),OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,MainMenuId[nextString])
+		print(centerPosition(getStringLength(MainMenuId[previousString]),OLED_FONT_SMALL_WIDTH),4,OLED_FONT_SMALL,OLED_WHITE,MainMenuId[previousString])
+	} 
+} 
+function getMenuStatus(fUpdate,fMainMenu,fModMenu,fEditMenu,fDisplayTitle){ 	
+	
+	updateDisplay    = fUpdate;
+	mainMenu         = fMainMenu;
+	modMenu          = fModMenu;
+	editMenu         = fEditMenu;
+	displayTitle     = fDisplayTitle;
+	
+} 
+function rotateVar(Value,Min,Max){  
+    if(Value > Max) 
+    	return Min;	 	
+    if(Value < Min)
+    	return Max;     
+    
+    return Value;    
+}
+int stringLength;
+function getStringLength(offset) { 
+    stringLength = 0;
+    do { 
+        offset++;
+        stringLength++;
+    } while (duint8(offset));
+    return stringLength;
+ } 
+/*
+============================================================================================================================================
+ Center X Function (Made By Batts) 
+============================================================================================================================================
+*/
+function centerPosition(f_chars,f_font) {
+
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+}
+/*
+============================================================================================================================================
+  NumberToString () (Made By Batts)                                                                                                                     
+============================================================================================================================================
+*/   
+int bufferIndex;
+int charIndex,digitIndex;
+function NumberToString(f_val,f_digits) {
+    bufferIndex = 1;  
+    digitIndex = 10000;
+    if(f_val < 0) {                    //--neg numbers
+         putc_oled(bufferIndex,45);    //--add leading "-"
+         bufferIndex += 1;
+         f_val = abs(f_val);
+    } 
+    for(charIndex = 5; charIndex >= 1; charIndex--) {
+        if(f_digits >= charIndex) {
+            putc_oled(bufferIndex,(f_val / digitIndex) + 48);
+            f_val %= digitIndex;
+            bufferIndex ++; 
+            if(charIndex == 4) {
+                putc_oled(bufferIndex,44);//--add ","
+                bufferIndex ++;
+            }
+        }
+        digitIndex /= 10;
+    } 
+    puts_oled(centerPosition(bufferIndex - 1,OLED_FONT_MEDIUM_WIDTH),26,OLED_FONT_MEDIUM,bufferIndex - 1,OLED_WHITE);  
+} 
+int logVal;
+function FindDigits(num) {
+   logVal = 0;
+   do {
+      num /= 10;
+      logVal++;
+   } while (num);
+   return logVal;
+}
+int i;  
+   /*
+============================================================================================================================================
+  Block Buttons()                                                                                                                      
+============================================================================================================================================
+*/
+ const uint8 BlockButtons [] = {  
+  PS4_L2,PS4_OPTIONS,PS4_LEFT, PS4_RIGHT,PS4_UP,PS4_DOWN,PS4_CROSS,PS4_CIRCLE,PS4_SQUARE,PS4_TRIANGLE,PS4_L1,PS4_R1,PS4_R2};
+  
+ function BlockButtonPress (){  
+    for(i = 0; i < 13; i++){
+    	if(get_ival(BlockButtons[i]) || event_press(BlockButtons[i])){
+        	set_val(BlockButtons[i],0);
+        }    
+    }
+}
+
+
+	
+
+	
+	
+
+ úÃ÷ÅõÍúÂôÃ÷ÆðÂó·
