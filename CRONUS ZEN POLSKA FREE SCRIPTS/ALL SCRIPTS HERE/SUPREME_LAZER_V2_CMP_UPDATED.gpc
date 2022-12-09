@@ -1,0 +1,219 @@
+// SUPREME-WZ
+// SUPREME LAZER CMP VERSION V2/RAPID FIRE UPDATED NON FLIPPED.gpc
+                                                                                                                                                 /*
+     SUPREME LAZER V2(CMP)                                              `---'                            `--`----'  
+*/
+//-------------------------------------------------------------------------------------------
+//  ANTIRECOIL RAPIDFIRE AND STICKY AIM (both adjustable on the fly, with ON/OFF and SAVE function)
+//-------------------------------------------------------------------------------------------
+//  Version: V2
+//  Platform: Multi
+//  Controller: Multi
+//  Game: All FPS games
+//  SUPREME LAZER BEAM/RAPID FIRE V2
+//------------------------------------------------------------------------------------------
+
+//  LED indications:
+
+//  Green:   rapidfire ON - antirecoil ON
+//  Fuchsia: antirecoil ON - rapidfire OFF
+//  Blue:    rapidfire ON - antirecoil OFF
+//  Red:     rapidfire OFF - antirecoil OFF;
+
+//-------------------------------------------------------------------------------------------
+
+
+//          PLAYSTATION INSTRUCTIONS:
+
+// RAPIDFIRE (ON by default - Start value: 13 - GREEN led = ON; RED led = OFF)
+// Hold L2 and Press TRIANGLE to Enable or Disable Rapidfire (with rumble notify)
+// Hold CROSS and tap UP to increase Rate of Fire (+1 each tap on UP, while holding CROSS)
+// Hold CROSS and tap DOWN to decrease Rate of Fire (-1 each tap on DOWN, while holding CROSS)
+
+// ANTIRECOIL (ON by default - Start value: vertical = 30; Horizontal = 0)
+// Hold L2 and Press SQUARE to Enable or Disable Antirecoil (with rumble notify)
+// Hold L2 and tap UP to increase Antirecoil (+1 each tap on UP, while holding L2)
+// Hold L2 and tap DOWN to decrease Antirecoil (-1 each tap on DOWN, while holding L2)
+// Hold L2 and tap RIGHT to compensate to the right(+1 each tap on RIGHT , while holding L2)
+// Hold L2 and tap LEFT to compensate to the left (+1 each tap on LEFT, while holding L2)
+
+// Save new values into the CronusMax eeprom: Hold L2 and press OPTIONS (or START, for PS3 users)
+
+//-------------------------------------------------------------------------------------------
+
+//DECLARARATIONS - define
+
+define RF_switch  = 17;   // XB1_Y - PS4_TRIANGLE 
+define AR_switch  = 20;   // XB1_X - PS4_SQUARE
+//-------------------------------------------------------------------------------------------
+define save       =  2;   // XB1_MENU - PS4_OPTIONS
+//-------------------------------------------------------------------------------------------
+define AR_Release = 70;	  // change this value to set when antirecoil stops working (min: antirecoil value + 10)
+define Scope_only = TRUE; // if TRUE Antirecoil IS ON only when scoping - if FALSE, is always ON
+//-------------------------------------------------------------------------------------------
+define UP         = 13;     
+define DOWN       = 14;   
+define LEFT       = 15; 
+define RIGHT      = 16;  
+//-------------------------------------------------------------------------------------------
+define Blue       =  1; 
+define Red        =  2; 
+define Green      =  3; 
+define Pink       =  4; 
+define SkyBlue    =  5; 
+define Yellow     =  6; 
+define White      =  7; 
+//------------------------------------------------------------------------------------------- 
+data(1,
+  2,0,0,0, //1. Blue
+  0,2,0,0, //2. Red
+  0,0,2,0, //3. Lime/Green
+  0,0,0,2, //4. Fuchsia/Pink
+  2,0,2,0, //5. SkyBlue
+  0,2,2,0, //6. Yellow
+  2,2,2,2  //7. White
+); 
+//-------------------------------------------------------------------------------------------
+
+//VARIABLES - int
+
+int recoil_onoff  = TRUE; // if TRUE Antirecoil is ON by default - if FALSE, OFF by default
+int rapid_onoff   = TRUE; // if TRUE Rapidfire is ON by default - if FALSE, OFF by default
+int RATE_OF_FIRE  = 13;   // Range: 1 to 25 RPS (Round/s)
+int ANTI_RECOIL   = 30;
+int ANTI_RECOIL_H =  0;  
+int anti_recoil;
+int anti_recoil_H;
+int Col_ind;
+int fire_button;
+int scope_button;
+int hold_time;
+int rest_time;
+
+//-------------------------------------------------------------------------------------------
+
+//INITIALIZATION - init
+
+init{
+
+    if(get_console() == PIO_PS3) {
+        fire_button  = 3;
+        scope_button = 6;
+    }else { 
+        fire_button  = 4;
+        scope_button = 7;
+    }
+
+    RATE_OF_FIRE  = get_pvar(SPVAR_1,  0, 25, 13);
+    ANTI_RECOIL   = get_pvar(SPVAR_2, -100,+100, 30);
+    ANTI_RECOIL_H = get_pvar(SPVAR_3, -100,+100, 0);
+} 
+
+//-------------------------------------------------------------------------------------------
+
+//MAIN BLOCK ROUTINES
+
+main { 
+    if(get_val(7) && event_press(AR_switch))  {
+        combo_run (vibrate); 
+        recoil_onoff=!recoil_onoff;
+        } 
+
+    if(get_val(7) && event_press(RF_switch))  {
+        combo_run (vibrate); 
+        rapid_onoff=!rapid_onoff;
+        } 
+
+    if((rapid_onoff) && recoil_onoff) colourled(Green); 
+    if((rapid_onoff) && !recoil_onoff) colourled(Blue); 
+    if((recoil_onoff) && !rapid_onoff) colourled(Pink);         
+    if((!recoil_onoff) && !rapid_onoff) colourled(Red); 
+   
+    if(rapid_onoff) { if(get_val(4)) {
+        combo_run (RAPID_FIRE);
+        } 
+    }     
+        hold_time = 500 / RATE_OF_FIRE;
+        rest_time = hold_time - 20;
+        if(rest_time < 0) rest_time = 0;
+    
+    if(get_val(19)) {  
+        if(event_press(UP)) {
+            RATE_OF_FIRE = RATE_OF_FIRE+ 1;
+        }
+        if(event_press(DOWN)) {
+            RATE_OF_FIRE = RATE_OF_FIRE- 1;
+        }
+        set_val(UP,0); set_val(DOWN,0);
+    }
+        
+    if(get_val(scope_button) && event_press(save)){
+        combo_run(vibrate);
+        set_pvar(SPVAR_1, RATE_OF_FIRE);
+        set_pvar(SPVAR_2, ANTI_RECOIL);
+        set_pvar(SPVAR_3, ANTI_RECOIL_H);
+        set_val(save, 0);
+    }
+    if(get_val(7)){
+        if(event_press(UP)){
+            ANTI_RECOIL = ANTI_RECOIL+ 1;
+        }
+        if(event_press(DOWN)) {
+            ANTI_RECOIL = ANTI_RECOIL- 1;
+        }
+        set_val(UP,0); set_val(DOWN,0);
+   
+        if(event_press(LEFT)){
+            ANTI_RECOIL_H = ANTI_RECOIL_H+ 1;
+        }
+        if(event_press(RIGHT)) {
+            ANTI_RECOIL_H = ANTI_RECOIL_H- 1;
+        }
+        set_val(LEFT,0); set_val(RIGHT,0);
+
+    }
+    if(!Scope_only || get_val(scope_button) && get_val(fire_button )) {
+        combo_run(AntiRecoil);
+    }
+
+    if( abs(get_val(10)) > AR_Release || abs(get_val(9)) > AR_Release) {  
+        combo_stop (AntiRecoil);
+    }
+}
+//-------------------------------------------------------------------------------------------
+
+//COMBO BLOCKS
+
+combo vibrate {
+    set_rumble(RUMBLE_A, 100);
+    wait(300);
+    reset_rumble();
+    }
+
+combo RAPID_FIRE {
+    set_val(fire_button, 100);
+    wait(hold_time);
+    set_val(fire_button, 0);
+    wait(rest_time);
+    set_val(fire_button, 0);
+    }
+
+combo AntiRecoil { // This combo must be the last one
+    if(recoil_onoff) {
+    anti_recoil = get_val(10) + ANTI_RECOIL;
+    if(anti_recoil > 100) anti_recoil = 100;
+    set_val(10, anti_recoil);
+    anti_recoil_H = get_val(9) + ANTI_RECOIL_H;
+    if(anti_recoil_H > 100) anti_recoil_H = 100;
+    set_val(9, anti_recoil_H);
+    }
+} 
+// COLOR LED function
+//--------------------------------------------------------------
+function colourled(Colour) {
+    Col_ind=(Colour*4)- 3;
+    set_led(LED_1,dbyte(Col_ind  ));
+    set_led(LED_2,dbyte(Col_ind+ 1));
+    set_led(LED_3,dbyte(Col_ind+ 2));
+    set_led(LED_4,dbyte(Col_ind+ 3));
+}// End 

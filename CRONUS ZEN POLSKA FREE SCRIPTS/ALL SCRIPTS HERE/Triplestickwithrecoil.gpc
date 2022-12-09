@@ -1,0 +1,122 @@
+																																															/*
+																	|> Credits <|
+														~ Original Sticky Aim Code By : Batts
+										~ Idea To Add On ADS, ADS + FIRE & HIPFIRE Support : Chi Chi & SS_Nikolai
+																																															*/
+//--Button Assignment ( Customize To Your Layout )
+    define FIRE             = PS4_R2;
+    define ADS              = PS4_L2;
+	define AIM_X	        = PS4_RX;
+	define AIM_Y	        = PS4_RY;
+	define STRAFE			= PS4_LX;
+	define WALK				= PS4_LY;
+    define On   = TRUE;
+    define Off  = FALSE;
+    
+
+
+//--Stick Drift Removal
+    define Stick_Drift_Removal = FALSE; // Set TRUE to remove any unwanted axis movement
+
+//--Main Toggle
+	define Triple_Sticky    =   TRUE;
+
+int ValueX,ValueY,AxisX,AxisY;
+
+//--ADS Value
+	int ADS_Size            =  	  20;
+	int ADS_Wait_Value      =     30;
+
+//--ADS + FIRE Value
+	int ADS_FIRE_Size       =     20;
+	int ADS_FIRE_Wait_Value =     30;
+
+//--HIPFIRE Value
+	int HIPFIRE_Size        =     26;
+	int HIPFIRE_Wait_Value  =     30;
+
+//--Variable, Leave Alone
+	int Aim_Val, Wait_Val;
+	int a;
+
+// Anti Recoil
+int AntiRecoil = On;
+int Vertical   = 50;
+int Horizontal = 15;
+
+main {
+  if(Stick_Drift_Removal) {
+    if(abs(get_val(STRAFE)) <= 5) 
+        set_val(STRAFE, 0); 
+    if(abs(get_val(WALK)) <= 5) 
+        set_val(WALK, 0);
+    if(abs(get_val(AIM_X)) <= 5) 
+        set_val(AIM_X, 0); 
+    if(abs(get_val(AIM_Y)) <= 5) 
+        set_val(AIM_Y, 0);
+    }
+
+	  	if (AntiRecoil) {
+	   
+	    	if (get_val(ADS) && get_val(FIRE)) {
+	    	
+	    		if (AIM_X  <= abs(Horizontal)) {
+	    		
+	    			ValueX = Horizontal;
+	    		}
+	    		
+	    			else {
+	    	
+	    				ValueX = On; 
+	    			}
+	    	 
+	    		if (AIM_Y <= abs(Vertical)) {
+	    		
+	    			ValueY = Vertical;
+	    		}
+	    		
+	    			else {
+	    	
+	    				ValueY = On; 
+	    			}
+	    	}
+	    		else {
+	    		
+	    			ValueY = On;
+	    			ValueX = On;
+	    		}
+	    }
+
+	if(Triple_Sticky) {
+		if(get_val(ADS) && !get_val(FIRE)) {
+	combo_run(Sticky_AA);
+		Aim_Val  = ADS_Size;
+		Wait_Val = ADS_Wait_Value;
+	} else if(get_val(ADS) && get_val(FIRE)) {
+	combo_run(Sticky_AA);
+		Aim_Val  = ADS_FIRE_Size;
+		Wait_Val = ADS_FIRE_Wait_Value;
+	} else if(!get_val(ADS) && get_val(FIRE)) {
+	combo_run(Sticky_AA);
+		Aim_Val  = HIPFIRE_Size;
+		Wait_Val = HIPFIRE_Wait_Value;
+	} else {
+	combo_stop(Sticky_AA);
+		}
+	}
+}
+
+combo Sticky_AA {
+	set_val(AIM_Y,  get_val (AIM_Y)  + Aim_Val);
+	wait(Wait_Val);
+	set_val(AIM_X,  get_val (AIM_X)  + Aim_Val);
+	set_val(STRAFE, get_val (STRAFE) + a);
+	wait(Wait_Val);
+	set_val(AIM_Y,  get_val (AIM_Y)  + Aim_Val  * -1);
+	wait(Wait_Val);
+	set_val(AIM_X,  get_val (AIM_X)  + Aim_Val  * -1);
+	set_val(STRAFE, get_val (STRAFE) + a		 * -1);
+	wait(Wait_Val);
+}
+
+

@@ -1,0 +1,385 @@
+
+        //-------------------------------------------------------------------------------------------
+        //  DOPPIO ANTIRECOIL per arma primaria e secondaria, entrambi regolabili al volo e con funzione SAVE
+        //  AIM ASSIST
+        //  RAPID FIRE (Premi L2 + FRECCIA SINISTRA/ LT +FRECCIA SINISTRA) per abilitare o disabilitare il Rapidfire) colre rosa
+        //  DROP SHOT (ON/OFF PREMENDO QUADRATO+GIU) (X+giu) colore Blu
+        //  STEADY AIM PRESS SENSITIVE (premi completamente L2/LT per steady aim - premi L2/lt a mezza via per avere lo zoom mirare normalmente)
+        //  HAIR TRIGGERS Su Sparo
+        //  PANIC BUTTON (TIENI PREMUTO L2 e PREMI TRIANGOLO)
+        //  JUMP SHOT (ON/OFF PREMENDO QUADRATO+RIGHT)(X+ destra) colore giallo
+    	//  STRAFE    (ON/OFF PREMENDO QUADRATO+UP)(X+su)colore Bianco
+    	//  AUTO PING  ATTIVI DI DEFAULT
+    	//  HOLDBREATH  ATTIVI DI DEFAULT
+        //-------------------------------------------------------------------------------------------
+ 
+        //  Version: 7.1 - Classic
+        //  Platform: Multi
+        //  Controller: Multi
+        //  Game: All FPS games
+        //  Author: LEX LOST
+ 
+        /* *
+             ISTRUZIONI PRELIMINARI
+                     
+        - carica lo script sul CM+
+        - accendi la console ed entra in una partita (possibilmente senza o con pochi nemici)
+        - posiziona il tuo personaggio davanti ad un muro posto ad una decina di metri circa (ovviamente un muro che lascia i segni dei proiettili quando gli spari)
+        - regola l'antirecoil aumentandolo o diminuendolo (le istruzioni sono sotto) di un valore alla volta, finchè la rosa dei proiettili sul muro è abbastanza raccolta
+        - se c'è bisogno regola anche l'antirecoil orizzontale se la tua arma tende a spostarsi di lato mentre spari
+        - Se il rapidfire spara in modo 'scattoso' regolalo finchè l'arma non spara in modo fluido, ma considera che devi usarlo solo con le armi semiautomatiche
+        - Quando hai finito le regolazioni, salva lo script
+                     
+            Per le regolazioni segui le istruzioni sotto
+        * */
+        //------------------------------------------------------------------------------------------
+        // ISTRUZIONI XBOX:
+ 
+        // RAPIDFIRE (ON by default)
+        // Premi L2 + FRECCIA SINISTRA per abilitare o disabilitare il Rapidfire 
+ 
+        // ANTIRECOIL PRIMARIA - il led deve essere VERDE (Valore iniziale: verticale = 30; Orizzontale = 0)
+        // Tieni premuto LB e premi SU per aumentare Antirecoil (+1 ogni tocco su SU, mentre tieni premuto LB)
+        // Tieni premuto LB e tocca GIÙ per ridurre Antirecoil (-1 ogni tocco su GIÙ, tenendo premuto LB)
+        // Tieni premuto LB e premi DESTRA per compensare a destra (+1 ogni tocco su DESTRA, mentre tieni premuto LB)
+        // Tieni premuto LB e premi SINISTRA per compensare a sinistra (+1 ogni tocco su SINISTRA, mentre tieni premuto LB)
+ 
+        // ANTIRECOIL SECONDARIA - il led deve essere ROSSO (Valore iniziale: verticale = 40; Orizzontale = 0)
+        // Tieni premuto LB e premi SU per aumentare Antirecoil (+1 ogni tocco su SU, mentre tieni premuto LB)
+        // Tieni premuto LB e tocca GIÙ per ridurre Antirecoil (-1 ogni tocco su GIÙ, tenendo premuto LB)
+        // Tieni premuto LB e premi DESTRA per compensare a destra (+1 ogni tocco su DESTRA, mentre tieni premuto LB)
+        // Tieni premuto LB e premi SINISTRA per compensare a sinistra (+1 ogni tocco su SINISTRA, mentre tieni premuto LB)
+ 
+        // SALVA i nuovi valori nell'eeprom di CronusMax: tieni premuto LT e premi MENU (o START, per utenti XBOX360)
+ 
+        // ------------------------------------------------ -------------------------------------------
+        // ISTRUZIONI PLAYSTATION:
+ 
+        // RAPIDFIRE (ON by default)
+        // Premi L2 + FRECCIA SINISTRA per abilitare o disabilitare il Rapidfire
+ 
+        // ANTIRECOIL PRIMARIA - il led deve essere VERDE (Valore iniziale: verticale = 30; Orizzontale = 0)
+        // Tieni premuto L1 e premi SU per aumentare Antirecoil (+1 ogni tocco su SU, mentre tieni premuto L1)
+        // Tieni premuto L1 e premi GIÙ per ridurre Antirecoil (-1 ogni tocco su GIÙ, mentre tieni premuto L1)
+        // Tieni premuto L1 e premi DESTRA per compensare a destra (+1 ogni tocco su DESTRA, mentre tieni premuto L1)
+        // Tieni premuto L1 e premi SINISTRA per compensare a sinistra (+1 ogni tocco su SINISTRA, mentre tieni premuto L1)
+ 
+        // ANTIRECOIL SECONDARIA - il led deve essere ROSSO (Valore iniziale: verticale = 40; Orizzontale = 0)
+        // Tieni premuto L1 e premi SU per aumentare Antirecoil (+1 ogni tocco su SU, mentre tieni premuto L1)
+        // Tieni premuto L1 e premi GIÙ per ridurre Antirecoil (-1 ogni tocco su GIÙ, mentre tieni premuto L1)
+        // Tieni premuto L1 e premi DESTRA per compensare a destra (+1 ogni tocco su DESTRA, mentre tieni premuto L1)
+        // Tieni premuto L1 e premi SINISTRA per compensare a sinistra (+1 ogni tocco su SINISTRA, mentre tieni premuto L1)
+ 
+        // Salva i nuovi valori nell'eeprom di CronusMax: tieni premuto L2 e premi OPTIONS (o START, per utenti PS3)
+        //------------------------------------------------------------------------------------------
+ 
+        // Indicazioni LED:
+ 
+        // Verde: primaria 
+        // Rosso: secondaria / pink con rapid inserito
+ 
+        //-------------------------------------------------------------------------------------------    
+          // AIM ASSIST VALUES
+ 
+            int aa_p = 22; 
+            int aa_n = -22; 
+            int aa_delay = 20; 
+            int release = 23;    
+ 
+        //-------------------------------------------------------------------------------------------
+            //DECLARARATIONS - define
+ 			define hold_timeSTF = 300; // aumenta per uno strafe più lungo - diminuisci per uno strafe più corto
+    		define wait_timeSTF = 100; // aumenta per uno strafe più lento - diminuisci per uno strafe più veloce
+            define rate_of_fire = 13;  // Rapidfire speed - Range: 1 to 25 RPS (Round/s)     
+            define save         =  2;  // XB1_MENU - PS4_OPTIONS
+            define AR_switch    = 17;  // XB1_Y - PS4_TRIANGLE
+            define RF_switch    = 17;  // XB1_Y - PS4_TRIANGLE 
+            //-------------------------------------------------------------------------------------------
+            define FIRE       =  4;  // XB1_RT - PS4_R2
+            define SCOPE      =  7;  // XB1_LT - PS4_L2
+            define UP         = 13;  // DPAD UP     
+            define DOWN       = 14;  // DPAD DOWN   
+            define LEFT       = 15;  // DPAD LEFT 
+            define RIGHT      = 16;  // DPAD RIGHT
+            define JUMP       = 19;  // XB1_A - PS4_CROSS
+            define Switch_Weapon = PS4_TRIANGLE
+ 
+            //-------------------------------------------------------------------------------------------
+ 
+            define Blue      = 1; 
+            define Red       = 2; 
+            define Green     = 3; 
+            define Pink      = 4; 
+            define SkyBlue   = 5; 
+            define Yellow    = 6; 
+            define White     = 7;
+ 
+            data(1,
+              2,0,0,0, //1. Blue
+              0,2,0,0, //2. Red
+              0,0,2,0, //3. Lime/Green
+              0,0,0,2, //4. Fuchsia/Pink
+              2,0,2,0, //5. SkyBlue
+              0,2,2,0, //6. Yellow
+              2,2,2,2  //7. White
+            );
+            //-------------------------------------------------------------------------------------------
+            //VARIABLES - int
+ 
+            int recoil_onoff = TRUE;     // if TRUE Antirecoil is ON by default - if FALSE, OFF by default
+            int rapid_onoff  = TRUE;    // if TRUE Rapidfire for primary  - if FALSE, for secondary  
+            int drop_onoff;
+            int JUONOFF;
+			int Strafe_onoff= FALSE;
+            int ANTI_RECOIL;
+            int ANTI_RECOIL_H;  
+            int anti_recoil;
+            int anti_recoil_H;
+ 
+            int ANTI_RECOIL2;
+            int ANTI_RECOIL_H2;  
+            int anti_recoil2;
+            int anti_recoil_H2;
+ 
+ 
+            int Col_ind;
+            int hold_time, rest_time;
+            //-------------------------------------------------------------------------------------------
+ 
+            //INITIALIZATION - init
+ 
+            init{
+ 
+                hold_time = 500 / rate_of_fire;
+                rest_time = hold_time - 20;
+                if(rest_time < 0) rest_time = 0;
+ 
+                ANTI_RECOIL   = get_pvar(SPVAR_1, -100, 100, 30);
+                ANTI_RECOIL_H = get_pvar(SPVAR_2, -100, 100, 0);     
+                ANTI_RECOIL2  = get_pvar(SPVAR_3, -100, 100, 40);
+                ANTI_RECOIL_H2= get_pvar(SPVAR_4, -100, 100, 0);
+ 
+            } 
+ 
+            //-------------------------------------------------------------------------------------------
+ 
+            //MAIN BLOCK ROUTINES
+ 
+            main {
+            if (!recoil_onoff){
+            if(get_val(SCOPE) > 95 && get_ptime(SCOPE)>300) {set_val(8, 100);}}
+            
+ 			if (get_val(PS4_SQUARE) && event_press(PS4_UP)) {combo_run (vibrate); Strafe_onoff=!Strafe_onoff; }
+    		if(Strafe_onoff) { 
+    			if(get_val(PS4_R2)) {
+    				combo_run(strafe);
+    			} else {
+        			combo_stop(strafe);
+        		}
+   	 }             
+            
+            if(get_val(PS4_R2) && get_val(PS4_L2)) {
+        combo_run(Turbo_PNG)
+    }
+ 		if(get_val(PS4_SQUARE) && event_press(PS4_RIGHT)) {combo_run (vibrate);  JUONOFF = !JUONOFF; } 
+ 
+   		if(JUONOFF) { 
+   		if(get_val(PS4_R2)) {
+        	combo_run(Turbo_JUMP)
+	}
+	}           
+              
+ 
+            if(get_val(PS4_SQUARE) && event_press(PS4_DOWN))  {combo_run (vibrate); drop_onoff=!drop_onoff;}                             
+            if(drop_onoff){        
+            if(get_val(SCOPE) && event_press(FIRE)) { combo_run(DROPSHOT); }         
+            }
+ 
+            if(get_val(FIRE)) { set_val(FIRE, 100); }
+ 
+ 
+            if (get_val (SCOPE)>80) { 
+                combo_run (AA_XY); 
+                } else { 
+                    combo_stop (AA_XY);              
+            }
+ 
+                    if(get_val(SCOPE) && event_press(PS4_LEFT))  {
+                        combo_run (vibrate); 
+                        rapid_onoff=!rapid_onoff;
+                        } 
+ 
+                     if(recoil_onoff) colourled(Green);
+                     else colourled(Red);
+                     if (drop_onoff)colourled(Blue);
+                     if (JUONOFF)colourled(Yellow);
+                     if (Strafe_onoff)colourled(White);
+                     
+ 
+                // RAPIDFIRE
+                     if((rapid_onoff) && !recoil_onoff) colourled(Pink);
+                     if(get_val(FIRE) && rapid_onoff && !recoil_onoff) {
+                        combo_run(RapidFire);
+                    } else if(combo_running(RapidFire)) {
+                        combo_stop(RapidFire);
+                    }
+ 
+                if(event_press(AR_switch))  {recoil_onoff = !recoil_onoff; } 
+                if(get_val(SCOPE) && get_val(Switch_Weapon))
+            //--block switch button in game
+            set_val(Switch_Weapon,0);  
+ 
+            if(recoil_onoff) {     
+                if(get_val(PS4_L1)){
+                    if(event_press(UP)){
+                        ANTI_RECOIL = ANTI_RECOIL+ 1; combo_run (vibrate);
+                    }
+                    if(event_press(DOWN)) {
+                        ANTI_RECOIL = ANTI_RECOIL- 1; combo_run (vibrate);
+                    }
+                    set_val(UP,0); set_val(DOWN,0);
+ 
+                    if(event_press(LEFT)){
+                        ANTI_RECOIL_H = ANTI_RECOIL_H+ 1; combo_run (vibrate);
+                    }
+                    if(event_press(RIGHT)) {
+                        ANTI_RECOIL_H = ANTI_RECOIL_H- 1; combo_run (vibrate);
+                    }
+                    set_val(LEFT,0); set_val(RIGHT,0);
+                }}
+ 
+            if(!recoil_onoff) {     
+                if(get_val(PS4_L1)){
+                    if(event_press(UP)){
+                        ANTI_RECOIL2 = ANTI_RECOIL2+ 1; combo_run (vibrate);
+                    }
+                    if(event_press(DOWN)) {
+                        ANTI_RECOIL2 = ANTI_RECOIL2- 1; combo_run (vibrate);
+                    }
+                    set_val(UP,0); set_val(DOWN,0);
+ 
+                    if(event_press(LEFT)){
+                        ANTI_RECOIL_H2 = ANTI_RECOIL_H2+ 1; combo_run (vibrate);
+                    }
+                    if(event_press(RIGHT)) {
+                        ANTI_RECOIL_H2 = ANTI_RECOIL_H2- 1; combo_run (vibrate);
+                    }
+                    set_val(LEFT,0); set_val(RIGHT,0);
+                }}
+ 
+                if(get_val(SCOPE) && event_press(save)){
+                    combo_run(vibrate);
+                    set_pvar(SPVAR_1, ANTI_RECOIL);
+                    set_pvar(SPVAR_2, ANTI_RECOIL_H);       
+                    set_pvar(SPVAR_3, ANTI_RECOIL2);
+                    set_pvar(SPVAR_4, ANTI_RECOIL_H2);        
+                    set_val(save, 0);
+                }
+                if(recoil_onoff) {        
+                if(get_val(FIRE) && get_val(SCOPE)) {
+                    combo_run(AntiRecoil);
+                    }
+                }
+                if(!recoil_onoff) {        
+                if(get_val(FIRE) && get_val(SCOPE)) {
+                    combo_run(AntiRecoil2);
+                    }
+                }     
+                if(abs(get_val(10)) > ANTI_RECOIL + 10 || abs(get_val(9)) > ANTI_RECOIL + 10) {  
+                    combo_stop (AntiRecoil);
+                }
+                if(abs(get_val(10)) > ANTI_RECOIL2 + 10 || abs(get_val(9)) > ANTI_RECOIL2 + 10) {  
+                    combo_stop (AntiRecoil2);
+                }
+ 
+ 
+            }
+            //-------------------------------------------------------------------------------------------
+ 
+            //COMBO BLOCKS
+    		combo Turbo_PNG {
+        		set_val(PS4_UP, 100);
+        		wait(40);
+        		set_val(PS4_UP, 0);
+        		wait(1500);
+        		set_val(PS4_UP, 0);
+}            
+			combo Turbo_JUMP {
+    			set_val(PS4_CROSS, 100);
+    			wait(60);
+    			set_val(PS4_CROSS, 0);
+    			wait(40);
+    			set_val(PS4_CROSS, 0);
+} 
+    		combo strafe {
+        		set_val(11, 100);
+        		wait(hold_timeSTF);    
+        		wait(wait_timeSTF);
+        		set_val(11,-100);
+        		wait(hold_timeSTF);
+        		wait(wait_timeSTF);    
+    }
+            combo vibrate { 
+                set_rumble(RUMBLE_A, 50);
+                wait(300);
+                reset_rumble();
+                }    
+ 
+            combo DROPSHOT {
+                set_val(18, 100);
+                wait(500);//Time To Go Prone
+                } 
+ 
+            combo RapidFire {
+                set_val(FIRE, 100);
+                wait(hold_time);
+                set_val(FIRE, 0);
+                wait(rest_time);
+                set_val(FIRE, 0);
+                }
+ 
+            combo AntiRecoil {
+                anti_recoil = get_val(10) + ANTI_RECOIL;
+                if(anti_recoil > 100) anti_recoil = 100;
+                set_val(10, anti_recoil);
+                anti_recoil_H = get_val(9) + ANTI_RECOIL_H;
+                if(anti_recoil_H > 100) anti_recoil_H = 100;
+                set_val(9, anti_recoil_H);
+                }
+ 
+            combo AntiRecoil2 { 
+                anti_recoil2 = get_val(10) + ANTI_RECOIL2;
+                if(anti_recoil2 > 100) anti_recoil2 = 100;
+                set_val(10, anti_recoil2);
+                anti_recoil_H2 = get_val(9) + ANTI_RECOIL_H2;
+                if(anti_recoil_H2 > 100) anti_recoil_H2 = 100;
+                set_val(9, anti_recoil_H2);
+                }
+ 
+            combo AA_XY { 
+                set_val (10, xy_val (10, aa_p)); 
+                wait (aa_delay) 
+                set_val (9, xy_val (9, aa_p)) ; 
+                wait (aa_delay)
+                set_val (10, xy_val (10, aa_n)); 
+                wait (aa_delay) 
+                set_val (9, xy_val (9, aa_n)); 
+                wait (aa_delay) 
+                } 
+ 
+            function xy_val (f_axis, f_val) { 
+                if (abs (get_val (f_axis)) <release) 
+                    return f_val; 
+                return get_val (f_axis); 
+                }        
+ 
+            // COLOR LED function
+            //--------------------------------------------------------------
+            function colourled(Colour) {
+                Col_ind=(Colour*4) - 3;
+                set_led(LED_1,dbyte(Col_ind  ));
+                set_led(LED_2,dbyte(Col_ind + 1));
+                set_led(LED_3,dbyte(Col_ind + 2));
+                set_led(LED_4,dbyte(Col_ind + 3));
+            }//end
+

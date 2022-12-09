@@ -1,0 +1,734 @@
+// GPC Online Library
+// cod_mw.gpc
+
+/*
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------    
+---------------------------------------------------FABRICIO KEITEL ULTIMATE CALL OF DUTY MW SCRIPT-------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Version: 3.0
+Platform: Multi
+Controller: Multi
+Game: CALL OF DUTY MW
+Author: FABRICIO KEITEL
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |D|A|T|A| | | | | | | | | | | | | | | | | | | | | | || | | | | | || | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+data(
+0,0,0,0,//Off
+0,0,2,0,//Green
+2,0,0,0,//Blue
+0,0,0,2,//Pink
+0,2,0,0,//Red
+2,0,2,0,//SkyBlue
+2,2,2,2//White
+);
+
+
+//--/ START USER CONFIG--*/
+define AIM__INVERTED            =    FALSE;        // IF YOU PLAY WITH AIM INVERTED SET "TRUE;"
+define EASY__RUN                =    TRUE;        // EASY RUN 
+int RUN__SENS                =    -75;         // SENSITIVITY WHEN EASY RUN SHOULD ACTIVATE 
+define CNCL__AD                    =    TRUE;        // AUTO CANCEL RELOAD
+define RELOAD__TIME                =    2000;        // SET LONGEST RELOAD TIME IN YOUR SCRIPT
+define SWAP                        =    FALSE;        // THIS SWAPS THE STICKS SO THAT YOU HAVE MELEE AND PRONE UNDER YOUR THUMBS 
+define turbo__trigger            =    TRUE;        // HAIR TRIGGERS ON BOTH ADS & FIRE
+int       NO__RECOIL                =    FALSE;        // ANTI RECOIL
+int    AIM__CORRECT                =    TRUE;        // AIM CORRECTIONS (VARIOUS OPTIONS FOR SENSITIVITY TO AVOID WEAPON SWAY. YOU CAN SET THE AIM CORRECTION SENSITIVITY VALUES BELOW
+int    STICKY__AIM                =    TRUE;        // AIM ASSIST
+int Quick_Shot_ON = FALSE; 
+define AIM_H=XB1_RX;//AIM HORIZONTAL                  
+define AIM_V=XB1_RY;//AIM VERTICAL        
+int _v=    23;    
+define STRAFE=XB1_LX; 
+int Strafe_Shot_ON = FALSE; 
+int Strafe_Shot_ON1 = FALSE; 
+
+/*     AIM CORRECTION SENSITIVITY VALUES:
+       ADS SENS = SENS WHEN AIMING
+       GEN SENS = GENERAL STICK SENS
+       HIP SENS = SENS WHEN HIP FIRING
+       ADS FIRE SENS = SENS WHEN AIMING AND FIRING WEAPON
+       DO NOT CHANGE MIDPOINT
+*/
+int ADS_SENS=98.1, GEN_SENS=102.1, HIP_SENS=94.1, ADS_FIRE_SENS=96.1, Use_sens, midpoint=51.5;
+
+//-/ END USER CONFIG
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |C|O|N|T|R|O|L|S| |D|E|F|A|U|L|T| |B|T|N| |L|A|Y|O|U|T| | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+define HOME=0;            //PS4_PS / XB1_XBOX
+define VIEW_reset=1;    //PS4_SHARE / XB1_VIEW
+define MENU_save=2;        //PS4_OPTIONS / XB1_MENU
+define SPOT=3;            //PS4_R1 / XB1_RB
+define FIRE=4;            //PS4_R2 / XB1_RT
+define MELEE=PS4_CROSS;            //PS4_R3 / XB1_RS
+define TACTICAL=6;        //PS4_L1 / XB1_LB
+define ADS=7;            //PS4_L2 / XB1_LT
+define SPRINT=8;        //PS4_L3 / XB1_LS 
+define RX=9;            //PS4_RX / XB1_RX
+define RY=10;            //PS4_RY / XB1_RY
+define LX=11;            //PS4_LX / XB1_LX
+define LY=12;            //PS4_LY / XB1_LY
+define UP=13;            //PS4_UP / XB1_UP
+define DOWN=14;            //PS4_DOWN / XB1_DOWN
+define LEFT=15;            //PS4_LEFT / XB1_LEFT
+define RIGHT=16;        //PS4_RIGHT / XB1_RIGHT
+define SW_WEAPON=17;    //PS4_TRIANGLE / XB1_Y
+define PRONE=18;        //PS4_CIRCLE / XB1_B
+define JUMP=PS4_R3;            //PS4_CROSS / XB1_A
+define RELOAD=20;        //PS4_SQUARE / XB1_X
+define GYROX_PR1=24;    //PS4_GYROX / XB1_PR1
+define GYROY_PR2=25;    //PS4_GYROY / XB1_PR2
+define GYROZ_PL1=26;    //PS4_GYROZ / XB1_PL1
+define TOUCH_PL2=27;    //PS4_TOUCH / XB1_PL2
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |L|E|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+define Off=0;
+define Green=1;
+define Blue=2;
+define Pink=3;
+define Red=4;
+define SkyBlue=5;
+define White=7;
+
+/* 
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |V|A|R|I|A|B|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+int    q;
+int    double__tap[30];
+int    recoil__y, recoil__x; 
+int    NO__RECOIL__Y, NO__RECOIL__X;
+int    G__M=TRUE; 
+int    hold_time=35;
+int    rest_time=35;
+int    PrimaryWeapon=TRUE;
+int    RF_KS=FALSE;
+int    R2F_K2S=TRUE;
+int    b_reload;
+int    Secondary=TRUE; 
+int    T__B__P=200;
+int    TimelimitA=1000; // 1 timer
+int    TimerA=0;
+int    aa_p=24;
+int    aa_n=-24;
+int    aa_delay=20;
+int    release=25;
+int DS_onoff; //--DropShot                                                                             
+int Drop_Shot = FALSE;// if TRUE DropShot is ON by default - if FALSE, OFF by default
+int JS_onoff; //--DropShot                                                                             
+int JUMP_Shot = FALSE;
+
+//################################################################################################# 
+//
+// State machine variable
+//
+ 
+ 
+int Current_State          = 0;
+int Aim_Abuse_State      = 2;
+ 
+ 
+define Get_Last_Value     = 0;
+define Get_Current_Value = 1;
+define Aim_Correction      = 2;
+define Aim_Boost          = 3;
+ 
+ 
+define Aim_Perfection_Limit = 95;
+ 
+ 
+//
+//################################################################################################# 
+//######################################### Script variable ####################################### 
+//################################################################################################# 
+//
+// Dont't change!
+//
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+ 
+int mvt = 0;
+int Aim_Boost_Val = 0; 
+int Aim_Correction_Val = 0;
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |I|N|I|T| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/ 
+init {
+    while(q < 30) {
+        double__tap[q] = -1;       
+        q++;
+    }    
+    NO__RECOIL__Y     = get_pvar(SPVAR_8,-100,+100,+31);  
+    NO__RECOIL__X     = get_pvar(SPVAR_9,-100,+100,0);
+    
+} 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {  
+if(get_val(XB1_LT)) 
+    sensitivity(PS4_RX, 54, 98);
+    sensitivity(PS4_RY, 58, 115);
+ 
+    if(get_val(XB1_RT)) 
+    sensitivity(PS4_RX, NOT_USE, 95);
+    sensitivity(PS4_RY, NOT_USE, 112);
+ 
+if((get_val(PS4_RX)) && (get_val(PS4_RY) && (get_val(PS4_LY) && (get_val(PS4_LX)&& (!get_val(XB1_LT) && (!get_val(XB1_RT))))))) {
+    sensitivity(PS4_RX, NOT_USE, 99);        
+    sensitivity(PS4_RY, NOT_USE, 104);} 
+    
+
+//QUICK SHOT
+if((get_val(PS4_UP) && get_val(PS4_UP)) && event_press(XB1_B))
+    {
+         if (Quick_Shot_ON) combo_run (Rumb);
+         if (!Quick_Shot_ON) combo_run (RumbTwo);
+           Quick_Shot_ON = !Quick_Shot_ON;
+        
+    }
+    
+if(Quick_Shot_ON)
+{
+    if(get_val(XB1_LT)) 
+        set_val(XB1_RT, 100);
+
+}
+// DEAD ZONE CORECTION : RIGHT STICK                                 
+if(abs(get_val(XB1_RY)) <=5 && abs(get_val(XB1_RX)) <=5)
+        {
+            set_val(XB1_RY,0);                                                 
+            set_val(XB1_RX,0);
+}
+     if((get_val(7)) >= 100) { 
+        set_val(XB1_LS, 100);                                                   
+
+}
+//////////////////////////////////////////////////////////////////////
+//DROP SHOT 
+if(get_val(XB1_DOWN) && event_press(XB1_B))  { 
+        if (DS_onoff) combo_run (Rumb);
+         if (!DS_onoff) combo_run (RumbTwo);                        
+        DS_onoff = !DS_onoff;                    
+    } 
+    
+    
+    if(DS_onoff) {   
+    
+  if(get_val(XB1_LT) && (get_val(XB1_RT)))
+            combo_run (cDrop_Shot);
+    
+
+}
+//AIM ABUSE 
+ if((get_val(PS4_UP) && get_val(PS4_UP)) && event_press(PS4_CROSS))
+    {
+        Strafe_Shot_ON = !Strafe_Shot_ON;
+         if (Strafe_Shot_ON) combo_run (Rumb);
+         if (!Strafe_Shot_ON) combo_run (RumbTwo); 
+    }
+    
+if(Strafe_Shot_ON)
+{
+  if(get_val(XB1_LT) && (get_val(XB1_RT)))
+        combo_run(Strafe_Shot);
+    else
+        combo_stop(Strafe_Shot);
+
+}
+//AKIMBO MOD
+ if((get_val(PS4_LEFT) && get_val(PS4_LEFT)) && event_press(PS4_CROSS))
+    {
+        Strafe_Shot_ON1 = !Strafe_Shot_ON1;
+         if (Strafe_Shot_ON1) combo_run (Rumb);
+         if (!Strafe_Shot_ON1) combo_run (RumbTwo); 
+    }
+    
+if(Strafe_Shot_ON1)
+{
+  if(get_val(XB1_LT) || (get_val(XB1_RT)))
+        combo_run(Strafe_Shot1);
+    else
+        combo_stop(Strafe_Shot1);
+
+}
+if(!get_val(PS4_L2))
+    {
+           if(event_press(XB1_X))
+             combo_run(Reload);
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |L|O|A|D| |M|O|D|E|S| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+  if(get_val(DOWN)) {//HOLD DOWN
+    if (double_click(2)) { //DOUBLE TAP PS4_OPTIONS / XB1_MENU
+        G__M = !G__M;
+         if (G__M) combo_run (Rumb);
+         if (!G__M) combo_run (RumbTwo);
+    }
+    set_val(2,0);
+    }
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | |M|E|N|U| |A|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+if(get_val(ADS) &&(G__M)){//hold ADS button
+
+//--RESET EPROM TO DEFAULT VALUES
+
+    if(get_val(VIEW_reset)&&get_ptime(VIEW_reset)>600){
+        RESET_Defaults();
+    }
+//--RAPID FIRE ON SECONDARY
+    if(event_press(UP)){//D-pad UP 
+        R2F_K2S = !R2F_K2S;
+        Secondary=TRUE;
+        PrimaryWeapon=TRUE;
+        RF_KS=FALSE;
+
+
+}
+//--RAPID FIRE OFF 
+    if(event_press(DOWN)){//D-pad DOWN
+        PrimaryWeapon=TRUE;
+        RF_KS=FALSE;
+        R2F_K2S=FALSE;
+        Secondary=FALSE;
+}
+//--RAPID FIRE ON
+    if(event_press(RIGHT)){//D-pad RIGHT
+        PrimaryWeapon=TRUE;
+        RF_KS=TRUE;
+        Secondary=FALSE;
+
+}
+    set_val(1,0); set_val(2,0); set_val(13,0); set_val(14,0); set_val(15,0); set_val(16,0); 
+}
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |T|O|G|G|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+ if(get_val(DOWN) &&(G__M)){
+     if (double_click(19)){//TAP A
+         NO__RECOIL = !NO__RECOIL; 
+             if (NO__RECOIL) combo_run (RumbTwo);
+                 if (!NO__RECOIL) combo_run (Rumb);}         
+ }    
+if (SWAP){
+    swap(8, 5);
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |T|U|R|B|O| |B|T|N| |A|.|K|.| |H|A|I|R| |T|R|I|G|G|E|R|S| | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+turbo(FIRE);
+turbo(ADS); 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|I|M| | |C|O|R|R|E|C|T|I|O|N|S| | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+if(AIM__CORRECT){   
+  if(get_val(FIRE) && get_val(ADS)) { 
+    Use_sens = ADS_FIRE_SENS;
+  }
+  if(get_val(FIRE) && !get_val(ADS)) { 
+    Use_sens = HIP_SENS;
+  }
+  if(!get_val(FIRE) && !get_val(ADS)) {
+    Use_sens = GEN_SENS;
+  }
+  if(!get_val(FIRE) && get_val(ADS)) {
+    Use_sens = ADS_SENS;
+  } 
+    sensitivity(9, midpoint ,Use_sens);
+    sensitivity(10, midpoint ,Use_sens);
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|N|T|I| |R|E|C|O|I|L| | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/  
+ if (NO__RECOIL){
+No__recoil(NO__RECOIL__X, NO__RECOIL__Y); 
+}
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |A|I|M| |A|S|S|I|S|T| | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+if(STICKY__AIM){
+    if(get_val(ADS)) 
+    combo_run(AA_XY);
+      else 
+      combo_stop(AA_XY); 
+}
+       
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|O|D|E| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/        
+ P__M(G__M);  
+ /*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |E|A|S|Y| |R|U|N| | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+if (EASY__RUN){ 
+ if(get_val(PS4_LY) <=-85 && !get_val(XB1_LT) && !get_val(XB1_RT))
+         combo_run(EASY_RUN);
+         else
+         combo_stop(EASY_RUN); 
+ }
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |R|A|P|I|D| |F|I|R|E| |&| |B|U|R|S|T| | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+//-- RF PRIMARY  
+
+if (PrimaryWeapon){
+    if (RF_KS && get_val(FIRE)){combo_run (RAPID_FIRE);}
+    }
+  
+//- RF SECONDARY 
+ 
+ if(!PrimaryWeapon && R2F_K2S)   
+  if(get_val(FIRE)) { 
+      combo_run (RAPID_FIRE);
+} 
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |R|E|S|E|T| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+if(event_release(RELOAD) && get_ptime(RELOAD)> 200 &&(Secondary) &&!get_val(DOWN)){ PrimaryWeapon = TRUE;  combo_run (Rumb);} 
+
+if (Secondary){ 
+    if(event_press(SW_WEAPON) && !get_val (14)){  
+      PrimaryWeapon = !PrimaryWeapon;  
+      if (!PrimaryWeapon) combo_run (RumbTwo); 
+  }
+}
+ 
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |L|E|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+PLAY__LEDS ();
+
+    if(get_val(ADS)||(get_val(FIRE))) 
+        {        
+            if (Current_State == Get_Last_Value)
+            {
+                X_Last_Value = get_lval(XB1_RX);
+                Y_Last_Value = get_lval(XB1_RY);
+ 
+                Current_State = Get_Current_Value;
+ 
+            }
+            else if (Current_State == Get_Current_Value)
+            {
+                X_Current_Value = get_val(XB1_RX);
+                Y_Current_Value = get_val(XB1_RY);
+ 
+                if(Aim_Abuse_State == Aim_Correction)
+                {    
+                    Current_State = Aim_Boost;
+                }
+                else
+                {
+                    Current_State = Aim_Correction;
+                }    
+            }
+            if (Current_State == Aim_Boost)
+            {
+                //Applying BOOST
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Boost;  
+            }
+            else if (Current_State == Aim_Correction)
+            {
+                //Applying CORRECTION
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Correction; 
+            } 
+        }
+        else //--LT not pulled
+        {
+            Current_State = Get_Last_Value;
+            Aim_Abuse_State = Aim_Correction; 
+        }
+}
+
+/*
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo AA_XY {
+     set_val(AIM_V,xy_val(AIM_V, _v));
+    wait(20);
+    set_val(AIM_H,xy_val(AIM_H, _v));
+    set_val(STRAFE,xy_val(STRAFE, _v));
+    wait(20);
+    set_val(AIM_V,xy_val(AIM_V, _v * -1));
+    wait(20);
+    set_val(AIM_H,xy_val(AIM_H, _v * -1));
+    set_val(STRAFE,xy_val(STRAFE, _v * -1));
+    wait(20);
+}
+combo RAPID_FIRE { 
+    set_val(FIRE,100);
+    wait(hold_time); 
+    set_val(FIRE,  0); 
+    wait(rest_time);
+}
+combo Rumb{
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+     wait(150);
+     reset_rumble();
+}
+combo RumbTwo {
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait (150);
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait(150);
+    reset_rumble();
+}
+combo BLINK_AR {
+    wait(650);
+    color_led(Off);
+    wait(650);
+    reset_leds ();     
+}
+/*  
+combo EasySlide{
+    set_val(PRONE, 100);
+    wait(700);
+    set_val(PRONE, 0);
+    wait(50);
+    set_val(SPRINT, 100);
+    wait(60);
+    set_val(SPRINT, 0);
+    wait(50);    
+}
+*/
+combo EASY_RUN {
+    set_val(XB1_LS, 100);
+    wait(50);
+    set_val(XB1_LS, 0);
+    wait(100);   
+}    
+combo cDrop_Shot{
+     set_val(PRONE, 100);                
+}
+
+combo Reload {
+    set_val(XB1_LS, 0);
+    wait(2200);
+    set_val(XB1_LS, 100);
+}  
+combo Strafe_Shot{
+   set_val(PS4_L2, 100);    
+    wait(199);                
+    set_val(PS4_L2, 0);      
+    wait(19);
+}  
+combo Strafe_Shot1{
+    set_val(XB1_RT,100); 
+   set_val(XB1_LT,100); 
+   wait(35);      
+   set_val(XB1_LT,0);   
+   set_val(XB1_RT,0);   
+   wait(35);
+}
+function P__M(program__mode) {
+    if (program__mode) return;
+        if (get_val(DOWN)) {
+        NO__RECOIL__Y = Variable__Var(NO__RECOIL__Y, -100, 100, 3, 4);
+        NO__RECOIL__X = Variable__Var(NO__RECOIL__X, -100, 100, 6, 7);
+        
+        } 
+        set_val (3,0); set_val (4,0); set_val (6,0); set_val (7,0);
+        save_pvars();
+}
+
+function Variable__Var(var__val, min_val, max_val, btn_up, btn_down) {
+    if(event_press(btn_up) && var__val < max_val) {
+        var__val++;
+       combo_run (Rumb);
+    }        
+    if(event_press(btn_down) && var__val > min_val) {
+        var__val--;
+        combo_run (Rumb);
+    }
+    return var__val;
+}
+function RESET_Defaults () {
+    combo_run (Rumb);
+    NO__RECOIL__Y       = 30; 
+    NO__RECOIL__X       = 0;
+    save_pvars();
+}
+function turbo(btn) {
+    if (!turbo__trigger || !get_val(btn)) return; 
+    set_val(btn, 100);
+    }    
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < release)
+    return f_val;
+    return get_val(f_axis);
+}
+function No__recoil(No__recoil__x, No__recoil__y) {
+    if (get_val(FIRE)) {
+    if (isqrt(pow(get_val(RX), 2) + pow(get_val(RY), 2)) <= abs(No__recoil__y)) {   
+        if (abs(get_val(RY)) <= abs(No__recoil__y)) {
+            recoil__x = (get_val(RX) + (No__recoil__x*(100-abs(get_val(RX))))/100);
+            set_val(RX, recoil__x);           
+            if (AIM__INVERTED)
+                recoil__y = (get_val(RY) - (No__recoil__y*(100-abs(get_val(RY))))/100); // Y-axis invert
+            else
+                recoil__y = (get_val(RY) + (No__recoil__y*(100-abs(get_val(RY))))/100);
+            if (recoil__y > No__recoil__y) recoil__y = No__recoil__y;
+            set_val(RY, recoil__y);              
+             }
+         }
+     }
+ }
+function double_click(button) {        
+    if (double__tap[button] >= 0) {                    
+        double__tap[button] = double__tap[button] + get_rtime(); 
+        if (double__tap[button] > 450)
+            double__tap[button] = -1;                                                                                       
+    }           
+    if (event_release(button) && get_ptime(button) <= 200) { 
+        if (double__tap[button] < 0) {                    
+            double__tap[button] = 0;                        
+        } else {             
+            double__tap[button] = -1;                       
+            return 1;                                   
+        }                                                     
+    }                                                  
+    return 0;
+    }
+
+
+//
+//################################################################################################# 
+//############################################# FUNC ############################################## 
+//################################################################################################# 
+//           
+ 
+function 
+Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) 
+    { 
+       mvt = abs(Last_Value) + abs(Current_Value);
+       Aim_Boost_Val = ( mvt + 1 )/2; //Rounding integer division (instead of truncating)
+       Aim_Correction_Val = Aim_Boost_Val + 4;
+ 
+       if(Aim_Boost_Val >= 10)
+       {
+           Aim_Boost_Val = 10;
+           Aim_Correction_Val = 14;
+       }
+       else if(Aim_Boost_Val == 0)
+       {
+            Aim_Boost_Val = 2
+            Aim_Correction_Val = 4;
+       }
+ 
+ 
+       if(mvt < Aim_Perfection_Limit) 
+       {
+            //--moving right
+            if(Last_Value < Current_Value)
+            {           
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value + Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value + Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value - Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value - Aim_Correction_Val));            
+                }
+            }
+            else //--moving left
+            {
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value - Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value - Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value + Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value + Aim_Correction_Val));            
+                }
+            }
+        }
+    } 
+ 
+
+function save_pvars() { 
+    set_pvar(SPVAR_8, NO__RECOIL__Y);
+    set_pvar(SPVAR_9, NO__RECOIL__X);
+    }
+function PLAY__LEDS (){
+    if(PrimaryWeapon) color_led (Blue); 
+    if (!PrimaryWeapon && R2F_K2S) color_led (Red);
+    if(PrimaryWeapon && RF_KS) color_led (White);
+    if(AIM__CORRECT && get_val (FIRE)) color_led(Pink); 
+    if(NO__RECOIL) combo_run (BLINK_AR);
+    if(STICKY__AIM && get_val(ADS)) color_led (Pink);
+    
+}
+function color_led(colour) {
+    set_led(LED_1, dbyte(colour * 4));
+    set_led(LED_2, dbyte((colour * 4) + 1));
+    set_led(LED_3, dbyte((colour * 4) + 2));
+    set_led(LED_4, dbyte((colour * 4) + 3));
+}

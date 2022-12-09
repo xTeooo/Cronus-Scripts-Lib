@@ -1,0 +1,41 @@
+define Legacy_AR     = TRUE;
+int Vertical_Value   =   31;
+int Horizontal_Value =   -4;
+
+int AntirecoilVertical;
+int AntirecoilHorizontal;
+define MinARecoilPercent = 20;
+int MinARecoilFactor;
+int MinARecoilToApply;
+int MovementARecoilToApply
+
+main {
+    if(Legacy_AR) {
+      if(get_val(PS4_R2)) {
+    AntirecoilVertical   = dz(PS4_RY,0);
+    AntirecoilHorizontal = dz(PS4_RX,0); }
+      if(get_val(PS4_L2) && get_val(PS4_R2)) {
+    AntiRecoil(PS4_RY, Vertical_Value);
+    offset(PS4_RX, Horizontal_Value); }
+    }
+}
+
+function dz(f_axis,f_val) {
+    f_val = get_val(f_axis);
+    if(abs(f_val) < 10) {
+    set_val(f_axis,0);
+    return 0; }
+    return f_val;
+}
+function AntiRecoil(AxisToApply, ARecoilToApply) {
+    AntirecoilHorizontal   = get_val(PS4_RX);
+    AntirecoilVertical     = get_val(PS4_RY);
+    MinARecoilFactor       = MinARecoilPercent / 100;
+    MinARecoilToApply      = MinARecoilFactor * ARecoilToApply;
+    MovementARecoilToApply = (1 - MinARecoilFactor) * ((ARecoilToApply * (100 - isqrt(AntirecoilHorizontal * AntirecoilHorizontal + AntirecoilVertical * 
+    AntirecoilVertical))) / (100 + abs(AntirecoilHorizontal) + ((AntirecoilVertical*AntirecoilVertical)/2)));
+    set_val(AxisToApply, clamp(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply), -100, 100 - MinARecoilToApply));
+}
+function offset(axis, offset_val) {
+    set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+}

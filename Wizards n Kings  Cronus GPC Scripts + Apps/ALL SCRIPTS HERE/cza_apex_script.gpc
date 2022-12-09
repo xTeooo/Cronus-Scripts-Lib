@@ -1,0 +1,322 @@
+/*
+
+-----------------------------------------------------------------------------------------------------------------------------------------
+  
+   Whats new:
+  -Fixed some coding based on new updates
+  -"No recoil" script optimized to require less recoil control. 
+
+
+*****************************************************************************************************************************************
+                                              **IMPORTANT**
+
+                                 ***How to turn on and off the scripts*** 
+                                  
+   Hold L2/LT And Press D-PAD UP For Rapid Fire - 2 Rumbles = ON 3 = OFF                                                     
+ 
+   Hold L2/LT And Press D-PAD DOWN to switch between Low and High Anti-Recoil - Rumbles 1 = Low (Green) 2 = High (Pink)                                     
+         
+   INSTA HEAL SWAP Toggle - Press D-PAD DOWN to Switch (Always On)                 
+******************************************************************************************************************************************
+*/
+ 
+    //Customize
+    int R1L1 = FALSE;     //1-Flipped - Change to TRUE if user wants to play with flipped bumpers/triggers
+    int rf_onoff = FALSE; //Rapid Fire - Change to TRUE for ON by default - FALSE for OFF by default but can still turn on ingame
+    int AT = FALSE;       //Change FALSE TO TRUE If you want Aim Abuse 
+    int AST = TRUE;       //Change TRUE TO FALSE If you dont want Aim Assist
+    int HT = TRUE;       //Change TRUE TO FALSE If you dont want Hair Triggers
+    int RUN = FALSE;      //Change TRUE TO FALSE If you dont want Auto Run
+ 
+    //Layout
+    define PS = 0;
+    define SHARE = 1;
+    define OPTIONS = 2;   
+    define R1 = 3;
+    define R2 = 4;        
+    define R3 = 5;        
+    define L1 = 6;       
+    define L2 = 7;      
+    define L3 = 18;    
+    define RX = 9;       
+    define RY = 10;      
+    define LX = 11;       
+    define LY = 12;      
+    define UP = 13;       
+    define DOWN = 14;    
+    define LEFT = 15; 
+    define RIGHT = 16;
+    define TRIANGLE = 17;
+    define CIRCLE = 8;  
+    define CROSS = 19;   
+    define SQUARE = 20;
+ 
+    data(0,0,3,0,0,0,0,3);
+ 
+    const byte AR_T[][] =
+    {{10,50,140},
+    {10,90,150}};
+    const byte AR_V[][] =
+    {{35,21,11},//Low Recoil
+    {40,22,16}};//High Recoil
+ 
+    //Rapid Fire Values 
+    define RAPIDFIRE_SPEED = 12;
+	
+	//Custom Sensitivity
+    int GEN_SENS = 100;
+    int ADS_SENS = 100;
+    int ADS_FIRE_SENS = 100;
+    int FIRE_SENS = 100;
+    
+    //Strafe
+    int RIGHT_Speed = 200; //How long to go RIGHT
+    int LEFT_Speed = 200; //How long to go LEFT
+ 
+    //Aim Assist Values
+    int aa_p = 18;    // Decrease shake
+    int aa_n = 18;   // Decrease shake
+    int aa_delay = 29;// How fast Aim Assist Run
+    int Release = 19; //Must be 1 higher than AP & AM
+    
+    //Aim Abuse Values
+    int HOLD = 0.5;
+    int RELEASE = 0.5;
+ 
+    //Fast Heal Swap
+    int w_x = -0; 
+    int w_y =  0;
+    int window_time = 0;
+    int xy_time = 0;
+ 
+    //Toggles
+    int rumbles;
+    int d_tap;
+    int Bhop_onoff;
+    int rs_x;
+    int rs_y;
+    int combo_count;
+    int v,i,aRY;
+    int ar_idx;
+    int rumble = -1;
+    int rumble_t;
+    int USE_SENS;
+    int onoff;
+    int Strafe_Toggle;
+ 
+    init{
+    led_color(ar_idx);} 
+ 
+    main {
+ 
+    if(!get_val(L2) && !get_val(R2)) { 
+    USE_SENS=GEN_SENS;}
+    else if(get_val(L2) && !get_val(R2)) { 
+    USE_SENS=ADS_SENS;}    
+    else if(!get_val(L2) && get_val(R2)) { 
+    USE_SENS=FIRE_SENS;}
+    else if(get_val(L2) && get_val(R2)) { 
+    USE_SENS=ADS_FIRE_SENS;}
+    sensitivity(RY,NOT_USE,USE_SENS);
+    sensitivity(RX,NOT_USE,USE_SENS);
+ 
+    if(d_tap)
+    d_tap -= get_rtime();
+/* 
+    if(event_press(CIRCLE)) {
+    if(d_tap && get_val(LY) < -95) 
+    Bhop_onoff = TRUE;
+    else
+    d_tap = 300;}
+    if(Bhop_onoff)  
+    combo_run(BHOP);
+    else
+    combo_stop(BHOP);
+    if(get_val(LY) > -50) 
+    Bhop_onoff = FALSE;
+*/ 
+    if(R1L1) {
+    swap(R1,R2); 
+    swap(L1,L2);} 
+ 
+ 
+    if(HT)
+    if(get_val(R2)) 
+    set_val(R2,100);
+/*    
+    if(get_val(L2) && event_press(R3)) {
+    Strafe_Toggle=!Strafe_Toggle;
+    if(Strafe_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    if(Strafe_Toggle && get_val(L2) && get_val(R2))
+    combo_run(Strafe);else combo_stop(Strafe);
+*/ 
+    if(RUN)
+    if(get_val(LY) == -100 && get_val(L2) == 0)  
+    set_val(L3,100);
+ 
+    if(get_val(L2) && event_press(UP)) {
+    rf_onoff = !rf_onoff;
+    rumble(rf_onoff);}
+    if(rf_onoff && get_val(R2))
+    combo_run(RAPID_FIRE);
+    if(rumbles)
+    combo_run(RUMBLE); 
+ 
+    if(AST)
+    if(get_val(L2) && !get_val(R2)) 
+    combo_run(AA_XY);
+    else 
+    combo_stop(AA_XY); 
+ 
+    if(AT)if(get_val(L2)> 95){combo_run(AimAbuse);}
+    if(event_release(L2)){ combo_stop(AimAbuse);}
+ 
+    if(get_val(L2) && event_press(DOWN)) {
+    ar_idx = !ar_idx;
+    rumble = ar_idx;
+    led_color(ar_idx);}
+ 
+    if(get_val(L2) && get_val(R2)) {
+    if(get_ptime(R2) >= AR_T[ar_idx][0])    
+    aRY =  AR_V[ar_idx][0];
+    if(get_ptime(R2) >= AR_T[ar_idx][1] * 10)
+    aRY = AR_V[ar_idx][1];
+    if(get_ptime(R2) >= AR_T[ar_idx][2] * 10)
+    aRY = AR_V[ar_idx][2];
+ 
+ 
+    if(abs(get_val(RX)) < aRY + 5)
+    set_val(RY,xy_val(RY,aRY));}
+ 
+    if(rumble >= 0) {
+    if(!rumble_t)
+    set_rumble(RUMBLE_A,100);
+    rumble_t += get_rtime();
+    if(rumble_t ==  250)  
+    reset_rumble();
+    if(rumble_t == 400) {
+    rumble--;
+    rumble_t = 0;}}
+ 
+    if(event_press(DOWN)) {
+    rs_x = w_x;
+    rs_y = w_y;}
+    if(rs_x || rs_y)
+    combo_run(HEAL);}   
+ 
+    combo AA_XY {
+    set_val(RY,xy_val(RY,aa_p));
+    wait(aa_delay)
+    set_val(RX,xy_val(RX,aa_p));
+    wait(aa_delay)
+    set_val(RY,xy_val(RY,aa_n));
+    wait(aa_delay)
+    set_val(RX,xy_val(RX,aa_n));
+    wait(aa_delay)}
+ 
+ 
+    combo AimAbuse {
+    set_val(L2, 100);
+    wait(HOLD);
+    set_val(L2, 0);
+    wait(RELEASE);}
+ 
+    combo RAPID_FIRE {
+    set_val(R2, 100);
+	wait(RAPIDFIRE_SPEED);
+	set_val(R2, 0);
+	wait(RAPIDFIRE_SPEED);}
+
+ combo Strafe {
+    set_val(11,100);
+    wait(RIGHT_Speed);
+    set_val(11,-100);
+    wait(LEFT_Speed);}
+    
+    combo RUMBLE {
+    set_rumble(RUMBLE_A,100);
+    wait(250);
+    reset_rumble();
+    wait(200);
+    rumble--;}
+ 
+    combo HEAL {
+    set_val(UP, 100);
+    wait(window_time);
+    set_val(UP, 100);
+    set_val(RX,rs_x);
+    set_val(RY,rs_y);
+    wait(xy_time);  
+    set_val(RX,rs_x);
+    set_val(RY,rs_y);
+    wait(30);
+    wait(30);
+    combo_count += 1;
+    w_x = inv(w_x);
+    if(combo_count == 2){
+    w_y = inv(w_y);
+    combo_count = 0;}
+    rs_x = 0;
+    rs_y = 0;}
+ /*
+    combo BHOP  {
+    set_val(CIRCLE, 100);
+    set_val(CROSS, 100);
+    set_val(CIRCLE, 100);
+    set_val(CROSS, 0);
+    wait(30);
+    set_val (UP, 100);
+    set_val(CROSS, 100):
+    set_val(CROSS, 0);
+    set_val(CIRCLE, 100);
+    set_val(CIRCLE, 100);
+    set_val(CROSS, 100);
+    wait(30);
+    set_val(CIRCLE, 100);
+    set_val(CROSS, 0);
+    set_val(CROSS, 100);
+    wait (10);)
+ */   
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();
+    reset_leds();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();
+    reset_leds();}
+ 
+    function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+    function rumble(f_bln) {
+    if(f_bln)
+    rumble = 1;
+    else
+    rumble = 2;}
+ 
+    function xy_val(f_axis,f_val) {
+    v = get_val(f_axis);
+    if(abs(v) < 10)
+    v = 0;
+    if(abs(v) < f_val + 5) 
+    return v + f_val;
+    return v;}
+ 
+    function led_color(color) {
+    for(i = 0; i <= 3; i++) {
+    set_led(i,dbyte((color * 4) + i));}}

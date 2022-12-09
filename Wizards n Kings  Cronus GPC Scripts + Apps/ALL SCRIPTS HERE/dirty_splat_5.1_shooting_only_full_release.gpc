@@ -1,0 +1,346 @@
+//FULL SETUP VIDEO ON MY YOUTUBE PAGE ALSO MAKE SURE TO DOWNLOAD THE READ ME FILE!
+
+// SETUP IN CAGES OR IN PARK IT MUST BE ON ONLINE MODE 
+
+//IF IN MY COURT ALONE MAKE SURE ZEN DISPLAYS OFFLINE
+
+//DONATIONS- Paypal.me/Dirty619
+
+
+const string LINE2 = "DIRTY SPLAT";
+const string LINE1 = "v5.1";
+const string PARK = "ONLINE";
+const string MYCAREER = "OFFLINE";
+const string LINE3 = "SHOOTING";
+const string D3 = "R2 FADE";
+const string D2 = "MovingShot";
+const string D0 = "Catch&Shoot";
+const string D1 = "JumpShot";                                                                                          
+int TIMER,Edit_Values,Display0,Display1,Display2,Display3,ParkDisplay,MyCareerDisplay,STANDING,SHOT_VALUES[4],Index = 1,Offline;
+
+init{
+	cls_oled(0);
+	STARTUP();
+    SHOT_VALUES[0]  =   get_pvar(SPVAR_1, 10, 3000, SHOT_VALUES[0] = 550);//--gets catch and shoot value
+	SHOT_VALUES[1]  =   get_pvar(SPVAR_2, 10, 3000, SHOT_VALUES[1] = 670);//--gets jumpshot value
+  	SHOT_VALUES[2]  =   get_pvar(SPVAR_3, 10, 3000, SHOT_VALUES[2] = 870);//--gets moving shot value
+  	SHOT_VALUES[3]  =   get_pvar(SPVAR_4, 10, 3000, SHOT_VALUES[3] = 950);//--gets moving shot value
+	Offline         =	get_pvar(SPVAR_5, 0, 1, Offline );//-- sets online or offline depending on last state	  
+}
+main{
+    TIMER += get_rtime();
+///
+///--- STANDING ACTIVATION
+///
+	if(get_val(PS4_LX)>= -50 && get_val(PS4_LY)<= 50 && get_val(PS4_LX)<= 50 && get_val(PS4_LY)>= -50) {
+        LIGHT(21);
+        STANDING = TRUE;
+    }	
+    else{
+    	LIGHT(0);
+        STANDING = FALSE;
+    }		
+
+///		
+///--- STANDING SHOTS		
+///	
+    if(STANDING){
+        if (get_val(PS4_R2) && get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) >= SHOT_VALUES[0]){
+            Display0 = TRUE;
+            LIGHT(17);
+            set_val(PS4_SQUARE,0);
+        }
+        if(!get_val(PS4_R2) && get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) >= SHOT_VALUES[1]){
+            Display1 = TRUE;
+            LIGHT(17);
+            set_val(PS4_SQUARE,0);
+        }	
+    }
+///		
+///--- NON STANDING SHOTS		
+///	
+    if(!STANDING){
+        if (get_val(PS4_R2) && get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) >= SHOT_VALUES[3]){
+            Display3 = TRUE;
+            LIGHT(9);
+            set_val(PS4_SQUARE,0);
+        }
+        if(!get_val(PS4_R2) && get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) >= SHOT_VALUES[2]){
+            Display2 = TRUE;
+            LIGHT(9);
+            set_val(PS4_SQUARE,0);
+        }	
+    }
+///
+///---ADJUST SHOT VALUES
+///
+    if(get_val(PS4_R2)){
+		if(get_val(PS4_TRIANGLE)){
+            set_val(PS4_LEFT, 0);
+            set_val(PS4_RIGHT, 0);
+            set_val(PS4_UP, 0);
+            set_val(PS4_DOWN, 0);
+            if(event_press(PS4_LEFT)){
+                SHOT_VALUES[0] = SHOT_VALUES[0] - 1;
+                Edit_Values = TRUE;
+                Display0 = TRUE;
+            }
+            if(event_press(PS4_RIGHT)){
+                SHOT_VALUES[0] = SHOT_VALUES[0] + 1;
+                Edit_Values = TRUE;
+                Display0 = TRUE;
+            }
+            if(event_press(PS4_UP)){
+                SHOT_VALUES[0] = SHOT_VALUES[0] + 5;
+                Edit_Values = TRUE;
+                Display0 = TRUE;
+            }
+            if(event_press(PS4_DOWN)){
+                SHOT_VALUES[0] = SHOT_VALUES[0] - 5;
+                Edit_Values = TRUE;
+                Display0 = TRUE;
+            }
+        }
+        if(get_val(PS4_CIRCLE)){
+            set_val(PS4_LEFT, 0);
+            set_val(PS4_RIGHT, 0);
+            set_val(PS4_UP, 0);
+            set_val(PS4_DOWN, 0);
+            if(event_press(PS4_LEFT)){
+                SHOT_VALUES[1] --;
+                Edit_Values = TRUE;
+                Display1 = TRUE;
+            }
+            if(event_press(PS4_RIGHT)){
+                SHOT_VALUES[1] ++;
+                Edit_Values = TRUE;
+                Display1 = TRUE;
+            }
+            if(event_press(PS4_UP)){
+                SHOT_VALUES[1] = SHOT_VALUES[1] + 5;
+                Edit_Values = TRUE;
+                Display1 = TRUE;
+            }
+            if(event_press(PS4_DOWN)){
+                SHOT_VALUES[1] = SHOT_VALUES[1] - 5;
+                Edit_Values = TRUE;
+                Display1 = TRUE;
+            }
+        }
+		if(get_val(PS4_CROSS)){
+            set_val(PS4_LEFT, 0);
+            set_val(PS4_RIGHT, 0);
+            set_val(PS4_UP, 0);
+            set_val(PS4_DOWN, 0);
+            if(event_press(PS4_LEFT)){
+                SHOT_VALUES[2] --;
+                Edit_Values = TRUE;
+                Display2 = TRUE;
+            }
+            if(event_press(PS4_RIGHT)){
+                SHOT_VALUES[2] ++;
+                Edit_Values = TRUE;
+                Display2 = TRUE;
+            }
+            if(event_press(PS4_UP)){
+                SHOT_VALUES[2] = SHOT_VALUES[2] + 5;
+                Edit_Values = TRUE;
+                Display2 = TRUE;
+            }
+            if(event_press(PS4_DOWN)){
+                SHOT_VALUES[2] = SHOT_VALUES[2] - 5;
+                Edit_Values = TRUE;
+                Display2 = TRUE;
+            }
+        }    
+		if(get_val(PS4_R1)){
+            set_val(PS4_R1, 0);
+            set_val(PS4_LEFT, 0);
+            set_val(PS4_RIGHT, 0);
+            set_val(PS4_UP, 0);
+            set_val(PS4_DOWN, 0);
+            if(event_press(PS4_LEFT)){
+                SHOT_VALUES[3] --;
+                Edit_Values = TRUE;
+                Display3 = TRUE;
+            }
+            if(event_press(PS4_RIGHT)){
+                SHOT_VALUES[3] ++;
+                Edit_Values = TRUE;
+                Display3 = TRUE;
+            }
+            if(event_press(PS4_UP)){
+                SHOT_VALUES[3] = SHOT_VALUES[3] + 5;
+                Edit_Values = TRUE;
+                Display3 = TRUE;
+            }
+            if(event_press(PS4_DOWN)){
+                SHOT_VALUES[3] = SHOT_VALUES[3] - 5;
+                Edit_Values = TRUE;
+                Display3 = TRUE;
+            }
+        }    
+   } 
+///
+///--- SAVE SHOT VALUES
+///
+    if(Edit_Values){
+    	combo_run (Save_Timing);
+    }  
+///
+///---DISPLAY VALUE FOR ALL SHOTS
+///   
+    if(Display0){ 
+        cls_oled(0);
+        printf(center_x(sizeof(D0) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,D0[0]);//-- Display Script Title          
+        Display_Values(SHOT_VALUES[0],FindDigits(SHOT_VALUES[0]));
+        Display0 = FALSE;
+    }
+    if(Display1){ 
+        cls_oled(0);
+        printf(center_x(sizeof(D1) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,D1[0]);//-- Display Script Title          
+        Display_Values(SHOT_VALUES[1],FindDigits(SHOT_VALUES[1]));
+        Display1 = FALSE;
+    }
+    if(Display2){
+        cls_oled(0);
+        printf(center_x(sizeof(D2) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,D2[0]);//-- Display Script Title          
+        Display_Values(SHOT_VALUES[2],FindDigits(SHOT_VALUES[2]));
+        Display2 = FALSE;
+    }
+    if(Display3){
+        cls_oled(0);
+        printf(center_x(sizeof(D3) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,D3[0]);//-- Display Script Title          
+        Display_Values(SHOT_VALUES[3],FindDigits(SHOT_VALUES[3]));
+        Display3 = FALSE;
+    }
+///
+///---ONLINE OFFLINE TOGGLES
+///
+	if(get_val(PS4_OPTIONS)){
+    	set_val(PS4_DOWN, 0);
+    	set_val(PS4_UP, 0);
+			if(event_press(PS4_DOWN) && Offline == TRUE){
+	    		Offline = FALSE;
+			    SHOT_VALUES[0] = SHOT_VALUES[0] + 150;
+			    SHOT_VALUES[1] = SHOT_VALUES[1] + 150;
+			    SHOT_VALUES[2] = SHOT_VALUES[2] + 150;
+			    SHOT_VALUES[3] = SHOT_VALUES[3] + 150;
+				ParkDisplay  = TRUE;
+	        }
+	    	if(event_press(PS4_UP) && Offline == FALSE){
+	    		Offline = TRUE;
+			    SHOT_VALUES[0] = SHOT_VALUES[0] - 150;
+			    SHOT_VALUES[1] = SHOT_VALUES[1] - 150;
+			    SHOT_VALUES[2] = SHOT_VALUES[2] - 150;
+			    SHOT_VALUES[3] = SHOT_VALUES[3] - 150;
+	            MyCareerDisplay  = TRUE;
+	        }
+	       	if(ParkDisplay){
+	        	cls_oled(0);
+	        	printf(center_x(sizeof(PARK) - 1, OLED_FONT_MEDIUM_WIDTH),10,OLED_FONT_MEDIUM,OLED_WHITE,PARK[0]);//-- Display Script Title          
+	        	ParkDisplay = FALSE;
+	    	}
+	    	if(MyCareerDisplay){
+	        	cls_oled(0);
+	        	printf(center_x(sizeof(MYCAREER) - 1, OLED_FONT_MEDIUM_WIDTH),43,OLED_FONT_MEDIUM,OLED_WHITE,MYCAREER[0]);//-- Display Script Title          
+	        	MyCareerDisplay = FALSE;
+	    	}
+	}  
+///
+///---SCREENSAVER TIMER
+///
+	if(TIMER >= 5500 ){                        
+    	cls_oled(0);         
+        TIMER = 200;      
+	}
+set_val(TRACE_1,SHOT_VALUES[0]);//----
+set_val(TRACE_2,SHOT_VALUES[1]);//----
+set_val(TRACE_3,SHOT_VALUES[2]);//----
+set_val(TRACE_4,SHOT_VALUES[3]);//----
+set_val(TRACE_5,Offline);//----
+
+
+}
+
+
+
+combo Save_Timing{
+	set_rumble(RUMBLE_A, 50);
+	set_rumble(RUMBLE_B, 50);
+	wait(30);
+	reset_rumble();
+	set_pvar(SPVAR_1, SHOT_VALUES[0]);
+	set_pvar(SPVAR_2, SHOT_VALUES[1]); 
+	set_pvar(SPVAR_3, SHOT_VALUES[2]);
+	set_pvar(SPVAR_4, SHOT_VALUES[3]);
+	set_pvar(SPVAR_5, Offline);
+	Edit_Values = FALSE;		
+}
+function LIGHT(ID){
+    set_led(LED_1, duint8(ID * 4));
+    set_led(LED_2, duint8((ID * 4) + 1));
+    set_led(LED_3, duint8((ID * 4) + 2));
+    set_led(LED_4, duint8((ID * 4) + 3));
+}
+function Display_Values(f_val,f_dgts){
+    if(f_dgts >= 4){
+        putc_oled(Index,(f_val / 1000) + 48);
+        f_val %= 1000;
+        Index++;
+    }
+    if(f_dgts >= 3){
+        putc_oled(Index,(f_val / 100) + 48);
+        f_val %= 100;
+        Index++;
+    }
+    if(f_dgts >= 2){
+        putc_oled(Index,(f_val / 10) + 48);
+        f_val %= 10;
+        Index++;
+    }
+    putc_oled(Index,f_val + 48);
+    puts_oled(40,1,2,Index,1);    
+    Index = 1;
+} 
+function FindDigits(f_num){
+    f_num = abs(f_num);
+    if(f_num /1000 > 0) return 4;
+    if(f_num /100  > 0) return 3;
+    if(f_num /10   > 0) return 2;
+    return 1;
+}
+function center_x(f_chars,f_font){  //--  center_x(number of chars,font size);                                                 
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); //-- return X for Centering String Horizontally
+}   
+function STARTUP(){
+        printf(center_x(sizeof(LINE2) - 1, OLED_FONT_MEDIUM_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,LINE2[0]);//-- Display Script Title          
+        printf(center_x(sizeof(LINE3) - 1, OLED_FONT_MEDIUM_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,LINE3[0]);//-- Display Script Title          
+        printf(center_x(sizeof(LINE1) - 1, OLED_FONT_MEDIUM_WIDTH),40,OLED_FONT_SMALL,OLED_WHITE,LINE1[0]);//-- Display Script Title          
+}   
+
+data 					  
+(0,0,0,0,//-- Off	    
+1,0,0,0, //-- Dim Blue	  
+0,1,0,0, //-- Dim Red		  
+0,0,1,0, //-- Dim Green	
+0,0,0,1, //-- Dim Pink	
+1,0,1,0, //-- Dim SkyBlue	
+0,1,1,0, //-- Dim Yellow	
+1,1,1,0, //-- Dim White	
+2,0,0,0, //-- Blue		
+0,2,0,0, //-- Red			
+0,0,2,0, //-- Green		
+0,0,0,2, //-- Pink		
+2,0,2,0, //-- SkyBlue		
+0,2,2,0, //-- Yellow		
+2,2,2,0, //-- White		
+3,0,0,0, //-- Bright Blue	
+0,3,0,0, //-- Bright Red	
+0,0,3,0, //-- Bright Green
+0,0,0,3, //-- Bright Pink	
+3,0,3,0, //-- Bright SkyBlue
+0,3,3,0, //-- Bright Yellow
+3,3,3,0  //-- Bright white
+);		
+

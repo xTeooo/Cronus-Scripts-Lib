@@ -1,0 +1,208 @@
+/*
+_________                    .__                   _____                   __                                    __    
+\_   ___ \  ____  ___________|__| ____   ______   /     \ _____    _______/  |_  _____________  _  _____________|  | __
+/    \  \/_/ __ \/  _ \_  __ \  |/    \ /  ___/  /  \ /  \\__  \  /  ___/\   __\/ __ \_  __ \ \/ \/ /  _ \_  __ \  |/ /
+\     \___\  ___(  <_> )  | \/  |   |  \\___ \  /    Y    \/ __ \_\___ \  |  | \  ___/|  | \/\     (  <_> )  | \/    < 
+ \______  /\___  >____/|__|  |__|___|  /____  > \____|__  (____  /____  > |__|  \___  >__|    \/\_/ \____/|__|  |__|_ \
+        \/     \/                    \/     \/          \/     \/     \/            \/                               \/
+____   ____ ____    _______  _______                                                                                   
+\   \ /   //_   |   \   _  \ \   _  \                                                                                  
+ \   Y   /  |   |   /  /_\  \/  /_\  \                                                                                 
+  \     /   |   |   \  \_/   \  \_/   \                                                                                
+   \___/ /\ |___| /\ \_____  /\_____  /                                                                                
+         \/       \/       \/       \/                                                                                 
+_________     _____ __________                                                                                         
+\_   ___ \   /     \\______   \                                                                                        
+/    \  \/  /  \ /  \|     ___/                                                                                        
+\     \____/    Y    \    |                                                                                            
+ \______  /\____|__  /____|                                                                                            
+*/
+
+//Special thanks to TaylorDrift 21 and DoGzTheFiGhTeR for always being there for my stupid questions =)
+
+// Match you button layout
+define RY   = PS4_RY;
+define RX   = PS4_RX;
+define Ads  = PS4_L2;
+define Fire = PS4_R2;
+define Jump = PS4_CROSS;
+define On   = TRUE;
+define Off  = FALSE;
+
+// Change AR vertical On The Fly \\
+define hold_key_1 		= PS4_L2;
+define press_key_up 	= PS4_UP;
+define press_key_down 	= PS4_DOWN;
+define press_key_right 	= PS4_RIGHT;
+define press_key_left 	= PS4_LEFT;
+
+
+// JumpShot QuickToggle to toggle JumpShot ON/OFF \\ 
+define hold_key  = PS4_R3;   //This is the button you hold 
+define press_key = PS4_DOWN; //This is the button you press 
+      
+      
+// Legacy Antirecoil
+int LegacyAR        = On;
+      
+// Legacy AR 
+int Vertical        = 20; 
+int Horizontal      =  1;
+int Inverted        =  1;
+
+// Fire Mods
+int JumpShot = Off; //Leave it off if you are using QT instead
+
+// Aim Assist
+int AimAssist         =   On;      //Change "TRUE" to "FALSE" for no aim assist    
+int Shake1            =   19;       //Aim Assist values. higher = more shake       
+int Shake2            =  -19;       //Aim Assist values. higher = more shake  
+int delay  		      =   20;
+
+int AntirecoilVertical,AntirecoilHorizontal;
+
+main{	
+
+       if(get_val(hold_key_1))
+       {
+        	if(event_press(press_key_up))
+        	{
+        		Vertical = clamp(Vertical + 1,0,99);
+        		combo_run(Increase);
+        	}
+        	if(event_press(press_key_down))
+        	{
+        		Vertical = clamp(Vertical - 1,0,99);
+        		combo_run(Decrease);
+        	}
+        	if(event_press(press_key_right)) 
+            {
+                Horizontal = clamp(Horizontal + 1,0,99);
+                combo_run(Increase);
+            }
+            if(event_press(press_key_left)) 
+            {
+                Horizontal = clamp(Horizontal - 1,0,99);
+                combo_run(Decrease);
+            }
+            set_val(press_key_up,0);set_val(press_key_down,0);set_val(press_key_right,0);set_val(press_key_left,0);
+        }
+        	
+		if(get_val(hold_key))
+		{
+			if(event_press(press_key))
+			{
+				JumpShot =! JumpShot;
+			if(JumpShot) 
+	    		combo_run(LedOn)
+	    	else
+	    	    combo_run(LedOff)
+			}
+			set_val(press_key,0); 
+		} 
+
+        if(LegacyAR)
+        {
+        	if(get_val(PS4_R2)) 
+                combo_run(Antirecoil);
+                
+            if(abs(get_val(PS4_RY)) > Vertical + 2 || abs(get_val(PS4_RX)) > Vertical + 2) 
+                combo_run(Antirecoil);
+		}
+		if (AimAssist) 
+		{
+			if (get_val(Ads)) 
+			{
+				combo_run(AimAssist);
+			}
+		}
+		if (get_val(RX)<Shake2||get_val(RX)>Shake1||get_val(RY)<Shake2||get_val(RY)>Shake1||get_val(RX)<Shake2||get_val(RX)>Shake1||get_val(RY)<Shake2||get_val(RY)>Shake1)
+		{
+				combo_stop(AimAssist);
+		}
+		if(JumpShot)
+		{
+			if(get_val(Fire))
+				combo_run(JumpShot);
+		}
+		set_val(TRACE_1,Vertical);
+		set_val(TRACE_2,Horizontal);
+	}
+
+combo JumpShot {
+set_val(Jump,100);
+wait(100);
+}
+combo Antirecoil {
+// Vertical
+   AntirecoilVertical = get_val(PS4_RY) + Vertical;  
+   if(AntirecoilVertical > 100) AntirecoilVertical = 100;
+   if(abs(get_val(PS4_RY)) < abs(Vertical) +  5)
+   set_val(PS4_RY, (AntirecoilVertical * Inverted));
+// Horizontal
+   AntirecoilHorizontal = get_val(PS4_RX) + Horizontal;
+   if(AntirecoilHorizontal > 100) AntirecoilHorizontal = 100;
+   if(abs(get_val(PS4_RX)) < abs(Horizontal)  + 5)
+   set_val(PS4_RX, AntirecoilHorizontal);
+}
+combo Increase {
+set_rumble(RUMBLE_A,100);
+wait(100);
+reset_rumble();
+}    
+combo Decrease {
+set_rumble(RUMBLE_B,100);
+wait(50);
+reset_rumble();
+}
+combo AimAssist {
+set_val(RY, (Shake1));
+wait(delay)
+set_val(RX, (Shake1));
+wait(delay)
+set_val(RY, (Shake2));
+wait(delay)
+set_val(RX, (Shake2));
+wait(delay)
+set_val(RY, (Shake1));
+wait(delay)
+set_val(RX, (Shake1));
+wait(delay)
+set_val(RY, (Shake2));
+wait(delay)
+set_val(RX, (Shake2));
+wait(delay)
+}
+combo LedOn {
+LED(0,0,2,0);
+set_rumble(RUMBLE_A,100);
+wait(400);
+reset_rumble();
+reset_leds();
+}     
+combo LedOff {
+LED(0,2,0,0);
+set_rumble(RUMBLE_B,100);
+wait(200);
+reset_rumble();
+LED(0,0,0,0);
+wait(100);
+set_rumble(RUMBLE_B,100);
+LED(0,2,0,0);
+wait(200);
+reset_rumble();
+reset_leds();
+}
+function LED(a,b,c,d) {
+set_led(LED_1,a);
+set_led(LED_2,b);
+set_led(LED_3,c);
+set_led(LED_4,d);
+}
+function clamp(int v,int lo,int hi) { 
+	if(v < lo) 
+  		return lo;               
+	if(v > hi) 
+  		return hi;        
+  		return v;     
+	} 

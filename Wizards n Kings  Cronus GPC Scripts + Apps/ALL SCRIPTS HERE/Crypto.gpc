@@ -1,0 +1,229 @@
+define LTrigger = XB1_LT;
+define RTrigger = XB1_RT; 
+define Fire = XB1_RT;
+define Pickaxe = XB1_Y;
+define ADS = XB1_LT;
+define Jump = XB1_A;
+define Edit = XB1_LS; 
+define Switch = XB1_A;
+define Build = XB1_B;           
+define Wall = XB1_RT;
+define Floor = XB1_RB;
+define Stair = XB1_LT
+define Cone = XB1_LB;
+define Trap = XB1_X;
+define Confirm = XB1_LT;
+define Reset = XB1_RIGHT;
+
+define Up = XB1_UP; 
+define Down = XB1_DOWN; 
+define Left = XB1_LEFT; 
+define Right = XB1_RIGHT;
+define RX = PS4_RX;   
+define RY = PS4_RY;   
+define LX = PS4_LX;   
+define LY = PS4_LY;  
+
+define On = TRUE;
+define Off = FALSE; 
+
+
+int PolarAA = On;
+int PolarStrength = 1.1;
+
+int ExpoAA = On;
+int ExpoPower = 12;
+int ExpoDelay = 10;
+
+int Headshot = On;
+int HeadshotHipFire = Off;
+int HeadshotMax = 25;
+int HeadshotSteps = 2; 
+
+int LessInputDelay = On;
+define InputDelay = 5;
+
+int InstantTriggers = On;
+
+int BuilderPro = Off;
+int BuildTracker = On;
+define BuildSyncTime = 0;
+
+int Touchpad = On;
+int BlockRumbles = On;
+
+main
+{
+ 
+	if(LessInputDelay)
+	{
+		VM(InputDelay);  
+	}
+ 
+    if (BlockRumbles) 
+    {
+		block_rumble();
+	}
+	
+	if (Touchpad) 
+	{    
+        swap (PS4_TOUCH,PS4_SHARE);
+    }
+	
+	 if (BuildTracker) 
+	 { 
+        if (event_press(Build)) 
+        {
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack) 
+        {
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) 
+            {
+                BuildTrack = Off;
+                BuildCount = Off;
+            }
+            
+             if (get_ival(Floor) || get_ival(Cone) || get_ival(Stair) || get_ival(Wall) || get_ival(Trap) || get_ival(Build) || get_ival(Pickaxe))
+                
+                BuildCount = Off;
+        }
+    }
+ 
+ 
+ 
+	if (!BuildTracker)
+    {
+    
+    	if (ExpoAA) 
+    	{
+	    
+	        if (get_ival(ADS) || get_ival(Fire)) 
+	        {
+	            combo_run(ExpoAAs);
+	        
+	        } else {
+	        
+	            combo_stop(ExpoAAs); 
+	        }
+    	}
+    	
+		if (PolarAA) 
+		{
+	    	if (get_ival(ADS) || get_ival(Fire)) 
+	    	{	        	
+	        	AimAssist();
+	        }
+	        
+	        if (!get_ival(ADS) && !get_ival(Fire)) 
+	        {
+	        	AAT = 0;
+	        	Axis = 0;
+	        }
+	      }
+	      
+	     if (Headshot) 
+		 {    
+	        if (get_ival(ADS) && get_ival(Fire) || HeadshotHipFire && get_ival(Fire)) 
+	        {
+	        	if (abs(get_ival(RY)) < HeadshotMax) { 
+	        		
+	        		Head += HeadshotSteps;
+	        		combo_run(HeadshotS);
+	        	}	
+	        }
+	        
+	        if (!get_ival(Fire)) Head = 0;
+	        	
+	        if (Head >= HeadshotMax) combo_stop(HeadshotS);
+	       
+	    }
+	}
+}
+
+
+combo ExpoAAs 
+{
+   
+   set_val(RY,AxisRelease(RY,ExpoPower));
+   wait(ExpoDelay);
+   set_val(RX,AxisRelease(RX,ExpoPower));
+   set_val(LX,AxisRelease(LX,ExpoPower));
+   wait(ExpoDelay);
+   set_val(RY,AxisRelease(RY,inv(ExpoPower)));
+   wait(ExpoDelay);
+   set_val(RX,AxisRelease(RX,inv(ExpoPower)));
+   set_val(LX,AxisRelease(LX,inv(ExpoPower)));
+   wait(ExpoDelay);
+}
+  
+combo HeadshotS
+{
+	set_val(RY,inv(Head) + get_val(RY));
+}
+
+function AxisRelease(AxisXY,AxisVal) 
+{ 
+    if (abs(get_ival(AxisXY)) <= ExpoPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}
+ 
+ function VM (f_speed)
+{
+    if     (f_speed == 0) vm_tctrl(-0);
+    else if(f_speed == 1) vm_tctrl(-2);
+    else if(f_speed == 2) vm_tctrl(-4);
+    else if(f_speed == 3) vm_tctrl(-6);
+    else if(f_speed == 4) vm_tctrl(-8);
+    else if(f_speed == 5) vm_tctrl(-9);
+}
+
+function AimAssist() 
+{
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(RY,AAT * PolarStrength / 10);
+		
+	if (Axis == 1)  
+		
+		set_Val(RX,AAT * PolarStrength / 10);
+	
+	if (Axis == 2)  
+		
+		set_Val(RY,inv(AAT * PolarStrength / 10));
+
+	if (Axis == 3) {
+		
+		set_Val(RX,inv(AAT * PolarStrength / 10));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+
+function set_Val(Input,Output) 
+{
+
+    set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+        
+    return; 
+}
+
+int AAT, Axis, BuildTrack,  BuildCount, Head;

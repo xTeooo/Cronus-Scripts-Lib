@@ -1,0 +1,668 @@
+define Floor = XB1_RB;define Ramp = XB1_LT;define Roof = XB1_LB;define Trap = XB1_X;define ADS = XB1_LT;define Fire  = XB1_RT;define PY = POLAR_RY;define Wall = XB1_RT;
+define AimX  = PS4_RX;define AimY  = PS4_RY;define Off     = FALSE;define On    = TRUE;define PX      = POLAR_RX;define PS = POLAR_RS;define RumA = RUMBLE_A;define RumB  = RUMBLE_B;
+define Pickaxe = PS4_TRIANGLE;define Edit  = PS4_L3 ;define Confirm = PS4_L2;define Build = PS4_CIRCLE ;int NoVibrations = TRUE;int DelayReducer = -9;int InstantTriggers = TRUE;
+int TouchPadFix = TRUE;int SantiRecoilReducer = TRUE;int VerticalStrength = 27;int HorizontalStrength = 0;int SantiBloomReducer = TRUE;
+int BloomReducerDelay = 50;int SantiAA8 = TRUE;int Sum = 8;int ThreeTimes = 6;int OneThird = 2;
+int DeadZone = 6;
+int SantiAA7 = TRUE;int SantiAA7HipFire = TRUE;int SantiAA7Time = 1000;int SantiAA7Delay = 70;int SantiAA7Power = 4;int SantiAA7Power2 = 5;int SantiPolarAA4 = TRUE;int SantiPolarAA4Speed = 30;int SantiPolarAA4Power = 5;
+int SantiConstantAA = TRUE;define SantiConstantAssistPower = 4;define SantiConstantAP = SantiConstantAssistPower;int SantiConstantAssistDelay = 10;int SantiPolarAA3 = TRUE;
+int SantiPolarAA3Range = 5;int SantiPolarAA3Speed = 21;int SantiTracking = TRUE;int SantiTrackingSpeed = 100;int SantiAA6 = TRUE;int SantiAA6Power = 4;
+int SantiAA6PowerPlusOne = 5;int SantiAA6Speed = 100;int SantiAA5 = TRUE;int SantiAA5Power = 4;int SantiAA5Delay = 20;int SantiAA5Limit = 40;int SantiAA5Range = 5;
+int SantiAA5Speed = 30;int SantiShapeBoosts = FALSE;int SantiShapeSpeed = 30;int SantiShapeRange = 4;
+int SantiShapeRangeMin = 2;int SantiShapeSpeedBoost = 0;int SantiShapeRangeBoost = 0;int SantiShape = Helix;int SantiAA4 = TRUE;int SantiAA4Power = 5;
+int SantiAA3 = TRUE;int SantiAA3Power = 4;int SantiAA3Delay = 10;int SantiAA3Limit = 45;
+int SantiPolarAA2 = TRUE;
+int SantiPolarAA2Range = 4;
+int SantiPolarAA2Range2 = 5;
+int SantiPolarAA2Speed = 30;
+int SantiPolarAA2Speed2 = 30;
+int SantiPolarAA = TRUE;
+int SantiPolarAAHipFire = TRUE;
+int SantiPolarAATimed = FALSE;
+int SantiPolarAAPower = 1;
+int SantiPolarAATime = 5000;
+int SantiAA2 = TRUE;
+int SantiAA2HipFire = TRUE;
+int SantiAA2Power = 4;
+int SantiAA2Delay = 10;
+int SantiAA = TRUE;
+int SantiAAHipFire = TRUE;
+int SantiAAPower = 5;
+int SantiAADelay = 10;
+int SantiAAIntervals = 1;
+
+main {
+
+    swap (PS4_TOUCH,PS4_SHARE);
+
+    // 
+
+}
+
+int BuildTracker = TRUE;
+define BuildSyncTime = 6000;
+int BuildTrack,BuildCount;
+main {
+	if(get_val(Build)) {
+		combo_run(ActivatedYewifyEditTracker);
+			}
+	if(get_val(Edit)) {
+		combo_run(ActivatedYewifyEditTracker);
+			}
+	if(get_val(Pickaxe)) {
+		combo_run (NonActivatedYewifyEditTracker);
+			}
+	if(get_val(Confirm)) {
+		combo_run (NonActivatedYewifyEditTracker);
+			}
+			
+		if(BuildTracker) {
+  if(event_press(Build)) { BuildTrack = !BuildTrack;}
+  if(BuildTrack) { Â¡BuildCount += get_rtime();
+  if(event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0;}
+  if(get_ival(XB1_LB) || get_ival(XB1_LT) || get_ival(XB1_RT) || get_ival(XB1_RB) || get_ival(XB1_X)) BuildCount = 0;
+   }
+}
+  if(!BuildTrack) {
+	stick_input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+	if(SantiPolarAA3) {
+		if(get_ival(PS4_L2) || (get_ival(PS4_R2))) {
+			if (stick_input <= SantiPolarAA3Range) {
+				rnd = random(mn, mx);
+				RS_Gradient = (RS_Gradient + SantiPolarAA3Speed) % 360;
+				set_polar(POLAR_RS, RS_Gradient, (SantiPolarAA3Range * rnd));
+							}
+					}
+			}
+	if(SantiPolarAA4) {
+		if (get_ival(ADS) || get_ival(Fire)) {
+			YRAxisX  = isqrt(abs(get_ival(AimX)) * abs(get_ival(AimX)));
+			YRAxisY  = isqrt(abs(get_ival(AimY)) * abs(get_ival(AimY)));
+			if (SantiPolarAA4) {
+				YRAngle = YRSpeed;
+				Radius = SantiPolarAA4Power;
+				YRSpeed = YRSpeed + SantiPolarAA4Speed;
+				if (YRSpeed < 0) YRSpeed += 360;
+				YRSpeed = YRSpeed % 360;
+							}
+			else {
+				YRAngle = Off;
+				SantiPolarAA4Power = Off;
+							}
+			if(SantiRecoilReducer) {
+				if (get_ival(ADS) && get_ival(Fire)) {
+					if (YRAxisX <= abs(HorizontalStrength)) {
+						YRValueX = HorizontalStrength;
+											}
+					else {
+						YRValueX = Off;
+											}
+					if (YRAxisY <= abs(VerticalStrength)) {
+						YRValueY = VerticalStrength;
+											}
+					else {
+						YRValueY = Off;
+											}
+									}
+				else {
+					YRValueY = Off;
+					YRValueX = Off;
+									}
+							}
+			YewifyPolarity(YRAngle,Radius);
+					}
+			}
+	if(SantiAA3){
+		if (get_ival(ADS)){
+			combo_run(SantiAA3);
+			Polar();
+					}
+		if (abs(get_ival(AimX)) > SantiAA3Limit || abs(get_ival(AimY)) > SantiAA3Limit) {
+			combo_stop(SantiAA3);
+					}
+			}
+	X = get_ival(RX);
+	Y = get_ival(RY);
+	M = isqrt(pow(X, 2) + pow(Y, 2));
+	MaxM = (M < 100);
+	if (!(Time++ % SantiAAIntervals)) {
+		Angle += SantiPolarAA2Speed2;
+			}
+	Angle = Angle % 360;
+	Sin = SantiPolarArray[Angle % 360];
+	Cos = SantiPolarArray[(Angle + 270) % 360];
+	Cos = (Cos * SantiPolarAA2Range) / 100;
+	Sin = (Sin * SantiPolarAA2Range) / 100;
+	if((SantiPolarAA2 && get_ival(ADS)) || (SantiPolarAAHipFire && get_ival(Fire))) {
+		if (M <= SantiPolarAA2Range) {
+			Sin -= Y;
+			Cos -= X;
+					}
+		else {
+			Sin = (Sin * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MaxM;
+			Cos = (Cos * (200 - ((abs(X) + M) / 10) * 10) / 200) * MaxM;
+					}
+		set_val(RX, clamp(X + Cos, -100, 100));
+		set_val(RY, clamp(Y + Sin, -100, 100));
+			}
+	if(SantiAA2) {
+		if (get_ival(ADS) || (SantiAA2HipFire && get_ival(Fire))) {
+			combo_run(SantiAA2);
+					}
+		else {
+			combo_stop(SantiAA2);
+					}
+			}
+	if(SantiAA8) {
+		if (event_press(ADS)) {
+			Power = On;
+					}
+		else if (!get_ival(ADS) && event_press(Fire)) {
+			Power = On;
+					}
+		if (get_ival(ADS) || get_ival(Fire)) {
+			AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));
+			if (Sum == 1)AimAssist(ThreeTimes,OneThird);
+					}
+		else {
+			CountPower = 0;
+			power = Off;
+					}
+			}
+	if(SantiPolarAA) {
+		if (SantiPolarAATimed) {
+			if (get_ival(ADS) && get_ptime(ADS) <= SantiPolarAATime || SantiPolarAAHipFire && get_ival(Fire) && get_ptime(Fire) <= SantiPolarAATime) {
+				AimAssistY();
+							}
+					}
+		else if (get_ival(ADS)|| SantiPolarAAHipFire && get_ival(Fire)) {
+			AimAssistY();
+					}
+		if (!get_ival(ADS) && !get_ival(Fire)) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+	
+	if(NoVibrations) block_rumble();
+	if(InstantTriggers) {
+		deadzone(XB1_LT,XB1_RT,100,100);
+			}
+	if(SantiBloomReducer) {
+		if(get_val(ADS) && (get_val(Fire))) {
+			combo_run(SantiBloomReducer);
+					}
+		if(abs(get_val(XB1_LX)) > 10 || abs(get_val(XB1_LY)) > 10){
+			combo_stop(SantiBloomReducer);
+					}
+			}
+	if(SantiTracking){
+		if(get_val(XB1_LT) && get_val(XB1_RT)){
+			sensitivity(XB1_RX,43,SantiTrackingSpeed);
+			sensitivity(XB1_RY,43,SantiTrackingSpeed);
+					}
+			}
+	if(SantiConstantAA){
+		if(!get_val(Fire) || get_val(ADS) && get_val(Fire)){
+			combo_run(SantiAA4);
+			if(abs(get_val(AimY)) > 36 || abs(get_val(AimX)) > 36 ){
+				combo_stop(SantiAA4);
+							}
+					}
+			}
+	if(SantiAA6){
+		if(get_val(ADS)> 1){
+			combo_run(SantiAA6);
+			AA1Shake();
+					}
+		if(abs(get_val(9)) > 36 || abs(get_val(10)) > 36) {
+			combo_stop(SantiAA6);
+					}
+			}
+	if(SantiAA4){
+		if(get_val(Fire)> 1){
+			combo_run(SantiAA8);
+					}
+		if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) {
+			combo_stop(SantiAA8);
+					}
+			}
+	if(SantiAA7){
+		if ((get_ival(ADS)) || (get_ival(Fire) && SantiAA7HipFire)) {
+			if (abs(get_ival(RX)) <= SantiAA7Time && abs(get_ival(RY)) <= SantiAA7Time) {
+				combo_run(SantiAA7);
+							}
+					}
+		else {
+			combo_stop(SantiAA7);
+					}
+			}
+	if(SantiAA5){
+		if (get_ival(ADS)){
+			combo_run(SantiAA5);
+			P();
+					}
+		if (abs(get_ival(AimX)) > SantiAA5Limit || abs(get_ival(AimY)) > SantiAA5Limit) {
+			combo_stop(SantiAA5);
+					}
+			}
+	if(SantiAA) {
+		if (get_ival(ADS) || (SantiAAHipFire && get_ival(Fire))) {
+			combo_run(SantiPolarAssist3);
+					}
+		else {
+			combo_stop(SantiPolarAssist3);
+					}
+			}
+	if(SantiShape) {
+		RXT = get_val(RX);
+		RYT = get_val(RY);
+		ActualMagnitude = isqrt(pow(RXT,2) + pow(RYT,2));
+		MaxMagnitude = (ActualMagnitude < 100);
+		angle += SantiShapeSpeed + Angle;
+		angle = angle % 360;
+		CosAngle = SantiPolarArray[(angle + 270) % 360];
+		SinAngle = SantiPolarArray[angle % 360];
+		if (SantiShapeBoosts) {
+			if (get_ival(Fire)) {
+				SmartRumble = get_rumble(RumbleToUse());
+				Angle = SantiShapeSpeedBoost;
+				if (SmartRumble > 10 && SmartRumble < 90) {
+					PolarStrength = (SantiShapeRange + SantiShapeRangeBoost + SantiShapeSpeedBoost + SmartRumble / 4);
+					SmartRumble   = Off;
+									}
+							}
+					}
+		if (get_ival(ADS) || get_ival(Fire)) {
+			if (ActualMagnitude < SantiShapeRange) {
+				SinAngle -= RYT;
+				CosAngle -= RXT;
+							}
+			else {
+				SinAngle = (SinAngle * (200 - ((abs(RYT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(RXT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+							}
+			if (!get_rumble(RumbleToUse())) GetShapes(SantiShapeRange);
+			else GetShapes(PolarStrength);
+					}
+		PolarStrength = On;
+		SmartRumble   = On;
+			}
+	} }
+combo NonActivatedYewifyEditTracker {
+	SantiPolarAA2     = TRUE;
+	SantiPolarAAHipFire = TRUE;
+	SantiAA2          = TRUE;
+	SantiAA2HipFire     = TRUE;
+	SantiAA8          = TRUE;
+	SantiPolarAA        = TRUE;
+	SantiPolarAATimed = FALSE;
+	SantiBloomReducer   = TRUE;
+	SantiAA3          = TRUE;
+	SantiConstantAA     = TRUE;
+	SantiAA4          = TRUE;
+	SantiAA6            = TRUE;
+	SantiTracking     = TRUE;
+	SantiRecoilReducer  = TRUE;
+	SantiPolarAA4     = TRUE;
+	SantiPolarAA3       = TRUE;
+	SantiAA7          = TRUE;
+	SantiAA7HipFire     = TRUE;
+	SantiAA           = TRUE;
+	SantiAAHipFire      = TRUE;
+	SantiAA5          = TRUE;
+	SantiShapeBoosts    = FALSE;
+	}
+combo ActivatedYewifyEditTracker {
+	SantiPolarAA2         = FALSE;
+	SantiPolarAAHipFire = FALSE;
+	SantiAA2              = FALSE;
+	SantiAA2HipFire     = FALSE;
+	SantiAA8              = FALSE;
+	SantiPolarAA        = FALSE;
+	SantiPolarAATimed     = FALSE;
+	SantiBloomReducer   = FALSE;
+	SantiAA3              = FALSE;
+	SantiConstantAA     = FALSE;
+	SantiAA4              = FALSE;
+	SantiAA6            = FALSE;
+	SantiTracking         = FALSE;
+	SantiRecoilReducer  = FALSE;
+	SantiPolarAA4         = FALSE;
+	SantiPolarAA3       = FALSE;
+	SantiAA7              = FALSE;
+	SantiAA7HipFire     = FALSE;
+	SantiAA               = FALSE;
+	SantiAAHipFire      = FALSE;
+	SantiAA5              = FALSE;
+	SantiShapeBoosts = FALSE;
+	wait(100);
+	}
+function RumbleToUse() {
+	if (get_rumble(RumA) >= get_rumble(RumB)) return RumA;
+	if (get_rumble(RumA) < get_rumble(RumB)) return RumB;
+	return Off;
+	}
+function GetShapes(f_var) {
+	if (!SpiralPosition1) {
+		InnerSpiral -= 1;
+		if (InnerSpiral < SantiShapeRangeMin)SpiralPosition1 = On;
+			}
+	else {
+		InnerSpiral += 1;
+		if (InnerSpiral > f_var)SpiralPosition1 = Off;
+			}
+	if (!SpiralPosition2) {
+		OuterSpiral -= 1;
+		if (OuterSpiral < SantiShapeRangeMin)SpiralPosition2 = On;
+			}
+	else {
+		OuterSpiral += 1;
+		if (OuterSpiral > f_var)SpiralPosition2 = Off;
+			}
+	if (SantiShape == Circular) {
+		RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+		RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+			}
+	if (SantiShape == TallOval) {
+		RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+		RXT = (get_val(RX)) + ((CosAngle * SantiShapeRangeMin))/100;
+			}
+	if (SantiShape == WideOval) {
+		RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+		RYT = (get_val(RY)) + ((SinAngle * SantiShapeRangeMin))/100;
+			}
+	if (SantiShape == Spiral) {
+		RYT = (get_val(RY)) + ((SinAngle * InnerSpiral))/100;
+		RXT = (get_val(RX)) + ((CosAngle * OuterSpiral))/100;
+			}
+	if (SantiShape == Helix) {
+		if (PositionT <= 1) {
+			RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+					}
+		if (PositionT > 1) {
+			RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+					}
+		PositionT++;
+		if (PositionT == 4) PositionT = Off;
+			}
+	set_val(RX,RXT);
+	set_val(RY,RYT);
+	}
+function AxisRelease(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= SantiAAPower) return AxisVal;
+	return get_ival(AxisXY);
+	}
+combo SantiPolarAssist3 {
+	set_val(RY,AxisRelease(RY,SantiAAPower));
+	wait(SantiAADelay);
+	set_val(RX,AxisRelease(RX,SantiAAPower));
+	wait(SantiAADelay);
+	set_val(RY,AxisRelease(RY,inv(SantiAAPower)));
+	wait(SantiAADelay);
+	set_val(RX,AxisRelease(RX,inv(SantiAAPower)));
+	wait(SantiAADelay);
+	}
+combo SantiAA5 {
+	set_val(AimY,SantiAA5Power);
+	wait(SantiAA5Delay);
+	set_val(AimX,SantiAA5Power);
+	wait(SantiAA5Delay);
+	set_val(AimY,SantiAA5Power * -1);
+	wait(SantiAA5Delay);
+	set_val(AimX,SantiAA5Power * -1);
+	wait(SantiAA5Delay);
+	}
+function P() {
+	SantiPolarAA2Speed2 = (SantiPolarAA2Speed2 + SantiAA5Speed) % 360;
+	SP(SantiPolarAA2Speed2,SantiAA5Range);
+	}
+function SP(SantiAA5Speed,SantiAA5Range){
+	RX = AimX;
+	RY = AimY;
+	if(SantiAA5Speed < 0) SantiAA5Speed = 360 + (SantiAA5Speed % 360);
+	SantiAA5Speed = (SantiAA5Speed + 90) % 360;
+	SantiAA5Range = clamp(SantiAA5Range, 0, 100);
+	Sin = SantiPolarArray[SantiAA5Speed];
+	Cos = SantiPolarArray[(SantiAA5Speed + 90) % 360];
+	Sv(RX,inv(SantiAA5Range * Cos / 100));
+	Sv(RY,inv(SantiAA5Range * Sin / 100));
+	return;
+	}
+function Sv(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+function SV(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+combo SantiAA7 {
+	SV(RY,SantiAA7Power);
+	wait(SantiAA7Delay);
+	SV(RX,SantiAA7Power2);
+	SV(RY,SantiAA7Power * -1);
+	wait(SantiAA7Delay);
+	SV(RX,SantiAA7Power2 * -1);
+	wait(SantiAA7Delay);
+	}
+function YewifyPolarV3 (Current,Received) {
+	YROutput = Current / 10 + Received / 10;
+	if(YROutput <= -3276) return -32768;
+	if(YROutput >=  3276) return  32767;
+	return Current + Received;
+	}
+function YewifyPolarity (Rotation,Radial) {
+	set_polar(PS,Rotation,Radial * 327);
+	set_val(PX,YewifyPolarV3(get_val(PX) + YRValueX * 327,get_ival(PX)));
+	set_val(PY,YewifyPolarV3(get_val(PY) + YRValueY * 327,get_ival(PY)));
+	}
+combo SantiAA6 {
+	set_val(10, (SantiAA6Power));
+	wait(10)set_val(9, (SantiAA6Power));
+	wait(10)set_val(10, SantiAA6Power * -1);
+	wait(10)set_val(9, SantiAA6Power * -1);
+	wait(10)
+}
+function AA1Shake() {
+	Angle1 = (Angle1 + SantiAA6Speed) % 360;
+	Set_polar(2,Angle1, SantiAA6PowerPlusOne);
+	}
+combo SantiAA8 {
+	set_val(10, (SantiAA4Power));
+	wait(10)set_val(9, (SantiAA4Power));
+	wait(10)set_val(10, SantiAA4Power * -1);
+	wait(10)set_val(9, SantiAA4Power * -1);
+	wait(10)
+}
+function Set_polar(stick, angle, SantiPolarAA2Range){
+	x_stick = 8 + stick;
+	y_stick = 9 + stick;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	SantiPolarAA2Range = clamp(SantiPolarAA2Range, 0, 100);
+	sin_angle = SantiPolarArray[angle];
+	cos_angle = SantiPolarArray[(angle + 90) % 360];
+	offset(x_stick, inv(SantiPolarAA2Range * cos_angle / 100));
+	offset(y_stick, inv(SantiPolarAA2Range * sin_angle / 100));
+	return;
+	}
+function offset(int axis, int offset_val) {
+	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return
+}
+combo SantiAA4 {
+	set_val(AimY,xy_val(AimY, SantiConstantAP));
+	wait(SantiConstantAssistDelay);
+	set_val(AimX,xy_val(AimX, SantiConstantAP));
+	wait(SantiConstantAssistDelay);
+	set_val(AimY,xy_val(AimY, SantiConstantAP * -1));
+	wait(SantiConstantAssistDelay);
+	set_val(AimX,xy_val(AimX, SantiConstantAP * -1));
+	wait(SantiConstantAssistDelay);
+	}
+function xy_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (SantiConstantAP + 1))  return f_val;
+	return get_val(f_axis);
+	}
+combo SantiAA3 {
+	set_val(AimY,SantiAA3Power);
+	wait(SantiAA3Delay);
+	set_val(AimX,SantiAA3Power);
+	wait(SantiAA3Delay);
+	set_val(AimY,SantiAA3Power * -1);
+	wait(SantiAA3Delay);
+	set_val(AimX,SantiAA3Power * -1);
+	wait(SantiAA3Delay);
+	}
+function Polar() {
+	SantiPolarAA2Speed2 = (SantiPolarAA2Speed2 + SantiPolarAA2Speed) % 360;
+	Set_polarA(SantiPolarAA2Speed2,SantiPolarAA2Range2);
+	}
+function Set_polarA(angle,SantiPolarAA2Range){
+	RX = AimX;
+	RY = AimY;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	SantiPolarAA2Range = clamp(SantiPolarAA2Range, 0, 100);
+	Sin = SantiPolarArray[angle];
+	Cos = SantiPolarArray[(angle + 90) % 360];
+	sV(RX,inv(SantiPolarAA2Range * Cos / 100));
+	sV(RY,inv(SantiPolarAA2Range * Sin / 100));
+	return;
+	}
+combo SantiBloomReducer {
+	set_val(XB1_LX,-35);
+	wait(BloomReducerDelay);
+	set_val(XB1_LX, 35);
+	wait(BloomReducerDelay);
+	if(BloomReducerDelay < 160){
+		BloomReducerDelay = BloomReducerDelay + 10;
+			}
+	else {
+		BloomReducerDelay = 100;
+			}
+	}
+combo SantiAA2 {
+	set_val(AimY,AxisR(AimY,SantiAA2Power));
+	wait(SantiAA2Delay);
+	set_val(AimX,AxisR(AimX,SantiAA2Power));
+	wait(SantiAA2Delay);
+	set_val(AimY,AxisR(AimY,inv(SantiAA2Power)));
+	wait(SantiAA2Delay);
+	set_val(AimX,AxisR(AimX,inv(SantiAA2Power)));
+	wait(SantiAA2Delay);
+	}
+function AimAssist (Strength,Step) {
+	if (Power) {
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+			}
+	if (!power) {
+		Xpower += Increment;
+		Ypower -= Increment;
+			}
+	else {
+		Xpower -= Increment;
+		Ypower += Increment;
+			}
+	CountPower ++;
+	if (CountPower >= (Strength / Increment)) {
+		power = !power;
+		CountPower = 0;
+			}
+	if (AxisXY > DeadZone) {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2) + get_ival(RY));
+			set_val(RX,(Xpower - Strength / 2 * -1) + get_ival(RX));
+					}
+			}
+	else {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+			}
+	}
+function AimAssistY() {
+	AAT += get_rtime();
+	if (!Axis) sV(RY,AAT * SantiPolarAAPower / 10);
+	if (Axis == 1) sV(RX,AAT * SantiPolarAAPower / 10);
+	if (Axis == 2) sV(RY,inv(AAT * SantiPolarAAPower / 10));
+	if (Axis == 3) {
+		sV(RX,inv(AAT * SantiPolarAAPower / 10));
+		if (AAT > 50) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+	else if (AAT > 50) {
+		AAT = 0;
+		Axis += 1;
+			}
+	}
+function sV(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+	return;
+	}
+function AxisR(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= Power) return AxisVal;
+	return get_ival(AxisXY);
+	}
+const int8 SantiPolarArray [] = {
+	100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}
+;
+int angle,RXT,RYT,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,x_stick,y_stick,cos_angle,sin_angle,Angle1,RX,RY,Time,Angle,Cos,Sin,X,Y,M,MaxM,AAT,Axis,power,Ypower,Xpower,Power,CountPower,AxisXY,Increment,YRSpeed,YROutput,YRValueX,YRValueY,YRAxisX,YRAxisY,YRAngle,Radius,PolarStrength,PositionT,CosAngle,SinAngle;
+int inc = 1, dec, color[3];
+init{
+	color = 255;
+	}
+main {
+	combo_run(SantiRGBFlow);
+	}
+combo SantiRGBFlow {
+	wait(1);
+	set_rgb(color, color[1], color[2]);
+	color[dec] -= 1;
+	color[inc] += 1;
+	if(!color[dec]) {
+		inc = (inc + 1) % 3;
+		dec = (dec + 1) % 3;
+			}
+	}
+define Reducer = On;
+init{
+	cls_oled(0);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,Script_Text[0]);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Script_Text1[0]);
+	}
+const string Script_Text[] = {
+	"Discord.GG/",""
+}
+;
+const string Script_Text1[] = {
+	"Santi, Kyzer",""
+}
+;
+function center_x(f_chars,f_font){
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+	}
+define Circular= 1;
+define TallOval= 2;
+define WideOval= 3;
+define Spiral= 4;
+define Helix= 5;
+int RS_Gradient,stick_input,rnd;
+int mn = 326, mx = 328;
+                                                                                                                                                                                                                                                                                                                              //fwnfwinfmewnmfebnfnewaesfnmkwmfqnwknfiwnqmfnqwnrfnqweifnqojknbfuiowqnmfikqwnmfiojnqwmcmqwinffowmfqnfouibneonfinefinminefianeifwemifnefbneifnweinfi0weong9wojefgiwhnegwiengesfamwefqwafwfqwfqwkfnmlmefgijnwiejgwengoinweohgnbuionwenoignionvinasdupio gknma0weihj0ijnefmwemfiohjw0ijgomSD0IH80IHJNPKGMWEOPKLNMG0IHNW0EIJNMG0IOWEJNM0IFHS890IHEODGJMOGWEEGWGrgherdtherdtherrhergherherhreherhrwehehreherghergegegegegeggegeerggrgegggggggggggergrgegrgeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeJM0WOEHJN90WHJagrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrreeeeeeergggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggffgggggggggggggggggggggggggggggggggggggggggggggggggggggggg0OGJMWE0IVHN0=WEign ú¸Œ´Œ¸¾ˆ¾Œ¾ˆ¼Š½

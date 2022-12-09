@@ -1,0 +1,21 @@
+define Crescens_Polar    = TRUE;
+int Radius               =   20;
+int Speed                =   12;
+
+int RS_Gradient;
+int stick_input;
+int rnd;
+int mn = 326, mx = 328;
+
+main {
+  stick_input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+    if (Crescens_Polar) {
+        if(get_ival(PS4_L2) || (get_ival(PS4_R2))) {
+            if (stick_input <= Radius) {
+                rnd = random(mn, mx);
+                RS_Gradient = (RS_Gradient + Speed) % 360;
+                set_polar(POLAR_RS, RS_Gradient, (Radius * rnd));
+            }
+        }
+    }
+}

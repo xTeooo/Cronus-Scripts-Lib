@@ -1,0 +1,1065 @@
+/*
+
+   _____         _  __ _            _       __      ___  _   
+  / ____|       (_)/ _| |     /\   (_)      \ \    / / || |  
+ | (_____      ___| |_| |_   /  \   _ _ __ __\ \  / /| || |_ 
+  \___ \ \ /\ / / |  _| __| / /\ \ | | '_ ` _ \ \/ / |__   _|
+  ____) \ V  V /| | | | |_ / ____ \| | | | | | \  /     | |  
+ |_____/ \_/\_/ |_|_|  \__/_/    \_\_|_| |_| |_|\/      |_|  
+                                                             
+                                                             
+
+
+
+*/
+  
+ /*
+  __  __                                    _   
+ |  \/  |                                  | |  
+ | \  / | ___ _ __  _   _                  | |  
+ | |\/| |/ _ \ '_ \| | | |                 | |  
+ | |  | |  __/ | | | |_| |                 | |  
+ |_|  |_|\___|_| |_|\__,_|                 | |  
+  ______ ______ ______ ______ ______ ______| |  
+ |______|______|______|______|______|______|_|  
+
+*/
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","Swift","V4.0","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off"};
+const string ModToggle [] = {"" , "Swift Aim Assist"  , "Swift RadiusBoost"  , "Swift Angle Boost"  , "Polar DynamicProg"  , "Elippse Polar Aim"  , "DoGz Polar Recoil"  , "  Bunny Hop 90"  , "Instant EditReset"  , "   Edit Assist"  , "    Fast Reset"  , "   Double Edit"  , "Edit Sensitivity" , "   Builder Pro"  , "   Build Track" };
+const string ModValue [] = {""   , "Polar/Dam Radius"  , "Polar/Dam Angle"  , "Polar/Dam Boost R"  , "Polar/Dam Boost A"  , "Polar/Dam AA Rel"  , "Polar Radius Min"  , "Polar Radius Max"  , "Polar Radius Inc"  , "Polar Angle Min"  , "Polar Angle Max"  , "Polar Angle Inc"  , "Elippse Radius RX"  , "Elippse Radius RY"  , "Elippse Angle Low"  , "Elippse AngleHigh"  , "PolarProgDyna Rel"  , "Polar AR RY Power"  , " Edit Hold Time"  , "Edit Assist Delay"  , "Edit Sensitivity" , "BuildTrackSynTime" };
+const int16 ModDigitMin [] = {  0  , 1  , 5  , 1  , 1  , 1  , 1  , 1  , 1  , -360  , -360  , 5  , 1  , 1  , -360  , -360  , 1  , 1  , 100  , 10  , 20  , 1000 };
+const int16 ModDigitMax [] = {  0  , 50  , 180  , 20  , 80  , 80  , 50  , 50  , 20  , 360  , 360  , 180  , 50  , 50  , 360  , 360  , 80  , 100  , 200  , 200  , 100  , 9000 };
+
+
+/*
+
+  _                                  _           _   _                  
+ (_)                                | |         | | | |                 
+  _ _ __   __ _  __ _ _ __ ___   ___| |__  _   _| |_| |_ ___  _ __  ___ 
+ | | '_ \ / _` |/ _` | '_ ` _ \ / _ \ '_ \| | | | __| __/ _ \| '_ \/ __|
+ | | | | | (_| | (_| | | | | | |  __/ |_) | |_| | |_| || (_) | | | \__ \
+ |_|_| |_|\__, |\__,_|_| |_| |_|\___|_.__/ \__,_|\__|\__\___/|_| |_|___/
+           __/ |                                                        
+          |___/                                                         
+
+
+ */
+ 
+define Fire     = XB1_RT;
+define Ads      = XB1_LT;
+define N_Weapon = XB1_RB;
+define P_Weapon = XB1_LB;
+define Pickaxe  = XB1_LS;
+define Reload   = XB1_X;
+define Jump     = XB1_A;
+define Crouch   = XB1_RS;
+define Ping     = XB1_RIGHT;
+define Edit     = XB1_Y;
+define Select   = XB1_RT;
+define Confirm  = XB1_B;
+define Reset    = XB1_LT;
+define Build    = XB1_B;
+define Switch   = XB1_LEFT;
+define Wall     = XB1_RT;
+define Floor    = XB1_RB;
+define Ramp     = XB1_LT;
+define Roof     = XB1_LB;
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define RX       = PS4_RX;
+define RY       = PS4_RY;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+/*
+
+  __  __           _   ____        _   _                  
+ |  \/  |         | | |  _ \      | | | |                 
+ | \  / | ___   __| | | |_) |_   _| |_| |_ ___  _ __  ___ 
+ | |\/| |/ _ \ / _` | |  _ <| | | | __| __/ _ \| '_ \/ __|
+ | |  | | (_) | (_| | | |_) | |_| | |_| || (_) | | | \__ \
+ |_|  |_|\___/ \__,_| |____/ \__,_|\__|\__\___/|_| |_|___/
+                                                          
+                                                          
+
+*/
+define EditAssist    = XB1_LS;
+define FastReset     = XB1_PR1;
+define DoubleEdit    = XB1_RB;
+define BunnyHop90    = XB1_A;
+/*
+
+
+  _____                _ _ 
+ |  __ \              (_) |
+ | |__) |___  ___ ___  _| |
+ |  _  // _ \/ __/ _ \| | |
+ | | \ \  __/ (_| (_) | | |
+ |_|  \_\___|\___\___/|_|_|
+                           
+                           
+
+ */
+ 
+define RecoilHoldOnFly = XB1_A;
+define RecoilUpPress   = XB1_UP;
+define RecoilDownPress = XB1_DOWN;
+/*
+
+  __  __                    _           _   _                  
+ |  \/  |                  | |         | | | |                 
+ | \  / | ___ _ __  _   _  | |__  _   _| |_| |_ ___  _ __  ___ 
+ | |\/| |/ _ \ '_ \| | | | | '_ \| | | | __| __/ _ \| '_ \/ __|
+ | |  | |  __/ | | | |_| | | |_) | |_| | |_| || (_) | | | \__ \
+ |_|  |_|\___|_| |_|\__,_| |_.__/ \__,_|\__|\__\___/|_| |_|___/
+                                                               
+                                                               
+
+*/
+define MenuEnterHold   = XB1_LT;
+define MenuEnterPress  = XB1_MENU;
+define MenuExitPress   = XB1_Y;
+define ChangeMenuPress = XB1_A;
+define FindSlotHold    = XB1_RS;
+define FindSlotPress   = XB1_LEFT;
+
+
+/*
+ 
+                  _       _     _           
+                 (_)     | |   | |          
+ __   ____ _ _ __ _  __ _| |__ | | ___  ___ 
+ \ \ / / _` | '__| |/ _` | '_ \| |/ _ \/ __|
+  \ V / (_| | |  | | (_| | |_) | |  __/\__ \
+   \_/ \__,_|_|  |_|\__,_|_.__/|_|\___||___/
+                                            
+                                            
+
+*/
+define TimeoutLimit  = 2;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 14;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 21;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear,Shunt;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int KeyPress;
+int Radius,Angle,Speed;
+int Edit1,Edit2;
+int EditT;
+int BuildTrack,BuildCount;
+int BuildPro;
+int ButtonId,TapButtons[37];
+int AxisX,AxisY;
+int ProgDynaRadius,ProgDynaAngle,ProgRY,ProgRX;
+define Prf = Off;
+define Paf = Off;
+
+int RadiusFlow = Prf;
+int AngleFlow  = Paf;
+int Pvid;
+int RadFlow = On;
+int AngFlow = On;
+int PX_Out,PY_Out,PAngle_Out,PolAngle,PX[2],PY[2];
+define EllipseInverTime = 2000;
+int AngleInvert,EllipseInvert,EllipseAngle,TimeEP;
+
+define EditHold     =  On;
+define KeyboardKeys =  On;
+define PolarProgHip = Off;
+define DoGzARInvert = Off;
+define SwiftAimARHip    = Off;
+
+
+/*
+ 
+                      _              _              _   _                     
+                     | |            | |            | | (_)                    
+  _ __ ___   ___   __| | __   ____ _| |_   _  ___  | |_ _ _ __ ___   ___  ___ 
+ | '_ ` _ \ / _ \ / _` | \ \ / / _` | | | | |/ _ \ | __| | '_ ` _ \ / _ \/ __|
+ | | | | | | (_) | (_| |  \ V / (_| | | |_| |  __/ | |_| | | | | | |  __/\__ \
+ |_| |_| |_|\___/ \__,_|   \_/ \__,_|_|\__,_|\___|  \__|_|_| |_| |_|\___||___/
+                                                                              
+                                                                              
+
+*/ 
+int ModDigit;
+int SwiftRadius   = 15;
+int SwiftAngle    = 20;
+int SwiftRBoost   = 6;
+// The Rest is dogz Values 
+int PolarABoost   = 10;
+int PolarRelease  = 20;
+int PolarProgMinR = 10;
+int PolarProgMaxR = 25;
+int PolarProgIncR = 1;
+int PolarProgMinA = -200;
+int PolarProgMaxA = 200;
+int PolarProgIncA = 30;
+int EllipseRadRX  = 10;
+int EllipseRadRY  = 25;
+int EllipseAngLow = -200;
+int EllipseAngHig = 200;
+int PolarProgRel  = 20;
+int ArPolarRY     = 48;
+int EditHoldTime  = 130;
+int EditDelay     = 30;
+int EditSense     = 67;
+int BuildSyncTime = 4000;
+
+/*
+
+  __  __           _   _______                _           
+ |  \/  |         | | |__   __|              | |          
+ | \  / | ___   __| |    | | ___   __ _  __ _| | ___  ___ 
+ | |\/| |/ _ \ / _` |    | |/ _ \ / _` |/ _` | |/ _ \/ __|
+ | |  | | (_) | (_| |    | | (_) | (_| | (_| | |  __/\__ \
+ |_|  |_|\___/ \__,_|    |_|\___/ \__, |\__, |_|\___||___/
+                                   __/ | __/ |            
+                                  |___/ |___/             
+
+*/ 
+int ModSwitch;
+int SwiftAimAssist  = On;
+int SwiftBoost      = On;
+//the rest is Polar AA or dogz Assist Swift Aim is newer and better 
+int AngleBoost      = Off;
+int DynaPolarProgAA = Off;
+int polarAim        = Off
+int SwiftAimRecoil  = Off;
+int BunnyHop90s     =  On;
+int InstaEditReset  =  On;
+int QuickEditAssist =  On;
+int DoubleEdits     =  On;
+int EditSensitivity =  On;
+int BuilderPro      =  On;
+int BuildTracker    =  On;
+int InstaFastReset  =  On;
+
+/*
+ 
+  _       _ _   
+ (_)     (_) |  
+  _ _ __  _| |_ 
+ | | '_ \| | __|
+ | | | | | | |_ 
+ |_|_| |_|_|\__|
+                
+                
+
+*/ 
+
+init {
+    combo_run(Boot);
+}
+
+/*
+
+                  _           _ 
+                 (_)         | |
+  _ __ ___   __ _ _ _ __     | |
+ | '_ ` _ \ / _` | | '_ \    | |
+ | | | | | | (_| | | | | |   | |
+ |_| |_| |_|\__,_|_|_| |_|   | |
+  ______ ______ ______ ______| |
+ |______|______|______|______|_|
+
+*/ 
+
+main {
+
+    DoubleTap();
+
+
+	if (QuickEditAssist) {
+	 	if (!get_ival(Ads) && get_ival(EditAssist)) {
+			EditAssist();
+			Edit1 = On;
+		}
+
+			if (event_release(EditAssist)) {
+				combo_run(Confirm);
+				EditT = Off;
+				Edit1 = Off;
+			}
+	}
+
+    if (InstaFastReset && !get_ival(Ads) && event_press(FastReset)) { 
+        Shunt = FastReset;
+        combo_run(FastReset);
+    }
+
+    if (InstaEditReset) {
+        if (EditHold && get_ival(Edit) && get_ptime(Edit) > EditHoldTime || !EditHold && event_press(Edit)) {
+                Edit1 = On;
+                Edit2 = On;
+        }
+
+        if (Edit2) {
+            if (event_release(Select)) {  
+                combo_run (Confirm);
+    			       Edit1 = Off;
+                Edit2 = Off;
+    		}
+
+                if (DoubleEdits && event_press(DoubleEdit)) {
+                    Shunt = DoubleEdit;
+                    combo_run(DoubleEdit);
+                    Edit1 = Off;
+                    Edit2 = Off;
+                }    
+
+        }
+    }
+
+    if (Edit1 || Edit2) {
+        if (EditSensitivity) {    
+            stickize (RX,RY,EditSense);
+        }
+
+            if (event_press(Reset)) {  
+                combo_run (InstantReset);
+                Edit1 = Off;
+                Edit2 = Off; 
+            }
+
+                if (event_press(Pickaxe) || event_press(Build) || event_press(Ads)) {
+                    Edit1 = Off;
+                    Edit2 = Off;
+                }
+    }
+
+    if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack) {
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                BuildTrack = Off;
+                BuildCount = Off;
+            }
+            
+                if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall)) 
+                    BuildCount = Off;
+        }
+    }
+
+        if (BuilderPro) {
+            
+            if (get_ival(Switch)) {    
+                BuildPro = On;
+                BuildTrack = On;
+            } 
+            
+                if (BuildPro && event_release(Switch)) {
+                    combo_run(BuildPro);
+                    BuildPro = Off;
+                    BuildTrack = Off;
+                }        
+        }
+
+    if (BuildTrack || BuildPro) {
+        if (BunnyHop90s) {
+            
+            if (event_press(BunnyHop90) && get_released(BunnyHop90) < 200) {    
+                combo_run(BunnyHop90s);
+            }    
+        }
+
+    }
+
+    if (!BuildTrack) { 
+
+    if (SwiftAimAssist) {
+
+        if (get_ival(Ads) && abs(get_ival(RX)) <= PolarRelease && abs(get_ival(RY)) <= PolarRelease) {
+            
+            if (SwiftBoost && get_ival(Fire)) {
+                Radius = SwiftRadius + SwiftBoost;
+            }
+                else {
+                    Radius = SwiftRadius;
+                }
+            
+                    if (AngleBoost && get_ival(Fire)) {
+                        Angle = SwiftAngle + PolarABoost;
+                    }
+                        else {
+                            Angle = SwiftAngle;
+                        }
+                set_polar(POLAR_RS,Speed = (Speed + Angle) % 360,(abs(get_ival(POLAR_RX)) + abs(get_ival(POLAR_RY))) / 4 + Radius * 328);
+            }
+        }
+
+    if (DynaPolarProgAA) {        
+        
+        if ((get_ival(Ads)) || (get_ival(Fire) && PolarProgHip)) {
+            if (abs(get_ival(RX)) <= PolarProgRel && abs(get_ival(RY)) <= PolarProgRel) {
+                
+                RadiusFlow = PolarFlow(RadiusFlow,PolarProgMinR,PolarProgMaxR,PolarProgIncR,RadFlow,1);
+                AngleFlow = PolarFlow(AngleFlow,PolarProgMinA,PolarProgMaxA,PolarProgIncA,AngFlow,2);
+        
+                    ProgRY = (abs(get_ival(RY) / 2));
+                    ProgRX = (abs(get_ival(RX) / 2));
+           
+                        ProgDynaRadius = (RadiusFlow + ((-ProgRY) + (-ProgRX)));
+                        ProgDynaAngle = (AngleFlow + ((-ProgRY) + (-ProgRX))); 
+           
+                   set_polar(POLAR_RS,ProgDynaAngle,ProgDynaRadius * 327);
+            }
+        }
+    }
+
+    if (polarAim) {
+            
+        if ((get_ival(Ads)) || (get_ival(Fire) && PolarProgHip)) {
+            TimeEP += get_rtime();
+            
+            if (abs(get_ival(RX)) <= PolarProgRel && abs(get_ival(RY)) <= PolarProgRel) {
+                
+                if (TimeEP == EllipseInverTime) {
+                    EllipseInvert = !EllipseInvert;
+                    TimeEP = Off;
+                }
+                    
+                        if (EllipseInvert) {
+                              AngleInvert = EllipseAngHig;
+                          }
+                              else {
+                                  AngleInvert = Off;
+                              }
+                
+                  EllipseAngle = (EllipseAngle + EllipseAngLow + AngleInvert) % 360;
+                  SetPolar(POLAR_RS,EllipseAngle,EllipseRadRX,EllipseRadRY);
+             }
+          }
+      }
+
+            if (SwiftAimRecoil){
+                if (!DoGzARInvert)
+                    AxisY = 90;
+
+                    else
+                        AxisY = 270;
+
+                    AxisX = abs(get_ival(RX));
+
+                if (((!SwiftAimARHip && get_ival(Ads) && get_ival(Fire)) || (SwiftAimARHip && get_ival(Fire)))  && (abs(get_ival(RY)) < ArPolarRY && abs(get_ival(RX)) < ArPolarRY && get_rumble(RUMBLE_A))) {
+                    if (get_ival(RY) >= 0) {
+                        set_polar(POLAR_RS,AxisY,ArPolarRY * 327 + isqrt((abs(get_ival(RX)))* (abs(get_ival(RX))) + (abs(get_ival(RY))) * (abs(get_ival(RY)))) * 327 + (AxisX * 327));
+                    }
+
+                        else if (get_ival(RY) < 0) {
+                            set_polar(POLAR_RS,AxisY,ArPolarRY * 327 + isqrt((abs(get_ival(RY))) * (abs(get_ival(RY)))  + (abs(get_ival(RX))) * (abs(get_ival(RX)))) * 327 - (-AxisX * 327));
+                        }
+                }
+            }
+
+            if ((get_ival(RecoilHoldOnFly)) && ((SwiftAimRecoil))) { 
+
+                if (event_press(RecoilDownPress)) {
+                                if (SwiftAimRecoil)
+                                    ArPolarRY += 1;
+
+                    combo_run(Rumble);
+                }
+
+                if (event_press(RecoilUpPress)) {
+                                if (SwiftAimRecoil)
+                                    ArPolarRY -= 1;
+
+                    combo_run(Rumble);
+                            }
+
+                            if ((SwiftAimRecoil) && (ArPolarRY < 1 || ArPolarRY > 99)) {
+                                 ArPolarRY = 30;
+                            }
+
+                set_val(RecoilUpPress,0); set_val(RecoilDownPress,0);
+            }
+    }
+
+	if (!MainMenu && get_ival(MenuEnterHold) && event_press(MenuEnterPress)) {
+
+		MenuToggle(On,On,On,On,Off);
+	}
+
+	if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        MenuTimeout += get_rtime();
+
+		if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(MenuExitPress)) {
+
+			MenuTimeout = Off;
+		}
+
+			if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+
+				MenuToggle(Off,Off,Off,Off,Off);
+			}
+
+			if (event_press(ChangeMenuPress)) {
+
+				MenuValues = !MenuValues;
+				MenuSwitch = !MenuSwitch;
+				ModIndex = On;
+				Update = On;
+			}
+
+
+		if (MenuValues) {
+
+			ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],1,IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+		if (MenuSwitch) {
+
+			ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}
+				BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+	}
+ 
+    if (!MainMenu && get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+        Slot = On;
+        combo_run(Boot);
+    }
+
+    if (Shunt) {
+        if (event_release(Shunt)) {
+            Shunt = Off;
+        }
+            else {
+                set_val (Shunt,Off);
+            }
+    }
+}
+
+/* 
+ 
+                      _                     _   
+                     | |                   | |  
+   ___ ___  _ __ ___ | |__   ___  ___      | |  
+  / __/ _ \| '_ ` _ \| '_ \ / _ \/ __|     | |  
+ | (_| (_) | | | | | | |_) | (_) \__ \     | |  
+  \___\___/|_| |_| |_|_.__/ \___/|___/     | |  
+  ______ ______ ______ ______ ______ ______| |  
+ |______|______|______|______|______|______|_|  
+
+*/ 
+
+combo BuildPro {   
+    
+    set_val(Switch,0);
+    wait(50);      
+    set_val(Switch,100);
+    wait(50);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(50);
+    set_val(Confirm,0);
+    wait(100);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(50)
+    set_val(Reset,100);        
+    wait(50);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+combo DoubleEdit {
+
+    set_val(Select,100);
+    wait(20);
+    set_val(Confirm,100);
+    wait(20);
+    wait(100);
+    set_val(EditAssist,100);
+    wait(20);
+    set_val(Select,100);
+    wait(20);
+    set_val(Confirm,100);
+    wait(20);
+}
+
+combo BunnyHop90s {
+
+    set_val(Jump,100);
+    wait(50);
+    set_val(Floor,100);
+    wait(50);
+    set_val(Ramp,100);
+    wait(50);
+}
+
+combo Rumble {
+    
+    if (event_press(RecoilUpPress))
+        set_rumble(RUMBLE_A,35);
+        
+        else if (event_press(RecoilDownPress))
+            set_rumble(RUMBLE_B,70);
+    
+    wait(250);
+    reset_rumble();
+}
+
+combo Boot {
+        
+        wait(Slot);
+    if (Slot == 20000)    
+        cls_oled(0);
+        
+        if (Slot) {
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+function DoubleTap () {
+ 
+     do {
+        TapButtons[ButtonId] = (TapButtons[ButtonId] + get_rtime()) * !(event_release(ButtonId));
+    
+        if (TapButtons[ButtonId] < 0) 
+            TapButtons[ButtonId] = 32767;
+          } 
+      while(ButtonId = (ButtonId + 1) % 37);
+  }
+
+function get_released (InputOutput) { 
+    
+    return TapButtons[InputOutput]; 
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        if (get_ival(EditAssist)) {
+            if (EditT >= EditDelay)
+                  Press(Select);
+          }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        return;
+            set_val(Button, 100);
+}
+
+function PolarFlow(Pfb,Psv,Pfv,Pv,Pf,Pid) {
+    
+    if(Pf) {
+        Pfb += Pv;
+    
+    if(Pfb <= Pfv)  
+        return Pfb;
+        
+        if(Pfb > Pfv) {
+            Pvid[Pid] = Off;
+            
+            return Pfb - Pv;
+        }
+    }
+
+    else {
+        Pfb -= Pv;    
+        
+        if(Pfb >= Psv)  
+            return Pfb;
+
+            if(Pfb < Psv) {
+                Pvid[Pid] = On; 
+        
+                return Pfb + Pv;
+            }
+    } 
+           return Off;    
+}
+
+function SetPolarVal(Axis,Offset_Val) { 
+		
+	return clamp(Offset_Val * (100 - abs(get_ival(Axis))) / 100 + get_ival(Axis),-100,100); 
+}
+
+function Sin(AngleO) { 
+		
+	return (Cos(AngleO - 90)); 
+}
+
+function Cos(AngleO) {
+  	
+  	if (AngleO < 0) 
+  		AngleO = (AngleO % 360) + 360;
+  		
+  		AngleO = (AngleO % 360);
+		PX_Out = 100;
+  		PY_Out = 100;
+  		PAngle_Out = AngleO % 45;
+	
+		if (AngleO < 45) { 
+  			PY_Out = (100 * PAngle_Out) / 45; 
+  		}
+  		else if (AngleO < 90)  { 
+  			PX_Out = (100 * (45 - PAngle_Out)) / 45; 
+  		}
+  		else if (AngleO < 135) { 
+  			PX_Out = (-100 * PAngle_Out) / 45; 
+  		}
+  		else if (AngleO < 180) { 
+  			PY_Out = (100 * (45 - PAngle_Out)) / 45; PX_Out = -100; 
+  		}
+  		else if (AngleO < 225) {
+  			PY_Out = (100 * PAngle_Out) / 45; PX_Out = -100; 
+  		}
+  		else if (AngleO < 270) { 
+  			PX_Out = (-100 * (45 - PAngle_Out)) / 45; PY_Out = -100; 
+  		}
+  		else if (AngleO < 315) { 
+  			PX_Out = (100 * PAngle_Out) / 45; PY_Out = -100; 
+  		}
+  			else { 
+  				PY_Out = ( 100 * (45 - PAngle_Out)) / 45; 
+  			}
+		
+			PAngle_Out = abs(PY_Out);
+	
+			if (abs(PX_Out) > PAngle_Out) PAngle_Out = abs(PX_Out);
+				return (PX_Out * PAngle_Out / isqrt((pow(PX_Out, 2) + pow(PY_Out, 2))));
+}
+
+function SetPolarValue (Stick,AngleO,RadiusO) {
+  		
+  	set_val(7 + Stick,(Cos(AngleO) * RadiusO) / 100);
+  	set_val(8 + Stick,(Sin(AngleO) * RadiusO) / 100);
+ 		return;
+}
+
+function SetPolar (Stick,AngleO,Width,Height) {
+  		
+  	SetPolarValue(Stick,AngleO,Width);
+  	PX[Stick/4] = get_val(Stick + 7);
+  	SetPolarValue(Stick, AngleO,Height);
+  	PY[Stick/4] = get_val(Stick + 8);
+  	set_val(Stick + 7,SetPolarVal(Stick + 7,PX[Stick/4]));
+  	set_val(Stick + 8,SetPolarVal(Stick + 8,PY[Stick/4]));
+}
+
+function key_press(Key) {
+    
+    if(get_keyboard(Key) && !KeyPress) {
+        KeyPress = On;
+            return On;
+    }
+    
+        if(!get_keyboard(Key)) {
+            KeyPress = Off;
+        }
+    
+    return Off;
+}
+
+function BlockButton (Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+  
+function MenuToggle (Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+}
+  
+function PrintMod (ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			} 
+		Update = Off; 
+	} 
+
+	if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+		Update = On;
+		ModVal += ModValInc;
+
+            if (ModVal >= ModValMax){ 
+                ModMonitor(ModValLbl);
+                    return ModValMax;
+            }
+	} 
+ 
+		if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+			Update = On;
+			ModVal -= ModValInc;
+
+				if (ModVal <= ModValMin){
+					ModMonitor(ModValLbl);
+						return ModValMin;
+				}
+		}
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+ 
+function ModMonitor (Mon) {
+    
+    if (Mon == ModToggle[1]) { 
+        DynaPolarProgAA = Off;
+        polarAim = Off;
+    }
+        if (Mon == ModToggle[4]) { 
+            SwiftAimAssist  = Off;
+            polarAim = Off;
+        }
+    if (Mon == ModToggle[5]) { 
+        DynaPolarProgAA = Off;
+        SwiftAimAssist  = Off;
+    }
+        if (Mon == ModToggle[6]) {
+        }
+} 
+   
+function Grid () { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll () {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,  TRIANGLE ,   SPACE   ,     O     ,     r     ,   SPACE   ,     Y     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,
+    N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   };

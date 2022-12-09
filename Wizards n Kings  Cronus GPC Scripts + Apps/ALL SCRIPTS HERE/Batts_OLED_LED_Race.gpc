@@ -1,0 +1,98 @@
+int set_screen = TRUE;
+const string RED = "Red";
+const string GREEN = "Green";
+const string BLUE = "Blue";
+
+init {
+    cls_oled(0);
+}
+main {
+    led_color_cycle();
+    vm_tctrl ( colorCycleCycle / 20 );
+	if(set_screen) {
+	    printf(11,(63 - (colorCycleRed / 5)) - 12,0,1,RED[0]);
+	    printf(46,(63 - (colorCycleGreen / 5)) - 12,0,1,GREEN[0]);
+	    printf(91,(63 - (colorCycleBlue / 5)) - 12,0,1,BLUE[0]);
+	    rect_oled(11,63 - (colorCycleRed / 5),21,colorCycleRed  / 5,TRUE,1);  //--red
+	    rect_oled(53,63 - (colorCycleGreen / 5),21,colorCycleGreen / 5,TRUE,1); //--green
+	    rect_oled(95,63 - (colorCycleBlue / 5),21,colorCycleBlue / 5,TRUE,1); //--green//--blue
+	    set_screen = FALSE;
+	}
+}
+///////////////////
+int colorCycleRed;
+int colorCycleGreen = 255;
+int colorCycleBlue;
+int colorCycleTime;
+int colorCycleCycle = 1;
+int colorCycleDelay = 60;
+int colorCycleColorRate = 1;
+int colorCycleTimeRate = -20;
+
+function led_color_cycle() {
+    colorCycleTime += get_rtime();
+    if(colorCycleTime >= colorCycleDelay) {
+        ClearRect();
+        colorCycleTime = 0;
+		if(colorCycleCycle == 1) {
+	    	if(colorCycleRed < 255) {
+	    	    colorCycleRed += colorCycleColorRate;           	//--red cycles up to max (red & green max)
+	       	}else if(colorCycleGreen > 0) {
+	       	    colorCycleGreen -= colorCycleColorRate;    			//--green cycles down
+	        }else if(colorCycleBlue < 255) {
+	            colorCycleBlue += colorCycleColorRate;    			//--blue cycles up
+	        }else{
+	            colorCycleCycle = 2;            					//--blue & red @ max
+	        }
+		}
+	    if(colorCycleCycle == 2) {
+	        if(colorCycleRed > 0) {
+	            colorCycleRed -= colorCycleColorRate;            	//--red cycles down
+	        }else if(colorCycleGreen < 255) {
+	            colorCycleGreen += colorCycleColorRate; 			//--green cycles up (blue & green @ max)
+	        }else if(colorCycleBlue > 0) {
+	            colorCycleBlue -= colorCycleColorRate;     			//--blue cycles down
+	        }else{ 
+	            colorCycleCycle = 3;
+	        }
+	    }
+	    if(colorCycleCycle == 3) {
+	    	if(colorCycleRed < 255 && colorCycleGreen == 255) {     //--red & blue cycle up 
+	    	    colorCycleRed += colorCycleColorRate;               //--red/green/blue @ max      
+	            colorCycleBlue += colorCycleColorRate;
+	        }else if(colorCycleBlue > 0) {
+	        	colorCycleBlue -= colorCycleColorRate;    
+	        	colorCycleGreen -= colorCycleColorRate;
+	        	colorCycleRed -= colorCycleColorRate;
+	        }else if(colorCycleGreen < 255) {
+	            colorCycleGreen += colorCycleColorRate;
+	            if(colorCycleGreen == 1) {
+	                colorCycleDelay += colorCycleTimeRate;
+	                if(colorCycleDelay  <  0) { 
+	                    colorCycleDelay = 20;
+	                    colorCycleTimeRate = inv(colorCycleTimeRate);
+	                }   
+	                if(colorCycleDelay  > 60) {     
+	                	colorCycleDelay = 40;   
+	                	colorCycleTimeRate = inv(colorCycleTimeRate);
+	                }
+	            }
+	            if(colorCycleGreen == 255) {
+	            	colorCycleCycle = 1; 
+	            }
+			} 
+	    }
+	    set_rgb(colorCycleRed,colorCycleGreen,colorCycleBlue); 
+	
+	}
+} 
+///////////////////
+function ClearRect() {
+    rect_oled(11,(63 - (colorCycleRed / 5)) - 12,21,10,TRUE,0);
+	rect_oled(46,(63 - (colorCycleGreen / 5)) - 12,35,10,TRUE,0);
+	rect_oled(91,(63 - (colorCycleBlue / 5)) - 12,28,10,TRUE,0);
+	rect_oled(11,63 - (colorCycleRed / 5),21,colorCycleRed / 5,TRUE,0); //--red
+	rect_oled(53,63 - (colorCycleGreen / 5),21,colorCycleGreen / 5,TRUE,0); //--green
+	rect_oled(95,63 - (colorCycleBlue / 5),21,colorCycleBlue / 5,TRUE,0); //--blue   
+	set_screen = TRUE;
+}

@@ -1,0 +1,575 @@
+// noctwrnyA and SS_Nikolai helped with this script!!!!
+
+// BINDS //
+define ADS     		= PS4_L2;		//in-game ADS BUTTON
+define FIRE     	= PS4_R2;		//in-game FIRE BUTTON
+define NEXT_WEAPON 	= PS4_R1;		//in-game NEXT_WEAPON BUTTON
+define PREV_WEAPON 	= PS4_L1;		//in-game PREV_WEAPON BUTTON
+
+//BUILD LAYOUT
+define BUILD     	= PS4_DOWN;	//in-game BUILD BUTTON
+define STAIRS  		= PS4_L2;		//in-game STAIRS BUTTON
+define WALL    	 	= PS4_R2;		//in-game WALL BUTTON
+define FLOOR  		= PS4_R1;		//in-game FLOOR BUTTON
+define ROOF   		= PS4_L1;		//in-game ROOF BUTTON
+
+//EDIT LAYOUT
+define EDIT 		= PS4_L3;	//in-game EDIT BUTTON
+define SELECT 		= PS4_R2; 		//in-game SELECT BUTTON
+define CONFIRM 		= PS4_DOWN;	//in-game CONFIRM BUTTON
+define RESET 		= PS4_R1;	//in-game RESET BUTTON
+define On  = TRUE;
+define Off = FALSE;
+
+define PICKAXE 		= PS4_TRIANGLE; //in-game PICKAXE BUTTON
+define JUMP     	= PS4_CROSS;	//in-game JUMP BUTTON
+define CROUCH   	= PS4_R3;		//in-game CROUCH BUTTON
+define INTERACT 	= PS4_SQUARE;	//in-game INTERACT BUTTON
+define MAPVIEW_B	= PS4_SHARE;    //in-game MAP BUTTON
+
+define UP     = PS4_UP;    
+define DOWN   = PS4_DOWN;   
+define LEFT   = PS4_LEFT; 
+define RIGHT  = PS4_RIGHT;
+
+define OPTIONS	= PS4_OPTIONS;  
+define TOUCHPAD = PS4_TOUCH;
+define SHARE 	= PS4_SHARE;
+
+define AIM_X 	= PS4_RX;
+define AIM_Y 	= PS4_RY;
+define LX 		= PS4_LX;
+define LY 		= PS4_LY;
+define PS       = POLAR_RS;
+
+// Batts STICKY AA //
+define BattsStickyAA = FALSE;
+define BattsAAHip    = TRUE;
+define BattStickyPower = 10;
+define BattStickyWait  = 10;
+
+// NIKO AIM // (ONLY CAN 1 ON BATTS OR THIS)
+define SS_Nikolai_Aim = TRUE;
+define AimAssistWaitTime = 10;
+define AimAssistStrength = 16;
+
+// DoGz Polar Version XIII [Real Zen Polar {STAGE 1 of 2}]
+int DoGzZenPolar = On;        // MASTER AIM ASSIST TOGGLE
+int PolarOrientation = On;    // Orientation Enabled {Clockwise <=> AntiClockwise} or Disabled {Standard Clockwise}
+int PolarCoil = On;           // Polar Coil Enabled 
+int ZenPolarRadius = 11;      // Power Of Radius
+int ZenPolarAngle = 11;       // Speed Of Angle	[Angle 5 / Counter 150 (2 360's PolarOrientation Enabled (NO Increment Used (PolarCoil Disabled))]
+int RotateCounter = 150; 	  // Rotate Counter [Before PolarOrientation Inverts] 
+int Increment = 6;            // Increment Value [Max n Min + Radius (Default = Min 5 Max 17)]
+int ZenPolarChangeSpeed = 10; // Speed Of Increment
+int ZenPolarRelease = 15; 	  // Value To Change Aim Assist [Below ZenPolarRelease Zen Polar {STAGE 1} Will Run && Above One Of {STAGE 2} Methods Will Run]  
+// DAM POLAR/DoGz Reducer {STAGE 2 of 2}
+int DoGzReleasMode = DoGzDamPolar; // [1]DoGzDamPolar or [2]DoGzReducer
+// DamPolar
+int DamAdsRadius = 15;		  // Power Of Radius On Ads Only
+int DamAdsAngle = 18;         // Speed Of Angle On Ads Only
+int DamFireRadius = 18;		  // Power Of Radius On Fire
+int DamFireAngle = 30;        // Speed Of Angle On Fire
+// DoGzReducer                
+int ReducerPower = 19;		  // Power Of Reducer Combo
+int ReducerTime = 10;		  // Speed Of Reducer Combo [10/20/30]
+
+//Ares AA //
+int DZ = 10; // deadzone in game
+int SHAKEX = -10; // deadzone value or in game ADS value
+int STRAFEX = -10; // deadzone value or in game ADS value 
+int SHAKEY = -10; // deadzone value or in game ADS value 
+int STRAFEY = -10; // deadzone value or in game ADS value
+
+// EDIT MODS //
+define FastReset = XB1_LT
+int EditSensitivity =  FALSE;
+int InstaFastReset  =  TRUE;
+int InstaEditReset  =  TRUE;
+define EditHold     =  FALSE;
+int EditHoldTime   = 0;
+define EditAssist = FALSE;
+define EditAssist_BUTTON	= PS4_CIRCLE;
+define EditDelay			=	  20;  
+
+// Perfect Accuracy //
+int AccuracyExploit   =  TRUE; // Recommended for no build players
+int AlternativeAccuracy     = TRUE; // Recommended for no build players
+define PerfectAccuracyHold  = PS4_L2; // PERFECT ACCURACY HOLD ACTIVATOR
+define PerfectAccuracyPress = PS4_L2; // PERFECT ACCURACY PRESS ACTIVATOR
+
+//Bloom Reducer//
+define BloomReducer = TRUE;
+
+// Pickup Marco //
+int PickUpMacro          = FALSE;
+
+//BUILD TRACKER
+int BuildTracker    =  TRUE;
+int BuildSyncTime = 4000;
+
+//Don't TOUCH AT ALL!!!
+// VARIABLES //
+int Edit1,Edit2,BuildTrack,Shunt,BuildCount,EditT,Inverter;
+int TargetList[2],targetLoop,index,Dhruvski,Ares,power,DamAngle;
+int AresTIME = 3,deltax,deltay,hyp,Hadesx,Hadesy,Rotation,Angle;
+int B = 450;define PolarValue = 327;int Cos,Sin;
+int A = 449;define DoGzDamPolar = 0;define DoGzReducer = 1;
+int rnd; int RIGHTOFFSETY,RIGHTOFFSETX;int LEFTOFFSETX,LEFTOFFSETY;
+int ry;int rx; int lx; int Poisedon,Apollosum,ZUESPI,DamRadius;int Artemisn,Counter;
+int ly; int RAXIS;int delta,Count;int RIZ = 2;int WaitStrength, AimStrength,Axis;
+
+
+main {
+vm_tctrl(-5); // (-5) RECCOMENED FOR COMP (-9) FOR CREATIVE
+//------------------------------------------------------------------------------
+ if (BattsStickyAA) {
+if (get_ival(ADS) || (BattsAAHip && get_ival(FIRE))) {
+combo_run(BattsStickyAssist);
+} else {
+combo_stop(BattsStickyAssist); 
+}
+}
+//------------------------------------------------------------------------------
+if (SS_Nikolai_Aim)
+		{
+			if(get_ival(ADS) || get_ival(FIRE))
+			{
+				combo_run(cNikoAim);
+			}
+
+			if(event_release(ADS) || event_release(FIRE))
+			{
+				combo_stop(cNikoAim)
+			}
+		}
+//------------------------------------------------------------------------------
+{
+    block_rumble();
+    
+    valuefinder()
+    
+	combo_run(Ais)
+
+	combo_run(u);
+
+Dhruvskiownsu(PS4_RX,(RIZ));
+Dhruvskiownsu(PS4_RY,(RIZ));
+rnd = random(A, B);
+set_polar(POLAR_LS, DZ, (100 * rnd));	
+	}
+//------------------------------------------------------------------------------
+ if (AccuracyExploit) {
+			
+			if (event_press(FIRE) && !get_ival(ADS)) {
+			
+				combo_run(Accuracy);
+		    }
+	   }
+    
+            if (AlternativeAccuracy) {
+	    
+	            if (get_ival(PerfectAccuracyHold) && get_ival(PerfectAccuracyPress)) {
+        
+        	          set_val(PerfectAccuracyPress,0);
+        		
+        		      combo_run(AlternativeAccuracy);
+        	
+        	    } else {
+        	
+        		      combo_stop(AlternativeAccuracy);
+        	 }
+	    }
+//------------------------------------------------------------------------------		
+	  if (DoGzZenPolar) {
+if ((get_ival(ADS) || get_ival(FIRE)) && Axis < ZenPolarRelease) {
+if (PolarOrientation) {
+if (Count < RotateCounter) {
+Rotation += ZenPolarAngle;
+if (Rotation > 359) { 
+Rotation = 0;
+	                    	}
+	                    	Count++;
+	                    }
+if (Count >= RotateCounter) {
+Rotation -= ZenPolarAngle;
+if (Rotation < 0) { 
+Rotation = 359;
+	                    	}	
+Count++;
+	                    }
+if (Count == RotateCounter * 2) { 
+Count = 0;
+	                    }	
+} else {
+Rotation += ZenPolarAngle;
+if (Rotation > 359) { 
+Rotation = 0;
+	                	}
+}
+set_polar(PS,Rotation,(Axis * PolarValue / 3) + (ZenPolarRadius * PolarValue) + Counter);
+if (PolarCoil) {
+if (Inverter) {
+Counter += ZenPolarChangeSpeed;
+} else {
+Counter -= ZenPolarChangeSpeed;
+}
+if (Counter > Increment * PolarValue) {
+Inverter = !Inverter;
+	                	}
+if (Counter < inv(Increment) * PolarValue) {
+Inverter = !Inverter;
+	                	}
+	                }
+		        }
+if ((get_ival(ADS) || get_ival(FIRE)) && Axis >= ZenPolarRelease) {
+if (DoGzReleasMode == DoGzDamPolar) {    
+if (get_ival(FIRE)) {
+DamRadius = DamFireRadius;
+DamAngle  = DamFireAngle;
+} else {
+DamRadius = DamAdsRadius;
+DamAngle  = DamAdsAngle;
+                        }
+Angle += DamAngle;
+Angle = Angle % 360;
+Sin = DamPolarArray[Angle % 360];
+Cos = DamPolarArray[(Angle + 270) % 360];
+Cos = (Cos * DamRadius) / 100;
+Sin = (Sin * DamRadius) / 100;
+Set_Val(AIM_X,Cos);
+Set_Val(AIM_Y,Sin); 
+} else if (DoGzReleasMode == DoGzReducer) {
+combo_run(DoGzReducer);
+    	        	}	
+		        } else {
+combo_stop(DoGzReducer);
+		        }
+		    }
+//------------------------------------------------------------------------------	
+if(BloomReducer)
+		{
+			if(get_val(ADS) && (get_val(FIRE)))
+			{
+				combo_run(cAntiBloom);
+				combo_run(cRapidBloom);
+			}
+				if(abs(get_val(LX)) > 60 || abs(get_val(LY)) > 60)
+				{
+					combo_stop(cAntiBloom);
+					combo_stop(cRapidBloom);
+				}
+		}
+//------------------------------------------------------------------------------
+if(get_val(ADS) && get_val(FIRE)) {
+combo_run(AR);
+}
+if(get_val(ADS) && get_val(FIRE)){
+combo_stop(AR);
+}			
+//------------------------------------------------------------------------------
+if (PickUpMacro && get_val(INTERACT)) { combo_run(PickupSpam); }
+//------------------------------------------------------------------------------
+ if(get_val(ADS) && get_val(FIRE)) {
+ combo_run(rapidFire);
+}
+else {
+combo_stop(rapidFire);
+}
+//------------------------------------------------------------------------------     
+ if(get_ival(PS4_L2) > 1)set_val(PS4_L2, 100);
+	if(get_ival(PS4_R2) > 1)set_val(PS4_R2, 100);
+//------------------------------------------------------------------------------
+if (InstaFastReset && !get_ival(RESET) && event_press(FastReset)) { 
+
+
+
+            Shunt = FastReset;
+            combo_run(FastReset);
+    }
+//------------------------------------------------------------------------------     
+    if (InstaEditReset) {
+if (EditHold && get_ival(EDIT) && get_ptime(EDIT) > EditHoldTime || !EditHold && event_press(EDIT)) {
+Edit1 = TRUE;
+Edit2 = TRUE;
+BuildTrack = TRUE;
+}
+if (Edit2) {
+if (event_release(FIRE)) {  
+Edit1 = FALSE;
+Edit2 = FALSE;
+BuildTrack = FALSE;
+}
+}
+} 
+if (Edit1 || Edit2) {
+if (EditSensitivity) {    
+}
+if (event_press(ADS)) {  
+combo_run (InstantReset);
+Edit1 = FALSE;
+Edit2 = FALSE; 
+}
+if (event_press(PICKAXE) || event_press(BUILD) || event_press(ADS)) {
+Edit1 = FALSE;
+Edit2 = FALSE;
+BuildTrack = FALSE;
+}
+}
+  //------------------------------------------------------------------------------ 
+if(EditAssist)
+		{
+			if(get_ival(EditAssist_BUTTON))
+			{
+				EditAssist();
+				Edit1 = TRUE;
+			}
+
+			if(event_release(EditAssist_BUTTON))
+			{	
+				EditT = 0;	
+				Edit1 = FALSE;
+			}
+		}
+		if(Edit1)
+		{
+			if(event_press(RESET))
+			{
+				combo_run(InstantReset);
+				Edit1	   = FALSE;
+				BuildTrack = FALSE;
+			}
+
+			if(event_press(PICKAXE) || event_press(ADS))
+			{
+				Edit1	   = FALSE;
+				BuildTrack = FALSE;
+			}
+		}
+ //------------------------------------------------------------------------------ 
+     if (BuildTracker) {
+if (event_press(BUILD)) {
+BuildTrack = !BuildTrack;
+}
+if (BuildTrack) {
+BuildCount += get_rtime();
+if (event_press(PICKAXE) || BuildCount == BuildSyncTime) {
+BuildTrack = FALSE;
+BuildCount = FALSE;
+}
+if (get_ival(ROOF) || get_ival(FLOOR) || get_ival(STAIRS) || get_ival(WALL))                     BuildCount = FALSE;
+}
+}
+//------------------------------------------------------------------------------ 
+if (Shunt) {
+if (event_release(Shunt)) {
+Shunt = FALSE;
+}
+else {
+set_val (Shunt,FALSE);
+}
+}
+}
+//end of main------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//---------------------------------combo code-----------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+combo AR {
+	   set_val(AIM_Y,36);
+	wait(10);
+	   set_val(AIM_Y,0);
+	wait(10);
+	}
+//------------------------------------------------------------------------------
+combo BattsStickyAssist {
+set_val(AIM_Y,AxisRelease(AIM_Y,BattStickyPower));
+wait(BattStickyWait);
+set_val(AIM_X,AxisRelease(AIM_X,BattStickyPower));
+set_val(XB1_LX,AxisRelease(XB1_LX,BattStickyPower));
+wait(BattStickyWait);
+set_val(AIM_Y,AxisRelease(AIM_Y,inv(BattStickyPower)));
+wait(BattStickyWait);
+set_val(AIM_X,AxisRelease(AIM_X,inv(BattStickyPower)));
+set_val(XB1_LX,AxisRelease(XB1_LX,inv(BattStickyPower)));
+wait(BattStickyWait);
+}
+//------------------------------------------------------------------------------
+combo PickupSpam {
+	   set_val(INTERACT, 100);
+	wait(80);
+	   set_val(INTERACT, 0);
+	}
+//------------------------------------------------------------------------------
+combo rapidFire {
+set_val(XB1_RT,100);
+wait(40);
+set_val(XB1_RT,0);
+wait(40);
+}
+//------------------------------------------------------------------------------
+combo Confirm {
+
+   set_val(CONFIRM,100);
+    wait(50);
+    set_val(CONFIRM,0);
+    wait(100);
+}
+//------------------------------------------------------------------------------
+combo FastReset {
+
+ 
+    wait(50)
+    set_val(RESET,100);        
+    wait(50);
+    combo_run(Confirm);
+}
+//------------------------------------------------------------------------------
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+//------------------------------------------------------------------------------
+combo Accuracy {
+
+	set_val(ADS,100);
+	wait(150);
+}
+//------------------------------------------------------------------------------
+combo AlternativeAccuracy {
+	
+	set_val(FIRE,100);
+	wait(50);
+	wait(300);
+}
+//------------------------------------------------------------------------------
+combo u {
+	Dhruvskiownsu(AIM_X,rx)wait(AresTIME)Dhruvskiownsu(AIM_X,0)wait(AresTIME)Dhruvskiownsu(AIM_X,-rx)wait(AresTIME)Dhruvskiownsu(AIM_X,0)wait(AresTIME)
+}
+//------------------------------------------------------------------------------
+combo Ais {
+		Dhruvskiownsu(AIM_Y,RIZ)
+		Dhruvskiownsu(AIM_X,-RIZ)
+		wait(1)
+		Dhruvskiownsu(AIM_Y,-RIZ)
+		Dhruvskiownsu(AIM_X,RIZ)
+		wait(1)
+		} 
+//------------------------------------------------------------------------------
+combo cAntiBloom {
+	Set_Val(LX, inv(100));
+	wait(50);
+	wait(5);
+	Set_Val(LY, inv(100));
+	wait(20);
+	Set_Val(LX, 100);
+	wait(50);
+	wait(5);
+	Set_Val(LY, 100);
+	wait(20);
+}
+//------------------------------------------------------------------------------
+combo cRapidBloom {
+	set_val(FIRE, 100);
+    wait(40);
+    set_val(FIRE, 0);
+    wait(20);
+}
+//------------------------------------------------------------------------------
+combo cNikoAim {
+	WaitStrength	= random(AimAssistWaitTime / 2 , AimAssistWaitTime);
+	AimStrength		= random(inv(AimAssistStrength), AimAssistStrength);
+
+	Set_Val(AIM_Y,	AimStrength);
+	wait(WaitStrength);
+	Set_Val(AIM_X,	AimStrength);
+	wait(WaitStrength);
+	Set_Val(AIM_Y,	inv(AimStrength));
+	wait(WaitStrength);
+	Set_Val(AIM_X,	inv(AimStrength));
+	wait(WaitStrength);
+}
+//------------------------------------------------------------------------------
+combo DoGzReducer {
+
+	Set_Ival(AIM_X,ReducerPower);
+	Set_Ival(AIM_Y,ReducerPower);
+	wait(ReducerTime);
+	Set_Ival(AIM_X,inv(ReducerPower));
+	Set_Ival(AIM_Y,inv(ReducerPower));
+	wait(ReducerTime);
+}
+//------------------------------------------------------------------------------
+function AxisRelease(AxisXY,AxisVal) {
+    
+    if (abs(get_ival(AxisXY)) <= BattStickyPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}
+//------------------------------------------------------------------------------
+function EditAssist() {
+    EditT += get_rtime();
+
+	if(get_ival(EditAssist_BUTTON))
+	{
+		if(EditT >= EditDelay)
+			EditPress(SELECT);
+	}
+}
+//------------------------------------------------------------------------------
+function EditPress(Button) {
+    if(get_ival(Button))
+        return;
+	set_val(Button, 100);
+}
+//------------------------------------------------------------------------------
+function xy_val(f_axis,f_val) { 
+	
+	if(abs(get_val(f_axis)) < Release) 
+	
+		return f_val; 
+		return get_val(f_axis); 
+}
+//------------------------------------------------------------------------------
+function valuefinder(){
+RIGHTOFFSETX = -1
+RIGHTOFFSETY = -1
+if (AIM_X > 0 ) {
+RIGHTOFFSETX = 1
+}
+if (AIM_Y > 0 ) {
+RIGHTOFFSETY = 1
+}
+rx = (AIM_X + SHAKEX) * RIGHTOFFSETX
+ry = (AIM_Y + SHAKEY) * RIGHTOFFSETY
+LEFTOFFSETX = -1
+LEFTOFFSETY = -1
+if ( LX > 0 ) {
+LEFTOFFSETX = 1
+}
+if ( LY > 0 ) {
+LEFTOFFSETY = 1
+}
+lx =  (LX + STRAFEX) * LEFTOFFSETX
+ly =  (LY + STRAFEY) * LEFTOFFSETY
+
+}
+//------------------------------------------------------------------------------
+function Dhruvskiownsu( axis,  offset_val) {
+  set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+  return;
+}
+//------------------------------------------------------------------------------
+function Set_Val(Input, OutPut) {
+	set_val(Input, clamp(OutPut * (100 - abs(get_val(Input))) / 100 + get_val(Input), -100, 100));
+		return;
+}
+//------------------------------------------------------------------------------
+function Set_Ival(Input, Output) {
+	set_val(Input, clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input), -100, 100));
+		return;
+}
+const int8 DamPolarArray[]= { 100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100}; ú¹ˆ¾†·ƒ´‚´†¿‰½‹³

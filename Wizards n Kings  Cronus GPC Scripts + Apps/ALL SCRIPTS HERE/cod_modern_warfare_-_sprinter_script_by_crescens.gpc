@@ -1,0 +1,105 @@
+// GPC Online Library
+// cod_modern_warfare_-_sprinter_script_by_crescens.gpc
+
+/* 
+___________________________________________________________________________
+
+			 COD Modern Warefare Sprinter Script by 
+			   __|  _ \  __|   __|   __|  __|   \ |   __| 
+			  (       /  _|  \__ \  (     _|   .  | \__ \ 
+			 \___| _|_\ ___| ____/ \___| ___| _|\_| ____/ 
+			 © CronusMAX(2019). All rights reserved. 
+ __________________________________________________________________________	
+			
+			Instructions:
+			Tap forward and hold for normal sprint (dark blue led).
+			Double tap forward and hold for super sprint (sky blue led).
+___________________________________________________________________________
+
+
+//-- LEDS 						*/ 
+function __(c){for(_=0;_<3;_++){set_led(_,test_bit(c,_));}}
+
+//-- STICKS	/ BUTTONS	
+define WALK=PS4_LY; 
+define ADS= PS4_L1;		                            		
+define SPRINT=PS4_L3;                
+
+//--VARIABLES
+int _;  
+int tm;
+int up;
+int max  = 250; // (max time between the two double taps, increase or decrease based on your preference)
+int w;
+int tresh= -75;	//(-75 = pressed more than 75%) 
+  
+main{ 
+
+  if(get_val(WALK)==-100 && tm==0) up=1;   
+        	else if(get_val(WALK)>-20 && up==1) up = 2;
+        		if(up ==2)                                   
+        				{                                                
+         				tm = tm +get_rtime();                    
+         				if(tm>=max)
+         					{
+         					tm=0;up=0;
+         				}     
+                        	if(get_val(WALK)==-100 )
+                        {  
+                        	up = 0;                       
+             				tm=0;
+             				w=1;                    
+            				}                                 
+  
+ 						}
+ 				if (get_val (WALK) < tresh && w==1){combo_run (EASY_RUN);} 
+        																			
+        		if (get_val (WALK) < tresh && w==0){ combo_run (EASY_SPRINT);}
+        		else if (get_val (WALK) > tresh && w==1) {w=0;}
+        		
+      	//--LED COLOR
+	    if (w==0)  // normal sprint
+	    	__(1); //dark blue	
+	    if (w==1)  // super sprint
+	    	__(5); //sky blue   
+    	
+ }//-- end of main
+ 
+combo EASY_SPRINT{
+    set_val(SPRINT,100); 
+}
+combo EASY_RUN{
+    set_val(SPRINT,100); 
+    wait (30);
+    wait (100);        
+}  
+/*
+
+Before using the script, check if the buttons are correct. If you use other buttons, make the changes.  
+
+//-- STICKS	/ BUTTONS	
+define WALK=PS4_LY; 
+define ADS= PS4_L1;		                            		
+define SPRINT=PS4_L3; 
+
+Here is the list with identifiers:
+
+https://tinyurl.com/identifiers-cronusMAX
+
+Want to change the color of the leds?
+	    if (w==0) 
+	    	__(1); //dark blue	
+	    if (w==1) 
+	    	__(5);//sky blue
+	
+Then change the corresponding ___(numbers):
+ 0=0ff
+ 1=Blue
+ 3=Pink
+ 4=Green
+ 5=Sky
+ 6=Yellow
+ 7=White */
+
+
+

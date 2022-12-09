@@ -1,0 +1,199 @@
+int MinARecoilPercent = 20; 								// Minimum Recoil 
+int CurrentX, CurrentY;
+int MinARecoilFactor; 
+int MinARecoilToApply;
+int MovementARecoilToApply;
+
+int T;														// Timer
+int T2V;													// Timer
+int T2H;													// Timer
+
+int ARVT1;												// Vertical Timeout 1
+int ARVT2;												// Vertical Timeout 2
+
+int ARHT1;												// Horizontal Timeout 1
+int ARHT2;												// Horizontal Timeout 2
+
+int ARV;													// Anti_Recoil Vertical Value
+int ARH;													// Anti_Recoil Horizontal Value
+
+int ARVP1;												// Anti_Recoil Vertical Value1
+int ARHP1;												// Anti_Recoil Horizontal Value1
+
+int ARVP2;												// Anti_Recoil Vertical Value2
+int ARHP2;												// Anti_Recoil Horizontal Value2
+
+int ARVP3;												// Anti_Recoil Vertical Value3
+int ARHP3;												// Anti_Recoil Horizontal Value3
+
+int arrum;
+int recoilmod_y = 0;									// Recoil Modifer For the Y Axis
+int recoilmod_x = 0;									// Recoil Modifer For the X Axis
+
+int WEAPON_IN_USE = 3;									//USE THE TABLE BELOW TO GET THE VALUE FOR THE WEAPON TO USE HERE VERY IMPORTANT!!!!!!
+
+//--Weapon Arrays
+const int WEAPON_TABLE[][] = { 
+// v_start, v_middle, v_end, v_time1, v_time2, h_start, h_middle, h_end, h_time1, h_time2
+{ 37, 		16,       18,    754,	  1508,    10, 	    23,       18, 	 754,     1508}, // Kilo 141					- 0
+{ 37, 		16,       18,    754,	  1508,    10, 	    23,       18, 	 754,     1508}, // Kilo 141 - Extended Mags	- 1
+{ 41, 		25,       24,    520,	  1040,   -16, 	    -17,      -19, 	 520,     1040}, // FAL (Apply Rapid Fire)		- 2
+{ 44, 		30,       38,    720,	  1440,   -5, 	    -21,      -22, 	 720,     1440}, // M4A1						- 3
+{ 0, 		0,        0,     0,	      0,       0, 	    0,        0, 	 0,          0}, // FR 5.56 (Apply Rapid Fire)	- 4
+{ 40, 		35,       37,    500,	  1000,   -10, 	    11,       7, 	 500,     1000}, // Oden						- 5
+{ 39, 		30,       37,    667,	  1334,   -13, 	    -20,      -13, 	 667,     1334}, // M13							- 6
+{ 41, 		36,       33,    510,	  1020,   -6, 	    -19,      -13, 	 510,     1020}, // FN Scar 17					- 7
+{ 40, 		39,       30,    760,	  1520,   -16, 	    6,        5, 	 760,     1520}, // AK-47						- 8
+{ 40, 		39,       30,    760,	  1520,   -16, 	    7,        5, 	 760,     1520}, // AK-47 - Extended Mags		- 9
+{ 39, 		35,       33,    700,	  1400,   -8, 	    16,       35, 	 700,     1400}, // RAM-7						- 10
+{ 41, 		26,       35,    760,	  1520,   -9, 	    20,       -6, 	 760,     1520}, // Grau 5.56					- 11
+{ 39, 		6,        30,    760,	  1520,   11, 	    -6,       -8, 	 760,     1520}, // CR-56 AMAX					- 12
+{ 39, 		6,        30,    760,	  1520,   11, 	    -6,       -8, 	 760,     1520}, // CR-56 AMAX - Extended Mags	- 13
+{ 36, 		23,       31,    700,	  1400,   -5, 	    -27,      -17, 	 700,     1400}, // AN-94						- 14
+{ 36, 		23,       31,    7000,	  1400,   -5, 	    -27,      -17, 	 700,     1400}, // AN-94 - Extended Mags		- 15
+{ 37, 		31,       36,    640,	  1280,   -10, 	    -8,       -9, 	 640,     1280}, // AUG							- 16
+{ 35, 		40,       18,   1250,	  2500,   -17, 	   -14,      -11, 	1250,     2500}, // P90							- 17
+{ 38, 		29,       30,    730,	  1460,   -10, 	    -6,       -3, 	 730,     1460}, // MP5							- 18
+{ 34, 		29,       25,    810,	  1620,    -5, 	    -4,       0, 	 810,     1620}, // Uzi							- 19
+{ 37, 		38,       27,   1620,	  3240,    -10,     -8,       -7, 	1620,     3240}, // PP19 Bizon					- 20
+{ 41, 		35,       32,   1000,	  2000,    -7, 	    -6,       -5, 	1000,     2000}, // MP7							- 21
+{ 34, 		26,       30,    630,	  1260,    7, 	    16,       4, 	 630,     1260}, // Striker 45					- 22
+{ 45, 		33,       39,    630,	  1260,    0, 	    19,       10, 	 630,     1260}, // Fennec						- 23
+{ 37, 		32,       29,    500,	  1000,    -8, 	    -7,      -13, 	 500,     1000}, // ISO							- 24
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // Model 680 (Rapid Fire)		- 25
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // R9-0 Shotgun (Rapid Fire)	- 26
+{ 0, 		0,        0,     300,	   600,    0, 	    0,        0, 	 300,      600}, // 725 (Rapid Fire)			- 27
+{ 42, 		44,       43,    700,	  1400,   -14, 	   -15,      -14, 	 700,     1400}, // Origin 12 Shotgun			- 28
+{ 44, 		44,       44,   1130,	  2260,    -13,    -13,      -13, 	1130,     2260}, // VLK Rogue					- 29
+{ 33, 		35,       35,   5340,	 10680,    0, 	    0,        0, 	5340,    10680}, // PKM							- 30
+{ 31, 		38,       29,   1130,	  2260,    -7, 	    -12,      -9, 	1130,     2260}, // MSA87						- 31
+{ 37, 		33,       37,   5500,	 11000,    -10,     8,        6, 	5500,    11000}, // M91							- 32
+{ 36, 		35,       36,   2760,	  5310,    0, 	    0,        0, 	2760,     5310}, // MG34						- 33
+{ 39, 		26,       25,   3030,	  6060,    -10,	    -13,      -10, 	3030,     6060}, // Holger-26					- 34
+{ 39, 		26,       25,   3030,	  6060,    -10,	    133,      -10, 	3030,     6060}, // Holger-26 - Light Mags		- 35
+{ 36, 		25,       26,   5330,	 10660,    -5, 	    8,        5, 	5330,    10660}, // Bruen Mk9					- 36
+{ 36, 		0,        0,     250,	   500,    -8, 	    0,        0, 	 250,      750}, // EBR-14						- 37
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // MK2 Carbine (Rapid Fire)	- 38
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // Kar98k						- 39
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // Crossbow					- 40
+{ 27, 		0,        0,     530,	  1060,   17, 	    0,        0, 	 530,     1060}, // SKS							- 41
+{ 61, 		61,       60,     80,	    80,   -9, 	   -7,       -6, 	  80,       80}, // Dragunov					- 42
+{ 45, 		45,       45,    250,	   250,    0, 	    0,        0, 	 754,     1508}, // HDR							- 43
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // AX-50						- 44
+{ 45, 		45,       45,    250,	   250,    0, 	    0,        0, 	 754,     1508}, // Rytec AMR					- 45
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // X16 (Rapid Fire)			- 46
+{ 28, 		0,        28,     50,	   100,    0, 	    0,        0, 	  50,      100}, // 1911 (Rapid Fire)			- 47
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // .357 (Rapid Fire)			- 48
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // MG19 (Rapid Fire)			- 49
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}, // .50 GS (Rapid Fire)			- 50
+{ 0, 		0,        0,     754,	  1508,    0, 	    0,        0, 	 754,     1508}  // Renetti (Rapid Fire)		- 51
+};
+init{		
+	
+	ARV = ARVP1;										// Initialize Vertical Recoil Placeholder
+	ARH = ARHP1;										// Initialize Horizontal Recoil Placeholder
+	
+}
+
+main {
+		set_val(TRACE_1, ARV);						
+		set_val(TRACE_2, ARH);					
+		set_val(TRACE_3, T);	
+		set_val(TRACE_4,arrum);
+	
+	set_weapon();
+	
+	if(get_val(XB1_RT)){ 	combo_run(c);							// If Fire Trigger execute this
+    if(get_rumble(RUMBLE_A)){
+    arrum += get_rtime();
+    } 
+		
+		T += get_rtime();								// Start Initial Timer
+		
+		AntiRecoil(XB1_RY, ARV + recoilmod_y);			// Set Initial Vertical Recoil
+		offset(XB1_RX, ARH + recoilmod_x);				// Set Initial Horizontal Recoil
+		
+		if (ARV != 0 && T >= ARVT1){					// If Secondary Vertical Timer Reached execute
+			T2V += get_rtime();							// Start Secondary Vertical timer
+			ARV = ARVP2;								// Apply Secondary Vertical Recoil
+			if (ARV != 0 && T2V >= ARVT2){				// If Final Vertical Timer reached execute 
+				ARV = ARVP3;							// Apply Final Vertical Recoil value 
+			}
+		}
+		if (ARHP2 != 0 && T >= ARHT1){					// If Secondary Horizontal Timer Reached execute
+			T2H += get_rtime();							// Start Secondary Horizontal timer
+			ARH = ARHP2;								// Apply Secondary Horizontal Recoil
+			if (ARH != 0 && T2H >= ARHT2){				// If Final Horizontal Timer reached execute 
+				ARH = ARHP3;							// Apply Final Horizontal Recoil value 
+			}
+		}
+	}
+
+	if(event_release(XB1_RT)){							// If Fire Trigger released execute this
+		T = 0;											// Reset Timer
+		T2V = 0;										// Reset Secondary Vertical Timer
+		T2H = 0;										// Reset Secondary Horizontal Timer
+		ARV = ARVP1;									// Reset Vertical Recoil Placeholder
+		ARH = ARHP1;									// Reset Horizontal Recoil Placeholder
+	}
+    if(event_release(PS4_R2)){
+    arrum = 0;
+    }
+
+}
+combo c{
+set_val(XB1_RT, 100);
+wait(40);
+set_val(XB1_RT, 0);
+wait(40);
+}
+//////////////////////////////////////////////////////////////////////////
+//Anti Recoil
+//////////////////////////////////////////////////////////////////////////
+
+function AntiRecoil(AxisToApply,ARecoilToApply) {
+
+    CurrentY = get_val(XB1_RY);
+    CurrentX = get_val(XB1_RX);
+    MinARecoilFactor = MinARecoilPercent / 100;
+    MinARecoilToApply = MinARecoilFactor * ARecoilToApply;
+    MovementARecoilToApply = (1 - MinARecoilFactor) * ((ARecoilToApply * (100 - isqrt(CurrentX*CurrentX + CurrentY*CurrentY))) / (100 + abs(CurrentX) + (CurrentY*CurrentY/2)));
+    set_val(AxisToApply,clamp1(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply),-100,100 - MinARecoilToApply));
+}
+
+//////////////////////////////////////////////////////////////////////////
+//Clamp
+//////////////////////////////////////////////////////////////////////////
+function clamp1(v, lo, hi) { return min1(hi, max1(v, lo)); }
+
+//////////////////////////////////////////////////////////////////////////
+//Min
+//////////////////////////////////////////////////////////////////////////
+function min1(a, b) { if(a<=b) return a; return b; }
+
+//////////////////////////////////////////////////////////////////////////
+//Max
+//////////////////////////////////////////////////////////////////////////
+function max1(a, b) { if(a>=b) return a; return b; }
+//////////////////////////////////////////////////////////////////////////
+//Offset
+//////////////////////////////////////////////////////////////////////////
+function offset(int axis, int offset_val) {
+      set_val(axis, clamp1(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+    return
+}
+
+function set_weapon (){
+
+	ARVP1 = WEAPON_TABLE[WEAPON_IN_USE][0];	// Anti_Recoil Vertical Value1
+	ARVP2 = WEAPON_TABLE[WEAPON_IN_USE][1];	// Anti_Recoil Vertical Value2
+	ARVP3 = WEAPON_TABLE[WEAPON_IN_USE][2];	// Anti_Recoil Vertical Value3
+	ARVT1 = WEAPON_TABLE[WEAPON_IN_USE][3];	// Vertical Timeout 1
+	ARVT2 = WEAPON_TABLE[WEAPON_IN_USE][4];	// Vertical Timeout 2
+
+	ARHP1 = WEAPON_TABLE[WEAPON_IN_USE][5];	// Anti_Recoil Horizontal Value1
+	ARHP2 = WEAPON_TABLE[WEAPON_IN_USE][6];	// Anti_Recoil Horizontal Value2
+	ARHP3 = WEAPON_TABLE[WEAPON_IN_USE][7];	// Anti_Recoil Horizontal Value3
+	ARHT1 = WEAPON_TABLE[WEAPON_IN_USE][8];	// Horizontal Timeout 1
+	ARHT2 = WEAPON_TABLE[WEAPON_IN_USE][9];	// Horizontal Timeout 2
+}

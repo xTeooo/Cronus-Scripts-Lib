@@ -1,0 +1,389 @@
+//--Controls
+    define VIEW  =  1;
+    define MENU  =  2;
+    define RB    =  3;
+    define RT    =  4;
+    define RS    =  5;
+    define LB    =  6;
+    define LT    =  7;
+    define LS    =  8;
+    define RX    =  9;
+    define RY    = 10;
+    define LX    = 11;
+    define LY    = 12;
+    define UP    = 13;
+    define DOWN  = 14;
+    define LEFT  = 15;
+    define RIGHT = 16;
+    define Y     = 17;
+    define BUILD = 18;
+    define A     = 19;
+    define X     = 20;
+    define EDIT  = 15;
+	define TRAP  = 20;
+	define PICKAXE = 17;
+	define aim     =  7;
+	define fire    =  4;
+	define aim_x   =  9;
+	define aim_y   = 10;
+	define move_x  = 11;
+	define move_y  = 12;
+	define CONFIRM = 18;	//USE FOR INSTA EDIT	With Mode Tracking
+	define RESET   =  5;    //USE FOR INSTA EDIT	With Mode Tracking
+	define SELECT  =  4;	//USE FOR INSTA EDIT	With Mode Tracking
+	define INVENT  = 13;	//USE FOR INSTA EDIT	With Mode Tracking
+// - EXTRA THINGS- - - - - - - - - - - - - - - - - - - - - - - - - - -
+int COMBAT_MODS;
+int EDIT_MODS;
+int BUILD_MODS;
+int linear = TRUE;				//SET TO TRUE IF USING LINEAR
+int exponential = FALSE;			//SET TO TRUE IF USING EXPONENTIAL
+int legacy_control = FALSE;		//SET TO TRUE IF USING LEGACY
+int gamedz = 12;
+int game_dz = 12;
+int tap_corr;
+int corr,sens;  
+int tap_wait = 250;   //--starting wait time for 
+int max_time = 150;   //--maximum time (ms) added
+//AimAssist
+int AimAssistWait;
+int bUseAimAssist = TRUE;
+int aa_corr;
+int curr_aa_val;
+//TapFire
+int Tap_Fire = TRUE;
+//Smart Shot
+int RELEASE  = 40;
+int SENSITIVITY_START =  64;  //--RT fully pressed = +50 to SENSITIVITY_START
+int RAPID_FIRE_MAX    = 350;    
+int RAPID_FIRE_RANGE  = 300;   
+int STRAFE_TIME_MAX   = 150;
+int STRAFE_TIME_RANGE = 100;
+int CROUCH_TIME_MAX   = 150;
+int CROUCH_TIME_RANGE = 100;
+int AB_ZOOM_MAX       = 200; 	  	
+int AB_ZOOM_RANGE     = 70;
+int AB_OUT_MAX       = 70; 	  	
+int AB_OUT_RANGE     = 35;
+int rf_wait,strafe_wait;
+int s_sht = FALSE;
+int v;
+int crouch_wait,in_time,out_time,rt_val;
+//--Rapidfire - LT/L2 + Right
+int RapidFire = FALSE;
+//TFUE Ghost Peek - L2/LT & L1/LB
+int gpreset = 125;
+//Aim Abuse
+int ab_in  = 200;         //--aim abuse zoom in time
+int ab_out = 25;          //--aim abuse zoom out time
+int ab_corr;
+//---other variables used by the script
+int cur_mode;
+int aa_val;
+// - MODE TRACKING - - - - - - - - - - - - - - - - - - - - - - - - - - -
+define COMBAT_MODE     = 1;
+define BUILD_MODE      = 2;
+define EDIT_MODE       = 3;
+define PICKAXE_MODE    = 4;
+define INVENTORY_MODE  = 5;
+//Anti Recoil
+int ry_avg,ar_b,ar,ar_corr,idx,r_multi,noise;
+int ar_boost = 16;         //--inital increase to ar when first firing
+int y_input[25];
+/*+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |M|A|I|N| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+init{
+	set_mode(1,0,0,0,0); //COMAT_MODE
+	noise = 1;
+}
+main {
+block_rumble();  
+aa_val = gamedz + 3;
+//Adjustments
+if(get_val(aim)) {
+        corr = isqrt(abs(get_val(RX)) * abs(get_val(RX)) + abs(get_val(RY)) * abs(get_val(RY)));
+        if(corr > 100) corr = 100;
+		aa_corr = aa_val - ((aa_val * (corr  / 10)) / 10); 
+		tap_corr = (corr * (max_time / 10) / 10);
+        ab_corr = ab_in - corr;
+    }
+	//-------------------------Remove stick noise---------------------------------//
+    if(abs(get_val(RX)) < noise) set_val(RX, 0);
+    if(abs(get_val(RY)) < noise) set_val(RY, 0);
+    if(abs(get_val(LX)) < noise) set_val(LX, 0);
+    if(abs(get_val(LY)) < noise) set_val(LY, 0);
+
+//Anti Recoil
+//--rumble multiplier
+r_multi = 17 - (gamedz / 100); 
+//--weapon change
+    if(event_press(XB1_Y)) {
+        idx = 0;
+        ar_corr = 0;
+    }
+//--reset ar boost
+if(!get_val(fire)) ar_b = ar_boost;
+    
+//--anti_recoil
+if(get_val(aim) && get_val(fire)) {
+        //--reduce anti-recoil boost
+        if(ar_b) ar_b -= 1;
+        //add initial boost
+        ar = ar_b;
+        //--store RY if at or above threshold
+        if(abs(get_val(RY)) >= gamedz) {
+            y_input[idx] =  get_val(RY);
+            idx += 1;
+            if(idx == 25) {
+                //--add values
+                for(idx = 0;idx <= 24;idx++) {
+                    ry_avg += y_input[idx];
+                }
+                //--average
+                ry_avg /= 25;
+                //--set anti-recoil correction 
+                ar_corr += ry_avg / 10;
+                ry_avg = 0;
+                idx = 0;
+            }
+        }
+        
+        //--look at rumble
+        if(get_rumble(RUMBLE_B)) {
+            //--set ar value based on rumble strength
+            ar += get_rumble(RUMBLE_B) * r_multi;
+            //--adjust ar based on average of ry input
+            if(ar < 50) {
+                 ar += ar_corr;
+                 set_val(aim_y,get_val(RY) + ar);
+            }
+        }
+    
+    if(get_val(fire > 95)) {
+         sensitivity(aim_x,NOT_USE,90);
+         sensitivity(aim_y,NOT_USE,90);
+    }
+}
+//Mod Mode Conditions
+if     (COMBAT_MODE == cur_mode){ // COMBAT_MODS
+ 
+      if(event_press(BUILD)) {
+        set_mode(0,1,0,0,0); // BUILD_MODE
+      }
+      else if(event_press(EDIT)) {
+        set_mode(0,0,1,0,0); // EDIT_MODE
+      }
+      else if(event_release(PICKAXE)) {
+        set_mode(0,0,0,1,0); // PICKAXE_MODE
+      }
+      else if(event_release(INVENT)) {
+        set_mode(0,0,0,0,1); // INVENTORY_MODE
+      } 
+//Aim Abuse
+if(legacy_control){
+		if(get_val(aim) > 95){   
+			combo_run(AIM_ABUSE);
+		} else {
+			combo_stop(AIM_ABUSE);
+		}
+	}
+//Aim Assist
+if(bUseAimAssist)
+	AimAssistWait = 27;
+	{
+		if(get_val(LT) > 98 && !get_val(RT) && exponential || legacy_control) 
+	{
+		curr_aa_val = aa_corr + 1;
+		combo_run(ARA);
+	} else if(get_val(LT) > 98 && !get_val(RT) && linear) 
+	{
+		curr_aa_val = aa_corr;
+		combo_run(ARA);
+	}
+		else if(get_val(RT) && exponential || legacy_control)
+	{
+		curr_aa_val = aa_corr + 2;
+		combo_run(ARA);
+	}
+		else if(get_val(RT) && linear)
+	{
+		curr_aa_val = aa_corr + 1;
+		combo_run(ARA);
+	}
+	if(abs(get_val(RX))>80){combo_stop(ARA);combo_stop(ARA);}
+	if(abs(get_val(RY))>80){combo_stop(ARA);combo_stop(ARA);}
+  }
+//TapFire
+if (get_val(LT) > 98 && get_val(RB)) {
+  Tap_Fire = !Tap_Fire;
+	combo_run(cTapFire);
+set_val(RB, 0);
+      } else {
+	combo_stop(cTapFire);
+}	
+//TFUE Ghost Peek 
+if (get_val(LT) > 98 && get_val(LB)) {
+combo_run(ghostpeek_Hold);
+set_val(LB, 0);
+}
+//Rapidfire
+if(get_val(LT) && event_press(RIGHT)){
+   RapidFire =! RapidFire;
+   }
+   if(RapidFire){
+     if(get_val(RT)){
+    	rf_wait = RAPID_FIRE_MAX - (get_val(RT) * (RAPID_FIRE_RANGE / 100)); 
+        combo_run(RAPID_FIRE);                                          
+       } 
+     } 
+//Strafe Shot
+if(get_val(LT) && event_press(X)) {
+        s_sht = !s_sht;
+    	set_ledx(s_sht,0);
+    }
+if(s_sht) { 
+	if(get_val(LT)) {
+		sensitivity(RX,NOT_USE,SENSITIVITY_START);
+		sensitivity(RY,NOT_USE,SENSITIVITY_START);
+	}
+    if(get_val(RT)) {
+    	
+    	//--store value
+    	rt_val = get_val(RT);
+    	rf_wait = RAPID_FIRE_MAX - (rt_val * (RAPID_FIRE_RANGE / 100)); 
+		strafe_wait = STRAFE_TIME_MAX - (rt_val * (STRAFE_TIME_RANGE / 100));
+		crouch_wait = CROUCH_TIME_MAX - (rt_val * (CROUCH_TIME_RANGE / 100));
+		in_time = AB_ZOOM_MAX - (rt_val * (AB_ZOOM_RANGE / 100));
+		out_time = AB_OUT_MAX - (rt_val * (AB_OUT_RANGE / 100));
+		sens = SENSITIVITY_START + (rt_val / 2);
+		
+		sensitivity(RX,NOT_USE,sens);
+		sensitivity(RY,NOT_USE,sens);
+		
+		combo_run(RAPID_FIRE);
+		combo_run(STRAFE);
+		combo_run(CROUCH);
+		combo_run(AB);
+	}
+}
+  }
+  else if (BUILD_MODE == cur_mode) { // BUILD_MODS
+  if(event_press(BUILD)){
+        set_mode(1,0,0,0,0);  // COMBAT_MODE
+      } else if(event_release(PICKAXE)) {
+		set_mode(0,0,0,1,0); // PICKAXE_MODE
+	}	else if(event_press(EDIT)) {
+        set_mode(0,0,1,0,0); // EDIT_MODE
+      }	else if(event_release(SELECT)) {
+        set_mode(0,1,0,0,0); // BUILD_MODE
+      }
+  }
+  else if (INVENTORY_MODE == cur_mode){ //INVENTORY_MODE
+  if(event_release(PICKAXE) || event_release(BUILD) || event_release(LB) || event_release(RB)){
+        set_mode(1,0,0,0,0); // COMBAT_MODE
+      }
+     }
+  else if (PICKAXE_MODE == cur_mode){ //PICKAXE_MODE   
+  if(event_release(LB) || event_release(RB)){
+          set_mode(1,0,0,0,0);  // COMBAT_MODE
+        } else if(event_release(BUILD)){
+        set_mode(0,1,0,0,0); // COMBAT_MODE
+        } else if(event_release(PICKAXE)){
+          set_mode(1,0,0,0,0);  // COMBAT_MODE
+        }else if(event_press(EDIT)) {
+        set_mode(0,0,1,0,0); // EDIT_MODE
+      }  
+   }   
+  else if (EDIT_MODE == cur_mode){   // EDIT_MODS
+if(event_release(RESET) || event_release(SELECT) || event_release(LB)){
+        set_mode(1,0,0,0,0); // COMBAT_MODE
+      } else if(event_release(PICKAXE)) {
+		set_mode(0,0,0,1,0); // PICKAXE_MODE
+	  }
+if(event_release(SELECT)){
+	combo_run(confirm);
+}
+if(event_release(RESET)){
+	combo_run(confirm);
+}
+  }
+  }
+
+/*+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo confirm {
+	set_val(CONFIRM, 100);
+	wait(28);
+	set_val(CONFIRM, 0);
+}
+combo AIM_ABUSE {
+    set_val(aim,100); 
+    wait(ab_corr);
+    set_val(aim,0);
+    wait(ab_out);
+}
+combo ghostpeek_Hold {
+set_val(5, 100);
+wait(15); wait(15);
+set_val(4, 100);
+wait(15); wait(10);
+set_val(5, 100);
+wait(15); wait(gpreset);
+}
+combo RAPID_FIRE {
+	set_val(RT, 100);
+    wait(40);
+    set_val(RT,0);
+    wait(rf_wait);
+}
+combo STRAFE {
+	set_val(LX,release(LX,80));
+	set_val(LY,release(LY,80));
+	wait(strafe_wait);
+	set_val(LX,release(LX,-80));
+	set_val(LY,release(LY,-80));
+	wait(strafe_wait);
+}
+combo CROUCH {
+	set_val(RS,100);
+	wait(crouch_wait);
+	wait(crouch_wait);
+	set_val(RS,100);
+}
+combo AB {
+	set_val(LT,100);
+	wait(in_time);
+	set_val(LT,0);
+	wait(out_time);
+}
+combo cTapFire { //SINGLE FIRE
+    set_val(RT, 100);
+    wait(100);
+    wait(tap_wait + tap_corr);
+}
+combo ARA {
+	set_val(RX, curr_aa_val);
+	wait(AimAssistWait);
+	set_val(RY, curr_aa_val);
+	wait(AimAssistWait);
+	set_val(RX, inv(curr_aa_val));
+	wait(AimAssistWait);
+	set_val(RY, inv(curr_aa_val));
+	wait(AimAssistWait);
+}
+function release(f_axis,f_val) {
+	v = get_val(f_axis);
+	if(abs(v) < game_dz) v = 0;
+	if(abs(v) < RELEASE) return f_val;
+	return v;
+}
+function set_mode(combat, build, edit, pickaxe, inventory){
+  if(combat)         cur_mode = COMBAT_MODE;
+  else if(build)     cur_mode = BUILD_MODE;
+  else if(edit)      cur_mode = EDIT_MODE;
+  else if(pickaxe)   cur_mode = PICKAXE_MODE;
+  else if(inventory) cur_mode = INVENTORY_MODE;
+  return cur_mode;
+}

@@ -1,0 +1,135 @@
+/*
+  Welcome to Auxzify's Cronusmax Script:
+  AUXZCRIPT
+  YOU ARE USING VERSION 2.5
+
+  Please read the other text files in this download
+  
+  Be sure to check my YouTube channel for the latest updates on Auxzcript:
+  https://www.youtube.com/channel/UCvBXjVTO_W9G7IGeWIKRpPw
+  
+  Join this Discord for Auxzcript updates or help:
+  https://discordapp.com/invite/6YDge3R
+  
+  Update Note: Enhanced standard features to work better in Chapter 2.
+  Update Date: 21/10/2019
+*/
+
+//Aim Assist
+int AimAssist_Pos   = 23; 
+int AimAssist_Neg   = -23; 
+int AimAssist_Del   = 20;
+int release = 25;         //Aim Assist may shake your screen, however when you are locked onto an enemy, shake will disappear.
+
+//Aim Abuse
+int AimAbuse        = TRUE;
+int AimAbuse_HOLD   = 220; //How long you HOLD ADS Button
+int AimAbuse_RELEASE = 30; //How long you release ADS Button
+
+//Ghost Peek
+int GhostPeek       = TRUE;
+
+//100% Accuracy
+int PerfectAccuracy = TRUE;
+
+//Layout
+define FIRE_BTN     = 4;  //XB1_RB / PS4_R2
+define ADS_BTN      = 7;  //XB1_LB / PS4_L2
+define CROUCH_BTN   = 5;  //XB1_RS / PS4_R3
+define RELOAD_BTN   = 20; //XB1_X / PS4_SQAURE
+define SPRINT_BTN   = 8;  //XB1_LS / PS4_L3
+define JUMP_BTN     = 19; //XB1_A  / PS4_CROSS
+define NEXT_PIECE   = 3;  //XB1_RT / PS4_R1
+define RIGHT_BUMP   = 3;  // XB1_RB / PS4_R1
+define LEFT_BUMP    = 6;  //ADS_BTN / PS4_L1
+define SWAP_BTN     = 17; //XB1_Y  / PS4_TRIANGLE
+define BUILD_BTN    = 18; //XB1_B  / PS4_CIRCLE
+define R_X          = 9;  //XB1_R_X / PS4_R_X
+define R_Y          = 10; //XB1_R_Y / PS4_R_Y
+define L_X          = 11; //XB1_L_X / PS4_L_X
+define L_Y          = 12; //XB1_L_Y / PS4_L_Y
+define UP           = 13; //XB1_UP / PS4_UP
+define DOWN         = 14; //XB1_DOWN / PS4_DOWN
+define LEFT         = 15; //XB1_LEFT / PS4_LEFT
+define RIGHT        = 16; //XB1_RIGHT / PS4_RIGHT
+
+main{
+
+//AIM ASSIST
+if(get_val(7)  && !get_val(16)) combo_run(AA_XY);
+else combo_stop(AA_XY);
+
+//AIM ABUSE
+if(AimAbuse){
+if(get_val(ADS_BTN)> 95){
+combo_run(AimAbuse);}
+if(event_release(ADS_BTN)){ combo_stop(AimAbuse);
+}}
+
+//GHOSTPEEK
+if (GhostPeek) { 
+if (get_val(ADS_BTN)) {if (get_val(LEFT_BUMP)) {
+combo_run(GhostPeek); }
+set_val(LEFT_BUMP, 0);
+}}
+
+//100% ACCURACY
+if (get_val(ADS_BTN) && get_val(RIGHT)) {
+combo_run(PerfectAccuracy);
+set_val(RIGHT_BUMP, 0);
+} else {
+combo_stop(PerfectAccuracy);
+}
+
+//DEADZONE
+if (abs(get_val(XB1_LY)) < 0 && abs(get_val(XB1_LX)) < 0 ){ 
+set_val(XB1_LY,0); 
+set_val(XB1_LX,0); 
+} 
+if (abs(get_val(XB1_RY)) < 0 && abs(get_val(XB1_RX)) < 0 ){ 
+set_val(XB1_RY,0); 
+set_val(XB1_RX,0); 
+}}
+
+//Combos:
+
+combo AA_XY {
+set_val(10,xy_val(10,AimAssist_Pos));
+wait(AimAssist_Del)
+set_val(9,xy_val(9,AimAssist_Pos));
+set_val(11,xy_val(11,AimAssist_Pos));
+wait(AimAssist_Del)
+set_val(10,xy_val(10,AimAssist_Neg));
+wait(AimAssist_Del)
+set_val(9,xy_val(9,AimAssist_Neg));
+set_val(11,xy_val(11,AimAssist_Neg));
+wait(AimAssist_Del)
+}
+
+combo GhostPeek {
+set_val(CROUCH_BTN, 100);
+wait(35); wait(40);
+set_val(FIRE_BTN, 100);
+wait(35); wait(40);
+set_val(CROUCH_BTN, 100);
+wait(35);
+}
+
+combo PerfectAccuracy {
+set_val(FIRE_BTN,100);
+wait(100);
+wait(250);
+set_val(FIRE_BTN,100);
+}
+
+combo AimAbuse {
+set_val(ADS_BTN, 100);
+wait(AimAbuse_HOLD);
+set_val(ADS_BTN, 0);
+wait(AimAbuse_RELEASE);
+}
+
+function xy_val(f_axis,f_val) {
+if(abs(get_val(f_axis)) < release)
+return f_val;
+return get_val(f_axis); }

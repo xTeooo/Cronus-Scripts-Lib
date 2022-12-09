@@ -1,0 +1,606 @@
+/* DoGz Assist Version XII Decider V2 FORTNITE 
+
+• Multiplying increment by 3 must not exceed Strength [Will still work just not as designed!] 
+
+• Must be able to increment 3 times at least within strength value ( Increment * 4 = 20 [5 * 4] = OK) <== Default Example as ( 7 * 3 = 21 )  X Would Be To High!!!
+
+Examples..
+
+• If Strength = 15 [Max Increment Will Be 5] 
+• If Strength = 20 [Max Increment Will Be 6]  
+• If Strength = 30 [Max Increment Will Be 10] 
+
+ ========================================================================
+|	OLED QUICK MENU       [Pow = Power] [Inc = Increment]                |
+ ========================================================================
+|    ==> 	SWAPPING AIM ASSIST PROFILE IN GAME 	<==                  |
+|     	                                                                 |
+|    • HOLD RELOAD [SQUARE] + TAP D-PAD UP FOR PROFILE ONE               |
+|    • HOLD RELOAD [SQUARE] + TAP D-PAD RIGHT FOR PROFILE TWO            |
+|    • HOLD RELOAD [SQUARE] + TAP D-PAD DOWN FOR PROFILE THREE           |
+|                                                                        |
+|    ==> 	ADJUSTING AIM ASSIST POWER IN GAME 	     <==                 |
+|     	                                                                 |
+|    • HOLD JUMP [CROSS] + TAP D-PAD UP TO ADD POWER                     |
+|    • HOLD JUMP [CROSS] + TAP D-PAD DOWN TO REDUCE POWER                |
+|                                                                        |
+|    ==> 	ADJUSTING AIM ASSIST INCREMENT IN GAME 	 <==                 |
+|     	                                                                 |
+|    • HOLD JUMP [CROSS] + TAP D-PAD RIGHT TO ADD INCREMENT              |
+|    • HOLD JUMP [CROSS] + TAP D-PAD LEFT TO REDUCE INCREMENT            |
+ ========================================================================
+ 
+• Instant Pickaxe = Tap Pickaxe (TRIANGLE/Y) When You Next Release Fire You Will Swap To Your Weapon
+ 
+• Edit Assist = (EditAssist Button )Hold To Auto Hold Select And Release To Confirm The Edit ( This Button In Game Must Not Have Hold Time )
+
+• Fast Reset = Tap Your Chosen Button ([L2/LT] ADS BLOCKS MOD)
+	(NOTE ==> EditAssist Must Be Set To Edit Only In Game For This To Function Correct <==)
+  	(NOTE ==> EDIT ON RELEASE MUST BE ON IN GAME SETTINGS FOR EDIT ASSIST TO FUNCTION CORRECTLY <==)
+  	(NOTE ==> EditAssist Button Is Used For Fast Reset Also <==) 
+
+• PS On Xbox = ENABLE WHEN USING A PLAYSTATION CONTROLLER ON PC/XBOX
+
+*/
+const uint8 FontSize [][]  = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits []  = {48,49,50,51,52,53,54,55,56,57};
+const int16 Amount [] = {7,3,3,5,6,3,3};
+const string Profile [] = {"PROFILE","ONE","TWO","THREE","ASSIST","Pow","Inc"};
+
+define Ads      = PS4_L1;
+define Fire     = PS4_R1;
+define N_Weapon = PS4_R2;
+define P_Weapon = PS4_L2;
+define Jump     = PS4_CROSS;
+define Build    = PS4_CIRCLE;
+define Pickaxe  = PS4_TRIANGLE;
+define Reload   = PS4_SQUARE;
+define aimY     = PS4_RY;
+define aimX     = PS4_RX;
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define On       = TRUE;
+define Off      = FALSE;
+
+// Edit Buttons 
+define Select     = PS4_R1;
+define Confirm    = PS4_R2; 		
+define Reset      = PS4_R3;
+define EditAssist = PS4_L3;    // EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+define FastReset  = PS4_TOUCH; // FAST RESET BUTTON [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ] ( Ads Blocks Mod )
+
+define Small  = 0;
+define Medium = 1;
+define Large  = 2;
+
+int stringPosition,stringHeight,Render,v,h,NumX,NumY,NumS,Count,Position;
+int power,Ypower,Xpower,Power,CountPower,AxisXY,Increment,Shunt,Edit1,EditT,Axe;
+int Number = 1;
+/*==============================================================================================================================================================
+		AIM ASSIST OPTIONS
+==============================================================================================================================================================*/
+int AssistProfile = 1; // 1 = [Strength1 + Increment1] -- 2 = [Strength2 + Increment2] -- 3 = [Strength3 + Increment3] (Values in USE!!)
+
+int Strength1  = 20;// Power/Strength of Aim Assist
+int Increment1 = 10; // Must be able to increment 3 times at least within strength value ( Increment * 4 = 20 [5 * 4] = OK) <== Default Example as ( 7 * 3 = 21 )
+
+int Strength2  = 100;// Power/Strength of Aim Assist
+int Increment2 = 33; // Must be able to increment 3 times at least within strength value ( Increment * 4 = 20 [5 * 4] = OK) <== Default Example as ( 7 * 3 = 21 )
+
+int Strength3  = 26;// Power/Strength of Aim Assist
+int Increment3 = 8; // Must be able to increment 3 times at least within strength value ( Increment * 4 = 20 [5 * 4] = OK) <== Default Example as ( 7 * 3 = 21 )
+
+int deadZone   = 9; // Deazone in game
+
+int AimAssist = On; //Aim Assist Main Toggle
+int Reducer   = On; //Reduces power on input (Stick movement)
+/*==============================================================================================================================================================
+		INSTANT PICKAXE / EDIT ASSIST / FAST RESET / PLAYSTATION CONTROLLER ON PC/XBOX
+==============================================================================================================================================================*/
+
+int InstantPickaxe = On;  // Instant Pickaxe
+
+int QuickEditAssist = Off; // Edit Assist
+int EditDelay = 30;       // Edit Assist Hold Delay On Select
+
+int InstaFastReset = On;  // Fast Reset
+
+int PSonXBOX = Off;       // PS Controller On PC/XBOX
+
+main {
+
+	if (PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        
+        swap(PS4_TOUCH,PS4_SHARE);
+    }
+    
+	if (QuickEditAssist) {
+	 	
+	 	if (!get_ival(Ads) && get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = On;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = Off;	
+			Edit1 = Off;
+		}
+		
+		if (Edit1 && event_press(Reset)) {  
+            
+        	combo_run(InstantReset);
+            Edit1 = Off;
+        }
+	}
+
+    if (InstaFastReset) {
+    	
+    	if (!get_ival(Ads) && event_press(FastReset)) { 
+       
+    		Shunt = FastReset;
+    		combo_run(FastReset);
+    	}
+	}
+	
+	if (InstantPickaxe) {
+                
+    	if (event_press(Pickaxe)) {
+                    
+        	Axe = On;
+        }
+            	
+        if (Axe) {
+                    
+        	if (event_press(Build) || event_press(Ads) || event_press(N_Weapon) || event_press(P_Weapon)) { 
+                        
+             	Axe = Off;
+            }
+                    
+            if (event_release(Fire)) {
+                        
+            	combo_run(Pickaxe);
+            }
+        }
+    }
+    
+	if (AimAssist) {
+	
+	    if (event_press(Ads)) { 
+	    	
+	    	Power = On;
+	    }
+	    
+	    else if (!get_ival(Ads) && event_press(Fire)) {
+	    	
+	    	Power = On;
+	    }
+	    
+	    if (get_ival(Ads) || get_ival(Fire)) {
+	    	
+	    	AxisXY = isqrt(abs(get_ival(aimX)) * abs(get_ival(aimX)) + abs(get_ival(aimY)) * abs(get_ival(aimY)));
+	    	
+	    	if (AssistProfile == 1)
+	    		
+	    		AimAssist(Strength1,Increment1);
+	    		
+	    	if (AssistProfile == 2)
+	    		
+	    		AimAssist(Strength2,Increment2);
+	    		
+	    	if (AssistProfile == 3)
+	    		
+	    		AimAssist(Strength3,Increment3);
+	    		
+	    } else {
+	    	
+	    	CountPower = 0;
+	    	power = Off;
+	    }
+	    
+	    if (get_ival(Reload) && !get_ival(Ads) && !get_ival(Fire)) {
+	    
+	    	if (event_press(Up)) {
+	    		
+	    		Shunt = Up;
+	    		AssistProfile = 1;
+	    		Render(1);
+	    	}
+			
+	    	if (event_press(Right)) {
+	    		
+	    		Shunt = Right;
+	    		AssistProfile = 2;
+	    		Render(2);
+	    	}
+	    	
+	    	if (event_press(Down)) {
+	    		
+	    		Shunt = Down;
+	    		AssistProfile = 3;
+	    		Render(3);
+	    	}
+	    }
+	    
+	    if (get_ival(Jump) && !get_ival(Ads) && !get_ival(Fire)) {	
+	    	
+	    	if (event_press(Up)) {
+	    		
+	    		Shunt = Up;
+	    		
+	    		if (AssistProfile == 1) {
+	    	
+	    			Strength1 = clamp(Strength1++,3,30);
+	    			Render(1);
+	    		}
+	    		
+	    		if (AssistProfile == 2) {
+	    	
+	    			Strength2 = clamp(Strength2++,3,30);	    			
+	    			Render(2);
+	    		}
+	    		
+	    		if (AssistProfile == 3) {
+	    	
+	    			Strength3 = clamp(Strength3++,3,30);
+					Render(3);
+	    		}	
+	    	}
+			
+	    	if (event_press(Down)) {
+	    		
+	    		Shunt = Down;
+	    		
+	    		if (AssistProfile == 1) {
+	    	
+	    			Strength1 = clamp(Strength1--,3,30);
+	    			Render(1);
+	    		}
+	    		
+	    		if (AssistProfile == 2) {
+	    	
+	    			Strength2 = clamp(Strength2--,3,30);
+	    			Render(2);
+	    		}
+	    		
+	    		if (AssistProfile == 3) {
+	    	
+	    			Strength3 = clamp(Strength3--,3,30);
+	    			Render(3);
+	    		}
+	    	}
+	    	
+	    	if (event_press(Right)) {
+	    		
+	    		Shunt = Right;
+	    		
+	    		if (AssistProfile == 1) {
+	    	
+	    			Increment1 = clamp(Increment1++,1,10);
+	    			Render(1);
+	    		}
+	    		
+	    		if (AssistProfile == 2) { 
+	    	
+	    			Increment2 = clamp(Increment2++,1,10);	    			
+	    			Render(2);
+	    		}
+	    		
+	    		if (AssistProfile == 3) {
+	    	
+	    			Increment3 = clamp(Increment3++,1,10);
+	    			Render(3);
+	    		}
+	    	}
+	    	
+	    	if (event_press(Left)) {
+	    		
+	    		Shunt = Left;
+	    		
+	    		if (AssistProfile == 1) {
+	    	
+	    			Increment1 = clamp(Increment1--,1,10);
+	    			Render(1);
+	    		}
+	    		
+	    		if (AssistProfile == 2) { 
+	    	
+	    			Increment2 = clamp(Increment2--,1,10);	    			
+	    			Render(2);
+	    		}
+	    		
+	    		if (AssistProfile == 3) { 
+	    	
+	    			Increment3 = clamp(Increment3--,1,10);
+	    			Render(3);
+	    		}
+	    	}
+	    }
+	}
+	
+	if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        
+        } else {
+                
+            set_val (Shunt,Off);
+        }
+    }
+}
+
+combo Pickaxe {
+    
+    set_val(Pickaxe,100);
+    wait(30);
+    Axe = Off;
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(50);
+    set_val(Confirm,0);
+    wait(100);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(50)
+    set_val(Reset,100);        
+    wait(50);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+combo Rumble {
+    
+    set_rumble(RUMBLE_B,15);
+    wait(250);
+    reset_rumble();
+    wait(10000);
+    cls_oled(0);
+}
+
+function AimAssist (Strength,Step) {
+
+	if (Power) {
+		
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+	}
+	
+	if (!power) {
+	
+		Xpower += Increment;
+		Ypower -= Increment;
+	
+	} else {
+		
+		Xpower -= Increment;
+		Ypower += Increment;
+	}
+	
+	CountPower ++;
+	
+	if (CountPower >= (Strength / Increment)) {
+		
+		power = !power;
+		CountPower = 0;
+	}	
+	
+	if (AxisXY > deadZone) {
+	
+		if (Reducer) {
+		
+			set_Val(aimY,(Ypower - Strength / 2));
+			set_Val(aimX,(Xpower - Strength / 2 * -1));
+		
+		} else {
+		
+			set_val(aimY,(Ypower - Strength / 2) + get_ival(aimY));
+			set_val(aimX,(Xpower - Strength / 2 * -1) + get_ival(aimX));	
+		}
+		
+	} else {
+		
+		if (Reducer) {
+				
+			set_Val(aimY,(Ypower - Strength / 2));
+			set_Val(aimX,(Xpower - Strength / 2 * -1));
+			
+		} else {
+			
+			set_val(aimY,(Ypower - Strength / 2));
+			set_val(aimX,(Xpower - Strength / 2 * -1));
+		}
+	}
+}
+
+function set_Val(Input,Output) {
+
+	set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        return; 
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        
+        if (get_ival(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		Press(Select);
+        }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        
+   		return;
+            
+            set_val(Button,100);
+}
+
+function Render (Index) {
+
+	Render = On;
+	
+	if (Render) {
+		
+		cls_oled(0);
+		Border();
+		
+		String(Amount[0],Profile[0],Small,-5,0);
+		String(Amount[4],Profile[4],Small,-20,0);
+		String(Amount[5],Profile[5],Small,25,-45);
+		String(Amount[6],Profile[6],Small,25,45);
+		
+		if (Index == 1) {
+		
+			String(Amount[1],Profile[1],Small,10,0);
+			NumX = -41; NumY = 15; NumS = -1; 
+			FindDigit(Strength1,DigitValue(Strength1));
+			NumX = 50; NumY = 15; NumS = -1; 
+			FindDigit(Increment1,DigitValue(Increment1));
+		}
+
+		if (Index == 2) {
+		
+			String(Amount[2],Profile[2],Small,10,0);
+			NumX = -41; NumY = 15; NumS = -1; 
+			FindDigit(Strength2,DigitValue(Strength2));
+			NumX = 50; NumY = 15; NumS = -1; 
+			FindDigit(Increment2,DigitValue(Increment2));
+		}
+		
+		if (Index == 3) {
+		
+			String(Amount[3],Profile[3],Small,10,0);
+			NumX = -41; NumY = 15; NumS = -1; 
+			FindDigit(Strength3,DigitValue(Strength3));
+			NumX = 50; NumY = 15; NumS = -1; 
+			FindDigit(Increment3,DigitValue(Increment3));
+		}
+		
+		Render = Off;
+	}
+	if (!combo_running(Rumble)) {
+	
+		combo_run(Rumble);
+	
+	} else {
+	
+		combo_restart(Rumble);
+	}
+}
+
+function String (stringSize,stringLabel,fontSize,offsetY,offsetX) {
+    
+    if (fontSize == Small) {
+        stringPosition = (127 - stringSize * 7) / 2;
+        stringHeight = (64 - 10) / 2;
+    } 
+    
+    else if (fontSize == Medium) {
+        stringPosition = (127 - stringSize * 10) / 2;
+        stringHeight = (64 - 16) / 2;
+    }
+    
+    else if (fontSize == Large) {
+        stringPosition = (127 - stringSize * 15) / 2;
+        stringHeight = (64 - 21) / 2;
+    }
+    
+    Print(stringPosition,stringHeight,stringLabel,fontSize,offsetY,offsetX);
+}
+
+function Print (positionString,heightString,captionString,sizeFont,offSetY,offSetX) {
+    
+        printf(positionString + offSetX,heightString + offSetY,sizeFont,1,captionString);
+}
+
+function Border () {
+  	
+  	for (v = 0; v < 64; v += 2) {
+    	
+    	pixel_oled(0,v,1);
+	 	pixel_oled(127,v,1);
+	}
+
+  	for (h = 0; h < 128; h += 2) {
+    	
+    	pixel_oled(h,0,1);
+	 	pixel_oled(h,63,1);
+	}
+}
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 

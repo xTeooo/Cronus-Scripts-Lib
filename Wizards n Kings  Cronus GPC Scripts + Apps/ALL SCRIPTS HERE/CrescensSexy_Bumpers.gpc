@@ -1,0 +1,361 @@
+/*
+
+╔═╗╔═╗═╗ ╦╦ ╦  ╔╗ ╦ ╦╔╦╗╔═╗╔═╗╦═╗╔═╗  
+╚═╗║╣ ╔╩╦╝╚╦╝  ╠╩╗║ ║║║║╠═╝║╣ ╠╦╝╚═╗  
+╚═╝╚═╝╩ ╚═ ╩   ╚═╝╚═╝╩ ╩╩  ╚═╝╩╚═╚═╝  
+┌┐ ┬ ┬  ╔═╗╦═╗╔═╗╔═╗╔═╗╔═╗╔╗╔╔═╗      
+├┴┐└┬┘  ║  ╠╦╝║╣ ╚═╗║  ║╣ ║║║╚═╗      
+└─┘ ┴   ╚═╝╩╚═╚═╝╚═╝╚═╝╚═╝╝╚╝╚═╝
+
+Turn your bumpers into a fire mod trigger on demand. For example burst fire, or instant drop shot. There are 8 sexy bumpers to choose from. 
+Including Crescens` Pang! Singel Kill Shot = turns your automatic weapon into a semi automatic weapon with rapid fire & ZERO recoil.
+This is the most accurate longshot you will ever experience. Take out head glitching enemies with one kill shot! Works best on hardcore
+game modes. You can set your Sexy Bumper below and on the fly: Hold ADS + TAP HOME to cycle through your Sexy Bumpers. 
+
+TO ACTIVATE THE SEXY BUMPER IN THE GAME ON DEMAND:
+Simply HOLD ADS and then HOLD your Bumper (or Tap your bumper depending on which Sexy Bumper you activated). 
+
+*/
+
+define HOME = XB1_XBOX;
+define LETHAL = XB1_RB;
+define ADS = XB1_LT;
+define FIRE = XB1_RT;
+define CROUCH = XB1_RS;
+define STRAFE= XB1_LX;
+define JUMP = XB1_A;
+define AIM_H = XB1_RX;
+define AIM_V= XB1_RY;
+
+define Off= 13, Blue= 0, Red= 1, Green= 2, Lavender= 3, White= 4, Yellow= 5, 
+SkyBlue= 6, Neon= 7, Lilac= 8, Pink= 9, Pinkish= 10, Orange= 11, Emerald= 12;
+data( 
+/* 0		1		  2		  3		   4	    5		 6
+ Blue      Red 	   Green   Lavender	 White	 Yellow   SkyBlue*/
+1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1, 1,1,1,0, 0,1,1,0, 1,0,1,0,
+/* 7		8		 9		 10  	   11      12       13       
+ Neon 	  Lilac    Pink    Pinkish   Orange  Emerald    Off*/
+3,1,0,0, 2,3,0,0, 1,3,0,0, 1,3,1,0, 0,3,1,0, 1,1,2,0, 0,0,0,0); 
+
+/*								Choose your sexy bumper:
+╔════════════════════════════════════════════════════════════════════════════════════════╗ 
+║  1=Big Skub`s CROUCH Dance || 2 = Crescens` Pang! Singel Kill Shot || 3 = Drop-shooter ║
+║  	4 = STRAFE-shooter || 5 = Jump-shooter || 6 = Burst_shooter	|| 7 = Long Shot		 ║
+║									  8 = Ghost Peek									 ║
+║*/							   int Oh_my_sexy_bumper = 2;							   /*║
+╚════════════════════════════════════════════════════════════════════════════════════════╝
+Long shot = while pressing ADS, just TAP the Lethal button to turn on long shot sensitivity. 
+This decreases your aim sensivity for taking accurate long shots. Tap again LETHAL or release
+ADS to switch back to normal sensitivty*/
+
+int b_f, release, dance_active, pang, drop, burst, sniper_aim, jumper, strafe, ghost_peek, flasher, b_f_wait, notify, notifier, _i_, Zoom_sens;
+int drop_time = 1200; int strafe_time=700, PeekTime = 140, jump_time=200, burst_hold=250, burst_rest=200, long_shot_sens = 75;
+function notify_bumper(Oh_my_sexy_bumper){notify=Oh_my_sexy_bumper;}
+function notify(pos){if (pos) notify = 1;else notify = 2;}
+function Led(C_) {for(_i_ = 0; _i_ <= 3; _i_++){set_led(_i_,duint8((C_*4) + _i_));}}
+
+main{
+
+  if (get_ival(ADS))
+  			{
+  			
+  			if (event_press(XB1_XBOX)) 
+     						{
+     						
+           					 Oh_my_sexy_bumper ++;
+           					 b_f=Oh_my_sexy_bumper;      					 
+            
+            				if (Oh_my_sexy_bumper == 9) 
+            										  {
+            										  Oh_my_sexy_bumper = 1; 
+            										  b_f = 1;
+            										  }
+            				if (Oh_my_sexy_bumper)
+            									{ 
+            									notify_bumper (Oh_my_sexy_bumper); 
+            									}
+                         	release = get_ptime(XB1_XBOX);
+                         	}
+   block (XB1_XBOX, release + 1000);
+                   
+ }
+			
+  if (Oh_my_sexy_bumper >= 1 && get_ival(LETHAL))
+  							{
+  							release = get_ptime(LETHAL);
+  							}
+  							
+    if (Oh_my_sexy_bumper == 1) /*	╔╗ ┬┌─┐  ╔╦╗┌─┐┌┐┌┌─┐  ╦  ┬┌┬┐┌┬┐┬  ┌─┐  ╔╦╗┌─┐┌┐┌┌─┐┌─┐
+									╠╩╗││ ┬  ║║║├─┤│││└─┐  ║  │ │  │ │  ├┤    ║║├─┤││││  ├┤ 
+									╚═╝┴└─┘  ╩ ╩┴ ┴┘└┘└─┘  ╩═╝┴ ┴  ┴ ┴─┘└─┘  ═╩╝┴ ┴┘└┘└─┘└─┘
+									┌┐ ┬ ┬  ╔╗ ┬┌─┐  ╔═╗┬┌─┬ ┬┌┐ ┌┐   ┌┬┐┌─┐┬  ┬┌─┐┬  ┌─┐┌─┐┌─┐┌─┐┌┬┐  ┌┐ ┬ ┬                         
+									├┴┐└┬┘  ╠╩╗││ ┬  ╚═╗├┴┐│ │├┴┐├┴┐   ││├┤ └┐┌┘├┤ │  │ │├─┘├─┘├┤  ││  ├┴┐└┬┘                       
+									└─┘ ┴   ╚═╝┴└─┘  ╚═╝┴ ┴└─┘└─┘└─┘  ─┴┘└─┘ └┘ └─┘┴─┘└─┘┴  ┴  └─┘─┴┘  └─┘ ┴  
+									╔═╗┬─┐┌─┐┌─┐┌─┐┌─┐┌┐┌┌─┐                 
+									║  ├┬┘├┤ └─┐│  ├┤ │││└─┐                 
+									╚═╝┴└─└─┘└─┘└─┘└─┘┘└┘└─┘ */
+								{
+        						if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+        																							{
+        																							dance_active = TRUE;
+        																							}
+        						if (dance_active)
+        										{
+										        if (get_ival(LETHAL))
+										        set_val(FIRE,100);
+										        combo_run(DANCE);
+										        block(LETHAL, release + 50);
+										        }
+        						if (dance_active && event_release(LETHAL))
+        										{
+        										dance_active=FALSE;
+        										}
+}
+        
+    if (Oh_my_sexy_bumper == 2) 
+    							{ /*╔═╗╔═╗╔╗╔╔═╗  ┬  ╔═╗╦╔╗╔╔═╗╦  ╔═╗  ╦╔═╦╦  ╦    ╔═╗╦ ╦╔═╗╔╦╗
+									╠═╝╠═╣║║║║ ╦  │  ╚═╗║║║║║ ╦║  ║╣   ╠╩╗║║  ║    ╚═╗╠═╣║ ║ ║ 
+									╩  ╩ ╩╝╚╝╚═╝  o  ╚═╝╩╝╚╝╚═╝╩═╝╚═╝  ╩ ╩╩╩═╝╩═╝  ╚═╝╩ ╩╚═╝ ╩ 
+									┌┐ ┬ ┬  ╔═╗┬─┐┌─┐┌─┐┌─┐┌─┐┌┐┌┌─┐                           
+									├┴┐└┬┘  ║  ├┬┘├┤ └─┐│  ├┤ │││└─┐                           
+									└─┘ ┴   ╚═╝┴└─└─┘└─┘└─┘└─┘┘└┘└─┘*/                          
+								if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							pang = TRUE;        																				
+      																								}
+      							if (pang)
+      									{
+      									if (get_ival(LETHAL))
+  									    combo_run(BANGER);
+  									   	block(LETHAL, release + 50);
+  									   	}
+  								if (pang && event_release(LETHAL))
+	        										{
+	        										pang=FALSE;
+	        										}
+}
+	
+ if (Oh_my_sexy_bumper == 3) 
+    							{
+      							if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							drop = TRUE;        																				
+      																								}
+      							if (drop)
+      									{
+      									if (get_ival(LETHAL))
+      									set_val(FIRE,100);      									
+      									drop_time -= get_rtime();
+      									block(LETHAL, release + 50);
+      									if (drop_time >= 0) 
+      													{
+      													set_val(CROUCH,100);
+      													}
+      									}
+  								if (drop && event_release(LETHAL))
+	        										{
+	        										drop=FALSE;
+	        										drop_time = 1200;
+	        										}
+        																							
+    
+    }
+ 
+ if (Oh_my_sexy_bumper == 4) 
+    							{
+      							if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							strafe = TRUE;        																				
+      																								}
+      							if (strafe)
+      									{
+      									if (get_ival(LETHAL))
+      									set_val(FIRE,100);      									
+      									combo_run (STRAFER)
+      									block(LETHAL, release + 50);
+      									}
+  								if (strafe && event_release(LETHAL))
+	        										{
+	        										strafe=FALSE;
+	        										}
+        																							
+    
+    }
+    
+ if (Oh_my_sexy_bumper == 5) 
+    							{
+      							if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							jumper = TRUE;        																				
+      																								}
+      							if (jumper)
+      									{
+      									if (get_ival(LETHAL))
+      									set_val(FIRE,100);      									
+      									combo_run (JUMPER)
+      									block(LETHAL, release + 50);
+      									}
+  								if (jumper && event_release(LETHAL))
+	        										{
+	        										jumper=FALSE;
+	        										}
+        																							
+    
+    }
+    if (Oh_my_sexy_bumper == 6) 
+    							{
+      							if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							burst = TRUE;        																				
+      																								}
+      							if (burst)
+      									{
+      									if (get_ival(LETHAL))
+      									combo_run(BURSTER);
+  									   	block(LETHAL, release + 50);
+  									   	}
+  								if (burst && event_release(LETHAL))
+	        										{
+	        										burst=FALSE;
+	        										}
+}
+
+if (Oh_my_sexy_bumper == 7) 
+    							{
+    							if (get_ival(ADS) && get_ival(LETHAL)) {set_val (LETHAL,0);}
+      							if (event_press(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							Zoom_sens = !Zoom_sens;        																							
+        																							notify (Zoom_sens); 						
+      																								}
+      							
+      							if (Zoom_sens)
+      									{
+      									if (get_ival (ADS)){
+      									sensitivity(AIM_H, NOT_USE, long_shot_sens);
+										sensitivity(AIM_V, NOT_USE, long_shot_sens);
+										}
+      							if (event_release(ADS)){
+      									Zoom_sens = FALSE;
+      									notify (Zoom_sens);
+      									}
+      									
+  									   	
+  									   	}
+  							
+}
+
+if (Oh_my_sexy_bumper == 8) 
+    							{
+    							
+      							if (get_ival(LETHAL) && get_ptime(LETHAL) <= get_ptime(ADS) && get_val(ADS)) 
+      																								{
+        																							ghost_peek = TRUE;        																				
+      																								}
+      							if (ghost_peek)
+      									{
+      									if (get_ival(LETHAL))
+      									combo_run(GhostPeek);
+  									   	block(LETHAL, release + 50);
+  									   	}
+  								if (ghost_peek && event_release(LETHAL))
+	        										{
+	        										ghost_peek=FALSE;
+	        										}
+
+
+
+	        										
+}
+ /*
+
+                      ╔═╗╦  ╔═╗╔═╗╦ ╦╔═╗╦═╗                  
+    ──────────────────╠╣ ║  ╠═╣╚═╗╠═╣║╣ ╠╦╝──────────────────
+                      ╚  ╩═╝╩ ╩╚═╝╩ ╩╚═╝╩╚═                  
+
+*/
+  if (b_f >0 && b_f < 9)
+					  {			
+					  flasher += get_rtime();
+					  if (flasher >=0 && flasher <= (b_f*400)) 
+					  											{
+					  											b_f_wait = 200; combo_run (FLASH);
+					  											}
+					  else if(flasher>=(b_f*400)) 
+					  							{
+					  							b_f=0;
+					  							}
+  
+  }
+ if (b_f==0 && combo_running (FLASH)) {combo_stop (FLASH); reset_leds(); flasher=0;}
+
+ if(notify)
+  			{
+			  notifier += get_rtime();
+			  						if(notifier < 150) set_rumble(1,75);
+  									else if(notifier < 400) reset_rumble();
+  									else
+  										{
+										  notify -= 1;
+										  notifier = 0;
+  										}
+  			}
+ 
+}
+
+combo FLASH{
+Led (Oh_my_sexy_bumper);
+wait (b_f_wait);
+Led (Off);
+wait (b_f_wait);
+}
+
+combo GhostPeek {	
+set_val(CROUCH,100);
+wait(50);
+wait(PeekTime);
+set_val(FIRE,100);
+wait(30);
+set_val(CROUCH,100);
+wait(50);
+}
+combo DANCE {
+set_val(CROUCH, 100);
+wait(30);
+wait(60);
+set_val(CROUCH, 0);
+wait(30);
+wait(60);
+set_val(CROUCH, 100);
+wait(30);
+wait(60);
+set_val(CROUCH, 0);
+wait(30);
+wait(60);
+}
+combo BANGER {
+set_val(FIRE, 100);
+wait(40);
+set_val(FIRE, 0);
+wait(150);
+}
+combo STRAFER { 
+set_val(STRAFE,-100); 
+wait(strafe_time);
+set_val(STRAFE, 100);  
+wait(strafe_time);
+}   
+combo JUMPER { 
+set_val(JUMP,100); 
+wait(jump_time);
+set_val(JUMP, 0);  
+wait(jump_time);
+} 
+combo BURSTER {
+set_val(FIRE, 100);
+wait(burst_hold);
+set_val(FIRE, 0);
+wait(burst_rest);
+}
+
+ ����������������

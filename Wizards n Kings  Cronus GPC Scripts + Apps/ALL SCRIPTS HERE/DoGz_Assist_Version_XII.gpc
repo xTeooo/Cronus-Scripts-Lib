@@ -1,0 +1,89 @@
+/* DoGz Assist Version XII
+
+• Multiplying increment by 3 must not exceed Strength [Will still work just not as designed!] 
+
+• Must be able to increment 3 times at least within strength value ( Increment * 4 = 20 [5 * 4] = OK) <== Default Example as ( 7 * 3 = 21 ) X Would Be To High!!!
+
+Examples..
+
+• If Strength = 15 [Max Increment Will Be 5] 
+• If Strength = 20 [Max Increment Will Be 6]  
+• If Strength = 30 [Max Increment Will Be 10] 
+
+*/
+define Ads  = PS4_L2;
+define Fire = PS4_R2;
+define aimY = PS4_RY;
+define aimX = PS4_RX;
+
+int power,Ypower,Xpower,Power,CountPower,AxisXY;
+
+int Strength  = 20;// Power/Strength of Aim Assist
+int Increment = 5; // Must be able to increment 3 times at least within strength value ( Increment * 4 = 20 [5 * 4] = OK) <== Default Example as ( 7 * 3 = 21 ) X Would Be To High!!!
+int deadZone  = 7; // Deazone in game
+
+main {
+
+	
+	if (event_press(Ads)) { 
+		
+		Power = TRUE;
+	}
+	
+	else if (!get_ival(Ads) && event_press(Fire)) {
+		
+		Power = TRUE;
+	}
+	
+	if (get_ival(Ads) || get_ival(Fire)) {
+		
+		AxisXY = isqrt(abs(get_ival(aimX)) * abs(get_ival(aimX)) + abs(get_ival(aimY)) * abs(get_ival(aimY)));
+		AimAssist(Strength,Increment);
+	
+	} else {
+		
+		CountPower = 0;
+		power = FALSE;
+	}
+}
+
+function AimAssist (Strength,Step) {
+
+	if (Power) {
+		
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = FALSE;
+	}
+	
+	if (!power) {
+	
+		Xpower += Increment;
+		Ypower -= Increment;
+	
+	} else {
+		
+		Xpower -= Increment;
+		Ypower += Increment;
+	}
+	
+	CountPower ++;
+	
+	if (CountPower >= (Strength / Increment)) {
+		
+		power = !power;
+		CountPower = 0;
+	}	
+	
+	if (AxisXY > deadZone) {
+	
+		set_val(aimY,(Ypower - Strength / 2) + get_ival(aimY));
+		set_val(aimX,(Xpower - Strength / 2 * -1) + get_ival(aimX));
+	
+	} else {
+		
+		set_val(aimY,(Ypower - Strength / 2));
+		set_val(aimX,(Xpower - Strength / 2 * -1));
+	}
+}

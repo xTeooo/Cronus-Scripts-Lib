@@ -1,0 +1,969 @@
+/*
+                                  ========================================================================= 
+                                  ==               © Alq0rsan Verson 1.6                                 ==
+                                  ==      Creation : 2019/04/08  Discord --- Aris#8412                   ==
+                                  =========================================================================
+
+
+
+
+
+                                 /// **WARNING, THIS SCRIPT ONLY WORKS WITH BUILDER PRO**///
+                 
+                 
+                                                                          
+                                                                                 
+//             AIM ABUSE    = ALWAYS ON JUST AIM AND SHOOT                      
+//             DROPSHOT     = ADS + RELOAD TO TOGGLE ON/OFF                     
+//             SINGLE SHOT  = ADS + RIGHT BUMPER                                   
+//             RAPID FIRE   = ADS + DAPD LEFT TO TOGGLE ON/OFF                       
+//             HAIR TRIGGER = ALWAYS ON                                         
+//             SWAP TRIGGER = NO TOGGLE                                         
+//             AIM ASSIST   = ALWAYS ON                               
+//             INSTA EDIT/RESET  = ALWAYS ON                                         
+//             AUTO PICK UP      = HOLD YOUR PICK UP BUTTON                        
+//             PUMP BUILD        = ADS + LEFT STICK CLICK                           
+//             GHOST PEEK   = ADS + LEFT                                                                         
+/////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////--CONFIGURATION--//////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+//                                                                                       ////
+                                                                                         ////
+//AIM ABUSE \\                                                                           ////
+int AimAbuse          = TRUE;      //Change "TRUE" to "FALSE" for no aim abuse           ////       
+int ZoomInValues      = 320;       //Zoom in values                                      ////
+int ZoomOutValues     = 20;        //Zoom out values                                     ////
+                                                                                         ////
+//AIM ASSIST\\                                                                           ////
+int AimAssist         = TRUE;      //Change "TRUE" to "FALSE" for no aim assist          ////
+int Shake             = 13;        //How much your screen shakes                         ////
+int Speed             = 70;        //How fast your screen shakes                         ////
+                                                                                         ////
+//INSTA EDIT & INSTA RESET\\                                                             ////
+int EDIT_BUTTON       = BUILD_BTN;	   //Your in game edit button                            ////
+int EDIT_BUTTON_HOLD  = TRUE;      //If you dont have hold time make this "FALSE"        ////
+int HOLD_TIME         = 150;       //Your in game edit hold time (0.200 = 200)           ////
+int EDIT_RESET_BUTTON = CROUCH_BTN //Your in game edit reset button                      ////
+                                                                                         ////
+//DROPSHOT\\                                                                             ////
+int DropshotToggle    = FALSE;     //Press AIM + RELOAD to turn on dropshot              //// 
+int DropshotDown      = 130         //Dropshot down values                                ////
+int DropshotUp        = 41         //Dropshot up values                                  ////
+                                                                                         ////
+//RAPIDFIRE\\                                                                            ////
+int RapidFire         = FALSE;     //Press AIM + DPAD LEFT to turn on rapidfire          ////
+                                                                                         //// 
+//SWAP TRIGGER\\                                                                         ////
+int SwapTrigger       = FALSE;     //Change "FALSE" to "TRUE" if you have swapped tiggers////
+                                                                                         ////
+//AUTO PICK UP\\                                                                         ////
+int PickUpSpeed       = 50         //The Speed Your Pick Up Items                        ////
+int PickUpButton      = RELOAD_BTN //Set This TO The Button You USe To Pick Up Items     ////
+                                   //Make Sure You Have "tap to interact enabled in game ////
+//PUMP BUILD\\                                                                           ////
+int BuildType         = SHOOT_BTN  //Set this to the build you want to do                ////
+                                   //Wall  = SHOOT_BTN                                   ////
+                                   //FLOOR = RIGHT_BUMP                                  ////
+                                   //RAMP  = AIM_BTN                                     ////
+                                   //CONE  = LEFT_BUMP                                   ////
+                                                                                         ////
+/*///////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////--BUTTON LAYOUT--/////////////////////////////////////////
+*////////////////////////////////////////////////////////////////////////////////////////////
+                                 define SHOOT_BTN    =  4;//RT/R2                        ////                                                                                  
+                                 define AIM_BTN      =  7;//LT/L2                        ////                                                                                       
+                                 define CROUCH_BTN   =  5;//DOWN ON RIGHT STICK          ////                                                                              
+                                 define RELOAD_BTN   = 20;//X/SQUARE                     ////                                                                            
+                                 define SPRINT_BTN   =  8;//DOWN ON LEFT STICK           ////                                                                             
+                                 define JUMP_BTN     = 19;//A/CROSS                      ////                                                                            
+                                 define RIGHT_BUMP   =  3;//RB/R1                        ////                                                                       
+                                 define LEFT_BUMP    =  6;//LB/L1                        ////                                                                        
+                                 define SWAP_BTN     = 17;//Y/TRIANGLE                   ////                                                                        
+                                 define BUILD_BTN    = 18;//B/CIRCLE                     ////                                                                                                                    
+                                 define UP           = 13;//DPAD UP                      ////                                        
+                                 define DOWN         = 14;//DPAD DOWN                    ////                                     
+                                 define LEFT         = 15;//DPAD LEFT                    ////                                   
+                                 define RIGHT        = 16;//DPAD RIGHT                   ////
+                                 define RX           =  9;//                             ////                                                                           
+                                 define RY           = 10;//                             ////                                                                          
+                                 define LX           = 11;//                             ////                                                                        
+                                 define LY           = 12;//                             ////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////
+main {                                                                                   ////
+///////////////////////////////////////HairTrigger///////////////////////////////////////////
+if(HairTrigger){                                                                         ////
+if(get_val(SHOOT_BTN)){set_val(SHOOT_BTN,100);}                                          ////
+}                                                                                        ////
+/////////////////////////////////// ///FlipTrigger///////////////////////////////////////////
+if (SwapTrigger){                                                                        ////
+swap (7,6) swap (4,3) }                                                                  ////
+///////////////////////////////////////AimAbuse//////////////////////////////////////////////
+if(AimAbuse){                                                                            ////
+if(get_val(AIM_BTN)> 95){                                                                ////
+combo_run(AimAbuse);}                                                                    ////
+if(event_release(AIM_BTN)){ combo_stop(AimAbuse);                                        ////
+}                                                                                        ////
+}                                                                                        ////
+//////////////////////////////////////AimAssist//////////////////////////////////////////////
+if(AimAssist){                                                                           ////
+if (get_val(AIM_BTN) && get_val(SHOOT_BTN)) {                                            ////
+combo_run(AimAssist);                                                                    ////
+}                                                                                        ////
+if((get_val(RX)) > Shake || (get_val(RX)) < inv(Shake)){                                 ////
+combo_stop(AimAssist);                                                                   ////
+}                                                                                        ////
+}                                                                                        ////
+///////////////////////////////////////PumpBuild/////////////////////////////////////////////
+if (get_val(AIM_BTN) && get_val(SPRINT_BTN)) {                                           ////
+combo_run(PumpBuild);                                                                    ////
+set_val(SPRINT_BTN, 0);                                                                  ////
+} else {                                                                                 ////
+}                                                                                        ////
+///GhostPeek///
+if (get_val(AIM_BTN)) {                                                                  ////
+if (event_press(LEFT_BUMP)) {                                                            ////
+combo_run( GhostPeek);                                                                   ////
+}                                                                                        ////
+set_val(LEFT_BUMP, 0);                                                                   ////
+}                                                                                        ////
+///SingleShot///
+if (get_val(AIM_BTN) && get_val(RIGHT_BUMP)) {                                           ////
+combo_run(SingleShot);                                                                   ////
+set_val(RIGHT_BUMP, 0);                                                                  ////
+} else {                                                                                 ////
+combo_stop(SingleShot);                                                                  ////
+}                                                                                        ////
+///////////////////////////////////////AutoPickUp////////////////////////////////////////////
+if (get_val(PickUpButton)){                                                              ////
+combo_run(AutoPickUp);                                                                   ////
+}                                                                                        ////
+////////////////////////////////////////DropShot/////////////////////////////////////////////
+if(get_val(AIM_BTN) && event_press(RELOAD_BTN)){                                         ////
+DropshotToggle =! DropshotToggle;                                                        ////
+rumble_A_if_true(DropshotToggle);                                                        ////
+}                                                                                        ////
+if(DropshotToggle){                                                                      ////
+if(get_val(AIM_BTN)&&get_val(SHOOT_BTN)){combo_run(DropShot);}                           ////
+if (event_press(BUILD_BTN)){ DropshotToggle = FALSE; }                                   ////
+}                                                                                        ////
+///////////////////////////////InstaEdit & InstaReset////////////////////////////////////////
+if (a) {                                                                                 ////
+if (i < num) {                                                                           ////
+if (!combo_running(master)) {                                                            ////
+combo_run(master);                                                                       ////
+}                                                                                        ////
+} else if (i > num) {                                                                    ////
+a = FALSE;                                                                               ////
+}                                                                                        ////
+}                                                                                        ////
+if(EDIT_BUTTON_HOLD)                                                                     ////
+{                                                                                        ////
+if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME)                           ////
+{                                                                                        ////
+edit = TRUE;                                                                             ////
+}                                                                                        ////
+}                                                                                        ////
+else if(!EDIT_BUTTON_HOLD)                                                               ////
+{                                                                                        ////
+if(get_val(EDIT_BUTTON))                                                                 ////
+{                                                                                        ////
+edit = TRUE;                                                                             ////
+}                                                                                        ////
+}                                                                                        ////
+if (edit == TRUE) {                                                                      ////
+resetPress(0,1,0,0,0,0);                                                                 ////
+if (get_val(BUILD_BTN)) {                                                                ////
+}                                                                                        ////
+if (event_release(SHOOT_BTN) || get_val(EDIT_RESET_BUTTON) || get_val(SWAP_BTN)) {       ////
+set_click(BUILD_BTN, 1, 0);                                                              ////
+edit = FALSE;                                                                            ////
+}                                                                                        ////
+}                                                                                        ////
+////////////////////////////////////////AdvancedAim//////////////////////////////////////////
+if (Joystick_calibration == FALSE)                                                       ////
+{                                                                                        ////
+RX_Axis_Joystick_calibrate = get_val(PS4_RX);                                            ////
+RY_Axis_Joystick_calibrate = get_val(PS4_RY);                                            ////
+Joystick_calibration = TRUE;                                                             ////
+}                                                                                        ////
+X_Last_Value = X_Current_Value;                                                          ////
+Y_Last_Value = Y_Current_Value;                                                          ////
+X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;                          ////
+Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate;                          ////
+if(get_val(PS4_L2))                                                                      ////
+{                                                                                        ////
+if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit) 
+{                                                                                        ////
+if(abs(X_Last_Value - X_Current_Value) < 15)                                             ////
+{                                                                                        ////
+combo_stop(Aim_Assist_Perfection);                                                       ////
+Sampling_Done = FALSE;                                                                   ////
+if(get_val(PS4_R2) > 95)                                                                 ////
+{                                                                                        ////
+combo_stop(Fine_Tune_Aim);                                                               ////
+fine_pulse = 0;                                                                          ////
+combo_run(spiroide_Aim_Assit);                                                           ////
+}                                                                                        ////
+else                                                                                     ////
+{                                                                                        ////
+combo_stop(spiroide_Aim_Assit);                                                          ////
+spiroide_pulse = 0;                                                                      ////
+combo_run(Fine_Tune_Aim);                                                                ////
+}                                                                                        ////
+}                                                                                        ////
+}                                                                                        ////
+else if(abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit)  ////
+{                                                                                        ////
+combo_stop(Fine_Tune_Aim);                                                               ////
+combo_stop(spiroide_Aim_Assit);                                                          ////
+spiroide_pulse = 0;                                                                      ////
+fine_pulse = 0;                                                                          ////
+combo_run(Aim_Assist_Perfection);                                                        ////
+}                                                                                        ////
+}                                                                                        ////
+else                                                                                     ////
+{                                                                                        ////
+combo_stop(Fine_Tune_Aim);                                                               ////
+combo_stop(spiroide_Aim_Assit);                                                          ////
+combo_stop(Aim_Assist_Perfection);                                                       ////
+spiroide_pulse = 0;                                                                      ////
+fine_pulse = 0;                                                                          ////
+Sampling_Done = FALSE;                                                                   ////
+}                                                                                        ////
+//////////////////////////////////////RapidFire//////////////////////////////////////////////                    
+if(get_val(AIM_BTN) && event_press(LEFT)) {                                              ////
+RapidFire =! RapidFire;                                                                  ////
+rumble_A_if_true(RapidFire);                                                             ////
+}                                                                                        ////
+if(RapidFire){                                                                           ////            
+if (get_val(AIM_BTN) && get_val(SHOOT_BTN)) {                                            ////
+combo_run( RapidFire);                                                                   ////
+}                                                                                        ////
+}                                                                                        ////
+}                                                                                        ////                                                                                        
+/////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////--COMBOS--//////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////                                                                                        
+combo AimAbuse {                                                                         
+set_val(AIM_BTN, 100);                                                                   
+wait(ZoomInValues);                                                                      
+set_val(AIM_BTN, 0);                                                                     
+wait(ZoomOutValues);                                                                     
+}  
+combo AimAssist { 
+set_val(RX, Shake);
+wait(Speed);
+wait(4);
+set_val(RX, Shake*(-1));
+wait(Speed);
+} 
+combo SingleShot {
+set_val(SHOOT_BTN,100);
+wait(100);
+wait(250);
+set_val(SHOOT_BTN,100);
+}
+combo GhostPeek {                                                                            
+set_val(CROUCH_BTN, 100);                                                                    
+wait(15);                                                                                    
+wait(15);                                                                                    
+set_val(SHOOT_BTN, 100);                                                                     
+wait(15);                                                                                    
+wait(80);                                                                                    
+set_val(CROUCH_BTN, 100);                                                                    
+wait(15);                                                                                    
+wait(5);                                                                                     
+}                                                                                            
+combo DropShot{                                                                              
+set_val(CROUCH_BTN,100);                                                                     
+wait(DropshotDown);                                                                          
+wait(DropshotUp);                                                                            
+set_val(CROUCH_BTN,100);                                                                     
+} 
+combo AutoPickUp {               
+wait(PickUpSpeed);
+set_val(PickUpButton, 0);
+wait(PickUpSpeed);
+set_val(PickUpButton, 0);
+}
+combo PumpBuild {
+set_val(SHOOT_BTN, 100);
+wait(60);
+set_val(SHOOT_BTN, 0);
+wait(60);
+set_val(BUILD_BTN, 100);
+wait(40);
+set_val(BUILD_BTN, 0);
+wait(40);
+set_val(BuildType, 100);
+wait(100);
+set_val(BuildType, 100);
+wait(70);
+set_val(BUILD_BTN, 100);
+wait(100);
+set_val(BUILD_BTN, 0);
+wait(250);
+}
+combo RapidFire {                                                                            
+set_val(SHOOT_BTN, 100);                                                                     
+wait(120);                                                                                   
+set_val(SHOOT_BTN, 0);                                                                       
+wait(30);                                                                                    
+} 
+combo Aim_Assist_Perfection 
+{        
+
+X_Last_Value = X_Current_Value
+Y_Last_Value = Y_Current_Value
+wait(Sampling_Time);
+X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+if (Sampling_Done == TRUE )
+{
+Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+}
+X_Last_Value = X_Current_Value;
+Y_Last_Value = Y_Current_Value;
+wait(Sampling_Time);
+X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+if (Sampling_Done == TRUE )
+{
+Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+}
+Sampling_Done = TRUE; 
+wait(Sampling_Time);
+}
+ 
+combo Fine_Tune_Aim {
+set_val(PS4_RX,(4 + fine_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+wait(Sampling_Time);
+set_val(PS4_RX,(-4 - fine_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+wait(Sampling_Time);
+fine_pulse = fine_pulse + 2;
+if ( fine_pulse > 10)
+{
+fine_pulse = 0;   
+}
+}
+ 
+combo spiroide_Aim_Assit { 
+set_val(PS4_RY,(5 + spiroide_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+set_val(PS4_RX,(4 + spiroide_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+set_val(PS4_RY,(5 + spiroide_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+wait(Sampling_Time);
+wait(Sampling_Time);
+set_val(PS4_RY,(5 + spiroide_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+set_val(PS4_RX,(-4 - spiroide_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+set_val(PS4_RY,(5 + spiroide_pulse));
+wait(Sampling_Time);
+wait(Sampling_Time);
+wait(Sampling_Time);
+wait(Sampling_Time);
+spiroide_pulse = spiroide_pulse + 2;
+if ( spiroide_pulse > 10)
+{
+spiroide_pulse = 0;   
+}
+}
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+{ 
+if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit) 
+{
+if(Last_Value < Current_Value)
+{   		
+if (Boost)
+{ 
+if (X_AXIS)
+set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+if (Y_AXIS)
+set_val(PS4_RY, (Current_Value + Aim_Boost));
+}
+else if(Correction)
+{
+if (X_AXIS)
+set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+if (Y_AXIS)
+set_val(PS4_RY, (Current_Value - Aim_Correction));			
+}
+}
+else
+{
+if (Boost)
+{ 
+if (X_AXIS)
+set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+if (Y_AXIS)
+set_val(PS4_RY, (Current_Value - Aim_Boost));
+}
+else if(Correction)
+{
+if (X_AXIS)
+set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+if (Y_AXIS)
+set_val(PS4_RY, (Current_Value + Aim_Correction));			
+}
+}
+}
+}
+combo VIBRATE {                                                                              
+set_rumble(rumble_type, 100);                                                                
+wait(300);                                                                                   
+reset_rumble();                                                                              
+}                                                                                            
+function rumble_A_if_true(var) {                                                             
+if (var) rumble_type = RUMBLE_A;                                                             
+else rumble_type = RUMBLE_B;                                                                 
+combo_run(VIBRATE);                                                                          
+}                                                                                            
+combo master {                                                                               
+wait(WAIT);                                                                                  
+set_val(button, 100);                                                                        
+wait(28);                                                                                    
+set_val(button, 0);                                                                          
+wait(28);                                                                                    
+i = i + 1;                                                                                   
+}                                                                                            
+function resetPress(P0,P1,P2,P3,T,S) {                                                       
+if(!P0){pressedIt[0] = FALSE;}	else if(P0) {pressedIt[0] = TRUE;}                           
+if(!P1){pressedIt[1] = FALSE;}	else if(P1) {pressedIt[1] = TRUE;}	                         
+if(!P2){pressedIt[2] = FALSE;}	else if(P2) {pressedIt[2] = TRUE;}	                         
+if(!P3){pressedIt[3] = FALSE;}	else if(P3) {pressedIt[3] = TRUE;}                           
+}                                                                                            
+function set_click(B, Num, Wait) {                                                           
+WAIT = Wait;                                                                                 
+i = 0;                                                                                       
+button = B;                                                                                  
+num = Num;                                                                                   
+a = TRUE;                                                                                    
+}                                                                                            
+int edit = FALSE;                                                                        
+int pressedIt[6];                                                                       
+int WAIT;                                                                               
+int num, i, a;                                                                           
+int button;                                                                              
+int rumble_type    = RUMBLE_A                                                           
+int HairTrigger    = TRUE 
+define Sampling_Time = 10;
+define Aim_Boost = 7;
+define Aim_Correction = 12;
+define Aim_Perfection_Limit = 30;
+define POS_Aim_Limit = 70;
+define NEG_Aim_Limit = -70;
+define POS_Micro_MVT_Limit = 25;
+define NEG_Micro_MVT_Limit = -25;
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+int Sampling_Done = FALSE;
+int spiroide_pulse = 0;
+int fine_pulse = 0;
+int Joystick_calibration = FALSE;
+int RX_Axis_Joystick_calibrate = 0; 
+int RY_Axis_Joystick_calibrate = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
