@@ -1,0 +1,73 @@
+define LTrigger = PS4_L2;
+define RTrigger = PS4_R2; 
+define Fire = PS4_R2;
+define ADS = PS4_L2;
+define PickupB = PS4_SQUARE;
+define N_Weapon = PS4_R1;
+define P_Weapon = PS4_L1;
+define Pickaxe = PS4_L3;
+define Jump = PS4_CROSS;
+define Crouch = PS4_R3;
+define Ping = PS4_LEFT;
+define Edit = PS4_TRIANGLE; 
+define Build = PS4_CIRCLE;           
+define Wall = PS4_R2;
+define Floor = PS4_R1;
+define Ramp = PS4_L2
+define Roof = PS4_L1;
+define Select = PS4_R2;
+define Confirm = PS4_L2;
+define Reset = PS4_R3;
+
+define InstantResetB = PS4_R3; 
+define EditAssist = XB1_LS; 
+
+define Up = PS4_UP; 
+define Down = PS4_DOWN; 
+define Left = PS4_LEFT; 
+define Right = PS4_RIGHT;
+define RX = PS4_RX;   
+define RY = PS4_RY;   
+define LX = PS4_LX;   
+define LY = PS4_LY;  
+
+define MenuEnterHold = PS4_L2; 
+define MenuEnterPress = PS4_OPTIONS; 
+define MenuExitPress = PS4_CIRCLE; 
+define ChangeMenuPress = XB1_RS; 
+define FindSlotHold = PS4_CROSS; 
+define FindSlotPress = PS4_LEFT;  
+
+define PY = POLAR_RY;
+define PX = POLAR_RX;
+define PS = POLAR_RS;
+define On = TRUE;
+define Off = FALSE; 
+
+int Modswitch;
+
+int PolarAA = On;
+int PolarTimed = Off;
+int PolarHipFire = On;
+
+int LessInputDelay = On;
+int InstantTriggers = On;
+int InstantReset = Off;
+
+int BuildTracker = On;
+
+// ---------------------
+
+int PolarPower = 3; 
+int PolarTime = 5000; 
+define InputDelay = 5;
+int InstantResetDelay = 4;
+int BuildSyncTime = 2000; 
+
+
+main { if(LessInputDelay) { VM(InputDelay); } if (BuildTracker) { if (event_press(Build)) { BuildTrack = !BuildTrack; } if (BuildTrack) { BuildCount += get_rtime(); if (event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0; } if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall)) BuildCount = 0; } } 
+if (InstantReset) { if (event_press(InstantResetB)) { combo_run(FastReset); } } if (!BuildTrack) { if (PolarAA) { if (PolarTimed) { if (get_ival(ADS) && get_ptime(ADS) <= PolarTime || PolarHipFire && get_ival(Fire) && get_ptime(Fire) <= PolarTime) { AimAssist(); } } else if (get_ival(ADS)|| PolarHipFire && get_ival(Fire)) { AimAssist(); } if (!get_ival(ADS) 
+&& !get_ival(Fire)) { AAT = 0; Axis = 0; } } if (InstantTriggers) { deadzone(RTrigger,LTrigger,100,100) } } } combo FastReset { set_val(EditAssist,1); wait(InstantResetDelay); set_val(Edit,4); wait(InstantResetDelay); set_val(Reset,4); wait(InstantResetDelay); combo_run(Confirm); } combo Confirm { set_val(Confirm,30); wait(InstantResetDelay); set_val(Confirm,30); 
+wait(InstantResetDelay); } function VM (f_speed) { if(f_speed == 0) vm_tctrl(-0); else if(f_speed == 1) vm_tctrl(-2); else if(f_speed == 2) vm_tctrl(-4); else if(f_speed == 3) vm_tctrl(-6); else if(f_speed == 4) vm_tctrl(-8); else if(f_speed == 5) vm_tctrl(-9); } function AimAssist() { AAT += get_rtime(); if (!Axis) set_Val(RY,AAT * PolarPower / 10); if (Axis == 1) 
+set_Val(RX,AAT * PolarPower / 10); if (Axis == 2) set_Val(RY,inv(AAT * PolarPower / 10)); if (Axis == 3) { set_Val(RX,inv(AAT * PolarPower / 10)); if (AAT > 50) { AAT = 0; Axis = 0; } } else if (AAT > 50) { AAT = 0; Axis += 1; } } function set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100)); return; } 
+function Set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100)); return; } int BuildTrack, BuildCount, AAT, Axis;

@@ -1,0 +1,366 @@
+// 
+// NOTORIOUS WARZONE BULLY V1.gpc
+
+/*                                   ,----,                                                                      
+         ,--.    ,----..         ,/   .`|  ,----..                         ,----..                             
+       ,--.'|   /   /   \      ,`   .'  : /   /   \  ,-.----.     ,---,   /   /   \                 .--.--.    
+   ,--,:  : |  /   .     :   ;    ;     //   .     : \    /  \ ,`--.' |  /   .     :          ,--, /  /    '.  
+,`--.'`|  ' : .   /   ;.  \.'___,/    ,'.   /   ;.  \;   :    \|   :  : .   /   ;.  \       ,'_ /||  :  /`. /  
+|   :  :  | |.   ;   /  ` ;|    :     |.   ;   /  ` ;|   | .\ ::   |  '.   ;   /  ` ;  .--. |  | :;  |  |--`   
+:   |   \ | :;   |  ; \ ; |;    |.';  ;;   |  ; \ ; |.   : |: ||   :  |;   |  ; \ ; |,'_ /| :  . ||  :  ;_     
+|   : '  '; ||   :  | ; | '`----'  |  ||   :  | ; | '|   |  \ :'   '  ;|   :  | ; | '|  ' | |  . . \  \    `.  
+'   ' ;.    ;.   |  ' ' ' :    '   :  ;.   |  ' ' ' :|   : .  /|   |  |.   |  ' ' ' :|  | ' |  | |  `----.   \ 
+|   | | \   |'   ;  \; /  |    |   |  ''   ;  \; /  |;   | |  \'   :  ;'   ;  \; /  |:  | | :  ' ;  __ \  \  | 
+'   : |  ; .' \   \  ',  /     '   :  | \   \  ',  / |   | ;\  \   |  ' \   \  ',  / |  ; ' |  | ' /  /`--'  / 
+|   | '`--'    ;   :    /      ;   |.'   ;   :    /  :   ' | \.'   :  |  ;   :    /  :  | : ;  ; |'--'.     /  
+'   : |         \   \ .'       '---'      \   \ .'   :   : :-' ;   |.'    \   \ .'   '  :  `--'   \ `--'---'   
+;   |.'          `---`                     `---`     |   |.'   '---'       `---`     :  ,      .-./            
+'---'     `---'                            `--`----'     
+  
+   NOTORIOUS STICKY AIMBOT WARZONE BULLY V1                                                                                                                                                                   */
+//========================================================================================================================
+//--Rapid Fire (L2 + LEFT)
+	int Rapid_Fire = FALSE;
+//=======================================================================================================================
+//--Dropshot (L2 + RIGHT)
+	int DropShot = FALSE; 
+	int DropShotSpeed = 30; 
+//======================================================================================================================== 
+///--Change TRUE TO FALSE if you don't want to play with Hair Triggers
+    define HairTriggers = TRUE;
+//======================================================================================================================== 
+//--Change FALSE To True If You Want Easy Slide TAP CROUCH/PRONE BUTTON TO EASY SLIDE
+    define EASY__SLIDE_DROP = FALSE;
+//======================================================================================================================== 
+//--Change FALSE TO TRUE If you want Hold Breath
+    define holdbreath = FALSE;
+//======================================================================================================================== 
+//--Notorious Sticky Aim Assist if your screen shakes whilst using aim assist - lower this value (try 22, 20)
+	define sticky_aim_assist = TRUE;
+	define _v                =   21;      
+//======================================================================================================================== 
+//--Aim Sensitivty Corrections ===========================================================================================
+	int in_game_menu_sens       = 13;  // PICK 3 HIGHER THEN YOUR REGULAR SENSITIVITY!
+	define aim_sens_corrections = 0;   // [0 = OFF / 1 = ON / 2 = ON + ZOOM SENS IS ALSO ON] - zoom sensitivity does not work with bumpers/triggers flipped] 
+                                                                                                                                                                           /*
+    THE IDEA BEHIND STICKY AIMBOT IS THAT YOU HIGHER YOUR IN-GAME SENSITIVITY WITH 2 OR 3
+    CLICKS. THIS WILL ALLOW YOU TO TURN AROUND FAST WITHOUT LOSING CONTROL OVER YOUR AIM
+    AND LOCK ON TO YOUR TARGET WITH EASE
+                                                                                                                                                                 
+	1) FILL OUT THE IN_GAME_MENU_SENS STICK SENSITIVITY UP ABOVE
+    2) GET READY TO BULLY ENEMIES IN WARZONE!                                                                                                                                                         */
+//======================================================================================================================
+//--Anti Recoil (L2 + OPTIONS)==========================================================================================
+	define antirecoil_        =  TRUE; 
+	define INTVERTED_RECOIL   =     1;  //( IF INVERTED SET TO  -1  INSTEAD OF  1 )
+	int DEFAULT_VERTICAL      =    24;  
+	int DEFAULT_HORIZONTAL    =    8;
+                                                                                                                                                                           /*
+    CHECK THE STICK & BUTTON LAYOUTS BELOW.
+                   STICKS:
+       PS4_CIRCLE            XB1_B 
+       PS4_CROSS             XB1_A
+       PS4_R1                XB1_RB
+       PS4_R2                XB1_RT
+       PS4_R3                XB1_RS
+       PS4_L1                XB1_LB
+       PS4_L2                XB1_LT
+       PS4_L3                XB1_LS
+//======================================================================================================================                                                                                                                                                                  */
+//--Layout==============================================================================================================  
+    define FIRE     = PS4_R2;  //Change To R1 For Flipped Bumpers                  
+    define ADS      = PS4_L2;  //Change To L1 For Flipped Bumpers                     
+    define SPRINT   = PS4_L3;                
+    define PRONE    = PS4_CIRCLE;                              
+    define MELEE    = PS4_R3;
+    define JUMP     = PS4_CROSS;
+    define TACTICAL = PS4_L1;  //Change To L2 For Flipped Bumpers                  
+    define LETHAL   = PS4_R1;  //Change To R2 For Flipped Bumpers                   
+    define VIB_A    = RUMBLE_A; //Leave Alone
+//-- NOTORIOUS AIM ABUSE ================================================================================================
+	define Sampling_Time = 10;
+	define Aim_Boost = 7;
+	define Aim_Correction = 5;
+	define Aim_Perfection_Limit = 30;
+	define POS_Aim_Limit = 70;
+	define NEG_Aim_Limit = -70;
+	define POS_Micro_MVT_Limit = 25;
+	define NEG_Micro_MVT_Limit = -25;
+	int X_Last_Value     = 0;
+	int Y_Last_Value     = 0;
+	int X_Current_Value  = 0;
+	int Y_Current_Value  = 0;
+	int Sampling_Done = FALSE;
+	int spiroide_pulse = 0;
+	int fine_pulse = 0;
+	int Joystick_calibration = FALSE;
+	int RX_Axis_Joystick_calibrate = 0; 
+	int RY_Axis_Joystick_calibrate = 0;
+//--======================================================================================================================
+    int ads_grenade_sens, ads_fire_sens, Sens;
+    int RECOIL,BOOOST,ANTIRECOOIL;
+ /*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/   	
+   	main {
+	if (Joystick_calibration == FALSE){
+       RX_Axis_Joystick_calibrate = get_val(PS4_RX); 
+       RY_Axis_Joystick_calibrate = get_val(PS4_RY); 
+       Joystick_calibration = TRUE;}     
+       X_Last_Value = X_Current_Value;
+       Y_Last_Value = Y_Current_Value;
+       X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+       Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate;
+   if(get_val(ADS)){ 
+   if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit){    
+   if(abs(X_Last_Value - X_Current_Value) < 15){
+       combo_stop(Aim_Assist_Perfection);
+       Sampling_Done = FALSE;
+   if(get_val(FIRE) > 95){ 
+        combo_stop(Fine_Tune_Aim);
+        fine_pulse = 0;
+        combo_run(spiroide_Aim_Assit);}
+   else{
+        combo_stop(spiroide_Aim_Assit);
+        spiroide_pulse = 0;
+        combo_run(Fine_Tune_Aim);}}}
+   else if(abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit){ 
+        combo_stop(Fine_Tune_Aim);
+        combo_stop(spiroide_Aim_Assit);
+        spiroide_pulse = 0;
+        fine_pulse = 0;
+        combo_run(Aim_Assist_Perfection);}}
+    else {
+        combo_stop(Fine_Tune_Aim);
+        combo_stop(spiroide_Aim_Assit);
+        combo_stop(Aim_Assist_Perfection);
+        spiroide_pulse = 0;
+        fine_pulse = 0;
+        Sampling_Done = FALSE;}
+   if (sticky_aim_assist) {
+   if(get_val(ADS)) combo_run(STICKY_AIM);
+        else combo_stop(STICKY_AIM);}
+    if(holdbreath) { 
+         if( get_val(ADS) ) combo_run(HOLD_BREATH_cmb); } 
+	  if(HairTriggers) {
+      deadzone(ADS,FIRE,100,100); }
+            if(EASY__SLIDE_DROP && get_val(PRONE))combo_run(DROP_SHOT);
+if(get_val(ADS) && event_press(PS4_LEFT)) {
+        combo_run (vibrate);
+        Rapid_Fire=!Rapid_Fire;}
+        if (Rapid_Fire) {
+   if(get_val(FIRE)) {
+        combo_run (Rapiid_Fire);}}
+  if(aim_sens_corrections) {
+    ads_grenade_sens=100-(in_game_menu_sens); ads_fire_sens=96-(in_game_menu_sens); 
+    if (get_val (ADS)) {
+    if(get_val(FIRE) && get_val(ADS)) {
+    Sens = ads_fire_sens; }
+    if(!get_val(FIRE) && !get_val(ADS) || get_val (FIRE) &&!get_val(ADS)) {
+    Sens = 100; //--sens and hip fire sens
+    }   
+    if(!get_val(FIRE) && get_val(ADS) || get_val (LETHAL) && !get_val (ADS) || get_val (TACTICAL) && !get_val (ADS)) {
+    Sens = ads_grenade_sens; }
+    if(Sens > 100) Sens = 100;  
+    sensitivity(PS4_RX, NOT_USE, Sens);
+    sensitivity(PS4_RY, NOT_USE, Sens); }
+    }
+	if(get_val(ADS) && event_press(PS4_RIGHT)) {
+        combo_run (vibrate);
+		DropShot=!DropShot;}
+        if (DropShot) {
+   if(get_val(FIRE)) {
+        combo_run (DroppShott);}}
+if(get_val(ADS) && event_press(PS4_OPTIONS)) {
+        combo_run (vibrate);
+        ANTIRECOOIL=!ANTIRECOOIL;}
+      if (antirecoil_) {
+      if (get_val(ADS) && get_val(FIRE) && get_rumble(VIB_A)) {
+      combo_run(RECOIL); } 
+      if (abs(get_val(PS4_RY)) > DEFAULT_VERTICAL + 2 || abs(get_val(PS4_RX)) > DEFAULT_VERTICAL + 2) {
+      combo_stop(RECOIL); }  }
+    if(abs(get_val(PS4_LY)) < 10 && abs(get_val(PS4_LX)) < 10 ){        
+    	set_val(PS4_LY,0);                                                
+    	set_val(PS4_LX,0); }                                           
+    if(abs(get_val(PS4_RY)) < 10 && abs(get_val(PS4_RX)) < 10 ){         
+    	set_val(PS4_RY,0);                                                 
+    	set_val(PS4_RX,0); }                                                
+    }
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo Aim_Assist_Perfection{ 
+    X_Last_Value = X_Current_Value
+    Y_Last_Value = Y_Current_Value
+    wait(Sampling_Time);
+    X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+    Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE ){
+    Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+    Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 );} 
+    X_Last_Value = X_Current_Value;
+    Y_Last_Value = Y_Current_Value;
+    wait(Sampling_Time);
+    X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+    Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+    if (Sampling_Done == TRUE ){
+    Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+	Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 );}
+    Sampling_Done = TRUE; 
+    wait(Sampling_Time);
+}        
+combo Fine_Tune_Aim {
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_LX,(-15 + fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time); 
+    set_val(PS4_RY,(10 - fine_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_LX,(15 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RY,(-10 + fine_pulse)); 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse))
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    fine_pulse = fine_pulse + 2;
+    if ( fine_pulse >10){
+    fine_pulse = 0;}   
+}
+combo spiroide_Aim_Assit {
+    set_val(PS4_RX,(4 + spiroide_pulse));
+    set_val(PS4_LX,(-15+ spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    set_val(PS4_RX,(-4 - spiroide_pulse));
+    set_val(PS4_LX,15 - spiroide_pulse );
+    wait(Sampling_Time);
+    wait(Sampling_Time)
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+	spiroide_pulse = spiroide_pulse + 2;
+	if ( spiroide_pulse >10){
+	spiroide_pulse = 0;}
+}  
+combo HOLD_BREATH_cmb {                   
+    set_val(SPRINT, 100);
+    wait(100);  
+}
+combo DROP_SHOT{
+set_val(PRONE,100); 	
+wait(800); 
+}
+combo Rapiid_Fire {
+	set_val(FIRE, 100); 
+	wait(40);
+	set_val(FIRE, 0); 
+	wait(30);
+}
+combo DroppShott {
+	set_val(PRONE,100);
+	wait(40);
+	wait(DropShotSpeed);
+	set_val(PRONE,100);
+}
+combo STICKY_AIM {
+	set_val(PS4_RY,xy_val(PS4_RY, _v));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v));
+	set_val(PS4_LX,xy_val(PS4_LX, _v));
+	wait(20);
+	set_val(PS4_RY,xy_val(PS4_RY, _v * -1));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v * -1));
+	set_val(PS4_LX,xy_val(PS4_LX, _v * -1));
+	wait(20);
+}
+combo RECOIL { BOOOST++;
+RECOIL = get_val(PS4_RY) + DEFAULT_VERTICAL + BOOOST;
+if(BOOOST == 10) {
+BOOOST = 0; }
+if(RECOIL > 100) {
+RECOIL = 100; }
+set_val(PS4_RY,RECOIL * INTVERTED_RECOIL);
+RECOIL = get_val(PS4_RX) + DEFAULT_HORIZONTAL;
+if(RECOIL > 100){
+RECOIL = 100; }
+set_val(PS4_RX,RECOIL);
+}
+combo vibrate {     
+set_rumble(RUMBLE_A, 85);      
+wait(225);                         
+reset_rumble();                    
+}                                      
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+function xy_val(f_axis,f_val) {
+if(abs(get_val(f_axis)) < (_v + 1))  
+return f_val;    
+return get_val(f_axis);
+}
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) {
+	if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit){ 
+	if(Last_Value < Current_Value){
+	if (Boost){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value + Aim_Boost));}
+	else if(Correction){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value - Aim_Correction));}}            
+	else{
+	if (Boost){
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value - Aim_Boost));}
+	else if(Correction){                         
+	if (X_AXIS)
+	set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+	if (Y_AXIS)
+	set_val(PS4_RY, (Current_Value + Aim_Correction));}}}} 
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | | D | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

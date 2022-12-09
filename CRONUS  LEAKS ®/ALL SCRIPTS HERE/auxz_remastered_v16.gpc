@@ -1,0 +1,219 @@
+/*
+     __    __  __  _  _  ____  ___  ____  ____  ____  ____    ____  ____  __  __    __    ___  ____  ____  ____  ____  ____  
+    /__\  (  )(  )( \/ )(_   )/ __)(  _ \(_  _)(  _ \(_  _)  (  _ \( ___)(  \/  )  /__\  / __)(_  _)( ___)(  _ \( ___)(  _ \ 
+   /(__)\  )(__)(  )  (  / /_( (__  )   / _)(_  )___/  )(     )   / )__)  )    (  /(__)\ \__ \  )(   )__)  )   / )__)  )(_) )
+  (__)(__)(______)(_/\_)(____)\___)(_)\_)(____)(__)   (__)   (_)\_)(____)(_/\/\_)(__)(__)(___/ (__) (____)(_)\_)(____)(____/ 
+  
+  
+▛▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝ ▜
+▝ You are currently using [𝐯𝐞𝐫𝐬𝐢𝐨𝐧 16] of Auxzcript Remastered. 
+▝ VERSION NOTE: Please read line 15 and follow the steps correctly.
+▙ ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▟*/
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟏 - 𝐈𝐍𝐈𝐓𝐈𝐀𝐋𝐈𝐒𝐀𝐓𝐈𝐎𝐍𝐒
+
+//▖ V16: SET YOUR IN-GAME RIGHT STICK DEADZONE TO 0.15 FOR THIS SCRIPT TO HAVE FULL EFFECT ▖
+
+//Aim Assist V3 (Linear + Exponential)
+int SoftAimV3 = 13;
+int SoftAimV3Neg = -13;
+int Sticky_AimExploit = 14; 
+int NegativeSticky_AimExploit = -14;
+int AimAssist_Hipfire = 10; 
+int NegativeAimAssist_Hipfire = -10;
+int Delay = 15; 
+int Release = 15; // -> This should always be +1 more than Aim Assist value: Sticky_AimExploit and NegativeSticky_AimExploit
+
+//Insta Edit Reset
+int InstaEdit = TRUE
+define RESET_BTN = XB1_LEFT; //Set this to your Edit Reset keybind
+define CONFIRM_BTN = XB1_B; //Set this to your Edit Confirm keybind
+
+//Ghost Peek V2
+int GhostPeek = TRUE;
+int GPCooldown = 25;
+
+//Anti Recoil V2
+int Anti_Recoil;
+define ADSPos = TRUE;
+define AntiRecoil = 12;
+
+//Dropshot V2
+int Dropshot = FALSE;
+int Dropshot_Crouching = 95;
+int Dropshot_Standing = 45;
+
+//LED
+int a; int b;
+
+//Layout
+define FIRE_BTN = 4;    //XB1_RB //PS4_R2
+define ADS_BTN = 7;     //XB1_LB //ADS_BTN
+define CROUCH_BTN = 5;  //XB1_RS //PS4_R3
+define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE
+define SPRINT_BTN = 8;  //XB1_LS //PS4_L3
+define JUMP_BTN = 19;   //XB1_A  //PS4_CROSS
+define NEXT_PIECE = 3;  //XB1_RT //PS4_R1
+define RIGHT_BUMP = 3;  // XB1_RB //PS4_R1
+define LEFT_BUMP = 6;   //ADS_BTN //PS4_L1
+define SWAP_BTN = 17;   //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18;  //XB1_B  //PS4_CIRCLE
+define R_X = 9;         //XB1_R_X //PS4_R_X
+define R_Y = 10;        //XB1_R_Y //PS4_R_Y
+define L_X = 11;        //XB1_L_X //PS4_L_X
+define L_Y = 12;        //XB1_L_Y //PS4_L_Y
+define UP = 13;         //XB1_UP //PS4_UP
+define DOWN = 14;       //XB1_DOWN //PS4_DOWN
+define LEFT = 15;       //XB1_LEFT //PS4_LEFT
+define RIGHT = 16;      //XB1_RIGHT //PS4_RIGHT
+
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟐 - 𝐌𝐀𝐈𝐍 𝐁𝐋𝐎𝐂𝐊
+
+main{
+
+//Aim Assist V3
+if(get_val(ADS_BTN)) combo_run(AS);
+if(get_val(FIRE_BTN)) combo_run(AS2);
+
+//Ghost Peek V2
+if (get_val(ADS_BTN) && get_val(RIGHT_BUMP)) {
+GhostPeek =! GhostPeek;
+combo_run(GhostPeek);
+set_val(RIGHT_BUMP, 0);
+} else {
+combo_stop(GhostPeek);
+
+//Dropshot V2
+if(get_val(ADS_BTN) && event_press(RIGHT)){
+Dropshot =! Dropshot;
+if(Dropshot == TRUE){combo_run(Notify);a=0;b=2;} 
+if(Dropshot == FALSE){combo_run(Notify);a=2;b=0;}}
+}
+if(Dropshot){
+if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);}
+if (event_press(18)){ Dropshot = FALSE; }}
+
+//Anti-Recoil
+if(!ADSPos || get_val(ADS_BTN)) {
+combo_run(AntiRecoil);
+}
+
+//Deadzone Correction
+if (abs(get_val(XB1_LY)) < 0 && abs(get_val(XB1_LX)) < 0 ){ 
+set_val(XB1_LY,0); 
+set_val(XB1_LX,0); 
+} 
+if (abs(get_val(XB1_RY)) < 0 && abs(get_val(XB1_RX)) < 0 ){ 
+set_val(XB1_RY,0); 
+set_val(XB1_RX,0); 
+}
+
+//InstaEdit
+if (InstaEdit)
+if (get_val(RESET_BTN)) combo_run(InstaEdit);
+
+combo_run(AX);}
+
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟑 - 𝐂𝐎𝐌𝐁𝐎𝐒
+
+combo AS { 
+set_val(10,a_f(10,Sticky_AimExploit));
+wait(Delay)
+set_val(9,a_f(9,Sticky_AimExploit));
+wait(Delay)
+set_val(10,a_f(10,NegativeSticky_AimExploit));
+wait(Delay)
+set_val(9,a_f(9,NegativeSticky_AimExploit));
+wait(Delay)}
+
+combo AS2 { 
+set_val(10,a_f(10,AimAssist_Hipfire));
+wait(Delay)
+set_val(9,a_f(9,AimAssist_Hipfire));
+wait(Delay)
+set_val(10,a_f(10,NegativeAimAssist_Hipfire));
+wait(Delay)
+set_val(9,a_f(9,NegativeAimAssist_Hipfire));
+wait(Delay)}
+
+combo AX { 
+set_val(10,a_f(10,SoftAimV3));
+wait(Delay)
+set_val(9,a_f(9,SoftAimV3));
+wait(Delay)
+set_val(10,a_f(10,SoftAimV3Neg));
+wait(Delay)
+set_val(9,a_f(9,SoftAimV3Neg));
+wait(Delay)}
+
+
+combo GhostPeek {
+set_val(CROUCH_BTN,100);
+wait(30);
+wait(30);
+set_val(FIRE_BTN,100);
+wait(30);
+set_val(CROUCH_BTN,100);
+wait(GPCooldown);
+wait(200);}
+
+combo Dropshot {
+set_val(5,100);
+wait(Dropshot_Crouching);
+wait(Dropshot_Standing);
+set_val(5,100);}
+
+combo InstaEdit {
+set_val(RESET_BTN,100);
+wait(25);
+wait(25);
+set_val(RESET_BTN,100);
+wait(25);
+set_val(CONFIRM_BTN,100);
+wait(115);}
+
+combo AntiRecoil { 
+if(get_val(FIRE_BTN)) {
+Anti_Recoil = get_val(10) + AntiRecoil;
+if(Anti_Recoil > 100) Anti_Recoil = 100;
+set_val(10, Anti_Recoil);
+}}
+
+combo Notify {
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+}
+
+ 
+function a_f(p,m) {
+if(abs(get_val(p)) < Release)
+return m;
+return get_val(p);}

@@ -1,0 +1,321 @@
+/*
+          _______  _______  _______    _______ _________ _______             _______ 
+|\     /|(  ___  )/ ___   )(  ____ \  (  ___  )\__   __/(       )  |\     /|/ ___   )
+| )   ( || (   ) |\/   )  || (    \/  | (   ) |   ) (   | () () |  | )   ( |\/   )  |
+| (___) || (___) |    /   )| (__      | (___) |   | |   | || || |  | |   | |    /   )
+|  ___  ||  ___  |   /   / |  __)     |  ___  |   | |   | |(_)| |  ( (   ) )  _/   / 
+| (   ) || (   ) |  /   /  | (        | (   ) |   | |   | |   | |   \ \_/ /  /   _/  
+| )   ( || )   ( | /   (_/\| (____/\  | )   ( |___) (___| )   ( |    \   /  (   (__/\
+|/     \||/     \|(_______/(_______/  |/     \|\_______/|/     \|     \_/   \_______/
+                                                                                     
+
+
+
+Updated version of Haze Aim! Now with better tracking & more headshots!
+
+Contact zurx#0001 on discord for any questions!
+
+
+
+CHANGE THESE BINDS TO YOUR IN GAME BINDS */
+
+define Fire   = XB1_RT;  
+define Pickaxe = XB1_VIEW;     
+define N_Weapon = XB1_RB;  
+define Ads    = XB1_LT;   
+define Reload  = XB1_X;      
+define P_Weapon = XB1_LB;
+define Jump   = XB1_RS;    
+define Edit    = XB1_LS;  
+define Select   = XB1_RT;
+define Crouch = XB1_A;   
+define Ping    = XB1_XBOX;   
+define Confirm  = XB1_LS;
+define Reset  = XB1_RB;    
+define Wall    = XB1_RT;     
+define Ramp     = XB1_LT;  
+define Build  = XB1_Y;    
+define Floor   = XB1_RB;     
+define Roof     = XB1_LB;
+
+/* IGNORE THESE (LEAVE THEM ALONE) */
+
+define Up     = PS4_UP;   define Left    = PS4_LEFT;   define RX       = PS4_RX;
+define Down   = PS4_DOWN; define Right   = PS4_RIGHT;  define RY       = PS4_RY;
+
+define aimY   = PS4_RY;   define LX      = PS4_LX;     define On       = TRUE;
+define aimX   = PS4_RX;   define LY      = PS4_LY;     define Off      = FALSE;
+
+/* CHANGE TO YOUR IN GAME DEADZONE */
+
+int deadZone   = 10;       
+
+/* PUT TRUE IF YOURE LINEAR */
+
+int AimAssist_LINEAR  = TRUE; 
+int Strength  = 18;
+int Increment = 5; 
+                             
+/* PUT TRUE IF YOURE EXPO */
+
+int AimAssist_EXPO  = FALSE;
+int AimAssist_Strength  = 29; 
+/* ANTI RECOIL SETTINGS */
+int LegacyARecoil =  TRUE;
+int ArLegacyRY    = 14;
+/* NO SHAKE WHEN BUILDING */
+int BuildTracker  =  TRUE;
+int BuildSyncTime = 1000;
+          
+/* Turn off if youre not on ps4 controller, if you are on ps4 controller turn On. */
+int PSonXBOX           = On; 
+
+define LegacyRumble = Off;
+define LegacyInvert = Off;
+define LegacyARHip  = Off;
+
+int Edit1,Edit2,EditT,Shunt,BuildTrack,BuildCount;
+int power,Ypower,Xpower,Power,CountPower,AxisXY;
+int display_title = TRUE;
+int display_black;      
+int count_black;  
+
+main {
+
+    if (PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        
+        swap(PS4_TOUCH,PS4_SHARE);
+}
+
+   
+
+
+    if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack) {
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                BuildTrack = Off;
+                BuildCount = Off;
+            }
+            
+                if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall)) 
+                    BuildCount = Off;
+      }
+}
+
+    if (!BuildTrack) {       
+        
+        if (AimAssist_EXPO) {   
+         
+           if (get_val(Ads)> 95){ 
+               combo_run(AimExpo);
+           }
+        
+               if (abs(get_val(9)) > 19 || abs(get_val(10)) > 19) 
+                   combo_stop(AimExpo);
+      }
+}
+        
+     if (AimAssist_LINEAR) {
+	 
+	    if (event_press(Ads)) { 
+	    	
+	    	Power = On;
+}
+	    
+	    else if (!get_ival(Ads) && event_press(Fire)) {
+	    	
+	    	Power = On;
+}
+	    
+	    if (get_ival(Ads) || get_ival(Fire)) {
+	    	
+	    	AxisXY = isqrt(abs(get_ival(aimX)) * abs(get_ival(aimX)) + abs(get_ival(aimY)) * abs(get_ival(aimY)));
+	    	
+	    	if (AssistProfile == 1)
+	    		
+	    		AimAssist(Strength,Increment);
+	    		
+         } else {
+	    	
+	    	CountPower = 0;
+	    	power = Off;
+        }
+}
+ 
+    if (!BuildTrack) {  
+       
+      
+            
+            
+            
+    
+
+            if (LegacyARecoil){        
+                    AR_Value = ArLegacyRY;  
+
+                if ((((!LegacyRumble) && (LegacyARHip)) && (get_ival(Ads) || get_ival(Fire))) || 
+                     ((!LegacyRumble) && (!LegacyARHip) && get_ival(Ads) && get_ival(Fire))) {
+
+                    LegacyAR();
+                }
+                    else if ((((LegacyRumble) && (LegacyARHip)) && (get_ival(Ads) || get_ival(Fire)) && get_rumble(RUMBLE_A)) || 
+                              ((LegacyRumble) && (!LegacyARHip) && get_ival(Ads) && get_ival(Fire) && get_rumble(RUMBLE_A))) {
+
+                            LegacyAR();
+                    }
+            }
+       
+       
+     if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            Shunt = Off;
+        }
+            else {
+            set_val (Shunt,Off);
+         }
+      }
+  
+     
+       }
+     }
+   
+
+
+
+combo Confirm {
+      
+      set_val(Confirm,100);
+      wait(20);
+      set_val(Confirm,0);
+      wait(100);
+}
+
+
+
+combo AimExpo{          
+     
+     set_val(10, (AimAssist_Strength)); wait(10)
+     set_val(9, (AimAssist_Strength)); wait(10)
+     set_val(10, AimAssist_Strength * -1); wait(10)
+     set_val(9, AimAssist_Strength * -1); wait(10)
+}
+
+
+int AR_Value;
+function LegacyAR () {
+    
+    if(LegacyInvert) {
+        set_Val(RY,AR_Value * -1);
+    }
+        else {    
+            set_Val(RY,AR_Value);
+        }
+}
+
+
+
+int AssistProfile = 1; 
+function AimAssist (Strength,Step) {
+
+	if (Power) {
+		
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+	}
+	
+	if (!power) {
+	
+		Xpower += Increment;
+		Ypower -= Increment;
+	
+	} else {
+		
+		Xpower -= Increment;
+		Ypower += Increment;
+	}
+	
+	CountPower ++;
+	
+	if (CountPower >= (Strength / Increment)) {
+		
+		power = !power;
+		CountPower = 0;
+	}	
+	
+	
+		}
+	
+
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        return;
+            set_val(Button, 100);
+}
+
+function set_Val(Input,Output) {
+
+	set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+    return; 
+}
+
+/* NEW VARIABLES (LEAVE ALONE)
+
+
+
+
+
+int wait_time_correction;
+	int ads_grenade_sens, ads_fire_sens, Sens, actual_sens;
+	int CRESCENSangle;
+	int Crescens_POLAR_AN_AIM_CORRECTION;
+	int LeGiTDoGz_POLAR_AN_AIM_CORRECTION;
+	int anti_recoil;
+	int ptime;
+	int EDIT, HOLD1;
+	int SHUNT;
+	int tap; 
+	int R2_block;
+	int BuildMode = FALSE;
+	int INC = 1, DEC, COLOUR[3];
+	int color = 1; 
+	int CRESCENSsteps, DIRECTION, INVERT;
+	int x_Out, y_Out, angle_Out, x_Out9, y_Out9, angle_Out9, angle9, xx9[2], y9[2], angle2, xaa, yaa;
+	int CRESCENSradius;
+	int BRIGHTNESS = 3;
+	int ANGLE;
+	define STEP_INTERVAL = 1;
+	define STEPSS = 8;
+	define Tall_Oval = 1;
+	define Wide_Oval = 2;
+	define Ellipse = 3;
+	define Circle = 4;
+
+	int ANTI_RECOIL;
+	int DropShotSpeed
+	int ASSIST;
+	int OVAL_BIG;
+	int OVAL_SMALL;
+	int in_game_menu_sens;
+	int rapid_fire_speed;
+
+
+
+
+
+*/
+
+              
+           
+        

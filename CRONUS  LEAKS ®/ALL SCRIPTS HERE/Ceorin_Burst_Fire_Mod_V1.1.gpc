@@ -1,0 +1,110 @@
+/*
+		Ceorins BurstFire mod.
+ 		
+ 		Two modes with a quick toggle to switch between them in-game: 
+		Auto: Burst Fire to the Limit you set in the script and after that it turns to Full Auto. Limit is set at 50 as default, which means 0-50% push on the trigger gives you BurstFire and 51-100% gives you regular fire *Best usage with fully automatic Guns*
+		Semi: Straight up BurstFire 0-100%
+*/
+
+define Ads  = PS4_L2;
+define Fire = PS4_R2;
+
+define ModeHold  = PS4_L2;   // Switch Mode Toggle
+define ModePress = PS4_LEFT; // Switch Mode Toggle
+
+define Semi = 0;
+define Auto = 1;
+
+define Limit = 50;
+
+int BurstFireHold = 510; // Auto Only
+int BurstFireWait = 350; // Used in Both Fire Modes
+
+int BurstFire = TRUE;
+int BurstMode = Semi;  	 // [ (0) = Semi  or  (1) = Auto]
+
+int HairTriggers = TRUE;
+
+main {
+
+	if (HairTriggers) {
+		
+		if (!BurstFire || BurstMode == Auto && get_ival(Fire) > Limit) {
+		
+			deadzone(Ads,Fire,100,100);
+		
+		} else {
+		
+			deadzone(Ads,NOT_USE,100,NOT_USE);			
+		}
+	}
+	
+    if (BurstFire) {
+    
+    	if (get_ival(ModeHold)) {
+    		
+    		set_val(ModePress,0);
+    	
+    		if (event_press(ModePress)) {
+    		
+    			BurstMode = !BurstMode;
+    			combo_run(Rumble);
+    		}
+    	}
+    
+		if (BurstMode == Auto) {
+			
+			if (get_ival(Fire) > 0 && get_ival(Fire) <= Limit) {
+            
+            	combo_run(BurstFireAuto);
+            } else {
+            
+            	combo_stop(BurstFireAuto);
+        	}
+        
+        } else if (BurstMode == Semi) {
+			
+			if (get_ival(Fire)) { 
+				
+				set_val(Fire,0);
+            	combo_run(BurstFireSemi);    
+            
+            } else {
+            
+            	combo_stop(BurstFireSemi);            
+        	}
+    	}
+    }
+}
+
+combo BurstFireAuto {
+
+    set_val(Fire,100);
+    wait(BurstFireHold);
+    set_val(Fire,0);
+    wait(BurstFireWait);
+}
+
+combo BurstFireSemi {
+
+    set_val(Fire,100);
+    wait(40);
+    set_val(Fire,0);
+    wait(40);
+    set_val(Fire,100);
+    wait(40);
+    set_val(Fire,0);
+    wait(40);   
+    set_val(Fire,100);
+    wait(40);
+    set_val(Fire,0);
+    wait(40);    
+    wait(BurstFireWait);
+}
+
+combo Rumble {
+
+	set_rumble(RUMBLE_B,35);
+	wait(150);
+	reset_rumble();
+}

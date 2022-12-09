@@ -1,0 +1,215 @@
+/*
+ _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+|       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+| ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+| ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+| ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+| ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+| ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+| ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+ \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+         __    __ __    __  ______   ______  __    __  ______  __    __ ________       ______  ______ ________ __      __ 
+        |  \  /  \  \  |  \/      \ /      \|  \  /  \/      \|  \  |  \        \     /      \|      \        \  \    /  \
+        | ▓▓ /  ▓▓ ▓▓\ | ▓▓  ▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓ /  ▓▓  ▓▓▓▓▓▓\ ▓▓  | ▓▓\▓▓▓▓▓▓▓▓    |  ▓▓▓▓▓▓\\▓▓▓▓▓▓\▓▓▓▓▓▓▓▓\▓▓\  /  ▓▓
+        | ▓▓/  ▓▓| ▓▓▓\| ▓▓ ▓▓  | ▓▓ ▓▓   \▓▓ ▓▓/  ▓▓| ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓       | ▓▓   \▓▓ | ▓▓    | ▓▓    \▓▓\/  ▓▓ 
+        | ▓▓  ▓▓ | ▓▓▓▓\ ▓▓ ▓▓  | ▓▓ ▓▓     | ▓▓  ▓▓ | ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓       | ▓▓       | ▓▓    | ▓▓     \▓▓  ▓▓  
+        | ▓▓▓▓▓\ | ▓▓\▓▓ ▓▓ ▓▓  | ▓▓ ▓▓   __| ▓▓▓▓▓\ | ▓▓  | ▓▓ ▓▓  | ▓▓  | ▓▓       | ▓▓   __  | ▓▓    | ▓▓      \▓▓▓▓   
+        | ▓▓ \▓▓\| ▓▓ \▓▓▓▓ ▓▓__/ ▓▓ ▓▓__/  \ ▓▓ \▓▓\| ▓▓__/ ▓▓ ▓▓__/ ▓▓  | ▓▓       | ▓▓__/  \_| ▓▓_   | ▓▓      | ▓▓    
+        | ▓▓  \▓▓\ ▓▓  \▓▓▓\▓▓    ▓▓\▓▓    ▓▓ ▓▓  \▓▓\\▓▓    ▓▓\▓▓    ▓▓  | ▓▓        \▓▓    ▓▓   ▓▓ \  | ▓▓      | ▓▓    
+         \▓▓   \▓▓\▓▓   \▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓   \▓▓ \▓▓▓▓▓▓  \▓▓▓▓▓▓    \▓▓         \▓▓▓▓▓▓ \▓▓▓▓▓▓   \▓▓       \▓▓     
+*/
+//====================================
+define PS       = PS4_PS;         
+define SHARE    = PS4_SHARE;      
+define OPTIONS  = PS4_OPTIONS;    
+define R1       = PS4_R1;        
+define R2       = PS4_R2;        
+define R3       = PS4_R3;        
+define L1       = PS4_L1;        
+define L2       = PS4_L2;        
+define L3       = PS4_L3;        
+define RX       = PS4_RX;        
+define RY       = PS4_RY;        
+define LX       = PS4_LX;         
+define LY       = PS4_LY;        
+define UP       = PS4_UP;        
+define DOWN     = PS4_DOWN;       
+define LEFT     = PS4_LEFT;       
+define RIGHT    = PS4_RIGHT; 
+define CROSS    = PS4_CROSS;     
+define CIRCLE   = PS4_CIRCLE;    
+define SQUARE   = PS4_SQUARE;    
+define TRIANGLE = PS4_TRIANGLE;  
+define TOUCH    = PS4_TOUCH;
+define RumA     = RUMBLE_A;
+define RumB     = RUMBLE_B;
+define On       = TRUE;
+define Off      = FALSE;
+
+// Kill Switch Hold L2/LT + Tap Share/View (Change below if required) **** THIS WILL TURN ALL MODS ON / OFF ****
+//====================================
+define KillSwitchHold  = PS4_L2;      
+define KillSwitchPress = PS4_SHARE;
+//====================================
+int KillSwitch,JTime;
+//---------> Set On or Off
+int QuickCatch  = On;  // When not pressing/holding R2 or L1 & controller rumbles you will attempt to catch
+int QuickDodge  = On;  // Press L3 to quick dodge
+int CurvedThrow = On;  // Strafing (side to side) more than 90% and holding R2 you will perform a curved throw
+int LobThrow    = On;  // Running (forward + backwards) more than 90% and holding R2 you will perform a lobbed throw
+int FakeThrow   = On;  // When not pressing R2 tap R3 to perform a fake throw
+int AutoJump    = On;  // When move forward more than 95% for 1.2 seconds you will autojump, Then it will repeat jumping until under 95%
+int AutoRun     = On;  // When move forward more than 90% you will sprint
+int BlockRumble = On;  // This will prevent the controller from rumbling but still use the signal
+
+//-------> Set Times  Ms  *1000 = 1 Second
+int QuickCatchTime  = 100;  // Length of time L2 is Held
+int QuickDodgeTime  = 100;  // Length of time Square is Held
+int FakeThrowTime   = 200;  // Length of time R2 + R3 is Held
+int JumpTriggerTime = 1200; // Length of time You Are Running Before AutoJumping
+int JumpWaitTime    = 800;	// Length of time Before next jump
+
+main {
+
+    if (BlockRumble) {
+    	
+    	block_rumble();
+    }
+    
+    if (!KillSwitch) {
+    
+        if (AutoRun) {
+        	
+        	if (get_ival(LY) <= -90) {
+        		
+        		set_val(L3,100);
+        	}
+		}
+		
+        // Curved Throw
+        if (CurvedThrow) {
+        	
+        	if (abs(get_ival(LX)) >= 90 && get_ival(R2)) {
+            
+            	set_val(CIRCLE,100);
+        	}
+	    }
+	    
+	    // Lob Throw
+        if (LobThrow) {
+        
+        	if (abs(get_ival(LY)) >= 90 && get_ival(R2)) {
+            
+        	    set_val(TRIANGLE,100);
+        	}
+	    }
+	    
+	    // Quick Catch
+	    if (QuickCatch) {
+	    
+	    	if (!get_ival(R2) && !get_ival(L1) && (get_rumble(RumA) || get_rumble(RumB))) {
+	    		
+	    		combo_run(QuickCatch);
+	    	}
+	    }
+	    
+	    // Quick Dodge/Tackle
+	    if (QuickDodge) {
+	    
+	    	if (event_press(L3)) {
+	    	
+	    		combo_run(QuickDodge);
+	    	}
+	    }
+	    		
+	    // Fake Throw
+	    if (FakeThrow) {
+	    
+	    	if (!get_ival(R2) && event_press(R3)) {
+	    		
+	    		combo_run(FakeThrow);
+	    	}
+	    }
+	    
+	    // Auto Jump
+	    if (AutoJump) {
+	    
+	    	if (get_ival(LY) <= -95) {
+	    		
+	    		JTime += get_rtime();
+	    	
+	    		if (JTime >= JumpTriggerTime) {
+	    
+	    			combo_run(AutoJump);
+	    		}
+	    	}
+	    		else {
+	    		
+	    			combo_stop(AutoJump);
+	    			JTime = 0;
+	    		}
+	    	
+	    	if (JTime >= 30000) JTime = 0;
+	    }
+	    
+	}
+	
+	// KillSwitch Toggle
+	if (get_ival(KillSwitchHold)) {
+		
+		if (event_press(KillSwitchPress)) {
+		
+			KillSwitch = !KillSwitch;
+			combo_run(Rumble)
+		}
+		
+		set_val(KillSwitchPress,0);
+	}
+}
+
+combo QuickCatch {
+
+	set_val(L2,100);
+	wait(QuickCatchTime);
+}	
+
+combo FakeThrow {
+
+	set_val(R2,100);
+	set_val(R3,100);
+	wait(FakeThrowTime);
+}
+
+combo AutoJump {
+
+	set_val(CROSS,100);
+	wait(60);
+	set_val(CROSS,0);
+	wait(30);
+	wait(JumpWaitTime);
+}
+
+combo QuickDodge {
+
+	set_val(SQUARE,100);
+	wait(QuickDodgeTime);
+}
+
+combo Rumble {
+    
+    if (KillSwitch) {
+        
+        set_rgb(255,0,0);
+        set_rumble(RUMBLE_A,15);
+    }
+    
+        else {
+            
+            set_rgb(0,255,0);
+            set_rumble(RUMBLE_B,15);
+    	}
+    	
+    	wait(250);
+    	reset_rumble();
+    	reset_leds();
+}

@@ -1,0 +1,260 @@
+//play chess not checkers
+define ADS = XB1_LT;
+define Fire = XB1_RT; 
+int power
+int Xpower
+int Ypower
+define Pickaxe = XB1_Y;
+int CountPower;
+define Jump = XB1_A;
+define Edit = XB1_LS; 
+define Switch = XB1_A;
+define Build = XB1_B;           
+define Wall = XB1_RT;
+define Floor = XB1_RB;
+define Stair = XB1_LT
+define Cone = XB1_LB;
+define Trap = XB1_X;
+define Confirm = XB1_LT;
+define Reset = XB1_RIGHT;
+int AxisXY;
+define Up = XB1_UP; 
+define Down = XB1_DOWN; 
+define Left = XB1_LEFT; 
+define Right = XB1_RIGHT;
+define RX = PS4_RX;   
+define RY = PS4_RY;   
+define LX = PS4_LX;   
+define LY = PS4_LY;  
+int SnapShot_hold; 
+int SnapShot_rest;
+int AssistProfile = 32; 
+int Angle
+int AimAssist = On;
+define On = TRUE;
+define Off = FALSE; 
+int Ace  = TRUE; 
+int Strength  = 24;
+int Increment = 8;
+int ACEASSIST = 1; 
+
+int ExploitAngleBoost = 7;
+int Radius
+int SensitiveAbuse = On; 
+int aimabuse_hold = 149;
+int aimabuse_wait = 0;
+int ACEAIMBOT = On;
+int PolarStrength = 1.1;
+int PolarRelease
+int AceAA = On;
+int acestrong = 1;
+int delay = 9;
+ int cryptoaceAimAssist  = On;
+int cryptoaceBoost      = On;
+int Speed
+int aceploit = On; 
+int aceploit2 = On;
+int TargetTrackerExploit = On;
+int AimAbuse = On;
+int LessInputDelay = On;
+define InputDelay = 5;
+int PolarBoost       =  29;
+int InstantTriggers = On;
+  int cryptoaceRadius   = 5;
+int cryptoaceAngle    = 21;
+int cryptoaceRBoost   = 29;
+int Power
+int Touchpad = FALSE;
+int BlockRumbles = On;
+
+main
+{
+
+	if(LessInputDelay)
+	{
+		VM(InputDelay);  
+	}
+ 
+    if (BlockRumbles) 
+    {
+		block_rumble();
+	}
+	
+	if (Touchpad) 
+	{    
+        swap (PS4_TOUCH,PS4_SHARE);
+    }
+	
+    	
+    	if(TargetTrackerExploit){
+if(get_val(ADS) && get_val(Fire)){
+sensitivity(RX,0,100); 
+sensitivity(RY,0,100);
+}}
+if(aceploit){ 
+if(get_val(PS4_R2)> 95){ combo_run(acesoft);}
+if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) 
+combo_stop(acesoft);
+}
+
+    	 
+    	      if (Ace) {
+	 
+	    if (event_press(PS4_L2)) { 
+	    	
+	    	Power = On;
+}
+	    
+	    else if (!get_ival(RX) && event_press(RY)) {
+	    	
+	    	Power = On;
+}
+	    
+	    if (get_ival(RX) || get_ival(RY)) {
+	    	
+	    	AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));
+	    	
+	    	if (AssistProfile == 32)
+	    		
+	    		AimAssis(Strength,Increment);
+	    		
+         } else {
+	    	
+	    	CountPower = 0;
+	    	power = Off;
+        }
+}
+ 
+    
+    	
+		if (ACEAIMBOT) 
+		{
+	    	if (get_ival(PS4_L2) || get_ival(PS4_R2)) 
+	    	{	        	
+	        	AimAssist();
+	        }
+	        
+	        if (!get_ival(PS4_RX) && !get_ival(PS4_RY)) 
+	        {
+	        	AAT = 0;
+	        	Axis = 0;
+	        }
+	      }
+	      
+	    if (cryptoaceAimAssist) {
+
+        if (get_ival(PS4_RX) && abs(get_ival(RX)) <= PolarRelease && abs(get_ival(RY)) <= PolarRelease) {
+            
+            if (cryptoaceBoost && get_ival(PS4_R2)) {
+                Radius = cryptoaceRadius + cryptoaceBoost;
+            }
+                else {
+                    Radius = cryptoaceRadius;
+                }
+            
+                    if (ExploitAngleBoost && get_ival(PS4_R2)) {
+                        Angle = cryptoaceAngle + PolarBoost;
+                    }
+                        else {
+                            Angle = cryptoaceAngle;
+                        }
+                set_polar(POLAR_RS,Speed = (Speed + Angle) % 360,(abs(get_ival(POLAR_RX)) + abs(get_ival(POLAR_RY))) / 4 + Radius * 328);
+            }
+        }  
+	      
+    	}
+	    
+	
+
+
+combo acesoft { 
+set_val(10, (ACEASSIST)); wait(10)
+set_val(9, (ACEASSIST)); wait(10)
+set_val(10, ACEASSIST * -1); wait(10)
+set_val(9, ACEASSIST * -1); wait(10)}
+
+ 
+ function VM (f_speed)
+{
+    if     (f_speed == 0) vm_tctrl(-0);
+    else if(f_speed == 1) vm_tctrl(-2);
+    else if(f_speed == 2) vm_tctrl(-4);
+    else if(f_speed == 3) vm_tctrl(-6);
+    else if(f_speed == 4) vm_tctrl(-8);
+    else if(f_speed == 5) vm_tctrl(-9);
+}
+
+function AimAssist() 
+{
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(RY,AAT * PolarStrength / 10);
+		
+	if (Axis == 1)  
+		
+		set_Val(RX,AAT * PolarStrength / 10);
+	
+	if (Axis == 2)  
+		
+		set_Val(RY,inv(AAT * PolarStrength / 10));
+
+	if (Axis == 3) {
+		
+		set_Val(RX,inv(AAT * PolarStrength / 10));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+function AimAssis (Strength,Step) {
+
+	if (Power) {
+		
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+	}
+	
+	if (!power) {
+	
+		Xpower += Increment;
+		Ypower -= Increment;
+	
+	} else {
+		
+		Xpower -= Increment;
+		Ypower += Increment;
+	}
+	
+	CountPower ++;
+	
+	if (CountPower >= (Strength / Increment)) {
+		
+		power = !power;
+		CountPower = 0;
+	}	
+	
+	
+		}
+function set_Val(Input,Output) 
+{
+
+    set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+        
+    return; 
+}
+// this is a old outdated script that i have leaked myself to show the capabilities i promise my new one is better and has completely new aa
+//for this script i used others aa and made them better on my new one i use my own code i promise on this one it has some of my code but not a lot of it 
+int AAT, Axis;
