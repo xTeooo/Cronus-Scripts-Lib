@@ -1,0 +1,79 @@
+// 1. Blue	= Close
+// 2. Red	= Medium
+// 3. Green	= Long
+
+/* L2/LT + Right D-Pad to change distance
+								   0. Off	= No Selection	*/
+define  CloseRangeTime	= 160,	// 1. Blue	= Close
+		MediumRangeTime	= 120,	// 2. Red	= Medium
+		LongRangeTime	= 100;	// 3. Green	= Long
+
+int Count,
+	Start;
+
+main {
+	if(isqrt(pow(get_ival(PS4_RY), 2) + pow(get_ival(PS4_RX), 2)) <= 12) // Remove Any Unwanted Stick Drift
+	{
+		set_val(PS4_RY, 0);
+		set_val(PS4_RX, 0);
+	}
+
+	// L2/LT Hair Trigger
+	deadzone(PS4_L2, NOT_USE, 99, NOT_USE);
+
+  // R2/RT Hair Trigger (Hip Aim)
+	if(get_val(PS4_R2) >= 1 && get_val(PS4_R2) < 13)
+		set_val(PS4_R2, 13);
+
+
+	// Headshot Aim
+	if(get_val(PS4_L2) && event_press(PS4_RIGHT))
+		Count ++;
+
+		if(Count >= 4)
+			Count = 0;
+
+		if(!Start && get_val(PS4_L2) && get_ptime(PS4_L2) > 250)
+		{
+			if(Count == 1)
+				combo_run(AIM_HEAD_CLOSE);
+			if(Count == 2)
+				combo_run(AIM_HEAD_MEDIUM);
+			if(Count == 3)
+				combo_run(AIM_HEAD_LONG);
+		}
+
+	if(event_release(PS4_L2))
+		Start = FALSE;
+
+	if(!Count)
+		set_led(LED_1, 0);
+
+	if(Count == 1)
+		set_hsb(110, 100, 75);
+
+	if(Count == 2)
+		set_hsb(55, 100, 75);
+
+	if(Count == 3)
+		set_hsb(12, 100, 75);
+}
+
+// Headshot Aim
+combo AIM_HEAD_CLOSE {
+	set_val(PS4_RY, -100);
+	wait(CloseRangeTime);
+	Start = TRUE;
+}
+
+combo AIM_HEAD_MEDIUM {
+	set_val(PS4_RY, -100);
+	wait(MediumRangeTime);
+	Start = TRUE;
+}
+
+combo AIM_HEAD_LONG {
+	set_val(PS4_RY, -100);
+	wait(LongRangeTime);
+	Start = TRUE;
+}

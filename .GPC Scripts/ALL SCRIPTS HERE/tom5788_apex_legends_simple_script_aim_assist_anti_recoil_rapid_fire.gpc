@@ -1,0 +1,189 @@
+// GPC Online Library
+// tom5788_apex_legends_simple_script_(aim_assist,_anti_recoil,_rapid_fire}.gpc
+
+/* = = = = = = = = = = 
+ = = Version 3.2 = = 
+ = = = = = = = = = =
+ 
+  Features
+ =================================
+ === Aim Assist                ===
+ === Anti Recoil               ===
+ === Rapid Fire                ===
+ === Auto Run                  ===
+ =================================
+ 
+  Rapid Fire Info
+ =================================
+ === Green LED = ON            ===
+ === Red LED = OFF             ===
+ =================================
+ 
+ Social Media
+ =================================
+ === Twitter - Peramox         ===
+ === Instagram - thomasjchaney ===
+ === Youtube - Peramox         ===
+ =================================
+ 
+ Credits
+ =================================
+ === TOM5788, @Peramox         ===
+ === ItzSnack                  ===
+ =================================
+*/
+define FIRE_BTN  = PS4_R2; 
+define ADS_BTN   = PS4_L2;                                           
+define RF_switch  = PS4_UP;   //                            
+define AR_switch  = PS4_UP;   //                                             
+//-------------------------------------------------------------------------------------------
+define save       =  2;   // XB1_MENU - PS4_OPTIONS                                          
+//-------------------------------------------------------------------------------------------
+define AR_Release = 70;   // change this value to set when antirecoil stops working (min: antirecoil value + 10)
+define Scope_only = TRUE; // if TRUE Antirecoil IS ON only when scoping - if FALSE, is always ON 
+//-------------------------------------------------------------------------------------------  
+define UP         = 13;                                                           
+define DOWN       = 14;                                                           
+define LEFT       = 15;                                                           
+define RIGHT      = 16;                                                           
+//------------------------------------------------------------------------------------------- 
+define Blue       =  1;                                                                       
+define Red        =  2;                                                                        
+define Green      =  3;                                                                        
+define Pink       =  4;                                                                       
+define SkyBlue    =  5;                                                                       
+define Yellow     =  6;                                                                       
+define White      =  7;                                                                       
+//-------------------------------------------------------------------------------------------
+data(1,                                                                                   
+  2,0,0,0, //1. Blue                                                                     
+  0,2,0,0, //2. Red                                                                      
+  0,0,2,0, //3. Lime/Green                                                               
+  0,0,0,2, //4. Fuchsia/Pink                                                             
+  2,0,2,0, //5. SkyBlue                                                                 
+  0,2,2,0, //6. Yellow                                                                  
+  2,2,2,2  //7. White                                                                   
+);                                                                                      
+//-------------------------------------------------------------------------------------------
+ 
+int run = FALSE; // if TRUE Autorun is ON - if FALSE, OFF 
+int recoil_onoff  = TRUE; // if TRUE Antirecoil is ON by default - if FALSE, OFF by default
+//----------------------------------------------------------------------------------------
+int rapid_onoff   = TRUE; // if TRUE Rapidfire is ON by default - if FALSE, OFF by default
+// (Hold LT + D-PAD UP for fast Enable/Disable) ---------------------------------------------------
+int flip = FALSE; // if TRUE Flipped Bumpers is ON - if FALSE, OFF
+int RATE_OF_FIRE  = 25;   // Range: 1 to 25 RPS (Round/s)
+// DON'T CHANGE VALUES RECOMMENDED /
+int ANTI_RECOIL   = 9;                                                                  
+int ANTI_RECOIL_H =  5;                                                                  
+int anti_recoil;                                                                         
+int anti_recoil_H;                                                                       
+int Col_ind;                                                                             
+int hold_time;                                                                          
+int rest_time;                                                                          
+int rumble_tipe;
+// DON'T CHANGE VALUES RECOMMENDED //
+int AA_Pos_Value = 18;   // Aim Assist
+int AA_Neg_Value = -23;  // Aim Assist  
+//-------------------------------------------------------------------------------------------                                                             
+ 
+main {   
+ 
+ 
+//Auto Run 
+        if(run) 
+        if((get_val(PS4_LY)) < -95) {
+            combo_run(Auto_Run);
+        }
+//Flipped Bumpers
+    if(flip) {
+        swap(PS4_R1, PS4_R2);
+        swap(PS4_L1, PS4_L2);
+    }
+//Aim Assist 
+    if(get_val(7) && get_val(9) < AA_Pos_Value && get_val(9) > AA_Neg_Value)  
+      combo_run(tom5788xAA);  
+ 
+//Anti Recoil
+    if(get_val(PS4_R3) && event_press(AR_switch))  { 
+        recoil_onoff=!recoil_onoff;                  
+        set_rumble_tipe(recoil_onoff);               
+    }  
+    if(!Scope_only || get_val(ADS_BTN) && get_val(FIRE_BTN )) {    
+        combo_run(AntiRecoil);                                      
+    }                                                               
+ 
+    if( abs(get_val(10)) > AR_Release || abs(get_val(9)) > AR_Release) { 
+        combo_stop (AntiRecoil);                                        
+    } 
+ 
+//Rapid Fire
+       if(rapid_onoff) colourled (Green); 
+       else         colourled (Red);
+    if(get_val(PS4_L2) && event_press(RF_switch))  { 
+        combo_run (vibrate);                          
+        rapid_onoff=!rapid_onoff;                    
+    }                                                
+    if(rapid_onoff) {                                    
+  if(get_val(ADS_BTN) && get_val(FIRE_BTN)) {                                    
+          combo_run (RAPID_FIRE);                       
+        }                                               
+    }                                                     
+        hold_time = 500 / RATE_OF_FIRE;                  
+        rest_time = hold_time - 20;                       
+        if(rest_time < 0) rest_time = 0;    
+ 
+}
+ combo tom5788xAA {  // Aim Assist
+ set_val(9,AA_Pos_Value);
+ wait(34);
+ set_val(9,AA_Neg_Value);
+ wait(34); } 
+ 
+combo vibrate {   //Rumbles                                    
+    set_rumble(rumble_tipe, 100);                    
+    wait(300);                                       
+    reset_rumble();                                  
+}                                                    
+ 
+function set_rumble_tipe ( val) {   //Rumbles                
+    if( val) rumble_tipe = RUMBLE_A ;                
+    else   rumble_tipe = RUMBLE_B ;                  
+    combo_run(vibrate);                              
+}                                                    
+combo RAPID_FIRE { //Rapid Fire                               
+    set_val(FIRE_BTN, 100);                          
+    wait(hold_time);                                 
+    set_val(FIRE_BTN, 0);                            
+    wait(rest_time);                                 
+    set_val(FIRE_BTN, 0);                            
+}                                                    
+ 
+combo AntiRecoil { //Anti Recoil                                   
+    if(recoil_onoff) {                               
+     anti_recoil = get_val(10) + ANTI_RECOIL;        
+     if(anti_recoil > 100) anti_recoil = 100;        
+     set_val(10, anti_recoil);                       
+     anti_recoil_H = get_val(9) + ANTI_RECOIL_H;     
+     if(anti_recoil_H > 100) anti_recoil_H = 100;    
+     set_val(9, anti_recoil_H);                      
+    }                                                
+}       
+ 
+ 
+combo Auto_Run { //Auto Run
+    set_val(PS4_L3, 100);
+    wait(40);
+    set_val(PS4_L3, 0);
+    wait(40);
+    set_val(PS4_L3, 0);
+}
+ 
+// COLOR LED function                                
+function colourled(Colour) {                         
+    Col_ind=(Colour*4)- 3;                           
+    set_led(LED_1,dbyte(Col_ind  ));                 
+    set_led(LED_2,dbyte(Col_ind+ 1));                
+    set_led(LED_3,dbyte(Col_ind+ 2));                
+    set_led(LED_4,dbyte(Col_ind+ 3));                
+}// End

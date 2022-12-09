@@ -1,0 +1,639 @@
+//--Combat Mode -- Match These To Your In-Game Buttons
+	define FIRE       		  = PS4_R2;       // Fire In Game
+	define ADS        		  = PS4_L2;       // Ads In Game
+	define PICKAXE    		  = PS4_TRIANGLE; // Pickaxe In Game
+	define N_WEAPON   		  = PS4_R1;       // Next Weapon In Game
+	define P_WEAPON   		  = PS4_L1;       // Previous Weapon In Game
+	define RELOAD     		  = PS4_SQUARE;   // Reload In Game
+	define JUMP       		  = PS4_CROSS;    // Jump In Game
+	define CROUCH     		  = PS4_R3;       // Crouch In Game
+	define PING       		  = PS4_RIGHT;    // Ping In Game
+
+//--Build Mode
+	define BUILD      		  = PS4_CIRCLE;	// Build In Game {Switch/Edit or Switch}
+	define SWITCH     		  = PS4_LEFT;   // Switch In Game {Switch Only}
+	define WALL       		  = PS4_R2;		// Wall In Game
+	define FLOOR      		  = PS4_R1;		// Floor In Game
+	define RAMP       		  = PS4_L2;		// Ramp In Game
+	define TRAP       		  = PS4_SQUARE;	// Trap In Game
+	define ROOF       		  = PS4_L1;		// Roof In Game
+
+//--Edit Mode
+	define EDIT       		  = PS4_CIRCLE;   // Edit In Game (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+	define SELECT     		  = PS4_R2;       // Edit Select Piece In Game
+	define CONFIRM    		  = PS4_CIRCLE;   // Edit Confirm In Game	
+	define RESET      		  = PS4_R3;       // Edit Reset In Game
+
+//--Movement & Aim Sticks
+	define AIM_Y      		  = PS4_RY;  	  // Vertical Aim Axis In Game
+	define AIM_X      		  = PS4_RX;  	  // Horizontal Aim Axis In Game
+	define STRAFE     		  = PS4_LX;  	  // Horizontal Walk Axis In Game
+	define WALK       		  = PS4_LY;  	  // Vertical Walk Axis In Game
+
+//--Deadzone Value To Remove Any Unwanted Stick Movement
+	define DeadZone			  = 10;
+
+//--Hair Triggers ( IF L2/LT OR R2/RT IS HELD MORE THEN 10% IT'LL REGISTER AS 100% IN THE GAME )
+	define HairTriggers		  = TRUE;
+
+//--If TRUE Then All Rumbles To Controller Will Be Blocked But Keep In-Game Vibration Enabled For Rumble Recoil To Work.
+	define BlockRumble		  = FALSE;
+
+//--Aim Assist Shape
+	define TaylorShapes		  =    1; // 0 = Disabled, 1 = Circular, 2 = Tall Oval, 3 = Wide Oval, 4 = Spiral, 5 = Helix, 6 = Spiral Oval
+	int    AngleDirection	  = TRUE; // Reverses the Shape Direction
+	define TaylorRadius		  =   15; // Strength - I Usually Set This Value About 1 Or 2 Higher Then My In-Game Deadzone As To Not Get Too Much Shake
+	define TaylorSpeed		  =   15; // Speed - I Personally Either Use 15 or 20 But Again Feel Free To Play With
+
+//--Anti Recoil With A Fixed Value With A Small Boost In Strength, Giving You A Zig Zag Effect
+	define AntiRecoil         =  FALSE; 
+	int    Vertical_Value     =     30; // Vertical Recoil
+
+//--Bloom Reducer
+	define BloomReducer		  = TRUE;
+
+//--Rapid Fire - Change FALSE to TRUE If You Want Rapid Fire On By default
+	int    RapidFire		  = FALSE; // Main Toggle - Hold L2 & Tap RIGHT To Enable/Disable In-Game
+	define HoldTime			  =	 60;
+	define RestTime			  =	 30;
+
+//--Drop Shot Mod
+	int DropShot			  = TRUE; // When Firing, Tap Crouch To Perform Drop Shot Mod
+
+//--Head Shot Assist
+	define HeadAssist         = FALSE; // [(TRUE) or (FALSE)] = Progression Headshot Assist
+	define HeadHipAssist      = FALSE; // [(TRUE) or (FALSE)] = Operate on Fire Only [If FALSE It Will Only Run On ADS & FIRE]
+	define HeadStep           =    2;  // [1 - 30] = Step Increment Increasing Until Its Reached HeadMax 
+	define HeadMax            =   30;  // [1 - 70] = Max Head Assist Value 
+
+//--Fast Reset
+	define InstaFastReset 	  = FALSE;     // Fast Reset Toggle
+	define FastReset      	  = PS4_TOUCH; // FAST RESET BUTTON [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ]
+	define ButtonTime     	  = 20;        // Button Press Time
+
+//--Quick Edit
+	define QuickEditAssist    = FALSE;		 // Edit Assist Toggle
+	define EditDelay          = 20;   	 	 // Edit Assist Hold Delay On Select
+	define EditAssist         = PS4_RIGHT;  // EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+
+//--PlayStation On Xbox
+	define PSOnXbox			  = FALSE; // Touchpad Fix On PC or Xbox
+
+//--Slide Shot
+	define SlideShot		  = FALSE;
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | I | N | I | T | I | L | I | Z | A | T | I | O | N | | | | | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
+init { InitializeScript(); }
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {
+	RemoveStickNoise();
+
+	if(HairTriggers)
+	{
+		if(get_val(PS4_R2) > 10) // We don't assign these as ADS, FIRE variable because ONLY L2/LT and R2/RT can have a hair triggers to them
+			set_val(PS4_R2, 100);
+
+		if(get_val(PS4_L2) > 10)
+			set_val(PS4_L2, 100);
+	}
+
+	if(PSOnXbox && get_console() == PIO_XB360 && get_controller() == PIO_PS4)
+	{
+		swap (PS4_TOUCH, PS4_SHARE);
+	}
+
+	if(BlockRumble)
+	{
+		block_rumble();
+	}
+
+	if(get_val(ADS))
+	{
+		if(event_press(PS4_RIGHT))
+		{
+			LedBlink(RapidFire);
+			RapidFire = !RapidFire;
+			blockBTN  = PS4_RIGHT;
+			VibA      = TRUE;
+			combo_run(Rumble);
+		}
+		if(event_press(PS4_DOWN))
+		{
+			LedBlink(DropShot);
+			DropShot = !DropShot;
+			blockBTN = PS4_DOWN;
+			VibA     = TRUE;
+			combo_run(Rumble);
+		}
+	}
+
+	if (BuildTracker) 
+	{
+		if (event_press(BUILD))
+		{
+            BuildTrack = !BuildTrack;
+        	LED(2);
+        }
+			if (BuildTrack)
+			{
+				BuildCount += get_rtime();
+
+			if (event_press(PICKAXE) || BuildCount == BuildSyncTime)
+			{
+				BuildTrack = FALSE;
+                BuildCount = 0;
+            }
+
+			if (get_val(P_WEAPON) || get_val(N_WEAPON) || get_val(RAMP) || get_val(WALL) || get_val(TRAP)) 
+				BuildCount = 0;
+			}
+	}
+
+    if (!BuildTrack && !Edit1)
+	{
+		LED(0);
+
+		if(QuickEditAssist)
+		{
+			if(get_val(EditAssist))
+			{
+				EditAssist();
+				Edit1 = TRUE;
+			}
+
+			if(event_release(EditAssist))
+			{
+				EditT = 0;
+				Edit1 = FALSE;
+			}
+		}
+
+		if (InstaFastReset)
+		{
+	    	if (event_press(FastReset))
+	    	{
+	    		combo_run(FastReset);
+			}
+		}
+
+		if(TaylorShapes)
+		{
+			if(AngleDirection)
+			{ 
+				AngleDirection = (get_val(AIM_X) > 0);
+			}
+
+			RX = get_val(AIM_X);
+			RY = get_val(AIM_Y);
+
+			ActualMagnitude = isqrt(pow(RX, 2) + pow(RY, 2));
+			MaxMagnitude    = (ActualMagnitude < 100);
+
+			Angle   += TaylorSpeed;
+			Angle    = Angle % 360;
+			COSAngle = PolarArray[(Angle + 270) % 360];
+			SINAngle = PolarArray[Angle % 360];
+
+			if(get_val(ADS) || get_val(FIRE))
+			{
+				if(ActualMagnitude < TaylorRadius)
+				{
+					SINAngle -= RY;
+					COSAngle -= RX;
+				}
+				else
+				{
+					SINAngle = (SINAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+					COSAngle = (COSAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				}
+					ShapesV3(TaylorRadius);
+			}
+		}
+
+		if (SlideShot)
+		{
+            if (!get_val(ADS) && event_press(FIRE))
+			{
+                combo_run(SlideShot);
+            }
+
+            if (event_release(FIRE))
+			{
+            	combo_run(SlideShot);
+        	}
+
+        	if (combo_running(SlideShot))
+			{
+        		set_val(FIRE, 0);
+        	}
+        }
+
+		if (HeadAssist)
+		{
+			if (get_val(ADS) && get_val(FIRE) || HeadHipAssist && get_val(FIRE))
+			{
+				if (abs(get_val(AIM_Y)) < HeadMax)
+				{
+					Head += HeadStep;
+					combo_run(HeadAssist);
+				}	
+			}
+				if (!get_val(FIRE))
+					Head = 0;
+
+				if (Head >= HeadMax)
+					combo_stop(HeadAssist);
+		}
+
+		if(BloomReducer && get_val(ADS) && get_val(FIRE))
+		{
+			combo_run(cAntiBloom);
+			combo_run(cRapid);
+		}
+			if(abs(get_val(STRAFE)) > 60 || abs(get_val(WALK)) > 60)
+			{
+				combo_stop(cAntiBloom);
+				combo_stop(cRapid);
+			}
+
+		if(AntiRecoil && get_val(ADS) && get_val(FIRE))
+		{
+			combo_run(cRecoil);
+		}
+
+		if(RapidFire && get_val(FIRE))
+		{
+			combo_run(cRapid);	
+		}
+		else if(event_release(FIRE))
+		{
+			combo_stop(cRapid);
+		}
+
+		if(DropShot)
+		{
+			if(event_release(FIRE))
+			{
+				Droppy_Shotty = FALSE;
+			}
+
+			if(!BuildTrack)
+			{
+				if(get_val(FIRE) && event_press(CROUCH))
+				{
+					Droppy_Shotty = TRUE;
+				}
+			}
+
+			if(!BuildTrack)
+			{
+				if(Droppy_Shotty)
+				{
+					if(get_val(FIRE))
+					{
+						combo_run(cDropShot);
+					}
+				}
+			}
+		}
+	} // End Of Build Mode
+
+	if(blockBTN)
+	{
+		if(event_release(blockBTN))
+		{
+			blockBTN = 0;
+		}
+		else
+		{
+			set_val(blockBTN, 0);
+		}
+	}
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | | | 
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
+combo SlideShot {	
+	set_val(CROUCH, 100);
+	wait(150);
+	wait(20);
+}
+
+combo HeadAssist{
+	set_val(AIM_Y, inv(Head) + get_val(RY));
+}
+
+combo FastReset {
+    set_val(EditAssist, 100);
+    wait(ButtonTime)
+    set_val(RESET, 100);
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+
+combo Confirm {
+    set_val(CONFIRM, 100);
+    wait(ButtonTime);
+    set_val(CONFIRM, 0);
+    wait(ButtonTime);
+}
+
+combo cAntiBloom {
+	set_val(STRAFE, -100);
+	wait(50);
+	set_val(WALK, -100);
+	wait(20);
+	set_val(STRAFE, 100);
+	wait(50);
+	set_val(WALK, 100);
+	wait(20);
+}
+
+combo cRapid {
+	set_val(FIRE, 100);
+    wait(40);
+    set_val(FIRE, 0);
+    wait(20);
+}
+
+combo cRecoil {
+	Boost++;
+
+	Recoil = get_val(PS4_RY) + Vertical_Value + Boost;
+
+	if(Boost == 10)
+	{
+		Boost = 0;
+	}
+
+	if(Recoil > 100)
+	{
+		Recoil = 100;
+	}
+
+	set_val(PS4_RY, Recoil);
+}
+
+combo cDropShot {
+    set_val(CROUCH, 100); 
+    wait(60);
+    set_val(CROUCH, 0);
+    wait(30);
+    wait(70);
+}
+
+combo FlashGreen {
+	LED(0);
+	wait(100);
+	LED(2);
+	wait(100);
+	LED(0);
+	wait(100);
+	LED(2);
+	wait(100);
+	LED(0);
+	wait(1500);
+	LED(2);
+}
+
+combo FlashRed {
+	LED(1);
+	wait(100);
+	LED(2);
+	wait(100);
+	LED(1);
+	wait(100);
+	LED(2);
+	wait(100);
+	LED(1);
+	wait(1500);
+	LED(2);
+}
+
+combo Rumble {
+	if(VibA)
+		set_rumble(RUMBLE_A, 90);
+
+	else if(VibB)
+		set_rumble(RUMBLE_B, 90);
+
+	wait(250);
+
+	VibA = FALSE;
+	VibB = FALSE;
+
+	reset_rumble();
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | S | S | _ | N | i | k | o | l | a | i | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-*/
+function Clamp(A, B, C) {
+	if(A < B)
+	{
+		return B;
+	}
+		if(A > C)
+		{
+			return C;
+		}
+	return A;
+}
+
+function LedBlink(Toggle) {
+    if(Toggle)
+        combo_run(FlashGreen);
+    else
+        combo_run(FlashRed);
+}
+
+function EditAssist () {
+	EditT += get_rtime();
+
+	if (get_val(EditAssist))
+	{
+		if (EditT >= EditDelay)
+			EditPress(SELECT);
+	}
+}
+
+function EditPress (Button) {
+	if (get_val(Button))
+		return;
+	set_val(Button, 100);
+}
+
+function ShapesV3(x_Var) { 
+ 	if(TaylorShapes == 1)
+	{
+		if(AngleDirection)
+		{
+        	RX += (get_val(AIM_X))  + ( (SINAngle * x_Var) ) / 100;
+            RY += (get_val(AIM_Y))  + ( (COSAngle * x_Var) ) / 100;
+        }
+        else
+        {
+        	RY = (get_val(AIM_Y))  + ( (SINAngle * x_Var) ) / 100;
+            RX = (get_val(AIM_X))  + ( (COSAngle * x_Var) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 2)
+	{
+		if(AngleDirection)
+		{
+            RX = (get_val(AIM_X))  + ( (SINAngle * x_Var / 2) ) / 100;
+            RY = (get_val(AIM_Y))  + ( (COSAngle * x_Var) )     / 100;
+        }
+		else
+		{
+        	RY = (get_val(AIM_Y))  + ( (SINAngle * x_Var) )     / 100;
+        	RX = (get_val(AIM_X))  + ( (COSAngle * x_Var / 2) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 3)
+	{
+		if(AngleDirection)
+		{
+        	RY = (get_val(AIM_Y))  + ( (COSAngle * x_Var / 2) ) / 100;
+        	RX = (get_val(AIM_X))  + ( (SINAngle * x_Var) )     / 100;
+        }
+		else
+		{
+        	RX = (get_val(AIM_X))  + ( (COSAngle * x_Var) )     / 100;
+       		RY = (get_val(AIM_Y))  + ( (SINAngle * x_Var / 2) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 4)
+	{
+		Spiral(x_Var);
+
+		if(AngleDirection)
+		{
+        	RX = (get_val(AIM_X))  + ( (SINAngle * OuterSpiral) ) / 100;
+            RY = (get_val(AIM_Y))  + ( (COSAngle * InnerSpiral) ) / 100;
+        }
+        else
+        {
+        	RY = (get_val(AIM_Y))  + ( (SINAngle * InnerSpiral) ) / 100;
+       	    RX = (get_val(AIM_X))  + ( (COSAngle * OuterSpiral) ) / 100;
+        }
+	}
+
+	if(TaylorShapes == 5)
+	{
+		if(Position == 0 || Position == 1)
+    	{
+		    RX = (get_val(AIM_X)) + ((COSAngle * x_Var)) / 100;
+		}
+	    if(Position == 2 || Position == 3)
+		{
+		    RY = (get_val(AIM_Y)) + ((SINAngle * x_Var)) / 100;
+		}
+
+		Position++;
+
+		if(Position == 4)
+		{
+			Position = 0;
+		}
+	}
+
+	if(TaylorShapes == 6)
+	{
+		Spiral(x_Var);
+
+		if(AngleDirection)
+		{
+        	RX = (get_val(AIM_X)) + ( (OuterSpiral * SINAngle) ) / 100;
+            RY = (get_val(AIM_Y)) + ( (InnerSpiral * COSAngle) ) / 100;
+        }
+        else
+        {
+        	RX = (get_val(AIM_X)) + ( (InnerSpiral * COSAngle) ) / 100;
+            RY = (get_val(AIM_Y)) + ( (OuterSpiral * SINAngle) ) / 100;
+        }
+	}
+		set_val(AIM_X, Clamp(RX, -100, 100));
+		set_val(AIM_Y, Clamp(RY, -100, 100));
+}
+
+function Spiral(x_Var) {
+    if(!SpiralPosition1)
+	{
+		InnerSpiral -= 1;
+
+		if(InnerSpiral < x_Var / 2)
+			SpiralPosition1 = TRUE;
+	}
+	else
+	{
+	    InnerSpiral += 1;
+
+		if(InnerSpiral > x_Var)
+			SpiralPosition1 = FALSE;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+
+		if(OuterSpiral < x_Var / 2)
+			SpiralPosition2 = TRUE;
+	}
+	else
+	{
+		OuterSpiral += 1;
+
+		if(OuterSpiral >  x_Var)
+			SpiralPosition2 = FALSE;
+	}
+}
+
+function InitializeScript() {
+	if(TaylorShapes == 6)
+	{
+		InnerSpiral = TaylorRadius / 2;
+		OuterSpiral = TaylorRadius;
+	}
+}
+
+function LED(x_Color) {
+	for(i = 0; i <= 3; i++) 
+	{
+		set_led(i, dbyte((x_Color * 4) + i));
+	}
+}
+
+function RemoveStickNoise() {
+	if(isqrt(pow(get_val(AIM_Y), 2) + pow(get_val(AIM_X), 2)) <= DeadZone)
+	{
+		set_val(AIM_Y, 0);
+		set_val(AIM_X, 0);
+	}
+
+	if(isqrt(pow(get_val(STRAFE), 2) + pow(get_val(WALK), 2)) <= DeadZone)
+	{
+		set_val(STRAFE, 0);
+		set_val(WALK  , 0);
+	}
+}
+
+int i;
+int Head;
+int blockBTN;
+int BuildTrack;
+int VibA, VibB;
+int BuildCount;
+int Edit1, EditT;
+int Droppy_Shotty;
+int Recoil, Boost;
+int BuildTracker  = TRUE;
+int BuildSyncTime = 2000;
+int RX, RY, Angle, COSAngle, SINAngle, SpiralPosition1, SpiralPosition2, InnerSpiral, OuterSpiral, ActualMagnitude, MaxMagnitude, Position;
+	  //Green	   // Red      // Off
+data( 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0 );
+const char PolarArray[] = { 100, 100, 100, 100, 100, 100, 100, 100, 99, 99, 99, 99, 98, 98, 97, 97, 97, 96, 95, 95, 94, 94, 93, 92, 92, 91, 90, 89, 89, 88, 87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 75, 74, 73, 72, 71, 70, 69, 67, 66, 65, 63, 62, 61, 59, 58, 56, 55, 53, 52, 50, 49, 47, 46, 44, 43, 41, 40, 38, 36, 35, 33, 31, 30, 28, 26, 25, 23, 21, 20, 18, 16, 14, 13, 11, 9, 7, 6, 4, 2, 0, -1, -3, -5, -7, -8, -10, -12, -13, -15, -17, -19, -20, -22, -24, -25, -27, -29, -30, -32, -34, -35, -37, -39, -40, -42, -43, -45, -46, -48, -50, -51, -53, -54, -55, -57, -58, -60, -61, -62, -64, -65, -66, -68, -69, -70, -71, -73, -74, -75, -76, -77, -78, -79, -80, -81, -82, -83, -84, -85, -86, -87, -88, -89, -89, -90, -91, -92, -92, -93, -93, -94, -95, -95, -96, -96, -97, -97, -97, -98, -98, -99, -99, -99, -99, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -100, -99, -99, -99, -98, -98, -98, -97, -97, -96, -96, -95, -94, -94, -93, -93, -92, -91, -90, -90, -89, -88, -87, -86, -85, -84, -83, -82, -81, -80, -79, -78, -77, -76, -75, -74, -72, -71, -70, -69, -67, -66, -65, -63, -62, -61, -59, -58, -56, -55, -53, -52, -50, -49, -47, -46, -44, -43, -41, -40, -38, -36, -35, -33, -31, -30, -28, -26, -25, -23, -21, -20, -18, -16, -14, -13, -11, -9, -7, -6, -4, -2, 0, 2, 4, 6, 7, 9, 11, 13, 14, 16, 18, 20, 21, 23, 25, 26, 28, 30, 31, 33, 35, 36, 38, 40, 41, 43, 44, 46, 47, 49, 51, 52, 54, 55, 56, 58, 59, 61, 62, 63, 65, 66, 67, 69, 70, 70, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 89, 90, 91, 92, 92, 93, 94, 94, 95, 95, 96, 97, 97, 97, 98, 98, 99, 99, 99, 99, 100, 100, 100, 100, 100, 100, 100 };
