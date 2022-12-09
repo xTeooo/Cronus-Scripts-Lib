@@ -1,0 +1,127 @@
+// GPC Online Library
+// gl0zz3n's_personal_pubg_script.gpc
+
+/*
+
+RAPID-FIRE ON/OFF : CEMU_EXTRA8
+
+AUTO-PEEK ON/OFF : CEMU_EXTRA9
+
+ANTI-RECOIL ON/OFF : CEMU_EXTRA7
+
+*/
+
+int rapidfire, peekshot;
+
+
+define RF_SPEED = 40;
+define PEEK_SPEED = 200;
+define RELOAD_WAIT = 500;
+
+int anti_recoil;
+int time_to_stabalize; // The weapon in-game will start to stabilize on its own, so the amount of recoil required when you first start firing is higher than when you have been firing for an extended time.
+
+int recoil_amount;
+int recoil_amount2;
+int ADJUSTED_RECOIL; // Yes, I know this isn't a constant and is in all caps. I have it this way to make it easier to read in the code so you know that ADJUSTED_RECOIL is the value ACTUALLY applied to the stick.
+
+define MOUSE_DEADZONE = 20; // This is the deadzone used in X-aim. If you are using a regular controller, set this value to match the IN_GAME_DEADZONE.
+define IN_GAME_DEADZONE = 20; /* This is the lowest thumbstick value the game will see, regardless of our Xaim deadzone. 
+                                 This is used for our recoil release when the amount of anti recoil applied is less than the game will see, 
+                                 Allowing us to aim down instead of applying an amount of anti recoil like 19 or some other crap that isn't going to be seen.
+                                 This is called "Center Deadzone" in Battlefield 1 */
+
+
+// These are just added so you can switch between different guns by pressing an extra button.
+define WEAPON_1a /* lewis gun optical */          = 30; //press cemu_extra 7
+define WEAPON_1b                                  = 35;
+define WEAPON_1_WAIT							  = 300;
+
+main {
+
+	if(event_press(CEMU_EXTRA8)) rapidfire = !rapidfire;
+	if(event_press(CEMU_EXTRA9)) peekshot = !peekshot;
+	if (event_press(CEMU_EXTRA7)) anti_recoil = !anti_recoil;
+
+	
+	if ((rapidfire)) set_val(TRACE_1,1);
+	else set_val(TRACE_1,0);
+	if ((rapidfire) && get_val(XB1_RT)) combo_run(RAPIDFIRE);
+	
+	if ((peekshot)) set_val(TRACE_2,1);
+	else set_val(TRACE_2,0);
+	if ((peekshot) && (get_val(XB1_LT))) combo_run(PEEKSHOT);
+	
+	set_val(TRACE_3, recoil_amount); // Trace 1 will show the first recoil value you set
+	set_val(TRACE_4, recoil_amount2);// Trace 2 will show the second recoil value you set
+	
+	set_val(TRACE_5, ADJUSTED_RECOIL); /* Trace 2 will show the ACTUAL amount of anti recoil applied.
+										  The amount of recoil applied to the gun will change if you are trying to aim up/down, allowing you to aim your gun as if no mods are being used. */
+
+	set_val(TRACE_6, (get_val(XB1_RY))); // This is just so you can see what you are doing to the RY without having to look in the other section of device monitor. Easier to see all in 1 spot :P
+
+	
+		recoil_amount  = WEAPON_1a;
+		recoil_amount2 = WEAPON_1b;
+		time_to_stabalize = WEAPON_1_WAIT;
+
+	
+	if (anti_recoil) {
+		if (get_val(XB1_RT)) combo_run(ANTI_RECOIL);
+		if (get_val(XB1_RX) >= MOUSE_DEADZONE) combo_stop(ANTI_RECOIL);
+		if (get_val(XB1_RX) <= inv(MOUSE_DEADZONE)) combo_stop(ANTI_RECOIL);
+	}
+	
+
+
+}
+
+
+
+
+combo RAPIDFIRE {
+set_val(XB1_RT,100);
+set_led(LED_3, 1);
+wait(RF_SPEED);
+set_val(XB1_RT,0);
+set_led(LED_3, 0);
+wait(RF_SPEED);
+}
+
+combo PEEKSHOT {
+set_val(XB1_LS,100);
+set_led(LED_2, 1);
+wait(50);
+wait(50);
+wait(PEEK_SPEED);
+set_val(XB1_RS,100);
+set_led(LED_2, 0);
+wait(50);
+wait(50);
+wait(PEEK_SPEED);
+}
+
+
+combo ANTI_RECOIL {
+
+	if (get_ptime(XB1_RT) > time_to_stabalize) {
+		ADJUSTED_RECOIL = (recoil_amount2);
+	}
+	else {
+		ADJUSTED_RECOIL = recoil_amount;
+	}
+
+	if (get_val(XB1_RY) < inv(MOUSE_DEADZONE)) { // if RY is less than -25 (Aiming_Down with regular Y-axis in-game - pushing thumbstick up)
+			ADJUSTED_RECOIL = inv(recoil_amount + (get_val(XB1_RY) + MOUSE_DEADZONE)); 
+	}
+	if (get_val(XB1_RY) > (MOUSE_DEADZONE)) { // if RY is more than +25 (Aiming_UP with regular Y-axis in-game - pulling thumbstick down)
+			ADJUSTED_RECOIL = inv(recoil_amount - (get_val(XB1_RY) - MOUSE_DEADZONE)); 
+	}
+
+	if (ADJUSTED_RECOIL < IN_GAME_DEADZONE) combo_stop(ANTI_RECOIL);
+	
+	else {
+		set_val(XB1_RY, inv(ADJUSTED_RECOIL));
+	}
+
+}

@@ -1,0 +1,315 @@
+// GPC Online Library
+// rb6_arizonaasshole_aim_bot_rapid_fire_crouch_spam_&&_fastlean.gpc
+
+// GPC Online Library
+// rb6_arizonaasshole_aim_bot_rapid_fire_crouch_spam_.gpc
+
+// GPC Online Library
+// ArizonaAsshole_rainbow_six_anti_recoil_with_aim_bot_and_rapid-fire6.66.gpc
+
+// GPC Online Library
+//_ArizonaAsshole RAINBOW SIX ANTI RECOIL WITH AIM BOT AND RAPID-FIRE_\\
+
+// ADS && RIGHT RAPID FIRE ON or OFF
+// ADS && LEFT Crouch Spam ON or OFF
+// EVERYTHING ELSE IS SET FOR YOU 
+// ENJOY!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+//DEFINITIONS-----------------
+define FIRE_BTN    = XB1_RT;
+define ADS_BTN     = XB1_LT;
+define SPRINT_BTN  = XB1_LS;
+define UP          = XB1_UP;
+define LEFT        = XB1_LEFT;
+define RIGHT       = XB1_RIGHT;
+define DOWN        = XB1_DOWN;
+define CROUCH      = XB1_B;
+define RT          = XB1_RT;
+define LT          = XB1_LT;            
+define R_X         = XB1_RX;
+define R_Y         = XB1_RY;
+define L_Y         = XB1_LY;
+define OPTIONS     = XB1_MENU;
+
+
+////HAIR TRIGGERS
+define INSTA_FIRE                = 95;   // The % at which it boosts the SHOOT button when pressed - i.e. 95% means when pressed 5%
+define INSTA_AIM                 = 95;   // The % at which it boosts the ADS button when pressed - i.e. 95% means when pressed 5%
+define ADS_SPEED                 = 20;   // The % at which it boosts your aiming speed when using ADS 
+
+//--Aim Assist
+    //--constants
+define AR_Y      =  20;       //--anti recoil value
+ 
+define AA_P      =  28;       //--ads values
+define AA_N      = -28;
+define FA_P      =  34;       //--firing values
+define FA_N      = -34;
+define AA_DELAY  =  20;       //--delay between values
+//--variables
+int release      = AA_P + 1;  //--aim assist release
+int aa_p,aa_n;
+
+//--Sensitivity
+//--constants
+define SENS_X = 80;       //--initial RX sentitivity
+define SENS_Y = 80;       //--initial RY sensitivity
+define SENS_STRAFE = 200; //--LX sensitivity when firing for increased strafing movement
+define X_THRESHOLD = 70;  //--stick input point where RX sens increases
+define Y_THRESHOLD = 70;  //--stick input point where RY sens increases
+define X_RESET = 30;      //--stick input point where RX sens will reset back to initial value
+define Y_RESET = 30;      //--stick input point where RY sens will reset back to initial value
+define MAX_SENS = 150;    //--maximum sensitivity value 
+define SENS_RATE = 8;     //--rate sensitivity increased (8 = 80ms delay between increase)
+
+//--variables
+int sens_x = SENS_X;
+int sens_y = SENS_Y;
+int sens_xcnt,sens_ycnt;
+int	value        =  33;                 
+int value2       = -23;
+int delay        =  11; 
+int negative_value_lt_first     = -25; 
+int positive_value_lt_first     =  25;  
+int positive_value_lt_second    =  25;                                   
+int negative_value_rt_first     = -34; 
+int positive_value_rt_first     =  34;  
+int positive_value_rt_second    =  23;  
+int PrimaryWeapon               = TRUE;   
+int timer; 
+int AimAssist                   = TRUE;
+int Rapidfire                   = 4;
+int L_X                         = XB1_LX;
+int aim_assist_on               = FALSE;
+int Crouch_Spam;
+int a; int b;               
+
+//MAIN-----------------
+main {
+
+
+if(get_val(ADS_BTN)){sensitivity(ADS_BTN, 10, 100 + INSTA_AIM);}      
+if(get_val(FIRE_BTN)){sensitivity(FIRE_BTN, 10, 100 + INSTA_FIRE);} 
+
+//CrouchShot
+ 	if (get_val(ADS_BTN) && event_press(LEFT)) {
+		Crouch_Spam = !Crouch_Spam;
+ 		}
+ 
+ 	if (Crouch_Spam) {
+        if (get_val(ADS_BTN))
+            combo_run(Crouch_Spam);
+        }       
+
+//RAPID FIRE
+   if(get_val(ADS_BTN) && event_press(RIGHT)){
+   Rapidfire =! Rapidfire;
+   if(Rapidfire == TRUE){combo_run(Notify);a=0;b=2;}
+   if(Rapidfire == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(Rapidfire){
+     if(get_val(FIRE_BTN)){
+        combo_run(Rapidfire);                                          
+       
+  
+  //--deadzone ~ zero out cotroller values 10 or less 
+    combo_run(DZ);
+ 
+    //--ads only ~ run sensitivity setting, set ads aim assit values, run aim assist
+    if(get_val(LT) && !get_val(RT)) {
+        combo_run(SENS_SET);
+        aa_p = AA_P; aa_n = AA_N;
+        release = aa_p + 1;
+        combo_run(AA_XY);
+    }
+ 
+    //--firing ~ run sensitivity setting, set firing aim assit values, run aim assist
+    if(get_val(RT)) {
+        if(Rapidfire) combo_run(Rapidfire);
+        combo_run(SENS_SET);
+        aa_p = FA_P; aa_n = FA_N;
+        release = aa_p + 1; 
+        combo_run(AA_XY);  
+    }
+ 
+    //--reset sensitivity values
+    if((event_release(LT) && !get_val(RT)) || (event_release(RT) && !get_val(LT))) {
+        sens_x = SENS_X; sens_y = SENS_Y;
+        combo_stop(AA_XY);
+    }
+ 
+}
+ //--------------------------------------------------------------
+// FIND DIRECTION of Left Analogue                           
+if(get_val(L_X)<-20 || get_val(L_X)>20)L_X=get_val(L_X);      
+//--------------------------------------------------------------   
+ 
+//AimAssist
+    if(get_val(ADS_BTN)) {
+        combo_run(LT_C);
+        }
+ 
+        if(get_val(FIRE_BTN) && get_val(ADS_BTN)) {
+            combo_stop(LT_C);
+            combo_run(RT_C);
+        }
+ 
+        if(get_val(R_X) < value2 || get_val(R_X) > value || get_val(R_Y) < value2 || get_val(R_Y) > value 
+        || get_val(R_X) < value2 || get_val(R_X) > value || get_val(R_Y) < value2 || get_val(R_Y) > value) {
+            combo_stop(LT_C);
+            combo_stop(RT_C);
+        }
+ } 
+//COMBOS
+
+}
+
+combo SENS_SET {
+    //--increase rx sens
+    if(abs(get_lval(R_X)) >= X_THRESHOLD) {
+        sens_xcnt += 1;
+        if(sens_xcnt >= SENS_RATE && sens_x < MAX_SENS) { 
+            sens_x += 1; sens_xcnt = 0; 
+        } else if(sens_x >= MAX_SENS) sens_xcnt = 0;  
+    }
+    //--reset rx sens
+    else if(abs(get_val(R_X)) < X_RESET) {
+        sens_xcnt = 0; sens_x = SENS_X;                
+    } 
+    //--increase ry sens
+    if(abs(get_val(R_Y)) >= Y_THRESHOLD) {
+        sens_ycnt += 1;
+        if(sens_ycnt >= SENS_RATE && sens_y < MAX_SENS) { 
+            sens_y += 1; sens_ycnt = 1; 
+        } else if(sens_y >= MAX_SENS) sens_ycnt = 0; 
+    }
+    //--decrease rx sens
+    else if(abs(get_val(R_Y)) < X_RESET) {
+        sens_y = SENS_X ; sens_ycnt = 0;
+    } 
+    //--set r x/y sensitivity
+    sensitivity(R_X,NOT_USE,sens_x);
+    sensitivity(R_Y,NOT_USE,sens_y);
+    //--increased lx sens for strafing
+    sensitivity(L_X,NOT_USE,SENS_STRAFE);
+
+}
+//--aim assist & anti recoil
+combo AA_XY {
+    if(!get_val(RT))set_val(R_Y,xy_val(R_Y,aa_p));
+        else set_val(R_Y,xy_val(R_Y,AR_Y));  
+    wait(AA_DELAY);
+    set_val(R_X,xy_val(R_X,aa_p));
+    set_val(L_X,xy_val(L_X,aa_p));
+    wait(AA_DELAY);
+    if(!get_val(RT))set_val(R_Y,xy_val(R_Y,aa_n));
+        else set_val(R_Y,xy_val(R_Y,AR_Y));
+    wait(AA_DELAY);  
+    set_val(R_X,xy_val(R_X,aa_n));
+    set_val(L_X,xy_val(L_X,aa_n));
+    wait(AA_DELAY);
+
+}
+combo DZ {
+    //--zero out input 10 or less
+    if(abs(get_val(L_X)) <= 10) set_val(L_X,0);
+     if(abs(get_val(L_Y)) <= 10) set_val(L_Y,0);
+    if(abs(get_val(R_X)) <= 10) set_val(R_X,0);
+    if(abs(get_val(R_Y)) <= 10) set_val(R_Y,0);
+}
+
+combo Crouch_Spam {
+    set_val(XB1_B,100);
+    wait(17);
+    set_val(XB1_B,0);
+    wait(17);
+}    
+
+combo Rapidfire {                  
+   set_val(FIRE_BTN,100);                   
+   wait(20);                         
+   set_val(FIRE_BTN,0);                     
+   wait(10);                         
+   set_val(FIRE_BTN,0);                     
+   wait(20);                         
+}
+
+combo NOTIFY_RESET {
+   set_rumble(RUMBLE_A,100):
+   wait(400);
+   reset_rumble();
+   wait(200);
+} 
+ //--return aim assist value or controller value if above release
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < release)
+        return f_val;
+    return get_val(f_axis);
+
+
+}
+combo Notify {
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+} 
+combo LT_C {
+       set_val(R_Y, -22);          
+       wait(delay)
+       set_val(R_X, 22); 
+       set_val(R_Y, 12); 
+       wait(delay) 
+       set_val(R_Y, 12); 
+       wait(delay)                  
+       set_val(R_X, -22);
+       set_val(R_Y, 12);
+       wait(delay)
+}
+ 
+combo RT_C {
+       set_val(R_Y, -32);              
+       wait(delay)
+       set_val(R_X, 32);
+       set_val(R_Y, 22);
+       wait(delay) 
+       set_val(R_Y, 22);
+       wait(delay)                  
+       set_val(R_X, -32);
+       set_val(R_Y, 22);
+       wait(delay)
+}
+  
+combo Anti_Recoil { //Don't touch this combo pls
+    anti_recoil = get_val(10) + anti_recoil ;
+    if(anti_recoil > 100) anti_recoil = 100;set_val(10, anti_recoil);
+     ANTI_RECOIL_LEFT= get_val(9) -ANTI_RECOIL_LEFT;
+    if(ANTI_RECOIL_LEFT > 100) ANTI_RECOIL_LEFT = 100;set_val(9, ANTI_RECOIL_LEFT);
+     ANTI_RECOIL_RIGHT = get_val(9) +ANTI_RECOIL_RIGHT;
+    if(ANTI_RECOIL_RIGHT > 100) ANTI_RECOIL_RIGHT = 100;set_val(9,ANTI_RECOIL_RIGHT );
+} 
+

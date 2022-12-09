@@ -1,0 +1,230 @@
+// GPC Online Library
+// instantkill_4.0(gta_v)final.gpc
+
+/***************XxCyborgxX***********************
+*************************************************
+*       INSTANTKILL_4.0(GTA V)FINAL             *
+*************************************************
+* ADJUSTABLE RAPID-FIRE IN-GAME                 *
+* ON/OFF ALL MODS IN-GAME                       *
+* EXPERIMENTAL AIMBOT                           *
+* AIM-ASSIST 4.0 TEST                           *
+* AUTO RUN                                      *
+* AUTO ARMWRESTLING (ACTIVATE AND HOLD R3 )     *
+*************************************************
+* AIMBOT              ON/OFF = L2 + TRIANGLE    *
+* AIM ASSIST          ON/OFF = L1 + DPAD-LEFT   * 
+* RAPIDFIRE           ON/OFF = L2 + DPAD-RIGHT  *
+* - INCREASE FIRE +2         = R2 + CIRCLE      *
+* - DECREASE FIRE -2         = R2 + SQUARE      *
+* AUTO RUN            ON/OFF = L1 + DPAD-UP     *  
+* AUTO ARM            ON/OFF = L1 + DPAD-DOWN   *
+* ***********************************************/
+    define AIMBOT_1             = TRUE;
+    
+    define ADS_AIM_ASSIST       = TRUE;
+    define HIP_AIM_ASSIST       = TRUE;
+ 
+    define RF_CONTROL           = TRUE;
+    int    RF_RPS               = 6;
+ 
+    define AUTO_SPRINT          = TRUE;
+    int    SPRINT_SENS          = -80;
+ 
+    define AUTO_ARM             = TRUE;
+    
+    define CONTROLLER           = TRUE; 
+    define MOUSE                = FALSE;
+//*********************************************** 
+    define RT                   = PS4_R2;
+    define LT                   = PS4_L2;
+    define RB                   = PS4_R1;
+    define LB                   = PS4_L1;
+    define RX                   = PS4_RX;                              
+    define RY                   = PS4_RY;
+    define LX                   = PS4_LX;                              
+    define LY                   = PS4_LY;
+    define A                    = PS4_CROSS;
+    define Y                    = PS4_TRIANGLE;
+    define X                    = PS4_SQUARE;
+    define O                    = PS4_CIRCLE;
+    define RS                   = PS4_R3;
+    define LS                   = PS4_L3;
+    define AIM                  = PS4_LEFT;
+    define RAPID                = PS4_RIGHT;
+    define RUN                  = PS4_UP;
+    define ARM                  = PS4_DOWN;
+    define delay                = 11;
+    define delay2               = 4;
+    define h                    = 100;
+    define th                   = 200;
+    define n                    = 0;
+    define e                    = 11;
+    define f                    = 50;
+    define z                    = 20;
+    define nz                   = 19;
+    define fz                   = 15;
+    define dz                   = 23;
+    define fn                   = 95;
+    define fh                   = 500;
+    define rps                  = 250;
+    define x                    = 150;
+    define p                    = 30;
+//***********************************************
+    int value                   =  20;
+    int value2                  = -20;
+    int hold;
+    int rest;
+    int stop1;
+    int stop2;
+    int stop3;
+    int stop4;
+    int onoff;
+    int rf_onoff;
+    int arm_onoff;
+    int sprint_onoff;
+    int aim_onoff;
+    int aim_assist_onoff;
+//************************************************
+init {
+        hold = fh / RF_RPS;
+        rest = hold - z;
+        if(rest < n) rest = n;
+        }
+//************************************************
+main {
+        if(CONTROLLER == TRUE && MOUSE == FALSE) {
+           value   = 26;
+           value2  = -26; 
+           stop1   = 24;
+           stop2   = 20;
+           stop3   = 27;
+           stop4   = -22;
+        } 
+        if(MOUSE == TRUE && CONTROLLER == FALSE) { 
+           value   = 22;
+           value2  = -22;
+           stop1   = 19;
+           stop2   = 15;
+           stop3   = 23;
+           stop4   = -18;
+        }
+//RAPIDE*FIRE*CONTROL*SPEED 
+        if(RF_CONTROL){
+ 
+        if(get_val(RT)){
+ 
+        if(get_val(O)){
+        RF_RPS = RF_RPS - 2;}
+ 
+        if(get_val(X)){
+        RF_RPS = RF_RPS + 2;}
+        }
+        }
+//RAPID*FIRE***************************************  
+        if(get_val(LT) && event_press(RAPID)) {
+           set_val(RAPID, 0); rf_onoff=!rf_onoff;
+        }
+        if(rf_onoff ) {
+ 
+	    if(get_val(RT) && RF_CONTROL == TRUE ) {
+	       combo_run(RAPIDFIRE);
+	    }        
+        }
+//AUTO*RUN***************************************** 
+        if(get_val(LB) && event_press(RUN)) {
+        set_val(RUN, 0); sprint_onoff =!sprint_onoff;
+        }
+        if(sprint_onoff) {
+ 
+	    if(get_val(LY) < SPRINT_SENS && AUTO_SPRINT == TRUE ) {
+	            combo_run(SPRINT);
+	    }
+        }
+//AUTO*ARMWRESTLING********************************
+        if(get_val(LB) && event_press(ARM)) {
+           set_val(ARM, 0); arm_onoff=!arm_onoff;
+        }
+        if(arm_onoff) { 
+ 
+	    if(get_val(RS) && AUTO_ARM  == TRUE ){
+	           combo_run(AUTO_ARM);
+	           combo_run(AUTO_ARM2);
+	    }
+	    }
+//AIMBOT******************************************
+        if(get_val(LT) && event_press(Y)) {
+           set_val(Y, 0); onoff=!onoff;
+        }
+        if(onoff) {
+ 
+	    if(get_val(LT) && get_ptime(LT) > th && AIMBOT_1  == TRUE ) {
+	       combo_run(AIMBOT);
+	    }
+	    }
+//AIM*ASSIST**************************************
+        if(get_val(LB) && event_press(AIM)) {
+           set_val(AIM, 0); aim_assist_onoff=!aim_assist_onoff;
+        }
+        if(aim_assist_onoff) {
+        
+        if(get_val(LT) && ADS_AIM_ASSIST == TRUE ) {
+            combo_run(AIM_ASSIST);
+        }
+ 
+        if(!get_val(RT) && HIP_AIM_ASSIST == TRUE ) {
+            combo_run(AIM_ASSIST);
+        }
+ 
+        if(get_val(RT) && get_val(LT)) {
+            combo_stop(AIM_ASSIST);
+        }
+        if(abs(get_val(RX)) >= stop1 || abs(get_val(RY)) >= stop2) {
+            combo_stop(AIM_ASSIST);
+        }
+        }
+        }      
+//COMBO*S*****************************************
+
+combo   AIMBOT {
+        set_val(LT, h);
+        wait(x);
+        set_val(LT, n);
+        wait(p);
+        set_val(LT, n);
+    }
+combo   RAPIDFIRE {
+        set_val(RT, h);
+        wait(RF_RPS);
+        set_val(RT, n);
+        wait(RF_RPS);
+        set_val(RT, h);
+    }
+combo   SPRINT {
+        set_val(A, h);
+        wait(hold);
+        set_val(A, n);
+        wait(rest);
+        set_val(A, h);
+    }
+combo   AUTO_ARM {        
+        set_val(RX, -h);
+        wait(delay2)
+        set_val(RX, h); 
+        wait(delay2)      
+    }
+combo   AUTO_ARM2 {        
+        set_val(LX, -h);
+        wait(delay2)
+        set_val(LX, h);
+        wait(delay2)       
+    }
+combo   AIM_ASSIST {
+        set_val(RX, value); 
+        wait(delay) 
+        set_val(RX, n); 
+        wait(delay)                  
+        set_val(RX, value2);
+        wait(delay)
+    }
+//END

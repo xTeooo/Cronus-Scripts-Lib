@@ -1,0 +1,62 @@
+define PXS     =     90;
+        define PXSE    =    270;
+        define PVSI    =     20;
+            define PVS     =     20;
+            define PYS     =   -200;
+        define PYSE    =    200;
+           int    PPFX    =    PXS;
+        int    PPFY    =    PYS;
+         int    PVID;
+        int    PFD     =      1;
+           int    PPFD    =      1;
+        int    RX;
+        int    RY;
+        int    Edit      =    TRUE;
+
+    main{
+    if (event_press(PS4_TOUCH)) combo_run(Edit);
+
+════════════════════════════════════════════════════════╣
+
+            RX = PS4_RX;
+            RY = PS4_RY;
+            RX =   PPFX;
+            RY =   PPFY;
+        if(get_val(PS4_L2) > 80){
+        if(abs(get_val(XB1_RX) < 5)) 
+        if(abs(get_val(XB1_RY) < 5)) 
+        if(abs(get_val(XB1_RX) > -5)) 
+        if(abs(get_val(XB1_RY) > -5)){
+               PPFX = PolarFlow(PPFX,PXS,PXSE,PVSI,PFD,1);
+            PPFY = PolarFlow(PPFY,PYS,PYSE,PVS,PPFD,2);
+               set_polar(POLAR_RS,30,PPFX);
+            set_polar(POLAR_RS,30,PPFY);}
+}
+
+}
+
+      combo Edit { 
+           set_val(PS4_SHARE,100);
+           wait(1);}
+
+     function PolarFlow(PFB,PSV,PFV,PV,PF,PID) {
+        if(PF) {
+               PFB += PV;
+        if(PFB <= PFV)
+        return PFB;
+        if(PFB > PFV) {
+            PVID[PID] = 0;
+        return PFB - PV;}
+}
+        else{
+            PFB -= PV;
+        if(PFB >= PSV)
+        return PFB;
+        if(PFB < PSV) {
+            PVID[PID] = 1; 
+        return PFB + PV;}
+} 
+       {return FALSE;
+}
+
+}

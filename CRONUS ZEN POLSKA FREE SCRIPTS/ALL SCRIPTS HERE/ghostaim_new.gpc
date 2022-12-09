@@ -1,0 +1,131 @@
+define LTrigger = XB1_LT;
+define RTrigger = XB1_RT;
+define Fire = XB1_RT;
+define ADS = XB1_LT;
+define Switch = XB1_B;
+define Pickaxe = XB1_Y;
+define Pickup = XB1_X;
+define Wall = XB1_LT;
+define Stair = XB1_RT;
+define Floor = XB1_RB;
+define Cone = XB1_LB;
+define RX = XB1_RX;
+define RY = XB1_RY;
+define LX = XB1_RY;
+define On = TRUE;
+define Off = FALSE;
+int LinearAim = On;
+define PolarPower = 15;
+define PolarSpeed = 15;
+int AntiRecoil = On;
+define RecoilPower = 10;
+int PickupM = Off;
+int BlockRumbles = On;
+int InstantTriggers = On;
+int BuildTracker = On;
+define BuildSyncTime = 10;
+int LessInputDelay = On;
+define InputDelay = 1;
+main {
+	/* MADE BY GHOSTAIM | https://discord.gg/KRGrnQF7TJ */
+	if(get_console() == PIO_XB360 && get_controller() == PIO_PS4) {
+		swap (PS4_TOUCH,PS4_SHARE);
+			}
+	if(LessInputDelay) {
+		InputTime(InputDelay);
+			}
+	if(BlockRumbles) {
+		block_rumble();
+			}
+	if(InstantTriggers) {
+		deadzone(LTrigger , RTrigger, 100,100);
+			}
+	if(BuildTracker) {
+		if(event_press(Switch)) {
+			BuildTrack = !BuildTrack;
+					}
+		/* MADE BY GHOSTAIM | https://discord.gg/KRGrnQF7TJ */
+		if(BuildTrack) {
+			BuildCount += get_rtime();
+			if(event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+				BuildTrack = Off;
+				BuildCount = 0;
+							}
+			if(get_ival(Wall) || get_ival(Stair) || get_ival(Floor) || get_ival(Cone) || get_ival(Switch)) {
+				BuildCount = 0;
+							}
+					}
+			}
+	if(!BuildTrack) {
+		if (LinearAim) {
+			if (event_press(ADS) || event_press(Fire)) {
+				combo_run(LinearAA);
+							}
+			if(event_release(ADS) || event_release(Fire)) {
+				combo_stop(LinearAA);
+							}
+					}
+		if(AntiRecoil) {
+			if (get_val(ADS) || get_ival(Fire)) {
+				AR(RY, RecoilPower);
+							}
+					}
+		if (PickupM) {
+			if (get_val(Pickup)) {
+				combo_run(PickupMs);
+							}
+			else {
+				combo_stop(PickupMs);
+							}
+					}
+			}
+	}
+combo LinearAA {
+	set_polar(POLAR_RS, PolarSD = (PolarSD + PolarSpeed) % 360, PolarPower * 328);
+	set_val(RY, 5);
+	wait(10);
+	set_val(LX, -4);
+	wait(10);
+	set_val(LX, 4);
+	}
+combo PickupMs {
+	set_val(Pickup, 100);
+	wait(10);
+	set_val(Pickup, 0);
+	wait(10);
+	set_val(Pickup, 100);
+	wait(10);
+	set_val(Pickup, 0);
+	wait(10);
+	set_val(Pickup, 100);
+	wait(10);
+	set_val(Pickup, 0);
+	wait(10);
+	set_val(Pickup, 100);
+	}
+function AR(Axis, Value) {
+	a = get_val(Axis) + Value;
+	b = (Value) / 100;
+	a1 = 1 + (b);
+	b1 = 1 - (b);
+	if(a == (get_val(Axis) > 0)) {
+		a = a * b1 + Value - sq(10) * (b1 * (a1 - 1));
+			}
+	else {
+		a = a * a1 - Value * (1 - b1);
+			}
+	set_val(Axis, clamp(a, -100, 100));
+	return;
+	}
+function sq(v) {
+	return v * v;
+	}
+function InputTime(f_speed) {
+	if (InputDelay == 6) vm_tctrl(-0);
+	else if(InputDelay == 5) vm_tctrl(-2);
+	else if(InputDelay == 4) vm_tctrl(-4);
+	else if(InputDelay == 3) vm_tctrl(-6);
+	else if(InputDelay == 2) vm_tctrl(-8);
+	else if(InputDelay == 1) vm_tctrl(-9);
+	}
+int BuildTrack, BuildCount, a, b, a1, b1, PolarSD;

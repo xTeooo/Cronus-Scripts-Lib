@@ -1,0 +1,327 @@
+int gamesplayed = 0; 	//How many games are played (if the build has games played count and add here)
+
+/*
+ ONLY CHANGE THE NUMBER ABOVE TO HOW EVER MANY GAMES YOU PLAYED. I SAY START SEASON 2 GAME FRESH FOR MAX VC
+ CHECK OUT MY YOUTUBE CHANNEL DIRTY GAMING TIPS FOR INFO ON USING SCRIPT*/ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+int on;  																
+int runCombo = 2000;     												
+int startGame,inGame,restartGame,SkipAllStar,rumbling; 					
+int a,b; 																
+int TIME = 4000;
+main 
+{
+set_val(TRACE_1,inGame);												
+set_val(TRACE_2,restartGame);											
+set_val(TRACE_3,SkipAllStar);											
+set_val(TRACE_5,gamesplayed);											
+set_val(TRACE_6,runCombo);												
+	if(event_press(PS4_DOWN)) 
+		{  																
+			on = !on; 													
+				if(on)
+					{ 													
+						a = 0; 											
+						b = 2; 											
+						startGame = TRUE; 								
+					}
+				else
+					{  													
+						a = 2; 										
+						b = 0; 											
+						combo_stop(START_GAME); 						
+						combo_stop(RESTART_GAME);
+						combo_stop(IN_GAME);
+					}
+			combo_run(NOTIFY); 
+		}
+	if(on) 
+		{ 
+			if(startGame) 
+				{ 
+					combo_run(START_GAME);
+				}
+			if(inGame) 
+				{
+					if(runCombo) 
+						{
+							combo_run(IN_GAME);
+						}
+				}
+			if(restartGame) 
+				{
+					combo_run(RESTART_GAME);
+				}
+			if(get_rumble(RUMBLE_A) || get_rumble(RUMBLE_B)) 
+				{ 
+					if(!rumbling)
+					{ 
+						rumbling = TRUE;
+						inGame = FALSE;
+						restartGame = TRUE;
+						gamesplayed += 1;
+					}
+				}
+			else
+				{
+						rumbling = FALSE;
+				}
+			if(gamesplayed == 56) 
+				{
+					inGame = FALSE;
+					restartGame = FALSE;
+					startGame = FALSE;
+					combo_stop(START_GAME);
+					combo_stop(RESTART_GAME);
+					combo_stop(IN_GAME);
+					SkipAllStar = TRUE;
+				}
+			if(SkipAllStar) 
+				{ 
+					combo_run(AllStar);
+				}
+	}
+			if(gamesplayed == 82) 
+				{
+					inGame = FALSE;
+					restartGame = FALSE;
+					startGame = FALSE;
+					combo_stop(START_GAME);
+					combo_stop(RESTART_GAME);
+					combo_stop(IN_GAME);
+					SkipAllStar = FALSE;
+					runCombo = 0;
+					on = !on;
+				}
+
+}
+
+
+
+    combo START_GAME {
+    set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100); 	
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100);
+ 	set_val(PS4_CROSS,100); 
+ 	wait(500);
+ 	set_val(PS4_CROSS,0); 
+ 	wait(1000);
+ 	set_val(PS4_DOWN,100);
+ 	wait(500);
+ 	set_val(PS4_DOWN,0);
+ 	wait(1000);
+ 	set_val(PS4_CROSS,100); 
+ 	wait(500);
+ 	set_val(PS4_CROSS,0); 
+ 	wait(2000);
+ 	startGame = FALSE; 
+ 	inGame = TRUE; 
+ 	runCombo = 2000;
+}
+
+combo IN_GAME {
+    set_val(PS4_CROSS, 0);
+    wait(100);
+    set_val(PS4_CROSS, 100);
+    wait(2000);
+    set_val(PS4_CROSS, 0);
+    wait(100);
+	runCombo -= 1;
+}
+
+
+
+combo RESTART_GAME {
+    wait(TIME);
+    wait(TIME);
+    wait(TIME);
+    wait(TIME);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100); 	
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	set_val(PS4_CIRCLE, 0);
+	wait(100);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_RIGHT, 100);
+	wait(100);
+	set_val(PS4_RIGHT, 0);
+	wait(100);
+	set_val(PS4_CROSS, 100);
+	wait(110);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_DOWN, 100);
+	wait(130);
+	set_val(PS4_DOWN, 0);
+	wait(100);
+	set_val(PS4_CROSS, 100);
+	wait(130);
+	set_val(PS4_CROSS, 0);
+	wait(100);
+	set_val(PS4_DOWN, 100);
+	wait(80);
+	set_val(PS4_DOWN, 0);
+	wait(380);
+	set_val(PS4_CROSS, 100);
+	wait(110);
+	set_val(PS4_CROSS, 0);
+    wait(2000);
+	restartGame= FALSE;
+	inGame = TRUE;
+ 	runCombo = 2000; 
+}
+
+
+
+combo AllStar {
+    set_val(PS4_CIRCLE, 100);
+	wait(150);
+	wait(2000); 	
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(2000);
+	set_val(PS4_CIRCLE, 100);
+	wait(150);
+	wait(2000);
+    set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(2000); 	
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(2000);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(2000);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(2000);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(2000);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(TIME);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_RIGHT, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_CROSS, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+	set_val(PS4_DOWN, 100);
+	wait(150);
+	wait(TIME);
+	wait(TIME);
+
+	SkipAllStar = FALSE; 
+	startGame = TRUE; 
+ 	runCombo = 2000; 
+	gamesplayed += 1;
+}
+
+
+combo NOTIFY {
+	set_rumble(RUMBLE_B,65); 
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(550);
+	reset_rumble();
+	set_led(LED_1, 0);
+	set_led(LED_2, 0);
+	set_led(LED_3, 0);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, 0);
+	set_led(LED_3, 0);
+	set_led(LED_4, 0);
+	wait(250);
+	set_led(LED_1, 0);
+	set_led(LED_2, a);
+	set_led(LED_3, b);
+	set_led(LED_4, 0);
+	wait(250);
+	reset_leds();
+}

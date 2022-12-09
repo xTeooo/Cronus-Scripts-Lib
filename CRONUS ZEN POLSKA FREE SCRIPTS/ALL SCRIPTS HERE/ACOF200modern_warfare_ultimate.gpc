@@ -1,0 +1,377 @@
+// GPC Online Library
+// modern_warfare_ultimate.gpc
+
+
+ /*
+ = = = = = = = = = = = = = = = = = = =
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = /\/\/\  Made By ItzSnack  /\/\/\  =
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = = = = = = = = = = = = = = = = = = =
+
+ ===================
+ === Version 1.2 ===
+ ===================
+ 
+ ================
+ === FEATURES ===
+ ================
+ Aim Assist
+ Anti Recoil
+ Auto Run
+ Drop Shot
+ Jump On Shot
+ Strafe
+ Drop On Shot
+ Hair Trigger
+ Hold Breath
+ Custom Sensitivity
+
+ =================
+ === Important ===
+ =============================================================
+ === Some features will have to be turned on in the script ===
+ =============================================================
+ 
+ =====================
+ === Reset Toggles ===
+ ==================================================
+ === OPTIONS/MENU + SHARE/VIEW to reset toggles ===
+ ==================================================
+ 
+ ===================
+ === Toggle Menu ===
+ =============================================================================================================
+ === Before being able to turn ON/OFF toggles you will have to open the toggle menu by doing the following ===
+ === OPTIONS/MENU + D-PAD UP                                                                               ===
+ === When ON your LED will flash Rainbow now you able to turn on any features you want                     ===
+ === After you done make sure to disable the toggle menu                                                   ===
+ === Your LED will be Black when your out of the toggle menu                                               ===
+ =============================================================================================================
+ 
+ ===================================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                           ===
+ ===================================================================================
+ === Hold L2/LT And Press R3/RS For Rapid Fire                                   ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ === Hold L2/LT And Press UP For Jump On Shot                                    ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ === Hold L2/LT And Press DOWN For Drop Shot                                     ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ === Hold L2/LT And Press LEFT For Strafe                                        ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ === Hold L2/LT And Press RIGHT For Drop On Shot                                 ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ === Hold CROSS/A And Press UP For +1 to Anti Recoil and DOWN For -1             ===
+ ===================================================================================
+ */
+
+    //Layout
+    define PS = 0;
+    define SHARE = 1;
+    define OPTIONS = 2;
+    define R1 = 3;
+    define R2 = 4;
+    define R3 = 5;
+    define L1 = 6;
+    define L2 = 7;
+    define L3 = 8;
+    define RX = 9;
+    define RY = 10;
+    define LX = 11;
+    define LY = 12;
+    define UP = 13;
+    define DOWN = 14;
+    define LEFT = 15;
+    define RIGHT = 16;
+    define TRIANGLE = 17;
+    define CIRCLE = 18;
+    define CROSS = 19;
+    define SQUARE = 20
+    define TOUCHPAD = 27;
+    
+    //Customize
+    int Flipped = OFF; //Change OFF TO ON If you play with Flipped Triggers
+    int AS = ON; //Change ON TO OFF If you don't want Aim Assist
+    int RECOIL = ON; //Change ON TO OFF If you don't want Anti Recoil
+    int RUN = ON; //Change ON TO OFF If you don't want Auto Run
+    int HT = ON; //Change ON TO OFF If you don't want Hair Trigger
+    int HBT = OFF; //Change OFF TO ON If you want Hold Breath
+    int CS = ON; //Change ON TO OFF If you don't want Custom Sensitivity
+    
+    //Custom Buttons
+    int Crouch_Button = CIRCLE; //Your crouch button
+    
+    //Speed Of Features
+    int RF_Speed = 40; //Rapid Fire Speed
+    int DS_Speed = 80; //Drop Shot Speed
+    /*NOTE:
+    Higher values = Slower
+    Lower values = Faster*/
+    
+    //Custom Sensitivity
+    int GEN_SENS = 100;
+    int ADS_SENS = 100;
+    int FIRE_SENS = 100;
+    int ADS_FIRE_SENS = 100;
+    int GRENADE_SENS = 100;
+    /*NOTE:
+    Default = 100
+    Ranges from 0 to 327*/
+    
+    //Anti Recoil
+    int AR = 10; //Anti Recoil
+    
+     //Aim Abuse
+    int HOLD = 200;
+    int RELEASE = 20;
+    //Aim Assist
+    int AP = 20;
+    int AM = -20;
+    int Delay = 20
+    int ARelease = 21;
+    /*NOTE:
+    Increase AP & AM for more Assist but it can cause shake ARelease must be 1 higher than AP & AM
+    Decrease AP & AM if you feel shake and don't like it*/
+    
+    //Strafe
+    int RIGHT_Speed = 200; //How long to go RIGHT
+    int LEFT_Speed = 200; //How long to go LEFT
+    
+    //Toggles
+    int ARS;
+    int USE_SENS;
+    int Remove_Block;
+    int RF_Toggle;
+    int JS_Toggle;
+    int DS_Toggle;
+    int SS_Toggle;
+    int Strafe_Toggle;
+    int Toggle_Menu;
+    int Toggle_Rumble;
+
+    main {
+    
+    if(get_val(OPTIONS) && event_press(SHARE)) {
+    RF_Toggle = OFF;
+    JS_Toggle = OFF;
+    DS_Toggle = OFF;
+    SS_Toggle = OFF;
+    Strafe_Toggle = OFF;
+    Toggle_Menu = OFF;
+    combo_run(Menu_Rumble);}
+    
+    if(CS)
+    if(!get_val(L2) && !get_val(R2)) { 
+    USE_SENS=GEN_SENS;}
+    else if(get_val(L2) && !get_val(R2)) { 
+    USE_SENS=ADS_SENS;}    
+    else if(!get_val(L2) && get_val(R2)) { 
+    USE_SENS=FIRE_SENS;}
+    else if(get_val(L2) && get_val(R2)) { 
+    USE_SENS=ADS_FIRE_SENS;}
+    else if(get_val(R1)) { 
+    USE_SENS=GRENADE_SENS;}
+    sensitivity(RY,NOT_USE,USE_SENS);
+    sensitivity(RX,NOT_USE,USE_SENS);
+    
+    LED(0,0,0,0);
+    
+    
+    
+    if(Flipped) {
+    swap(R1,R2);
+    swap(L1,L2);}
+    
+    if(HBT)
+    if(get_val(L2))
+    set_val(L3,100);
+    
+    if(HT)
+    deadzone(L2,R2,100,100);
+    
+    if(RUN)
+    if(get_val(LY)<-90)
+    set_val(L3,100);
+    
+    if(AS)
+    if(get_val(L2)) combo_run(AS);
+    
+    if(RECOIL)
+    if(get_val(L2) && get_val(R2))
+    combo_run(AR);
+    
+    if(RF_Toggle && get_val(R2))
+    combo_run(RF);
+    
+    if(SS_Toggle && event_press(R2))
+    set_val(CIRCLE,100);
+    
+    if(JS_Toggle && get_val(R2))
+    set_val(CROSS,100);
+    
+    if(DS_Toggle && get_val(R2))
+    combo_run(DS);
+    
+    if(Strafe_Toggle && get_val(L2) && get_val(R2))
+    combo_run(Strafe);else combo_stop(Strafe);
+    
+    if(get_val(OPTIONS) && event_press(UP)) {
+    Toggle_Menu=!Toggle_Menu;
+    Toggle_Rumble=!Toggle_Rumble;}
+    if(Toggle_Rumble) 
+    combo_run(Menu_Rumble);
+    
+    if(Toggle_Menu) {
+    combo_run(Rainbow_Flash);
+    
+    if(get_val(L2) && event_press(R3)) {
+    RF_Toggle=!RF_Toggle;
+    if(RF_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+   
+    if(get_val(L2) && event_press(UP)) {
+    JS_Toggle=!JS_Toggle;
+    if(JS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(DOWN)) {
+    DS_Toggle=!DS_Toggle;
+    if(DS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(RIGHT)) {
+    SS_Toggle=!SS_Toggle;
+    if(SS_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(L2) && event_press(LEFT)) {
+    Strafe_Toggle=!Strafe_Toggle;
+    if(Strafe_Toggle) combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    
+    if(get_val(CROSS)) {
+    if(event_press(UP)) {
+    AR = AR + 1;}
+    if(event_press(DOWN)) {
+    AR = AR - 1;}
+    set_val(UP,0);set_val(DOWN,0);}
+    
+    if(get_val(L2)) {
+    if(event_press(UP)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(RIGHT)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(DOWN)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(LEFT)) {
+    Remove_Block=!Remove_Block;}
+    if(event_press(R3)) {
+    Remove_Block=!Remove_Block;}
+    set_val(UP,0);set_val(RIGHT,0);set_val(DOWN,0);set_val(LEFT,0);set_val(R3,0);}}
+    
+    if(get_val(OPTIONS)) {
+    if(event_press(SHARE)) {
+    Remove_Block=!Remove_Block;}
+    set_val(SHARE,0);}
+	
+	if(get_val(7)> (95)&& get_val(4)){combo_run(AB);}
+    
+    if(abs(get_val(RY)) > AR || abs(get_val(RX)) > AR) {
+    combo_stop(AR);}}
+   
+    combo AB {
+    set_val(7,100);
+    wait(HOLD);
+    set_val(7,0);
+    wait(RELEASE);}
+   
+    combo AR {
+    ARS = get_val(RY) + AR;
+    if(ARS > 100) ARS = 100;
+    set_val(RY,ARS);}
+     
+    combo AS { 
+    set_val(RY,a_f(RY,AP));
+    wait(Delay)
+    set_val(RX,a_f(RX,AP));
+    wait(Delay)
+    set_val(RY,a_f(RY,AM));
+    wait(Delay)
+    set_val(RX,a_f(RX,AM));
+    wait(Delay)}
+
+    function a_f(p,m) {
+    if(abs(get_val(p)) < ARelease)
+    return m;
+    return get_val(p);}
+    
+    combo DS {
+    set_val(Crouch_Button,100);
+    wait(40);
+    set_val(Crouch_Button,0);
+    wait(DS_Speed);}
+    
+    combo Strafe {
+    set_val(11,100);
+    wait(RIGHT_Speed);
+    set_val(11,-100);
+    wait(LEFT_Speed);}
+    
+    combo RF {
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(RF_Speed);}
+    
+    combo Rainbow_Flash {
+    LED(2,0,2,0);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);
+    LED(0,0,0,2);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);
+    LED(0,2,2,0);
+    wait(100);
+    LED(0,0,0,0);
+    wait(100);}
+    
+    combo Menu_Rumble {
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    Toggle_Rumble = OFF;}
+    
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();}
+ 
+    function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+    
+    define ON = TRUE;
+    define OFF = FALSE;

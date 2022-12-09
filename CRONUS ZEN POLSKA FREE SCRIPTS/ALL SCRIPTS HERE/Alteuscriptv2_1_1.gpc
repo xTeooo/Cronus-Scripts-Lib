@@ -1,0 +1,466 @@
+/*
+
+                          
+ //Set Look Stick Deadzone 0.12 
+                                                  
+         ☆꧁༒POWER V3[PRO]༒꧂☆
+  
+  ///////////////MODS///////////////
+  // -Aim Assist Polar V3         //
+  // -Anti-Recoil      V3         //
+  // -Strafe           V3         //
+  // -BuildTracker     V3         // 
+  // -QuickEditAssist  V3         //
+  // -InstaFastReset   V3         //
+  //////////////////////////////////
+ 
+.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+// Change the definitions to the settings you use in game.
+ 
+
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define N_Weapon = PS4_R1;
+define P_Weapon = PS4_L1;
+define Pickaxe  = PS4_L3;
+define Reload   = PS4_SQUARE;
+define Jump     = PS4_CROSS;
+define Crouch   = PS4_R3;
+define Ping     = PS4_LEFT;
+define Edit     = PS4_TOUCH;
+define Select   = PS4_R2;
+define Confirm  = PS4_TRIANGLE;
+define Reset    = PS4_R3;
+define Build    = PS4_CIRCLE;
+define Wall     = PS4_R2;
+define Floor    = PS4_R1;
+define Ramp     = PS4_L2;
+define Roof     = PS4_L1;
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Buttons                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define EditAssist    = XB1_RIGHT; //EDIT BUTTON IN GAME CANNOT HAVE HOLD TIME (USED AS EDIT ASSIT BUTTON)
+define FastReset     = XB1_DOWN;  //ONE BUTTON RESET DOES MATCH IN GAME TO ANYTHING
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define StandardAHip = TRUE;
+
+int QuickEditAssist     = FALSE;
+int InstaFastReset      = FALSE;
+int Antirecoil          = TRUE;
+int ToggleRumbleBoost   = FALSE;// Change to TRUE; , if you want BOOST
+int AimAbuse_AimAssist  = FALSE;
+int BuildMode 		= TRUE;
+int toms_Target_Tracker = FALSE;
+int Strafe              = FALSE;
+
+/*
+ 
+ToggleExploitAssist = 0 = OFF        ( Choose your Shape ) 
+                    = 1 = Circular 
+                    = 2 = Tall Oval
+                    = 3 = Wide Oval
+                    = 4 = Spiral
+                    = 5 = Helix 
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+//Aim Assist Polar Adjust Your Values Below... 
+//==============================
+//Values for Boost...
+int ToggleExploitAssist =  1;     // Choose your shape  
+int ExploitRadius       = 10;           
+int ExploitAngle        = 10;
+int ExploitRadiusMin    =  5;
+
+int ExploitAngleBoost   = 5;      // For Boost ONLY 
+int PolarBoost         = 10;     // For Boost ONLY  
+ 
+//AimAbuse_AimAssist
+//==============================
+int AimAbuse_HOLD = 260;
+int AimAbuse_RELEASE = 5;
+
+//QuickEditAssist
+//==============================
+int EditDelay = 12;
+
+//AntiRecoil
+//==============================
+int AntiRecoil = 10;
+
+//Strafe 
+//==============================
+int ast     = 100;// store auto strafe time (200ms-360ms).
+
+
+int BuildSyncTime = 4000;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+ 
+ int BuildCount;
+ int Edit1,EditT,Shunt;
+ int SnapShot_hold; 
+ int SnapShot_rest;
+ int Anti_Recoil;
+
+
+const string Misc[] = { "POWER V3[PRO]", "On", "Off","LINEAL","Made By","EXPLOIT YT","KillSwitch","Enabled","Disabled","" }; 
+int ScreenSaver,BlankScreen,ModMenu,DisplayMenu,ModNameIdx,Toggle,EditMenu,ValNameIdx,KillSwitch; 
+const string ValNames[] = { "Val1","Val2","Val3",""}; 
+const string ModNames[] = { "Mod1","Mod2", "Mod3",""}; 
+int DisplayTitle = TRUE; //Display Title When The Script Loads, This Needs TO Be TRUE. 
+
+// Everything Below you do not need to touch!! \\
+define True = TRUE;
+define False = FALSE; 
+int RX,RY,angle,CosAngle,SinAngle,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,PolarStrength,Angle;
+const int8 ExploitPolar[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,    
+80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7, 
+6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,  
+-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, 
+-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,   
+-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, 
+-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,
+9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,
+82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};  
+ 
+ main { 
+ 
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ QuickEditAssist V3 ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(QuickEditAssist) {
+if(!get_ival(Ads) && get_ival(EditAssist)) {
+EditAssist();
+Edit1 = On;}
+if (event_release(EditAssist)) {
+combo_run(Confirm);
+EditT = Off;
+Edit1 = Off;
+}
+}
+
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ InstaFastReset V3 ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(InstaFastReset && !get_ival(Ads) && event_press(FastReset)) { 
+Shunt = FastReset;
+combo_run(FastReset);
+}  		
+
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ BuildTracker ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(event_press(Build)){
+BuildMode = !BuildMode;
+}
+if(event_press(Build)){
+BuildMode = FALSE;
+}
+if(event_press(ToggleExploitAssist)) {
+BuildMode = FALSE;
+}
+if(!BuildMode) {
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ AimAssist V3 ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙		
+if(ToggleExploitAssist) {      
+RX = get_val(PS4_RX);                                
+RY = get_val(PS4_RY); 
+ActualMagnitude = isqrt(pow(RX, 2) + pow(RY, 2));   
+MaxMagnitude = (ActualMagnitude < 100);             
+angle += ExploitAngle + Angle;                                    
+angle = angle % 360;  
+CosAngle = ExploitPolar[(angle + 270) % 360];  
+SinAngle = ExploitPolar[angle % 360];
+if(ToggleRumbleBoost){
+if(get_ival(Fire)){
+SmartRumble = get_rumble(RUMBLE_A);
+Angle = ExploitAngleBoost;
+if(SmartRumble > 10 && SmartRumble < 40){
+PolarStrength  = (ExploitRadius + PolarBoost + ExploitAngleBoost + SmartRumble / 10); 
+SmartRumble    = 0;}}}
+if(get_ival(Ads) || get_ival(Fire)){
+if(ActualMagnitude < ExploitRadius){
+SinAngle -= RY;                                                              
+CosAngle -= RX;}
+else{   
+SinAngle = (SinAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;  
+CosAngle = (CosAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;}                                                  
+if(!get_rumble(RUMBLE_A))
+GetShapes(ExploitRadius); 
+else 
+GetShapes(PolarStrength);}
+PolarStrength = 0; 
+SmartRumble   = 0;
+}
+
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ AimAbuss_AimAssist V3 ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(AimAbuse_AimAssist) {                             
+if(get_val(Ads) && get_val(Fire)) {  
+SnapShot_hold = 140;
+SnapShot_rest = 0;            
+combo_run(SnapShot);} 
+else if (combo_running(SnapShot)) {     
+combo_stop(SnapShot);
+}  
+}
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ Strafe V3 ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(Strafe){
+if(get_val(Ads) && get_val(Fire) || get_val(Fire)){        
+combo_run(Auto_Strafe);}
+if(abs(get_val(LX)) > 40 || abs(get_val(LY)) > 40){
+combo_stop(Auto_Strafe);
+}
+}
+
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ Antirecoil V3 ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(Antirecoil){                               
+if( get_val(Ads) && get_val(Fire)) {      
+combo_run(AntiRecoil); }               
+if( abs(get_val(RY)) > 36 || abs(get_val(RX)) > 36) { 
+combo_stop (AntiRecoil);               
+}
+}
+
+/////////////////////////////////////////////////////////////END MODS//////////////////////////////////////////////////////
+
+//∙∙·▫▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ MENU OLED ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫ₒₒ▫ᵒᴼᵒ▫▫·∙∙
+if(DisplayMenu) 
+        {
+        	cls_oled(OLED_BLACK);  
+        	rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE);
+        	line_oled(0, 27, OLED_WIDTH - 1, 27, 1, OLED_WHITE); 
+ 
+        	if(EditMenu)  
+        	{
+        	printf(center_x(get_valName_chars(ValNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ValNames[ValNameIdx]);
+ 
+        	} 
+        	else if(ModMenu) 
+        	{
+        	printf(center_x(get_modName_chars(ModNameIdx), OLED_FONT_MEDIUM_WIDTH),7,OLED_FONT_MEDIUM,OLED_WHITE,ModNames[ModNameIdx]); 
+ 
+            if(Toggle == 1) 
+ 
+            printf(center_x(get_misc_chars(1), OLED_FONT_MEDIUM_WIDTH),37,OLED_FONT_MEDIUM,OLED_WHITE,Misc[1]);	
+ 
+    		else if(Toggle == 0) 
+ 
+           	printf(center_x(get_misc_chars(2), OLED_FONT_MEDIUM_WIDTH),37,OLED_FONT_MEDIUM,OLED_WHITE,Misc[2]);  
+ 
+            }
+        	Toggle = FALSE; 
+            DisplayMenu = FALSE;
+ 
+        } // End Of Display Menu \\
+ 
+        if(!ModMenu && !EditMenu) 
+			if(DisplayTitle)  
+			{
+				cls_oled(OLED_BLACK);  
+				rect_oled(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED_BLACK, OLED_WHITE); 
+				printf(center_x(get_misc_chars(0), OLED_FONT_SMALL_WIDTH),7,OLED_FONT_SMALL,OLED_WHITE,Misc[0]);  
+				printf(center_x(get_misc_chars(3), OLED_FONT_SMALL_WIDTH),22,OLED_FONT_SMALL,OLED_WHITE,Misc[3]); 
+				printf(center_x(get_misc_chars(4), OLED_FONT_SMALL_WIDTH),37,OLED_FONT_SMALL,OLED_WHITE,Misc[4]); 
+				printf(center_x(get_misc_chars(5), OLED_FONT_SMALL_WIDTH),50,OLED_FONT_SMALL,OLED_WHITE,Misc[5]); 
+ 
+				DisplayTitle = FALSE;
+        		ScreenSaver  = TRUE; 
+			}
+			if(ScreenSaver)  // ScreenSaver, After 30 seconds The Display Will Go Blank , THIS IS TO PREVENT SCREEN BURN \\ 
+    		{
+       			BlankScreen += get_rtime();
+ 
+    			if(BlankScreen >= 30000)
+    			{
+    				cls_oled(OLED_BLACK);
+    				BlankScreen = 0;
+    				ScreenSaver = TRUE; 
+ 
+        		}// End Of BlankScreen \\
+ 
+    		} // End of ScreenSaver \\
+ 
+    	} // End Of Display Title \\
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+combo Auto_Aimm {          
+set_val(10, (AimAssist_Strength)); wait(10)
+set_val(9, (AimAssist_Strength)); wait(10)
+set_val(10, AimAssist_Strength * -1); wait(10)
+set_val(9, AimAssist_Strength * -1); wait(10)}
+
+combo SnapShot { 
+set_val(Ads, 100);    
+wait(SnapShot_hold);                
+set_val(Ads, 0);      
+wait(SnapShot_rest);}
+
+combo Auto_Strafe {	
+set_val(LX,-30);
+wait(ast);
+set_val(LX, 30);
+wait(ast);
+if(ast < 160){ast = ast + 10;}
+else {ast = 100;
+}
+}
+
+combo AntiRecoil { 
+if(get_val(Fire)) {
+Anti_Recoil = get_val(10) + AntiRecoil;
+if(Anti_Recoil > 100) Anti_Recoil = 100;
+set_val(10, Anti_Recoil);
+}}
+combo Confirm {
+set_val(Confirm,100);
+wait(20);
+set_val(Confirm,0);
+wait(20);
+}
+
+combo FastReset {
+set_val(EditAssist,100);
+wait(20)
+set_val(Reset,100);        
+wait(20);
+combo_run(Confirm);
+}
+
+combo InstantReset {
+wait(20)
+combo_run(Confirm);
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+int Position;   
+function GetShapes(f_var) {     
+ 
+    if(!SpiralPosition1)                                
+	{
+		InnerSpiral -= 1;
+		if(InnerSpiral < ExploitRadiusMin)
+			SpiralPosition1 = True;
+	}
+	else
+	{
+	    InnerSpiral += 1;
+		if(InnerSpiral > f_var)
+			SpiralPosition1 = False;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+		if(OuterSpiral < ExploitRadiusMin)
+			SpiralPosition2 = True;
+	}
+	else
+	{
+		OuterSpiral += 1;
+		if(OuterSpiral >  f_var)
+			SpiralPosition2 = False;
+	} 
+	if(ToggleExploitAssist == 1)                    
+	{ 
+        RY = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+        RX = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;  
+	} 
+	if(ToggleExploitAssist == 2)        
+	{ 
+        RY = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+        RX = (get_val(PS4_RX))  + ( (CosAngle * ExploitRadiusMin) )/100; 
+	}
+	if(ToggleExploitAssist == 3)                     
+	{ 
+        RX = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;  
+        RY = (get_val(PS4_RY))  + ( (SinAngle * ExploitRadiusMin) )/100;
+ 
+	} 
+	if(ToggleExploitAssist == 4)                  
+	{
+        RY = (get_val(PS4_RY))  + ( (SinAngle * InnerSpiral) )/100;
+        RX = (get_val(PS4_RX))  + ( (CosAngle * OuterSpiral) )/100;  
+	}
+    if(ToggleExploitAssist == 5)
+	{
+		if(Position == 0 || Position == 1)
+    	{  
+		    RX = (get_val(PS4_RX))  + ( (CosAngle * f_var) )/100;
+		}
+	    if(Position == 2 || Position == 3)
+		{  
+		    RY = (get_val(PS4_RY))  + ( (SinAngle * f_var) )/100;
+		}
+			Position++;		
+ 
+		if(Position == 4)
+		{
+			Position = 0;
+		}
+    } 
+set_val(PS4_RX,RX);
+set_val(PS4_RY,RY);
+}
+function Press (Button) {
+
+    if (get_ival(Button))
+        return;
+            set_val(Button, 100);
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        if (get_ival(EditAssist)) {
+            if (EditT >= EditDelay)
+                  Press(Select);
+          }
+}
+function get_misc_chars(f_idx){
+	if (Misc[f_idx + 1] != -1) 
+		return Misc[f_idx + 1] - Misc[f_idx] - 1;
+	return sizeof(Misc) - Misc[f_idx];		
+}
+
+function get_modName_chars(f_idx){
+	if (ModNames[f_idx + 1] != -1) 
+		return ModNames[f_idx + 1] - ModNames[f_idx] - 1;
+	return sizeof(ModNames) - ModNames[f_idx];		
+}
+
+function center_x(f_chars,f_font) {
+ 
+ 
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+function get_valName_chars(f_idx){
+	if (ValNames[f_idx + 1] != -1) 
+		return ValNames[f_idx + 1] - ValNames[f_idx] - 1;
+	return sizeof(ValNames) - ValNames[f_idx];		
+} ����������������

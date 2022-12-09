@@ -1,0 +1,253 @@
+/*
+¬AIM ABUSE ALWAYS ON 
+¬ADS & D-PAD LEFT TO TOGGLE AIM ASSIST V2(GREEN) / V3(RED)
+*/
+define dropshot_toggle =
+/*DROPSHOT HOLD ADS BUTTON AND */ PS4_L3;
+
+
+
+//COLOR IDENTIFICATION              
+define Blue = 1;
+define Red = 2;
+define Green = 3;
+define Pink = 4;
+define SkyBlue = 5;
+define Yellow = 6;
+define White = 7;
+data(1,
+    2, 0, 0, 0, //1. Blue                                 
+    0, 2, 0, 0, //2. Red -- Aim Assist v3                               
+    0, 0, 2, 0, //3. Green -- Aim Assist v2                               
+    0, 0, 0, 2, //4. Pink -- Fire Rate                               
+    2, 0, 2, 0, //5. SkyBlue                              
+    0, 2, 2, 0, //6. Yellow  -- Dropshot                             
+    2, 2, 2, 2 //7. White 
+);
+int Col_ind;
+
+
+
+//----------------------------------------
+// BUTTON LAYOUT: COMBAT PRO
+define FIRE_BTN = 4; //XB1_RB //PS4_R2
+define ADS_BTN = 7; //XB1_LB //PS4_L2
+define CROUCH_BTN = 5; //XB1_RS //PS4_R3
+define SPRINT_BTN = 8; //XB1_LS //PS4_L3
+define JUMP_BTN = 19; //XB1_A  //PS4_CROSS
+define RELOAD_BTN = 20; //XB1_X // PS4_SQUARE
+define NEXT_PIECE = 3; //XB1_RT //PS4_R1
+define LEFT_BUMP = 6; //XB1_LT //PS4_L1
+define SWAP_BTN = 17; //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18; //XB1_B  //PS4_CIRCLE
+define WALL_BTN = 4; //XB1_RB //PS4_R2
+define STAIRS_BTN = 7; //XB1_LB //PS4_L2
+define FLOOR_BTN = 3; //XB1_RT //PS4_R1
+define ROOF_BTN = 6; //XB1_LT //PS4_L1
+define R_X = 9; //XB1_RX //PS4_RX
+define R_Y = 10; //XB1_RY //PS4_RY
+define L_X = 11; //XB1_LX //PS4_LX
+define L_Y = 12; //XB1_LY //PS4_LY
+define UP = 13; //XB1_UP //PS4_UP
+define DOWN = 14; //XB1_DOWN //PS4_DOWN
+define LEFT = 15; //XB1_LEFT //PS4_LEFT
+define RIGHT = 16; //XB1_RIGHT //PS4_RIGHT
+//-------------------------------------------------------------------------------------------
+
+
+//-----------------------------------------------------
+// VARIABLES
+
+//RUMBLE
+int rumble_type = RUMBLE_A;
+//END
+
+//AIM ASSIST HOLD & WAIT
+int aimabuse_hold = 319;
+int aimabuse_release = 29;
+int aimabuse_release2 = 19;
+int AimAssist_v2 = TRUE; // set both to FALSE to disable aim assist
+int AimAssist_v3 = FALSE;
+
+int shake = 21; //v3
+
+// Dropshot
+int Dropshot = FALSE;                                                                          
+int Drop_value = 18;
+
+// adjustable fire rate
+int Fire_rate =FALSE;
+int Fire_rate_adjust = 235; // 50 = rapid fire / 235 = 100% accuracy
+
+main {
+
+/*REMOVE THE 2 // IF YOU USE ANY OF THOSE BELOW 
+||
+vv                                              */
+//swap(FIRE_BTN,NEXT_PIECE); swap(ADS_BTN,LEFT_BUMP); //FLIPPED BUMPER/TRIGGERS
+//swap(CROUCH_BTN,JUMP_BTN); // SWAP JUMP & CROUCH ONLY
+//swap(FIRE_BTN,NEXT_PIECE); swap(ADS_BTN,LEFT_BUMP); swap(LEFT_BUMP,JUMP_BTN); //FLIPPED BUMPER/TRIGGERS, JUMP & CROUCH
+   
+    //////////////////   //////////////////       
+    // Aim abuse
+    if (get_val(ADS_BTN) > 95) {
+    combo_run(AIM_ABUSE); //AIM ABUSE
+    } else {combo_stop(AIM_ABUSE);
+    }
+    //////////////////   //////////////////           
+    // AimAssist v2-v3 toggle
+    if (get_val(ADS_BTN)) {
+    if (event_press(LEFT)){
+    AimAssist_v2 =!AimAssist_v2;
+    AimAssist_v3 =!AimAssist_v3;
+    rumble_A_if_true(AimAssist_v2);
+    }
+    //////////////////   //////////////////       
+    // Dropshot
+    if (event_press (SPRINT_BTN)) {
+    Dropshot =!Dropshot;
+    rumble_A_if_true (Dropshot);
+    }
+    //////////////////   //////////////////       
+    if (event_press (RIGHT)) { 
+    Fire_rate = !Fire_rate;
+    rumble_A_if_true(Fire_rate);
+    }
+    set_val(LEFT,0);
+    set_val(RIGHT, 0);
+    }
+    //////////////////   //////////////////       
+    //Aim Assist v2
+    if (AimAssist_v2) {
+    if (get_val(7) > 95) { 
+    combo_run(AimAssist_v2b);
+    }
+    }
+    if (abs(get_val(9)) > 20 || abs(get_val(10)) > 20) {
+    combo_stop(AimAssist_v2b);
+    }
+    if (AimAssist_v2) {
+    colourled(Green);
+    if(get_val(7) > 95 && abs(get_val(9)) > 20 || abs(get_val(10)) > 20) combo_run(AimAssist_v2);
+    if (get_val(7) < 20) {combo_stop(AimAssist_v2);
+    }
+    }
+    
+    //////////////////   //////////////////       
+    //Aim Assist v3
+    if (AimAssist_v3) {
+    colourled(Red);
+    if (get_val(ADS_BTN) > 95) { 
+    combo_run(AimAssist_v3);
+    }
+    if (abs(get_val(R_X)) > 20 || abs(get_val(R_Y)) > 20) {
+    combo_stop(AimAssist_v3);
+    }
+    }
+    //////////////////   ////////////////// 
+    //Adjustable fire rate
+    if (Fire_rate) { 
+    colourled(Pink);
+    if (get_val (ADS_BTN) && get_val (FLOOR_BTN)) {
+    combo_run(Fire_rate_combo);     
+    set_val (FLOOR_BTN, 0);
+    }
+    else { 
+    combo_stop (Fire_rate_combo);
+    }
+    }
+    
+    //////////////////   //////////////////       
+    // Dropshot
+    if(Dropshot){ 
+    colourled(Yellow);
+    if (get_val (ADS_BTN) && get_val (FIRE_BTN)) {
+    combo_run(DropshotC); 
+    }
+    }
+    if (event_press(BUILD_BTN)) { 
+    Dropshot = FALSE; 
+}
+}
+  
+
+  //combos
+    combo AimAssist_v2 { //AIM ASSIST V2
+    set_val(R_Y,xy_val (R_Y, -26));
+	wait(20);
+    set_val(R_X, xy_val (R_X, 26));
+    wait(20);
+    set_val(R_Y,xy_val (R_Y, 25));
+	wait(20);
+	set_val(R_X,xy_val (R_X, -25));
+	wait(20);
+	}
+	
+	combo AimAssist_v2b { //AIM ASSIST V2
+    set_val(R_X, -23);
+    wait(30);
+    set_val(R_Y, -23);
+	wait(30);
+    set_val(R_X, 23);
+    wait(30);
+    set_val(R_Y, 23);
+	wait(30);
+	}
+    
+    combo AimAssist_v3 { //AIM ASSIST V3
+    set_val(R_X, (shake)); 
+    wait(85);
+    set_val(R_X, shake * -1);
+    wait(85);
+    }
+
+    combo AIM_ABUSE { // Aim Abuse
+    set_val(ADS_BTN, 100);
+    wait(aimabuse_hold);
+    set_val(ADS_BTN, 0);
+    wait(aimabuse_release);
+    set_val(ADS_BTN, 100);
+    wait(aimabuse_hold);
+    set_val(ADS_BTN, 0);
+    wait(aimabuse_release2);
+    } 
+    
+    combo DropshotC { //dropshot
+    set_val(5, 100); 
+    wait (Drop_value); 
+    wait (80);
+    }
+    
+    combo Fire_rate_combo {
+    set_val(4,100);
+    wait(100); 
+    wait(Fire_rate_adjust);
+    set_val(4,100);
+    }
+
+    combo VIBRATE {
+    set_rumble(rumble_type, 100);
+    wait(300);
+    reset_rumble();
+    }
+
+    function rumble_A_if_true(var) {
+    if (var) rumble_type = RUMBLE_A;
+    else rumble_type = RUMBLE_B;
+    combo_run(VIBRATE);
+}
+// COLOR LED function                                
+//--------------------------------------------------------------
+    function colourled(Colour) {
+    Col_ind = (Colour * 4) - 3;
+    set_led(LED_1, dbyte(Col_ind));
+    set_led(LED_2, dbyte(Col_ind + 1));
+    set_led(LED_3, dbyte(Col_ind + 2));
+    set_led(LED_4, dbyte(Col_ind + 3));
+}
+
+function xy_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < 20)
+	return f_val;
+	return get_val(f_axis);
+}

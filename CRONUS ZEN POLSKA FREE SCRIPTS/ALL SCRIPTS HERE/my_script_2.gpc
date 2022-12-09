@@ -1,0 +1,151 @@
+int RX = PS4_RX;
+int RY = PS4_RY;
+int LX = PS4_LX;
+int LY = PS4_LY;
+
+int AxisR;
+const int16 constant[]=
+{
+	100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}
+
+int InputTime;
+int PolarSpeed = 32767;
+int PolarPower = 32767;
+int RXValue = 10;
+int LXValue = 10;
+
+int AA1_Power = 4;
+int AA2_Power = 4;
+int AA3_Power = 4;
+
+
+int AA_Release= 6; // MOVEMENT OF ANALOG STICKS BEFORE AA4 IS DEACTIVATED
+
+int cryptoace, Cryptoace, cos_cRyptoace, sin_cRyptoace;
+int input;
+
+main
+{
+	vm_tctrl(-9);
+	block_rumble();
+	InputTime += get_rtime();
+	deadzone(PS4_L2,PS4_R2,100,100);
+	
+	combo_run(AA1);
+	
+	if (get_val(RX)<-AA1_Power||get_val(RX)>AA1_Power||get_val(RY)<-AA1_Power||get_val(RY)>AA1_Power||get_val(RX)<-AA1_Power||get_val(RX)>AA1_Power||get_val(RY)<-AA1_Power||get_val(RY)>AA1_Power)
+	{
+		combo_stop(AA1);
+	}
+	
+	input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+	
+	combo_run(AA2);
+	combo_run(AA2_Power);
+	combo_run(AA2_Power);
+	combo_run(Move);
+	combo_run(Move);  
+	combo_run(Move);   
+	combo_run(Move);
+	combo_run(AA2_Power);
+	combo_run(AA2_Power);
+	combo_run(AA4);
+	combo_run(AA4);
+	
+	AxisR  = isqrt(abs(event_press(RX)) * abs(event_press(RX)) + abs(event_press(RY)) * abs(event_press(RY)));
+	
+	if (event_press(RX) || event_press(RY) && event_press(RY) && AxisR <= AA_Release || event_press(RY) && AxisR > AA_Release) 
+	{
+		combo_run(AA3);
+	}
+}
+	
+combo AA1 
+{
+	set_val(RY, (AA1_Power));
+	wait(1)set_val(RX, (AA1_Power));
+	wait(1)set_val(RY, (-AA1_Power));
+	wait(1)set_val(RX, (-AA1_Power));
+	wait(1)set_val(RY, (AA1_Power));
+	wait(1)set_val(RX, (AA1_Power));
+	wait(1)set_val(RY, (-AA1_Power));
+	wait(1)set_val(RX, (-AA1_Power));
+	wait(1);
+}
+	
+combo AA2 
+{
+	AA2_Power = random(-1, 1)set_val(RY,  get_ival (RY)  + AA2_Power);
+	wait(2);
+	set_val(RX, get_ival (RX)+ AA2_Power);
+	set_val(LX, get_ival (LX)+ AA2_Power);
+	wait(2);
+	set_val(RY, get_ival(RY)+ AA2_Power*-1);
+	wait(2);
+	set_val(RX, get_ival (RX)  + AA2_Power*-1);
+	set_val(LX, get_ival (LX) + AA2_Power*-1);
+	wait(2);
+}
+
+combo AA3 
+{
+	offset(RX,AA3_Power);
+	offset(RY,AA3_Power);
+	wait(6);
+	offset(RX,AA3_Power * -1);
+	offset(RY,AA3_Power * -1);
+	wait(6);
+}
+	
+int PolarSD;
+
+combo AA4
+{
+	if(!(InputTime++ % 4))Set_polar(POLAR_RS, PolarSD = (PolarSD + PolarSpeed) % 360, PolarPower * 359);
+	InputTime = 0;
+
+}
+	
+combo AA2_Power 
+{
+	set_val(RX, SetVal(RX,RXValue + 1));
+	wait (3);
+	set_val(RX,SetVal(RX,RXValue - 1));
+	wait (3);
+}
+
+combo Move 
+{
+	set_val(LX, SetVal(LX,LXValue + 1));
+	wait (3);
+	set_val(LX, SetVal(LX,LXValue - 1));
+	wait (3);
+}
+	
+function SetVal(Axis1 , Value1) 
+{
+	if(abs(get_val(Axis1)) < (RXValue - 1))  return Value1;
+	return get_val(Axis1);
+}
+
+function offset(int axis, int offset_val) 
+{
+	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return
+}
+
+
+function Set_polar(Axis, cRyptoace, Axis5)
+{
+	cryptoace = 9 + Axis;
+	Cryptoace = 10 + Axis;
+	if(cRyptoace < 0) cRyptoace = 360 + (cRyptoace % 360);
+	cRyptoace = (cRyptoace + 90) % 360;
+	Axis5 = clamp(Axis5, 0, 100);
+	sin_cRyptoace = constant[cRyptoace];
+	cos_cRyptoace = constant[(cRyptoace + 90) % 360];
+	offset(cryptoace, inv(Axis5 * cos_cRyptoace / 100));
+	offset(Cryptoace, inv(Axis5 * sin_cRyptoace / 100))return;
+	}
+ 

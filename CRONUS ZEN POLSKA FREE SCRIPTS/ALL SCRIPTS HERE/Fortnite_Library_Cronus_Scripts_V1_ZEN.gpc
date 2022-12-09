@@ -1,0 +1,257 @@
+/* This Script Created by Library Cronus Scripts on youtube *========================
+Check Our VIDEO about this script any new version will be release there in our channel
+
+https://youtu.be/G5D1NAkUEo0
+
+
+Fortnite 2021  V1 by Library Cronus Scripts on youtube
+=======================
+
+
+
+                     
+-1___ Aim Assist   AUTO
+===================  
+
+-2___ AimBot   AUTO
+=================== 
+
+-3___ Rapid Fire  L2 + UP
+===================
+
+-4__ Target Tracker AUTO
+===================
+
+-5__ Drop Shot L2 + RIGHT
+===================
+
+-6__Trigger_Swap OFF // Change Your shooting to L1 and R1
+
+
+
+
+
+*///---------------------------  
+int Notify = TRUE
+int AimAbuse = TRUE;
+int AimAbuse_HOLD = 260;
+int AimAbuse_RELEASE = 5;
+
+//================================ 
+int DROPSHOOT = FALSE;//
+//================================
+int Trigger_Swap = FALSE;// PUT TRUE TO Change Your shooting to L1 and R1
+//================================
+//Aim Assist
+int SnapShot_AimAssist  = TRUE;
+//==============================
+int AimAssist  = TRUE
+int AimAssist_Strength  = 28; //28
+//===================================
+//Target Tracker 
+int toms_Target_Tracker = TRUE;
+
+//========================================
+//Rapid Fire
+int Rapid_Fire = FALSE;// L2+-UP______TRUE 
+
+//=========================================
+//Drop Shot 
+    int Speed = 60; // 
+    int HOLD =  40; // 
+//=====================================
+
+    main {
+    if(DROPSHOOT)
+    if(get_val(PS4_L2) && get_val(PS4_R2))
+    combo_run(DropShot);}  
+    combo DropShot {
+    set_val(PS4_R3,100);
+    wait(HOLD);
+    set_val(PS4_R3,0);
+    wait(Speed);}
+//============================
+main {
+    vm_tctrl(-9);
+     	
+if(Trigger_Swap)
+	{
+swap(PS4_R1, PS4_R2);
+swap(PS4_L1, PS4_L2);
+	}
+    
+if(toms_Target_Tracker){
+if(get_val(PS4_L2) && get_val(PS4_R2)){
+sensitivity(PS4_RX,0,tt_aim_speed); 
+sensitivity(PS4_RY,0,tt_aim_speed);
+            }
+        }
+if(get_val(PS4_L2) && event_press(PS4_RIGHT)) 
+{
+ DROPSHOOT=!DROPSHOOT;
+ if(DROPSHOOT){
+ combo_run(Flash_ON);
+
+ }
+ else combo_run(Flash_OFF);
+
+}
+
+
+if (AimAssist) {   
+if (get_val(PS4_R2)> 95){ combo_run(Auto_Aimm);}
+if (abs(get_val(9)) > 19 || abs(get_val(10)) > 19) 
+combo_stop(Auto_Aimm);
+}
+  
+    
+    
+                                      
+if (SnapShot_AimAssist) {                             
+if(get_val(PS4_L2) && get_val(PS4_R2)) {  
+SnapShot_hold = 140;
+SnapShot_rest = 0;            
+combo_run(SnapShot);} 
+else if (combo_running(SnapShot)) {     
+combo_stop(SnapShot);}                                             
+}                         
+
+if(get_val(PS4_L2) && event_press(PS4_UP)) {
+combo_run (vibrate);
+Rapid_Fire=!Rapid_Fire;
+
+  if(Rapid_Fire){
+ combo_run(Flash_ON);
+
+ }
+ else combo_run(Flash_OFF);
+
+}
+
+if(AimAbuse){
+   if(get_val(PS4_L2)> 95){
+      combo_run(AimAbuse);}
+   if(event_release(PS4_L2)){ combo_stop(AimAbuse);}
+}
+
+if(Rapid_Fire) {
+if(get_val(PS4_R2)) {
+combo_run (RAPID_FIRE);
+}}
+
+if(get_val(PS4_R2)>=1) set_val(PS4_R2, 100);
+if(get_val(PS4_L2)>=1) set_val(PS4_L2, 100);
+
+hold_time = 500 / RATE_OF_FIRE;
+rest_time = hold_time - 20;
+if(rest_time < 0) rest_time = 0;}
+
+combo vibrate{ 
+wait(300);
+reset_rumble();
+}
+
+    
+combo RAPID_FIRE {
+set_val(PS4_R2, 100);
+wait(hold_time);
+set_val(PS4_R2, 0);
+wait(rest_time);
+set_val(PS4_R2, 0);
+}
+
+combo Auto_Aimm {          
+set_val(10, (AimAssist_Strength)); wait(10)
+set_val(9, (AimAssist_Strength)); wait(10)
+set_val(10, AimAssist_Strength * -1); wait(10)
+set_val(9, AimAssist_Strength * -1); wait(10)}
+
+
+
+combo SnapShot { 
+set_val(PS4_L2, 100);    
+wait(SnapShot_hold);                
+set_val(PS4_L2, 0);      
+wait(SnapShot_rest);}
+
+combo AimAbuse {
+set_val(PS4_L2, 100);
+wait(AimAbuse_HOLD);
+set_val(PS4_L2, 0);
+wait(AimAbuse_RELEASE);}
+
+int tt_aim_speed = 95;
+int RATE_OF_FIRE = 50;
+int Col_ind;
+int hold_time;
+int rest_time;
+int SnapShot_hold; 
+int SnapShot_rest;
+
+
+
+combo Flash_ON {
+    LED(0,0,2,0);   
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();
+    reset_leds();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();
+    reset_leds();}
+
+
+
+ function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+
+
+
+
+
+
+
+
+/*
+function colourled(Colour) {
+Col_ind=(Colour*4)- 3;
+set_led(LED_1,dbyte(Col_ind ));
+set_led(LED_2,dbyte(Col_ind+ 1));
+set_led(LED_3,dbyte(Col_ind+ 2));
+set_led(LED_4,dbyte(Col_ind+ 3));
+wait(20);
+reset_leds();
+}
+define OFF       = 0;
+define Blue      = 1;
+define Red       = 2;
+define Green     = 3;
+define Pink      = 4;
+define SkyBlue   = 5;
+define Yellow    = 6;
+define White     = 7;
+//===================
+data(1,
+2,0,0,0, 
+0,2,0,0,
+0,0,2,0, 
+0,0,0,2, 
+2,0,2,0, 
+0,2,2,0, 
+2,2,2,2  
+);
+*/
+//==================

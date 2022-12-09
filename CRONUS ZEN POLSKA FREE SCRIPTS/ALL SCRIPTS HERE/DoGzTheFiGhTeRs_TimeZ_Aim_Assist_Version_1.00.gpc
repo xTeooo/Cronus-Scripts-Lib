@@ -1,0 +1,884 @@
+/*  _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+   |       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+   | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+   | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+   | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+   | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+   | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+   | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+    \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+       ________ __                       ________       ______  __                    ______                    __            __     
+      |        \  \                     |        \     /      \|  \                  /      \                  |  \          |  \    
+       \▓▓▓▓▓▓▓▓\▓▓______ ____   ______  \▓▓▓▓▓▓▓▓    |  ▓▓▓▓▓▓\\▓▓______ ____      |  ▓▓▓▓▓▓\ _______  _______ \▓▓ _______ _| ▓▓_   
+         | ▓▓  |  \      \    \ /      \    /  ▓▓     | ▓▓__| ▓▓  \      \    \     | ▓▓__| ▓▓/       \/       \  \/       \   ▓▓ \  
+         | ▓▓  | ▓▓ ▓▓▓▓▓▓\▓▓▓▓\  ▓▓▓▓▓▓\  /  ▓▓      | ▓▓    ▓▓ ▓▓ ▓▓▓▓▓▓\▓▓▓▓\    | ▓▓    ▓▓  ▓▓▓▓▓▓▓  ▓▓▓▓▓▓▓ ▓▓  ▓▓▓▓▓▓▓\▓▓▓▓▓▓  
+         | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓    ▓▓ /  ▓▓       | ▓▓▓▓▓▓▓▓ ▓▓ ▓▓ | ▓▓ | ▓▓    | ▓▓▓▓▓▓▓▓\▓▓    \ \▓▓    \| ▓▓\▓▓    \  | ▓▓ __ 
+         | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓ ▓▓▓▓▓▓▓▓/  ▓▓___     | ▓▓  | ▓▓ ▓▓ ▓▓ | ▓▓ | ▓▓    | ▓▓  | ▓▓_\▓▓▓▓▓▓\_\▓▓▓▓▓▓\ ▓▓_\▓▓▓▓▓▓\ | ▓▓|  \
+         | ▓▓  | ▓▓ ▓▓ | ▓▓ | ▓▓\▓▓     \  ▓▓    \    | ▓▓  | ▓▓ ▓▓ ▓▓ | ▓▓ | ▓▓    | ▓▓  | ▓▓       ▓▓       ▓▓ ▓▓       ▓▓  \▓▓  ▓▓
+          \▓▓   \▓▓\▓▓  \▓▓  \▓▓ \▓▓▓▓▓▓▓\▓▓▓▓▓▓▓▓     \▓▓   \▓▓\▓▓\▓▓  \▓▓  \▓▓     \▓▓   \▓▓\▓▓▓▓▓▓▓ \▓▓▓▓▓▓▓ \▓▓\▓▓▓▓▓▓▓    \▓▓▓▓ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Version 1.00
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Aim Assist ====
+Works on ADS or Fire
+Power [1,2,3] 	==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Anti Recoil ====
+Works on ADS + Fire
+Vertical [1-50]
+Hold [RecoilHoldOnFly] (Cross/A) For 600ms + Press Dpad [UP] or [Down] in the direction you want crosshair to move
+
+Toggle = LEFT + R2/RT
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Instant Pickaxe ====
+Tap [Pickaxe] (TRIANGLE/Y) When You Next Release Fire You Will Swap To Your Weapon
+[Ads] or [N_Weapon] or [P_Weapon] = Cancels Instant Pickaxe
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Jump Shot ====
+Release Fire to Jump [ADS BLOCKS MOD]
+
+Toggle = L2/LT + UP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Crouch Shot ====
+Hold ADS + Fire 
+
+Toggle = L2/LT + DOWN
+
+[Perfect Accuracy] + [Strafe Shot] + [Crouch Shot]  Or [Strafe Shot] + [Crouch Shot] ON = Smart Shot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Strafe Shot ====
+Hold ADS + Fire 
+
+Toggle = L2/LT + LEFT
+
+[Perfect Accuracy] + [Strafe Shot] + [Crouch Shot]  Or [Strafe Shot] + [Crouch Shot] ON = Smart Shot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Perfect Accuracy Shot ====
+Hold ADS + R1/RB 
+
+Toggle = L2/LT + OPTIONS/MENU
+
+Active on ADS + FIRE < 97% When [Perfect Accuracy] + [Strafe Shot] + [Crouch Shot] ON = Smart Shot
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Pump Ramp ====
+Hold ADS + L1/LB 
+
+Toggle = L2/LT + SHARE/VIEW
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Edit Setup + Guide ====
+
+EDIT ON RELEASE MUST BE OFF IN GAME SETTINGS FOR ALL EDIT METHODS TO FUNCTION CORRECTLY
+
+Edit Assist = [EditAssist] Button Hold To Auto Hold Select And Release To Confirm The Edit (Button In Game Must Not Have Hold Time)
+
+Fast Reset = Tap Your Chosen Button 
+NOTE ==>  EditAssist Must Be Set To Edit Only In Game For This To Function Correct Even When Not Using Edit Assist
+
+Instant Edit + Reset = Match Your In Game Setup 
+(Example)
+
+* You Use Circle/B In Game To Edit And Enter/Exit Build Mode
+* Set = EditHold = On;
+* Set = EditHoldTime = Your In Game Time (100-250)
+	
+Ensure Your Edit Button is Set In The Buttons Section To Match I use All These Methods At The Same Time So Its set This Way
+--------------------------------------------------------------------------------------------------------------------------------
+define Edit = PS4_CIRCLE; (Edit + Build With Hold Time)
+define EditAssist = PS4_L3; (I use Edit Assist With L3/LS And Its Also Used For Fast Reset)
+define FastReset = PS4_TOUCH;( This Is One Button Reset (Closest To Scroll Wheel Reset)(Any Button Your Like)(ADS BLOCKS MOD)
+
+define Select = PS4_R2; (Match Your In Game Button)
+define Confirm = PS4_CIRCLE; (Match Your In Game Button)
+define Reset = PS4_R3; (Match Your In Game Button)
+
+int EditHoldTime = 130; (This Is my In Game Hold To Edit Time)
+define EditHold = On; (This Is If You Use Edit/Build On One Button (Default Circle) (Switch Off For Normal Edit Without Hold)
+--------------------------------------------------------------------------------------------------------------------------------
+==== Build Tracking Mode ====
+    
+* Ensure Your Build/Pickaxe/Wall/Ramp/Floor/Roof/Trap Buttons Match In game And In The Script
+* Enter Build Mode All Conflicting Mods Will Be Disabled!
+* Exit Build Mode To Re-Enable Mods
+* Build Sync Time Will Auto De-Isolate Build Mode After Time Set In The Script (1.5 Seconds By Default, If A Build Piece Has Not Been Pressed It Resets)
+* Manual Resync = Pickaxe (TRIANGLE/Y)
+	(When Using Inventory, Map, Menu Tap Triangle to ensure it is reset)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Touchpad Fix ==== 
+* PS On Xbox -- PLAYSTATION CONTROLLER WILL SWAP TOUCHPAD AND SHARE WHEN ON PC Or XBOX
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== LED Visual Identifier ====
+
+==> BuildTrack On = Dark Blue
+==> JumpShot + CrouchShot + StrafeShot On = Yellow
+==> CrouchShot + StrafeShot On = Orange
+==> CrouchShot + JumpShot On = Red
+==> StrafeShot + JumpShot On = White
+==> CrouchShot On = Light Blue
+==> StrafeShot On = Green
+==> JumpShot On = Purple
+==> BuildTrack + JumpShot + CrouchShot + StrafeShot Off = Pink
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+==== Low Ping Button Press ====
+Line 157 To Adjust Time of Button Press Change this for faster response or longer if experiencing issues [* Thanks to MistyKitty]
+int ButtonTime = 20;      // Button Press Time (Edit Combo's + Instant Pickaxe)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+const string MiscString [] = {"Enabled","Disabled","Mod Toggle On/Off"};
+const string ModString  [] = {" Crouch Shot Mod","  Jump Shot Mod"," Strafe Shot Mod","  Pump Ramp Mod","100% Accuracy Mod"," Anti Recoil Mod"};
+/*							                                        
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define N_Weapon = PS4_R1;
+define P_Weapon = PS4_L1;
+define Crouch   = PS4_R3;
+define Pickaxe  = PS4_TRIANGLE;
+define Jump     = PS4_CROSS;
+define Build    = PS4_CIRCLE;
+define Wall     = PS4_R2;
+define Floor    = PS4_L1;
+define Ramp     = PS4_L2;
+define Roof     = PS4_R1;
+define Trap     = PS4_SQUARE;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+define Strafe   = PS4_LX;
+define Walk     = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+
+int AAT,Axis,ToggleT,ToggleTime,ToggleName,Modled,Shunt,Edit1,Edit2,EditT,Axe,BuildTrack,BuildCount,VibA,VibB;
+int ButtonTime = 20;      // Button Press Time (Edit Combo's + Instant Pickaxe)
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Aim Assist                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int AimAssist = On;      // Aim Assist [ On / Off ]
+int Power = 1;      	  // Aim Assist Power [1,2,3] 	==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Anti Recoil                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define AntiRecoilHold  = PS4_LEFT; // ANTIRECOIL HOLD TOGGLE
+define AntiRecoilPress = PS4_R2;   // ANTIRECOIL PRESS TOGGLE
+
+define RecoilHoldOnFly = PS4_CROSS; // ANTIRECOIL ON THE FLY ADJUSTMENT HOLD
+define RecoilUpPress   = PS4_UP;    // ANTIRECOIL ON THE FLY ADJUSTMENT NEG
+define RecoilDownPress = PS4_DOWN;  // ANTIRECOIL ON THE FLY ADJUSTMENT POS
+
+int AntiRecoil = On;      // Anti Recoil [ On / Off ]
+int Vertical = 21;		  // Anti-Recoil Power [1 - 50]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(            Crouch Shot + Toggle Buttons            )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define CrouchShotHold  = PS4_L2;   // CROUCH SHOT HOLD TOGGLE
+define CrouchShotPress = PS4_DOWN; // CROUCH SHOT PRESS TOGGLE
+
+int CrouchShot = Off;	  // Crouch Shot [ On / Off ] By Default
+int CrouchShotWait = 80;  // Crouch Shot Delay Time
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(            Smart Shot + Toggle Buttons             )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define StrafeShotHold  = PS4_L2;   // STRAFE SHOT HOLD TOGGLE
+define StrafeShotPress = PS4_LEFT; // STRAFE SHOT PRESS TOGGLE
+
+int StrafeShot = Off;
+int StrafeWait = 200;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(             Jump Shot + Toggle Buttons             )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define JumpShotHold  = PS4_L2;// JUMP SHOT HOLD TOGGLE
+define JumpShotPress = PS4_UP;// JUMP SHOT PRESS TOGGLE
+
+int JumpShot = Off;		  // Jump Shot [ On / Off ] By Default
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(          Pump Ramp + Activate Mod Buttons          )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define PumpRampToggleHold  = PS4_L2;      // PUMP RAMP HOLD TOGGLE
+define PumpRampTogglePress = PS4_SHARE;   // PUMP RAMP PRESS TOGGLE
+
+define PumpRampHold  = PS4_L2;	// PUMP RAMP HOLD ACTIVATOR
+define PumpRampPress = PS4_L1;	// PUMP RAMP PRESS ACTIVATOR
+
+int PumpRamp = Off;       // [ On / Off ] Pump Shot Build Ramp
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(       Perfect Accuracy + Activate Mod Buttons      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define PerfectAccuracyToggleHold  = PS4_L2;      // PERFECT ACCURACY HOLD TOGGLE
+define PerfectAccuracyTogglePress = PS4_OPTIONS; // PERFECT ACCURACY PRESS TOGGLE
+
+define PerfectAccuracyHold  = PS4_L2; // PERFECT ACCURACY HOLD ACTIVATOR
+define PerfectAccuracyPress = PS4_R1; // PERFECT ACCURACY PRESS ACTIVATOR
+
+int PerfectAccuracy = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Instant Pickaxe                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int InstantPickaxe = On;  // [ On / Off ] Instant Pickaxe
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Edit Mod's + Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Select  = PS4_R2;
+define Confirm = PS4_CIRCLE; 		
+define Reset   = PS4_R3;
+
+// INSTANT EDIT + RESET
+define Edit = PS4_CIRCLE;   // Instant Edit & Reset Button (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+int EditHoldTime = 130;	    // Time If Using Hold to Edit In game [Setting To Be Matched To In Game Time]
+
+define InstaEditReset = On; // [ On / Off ] Normal Instant Edit/Reset
+define EditHold = On;       // [ On / Off ] SET On WHEN USING EDIT HOLD TIME TO EDIT ( MATCH TO IN GAME SETUP ) [Off = INSTANT PRESS]
+//========================================================================================================================================
+// ONE BUTTON FAST RESET
+define FastReset = PS4_TOUCH; // FAST RESET BUTTON [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ]
+
+int InstaFastReset = On;      // Fast Reset [ On / Off ]
+//=========================================================================================================
+// QUICK EDIT ASSIST
+define EditAssist = PS4_L3; // EDIT ASSIST + FAST RESET EDIT BUTTON (Edit In Game [ NO HOLD TIME!!! ])
+
+int QuickEditAssist = On;   // [ On / Off ] Edit Assist
+int EditDelay = 20;         // Edit Assist Hold Delay On Select
+//=========================================================================================================
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Build Tracker                       )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int BuildTracker = On;	  // [ On / Off ] Build Mode Monitor [Pickaxe Manually Resyncs] (Isolate Mods While In Build Mode)
+int BuildSyncTime = 1500; // Time Before Auto Resync [When No Build Buttons Pressed]
+
+// ==> When Off Pressing Build Will Disable [Crouch + Jump Shot When On] (Re-Toggle to Re-Enable)
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Touchpad Fix On PC/Xbox              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+int PSonXBOX = On;       // [ On / Off ] DS4/5 On PC/Xbox [Touchpad Button Fix]
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Led Identify                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+int LedIdentify = On; /* Zen Led Identifier 
+    
+==> BuildTrack On = Dark Blue
+==> JumpShot + CrouchShot + StrafeShot On = Yellow
+==> CrouchShot + StrafeShot On = Orange
+==> CrouchShot + JumpShot On = Red
+==> StrafeShot + JumpShot On = White
+==> CrouchShot On = Light Blue
+==> StrafeShot On = Green
+==> JumpShot On = Purple
+==> BuildTrack + JumpShot + CrouchShot + StrafeShot Off = Pink
+*/
+
+main {
+
+	if (PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        
+        swap(PS4_TOUCH,PS4_SHARE);
+    }
+    
+	if (QuickEditAssist) {
+	 	
+	 	if (get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = On;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = Off;	
+			Edit1 = Off;
+		}
+		
+		if (Edit1 && event_press(Reset)) {  
+            
+        	combo_run(InstantReset);
+            Edit1 = Off;
+        }
+	}
+
+    if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       
+    		Shunt = Reset;
+    		combo_run(FastReset);
+    	}
+    }	
+
+	if (InstaEditReset) {
+        
+        if (EditHold) {
+        	
+        	if (get_ival(Edit) && get_ptime(Edit) > EditHoldTime) {
+        
+            	Edit1 = On;
+            	Edit2 = On;
+			}
+        }
+        	
+        else if (event_press(Edit)) {
+        			
+        		Edit1 = On;
+            	Edit2 = On;
+		}
+		
+		if (Edit2) {
+            
+            if (event_release(Select)) {  
+                
+                Edit1 = Off;
+                Edit2 = Off;
+            }
+		}
+    }
+
+    if (Edit1 || Edit2) {
+        
+        if (event_press(Reset)) {  
+            
+            combo_run(InstantReset);
+            Edit1 = Off;
+            Edit2 = Off;
+        }
+
+        if (event_press(Pickaxe)) {
+            
+            Edit1 = Off;
+            Edit2 = Off;
+		}
+    }
+    
+	if (BuildTracker) {
+        
+        if (event_press(Build)) {
+        	
+        	BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack) {
+        	
+        	BuildCount += get_rtime();
+        
+        	if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+            	
+            	BuildTrack = Off;
+            	BuildCount = Off;
+        	}
+        
+            if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) { 
+                
+                BuildCount = Off;
+        	}
+        }
+    }
+    
+    if (!BuildTrack) {
+    
+	    if (AimAssist) {
+	    
+	    	if (get_ival(Ads) || get_ival(Fire)) {
+	        	
+	        	AimAssist();
+	        }
+	        
+	        if (!get_ival(Ads) && !get_ival(Fire)) {
+	        
+	        	AAT = 0;
+	        	Axis = 0;
+	        }
+	    }
+	    
+	    if (InstantPickaxe) {
+                    
+        	if (event_press(Pickaxe)) {
+                        
+            	Axe = On;
+            }
+                	
+            if (Axe) {
+                        
+            	if (event_press(Build) || event_press(Ads) || event_press(N_Weapon) || event_press(P_Weapon)) { 
+                            
+                 	Axe = Off;
+                }
+                        
+                if (event_release(Fire)) {
+                            
+                	combo_run(Pickaxe);
+                }
+            }
+        }
+        
+	    if (CrouchShot) {
+        
+	    	if (get_ival(Ads) && get_ival(Fire)) {
+                
+                combo_run(CrouchShot);
+            
+            } else {
+                    
+                combo_stop(CrouchShot);
+            }
+        }
+
+        if (StrafeShot) {
+        
+            if (get_ival(Ads) && get_ival(Fire)) {
+            
+                if (abs(get_ival(Strafe)) <= 35 && abs(get_ival(Walk)) <= 35) {    
+                
+                    combo_run(StrafeShot);
+            
+                } else {
+                    
+                    combo_stop(StrafeShot);
+                }
+            }
+        }
+        
+        if (JumpShot) {
+        
+            if (!get_ival(Ads) && event_release(Fire)) {
+                
+                combo_run(JumpShot);
+            
+            } else {
+                    
+                combo_stop(JumpShot);
+            }
+        }
+	    
+	    if (PumpRamp) {
+	    
+	    	if (get_ival(PumpRampHold) && event_press(PumpRampPress)) {
+        
+        		Shunt = PumpRampPress;
+        		combo_run(PumpRamp);
+        	}
+	    }
+
+	    if (PerfectAccuracy) {
+	    
+	    	if (get_ival(PerfectAccuracyHold) && get_ival(PerfectAccuracyPress)) {
+        
+        		set_val(PerfectAccuracyPress,0);
+        		combo_run(PerfectAccuracy);
+        	
+        	} else {
+        	
+        		combo_stop(PerfectAccuracy);
+        	}
+	    }
+	    
+	    if (AntiRecoil) {        
+	    
+            if (get_ival(Ads) && get_ival(Fire)) { 
+                
+            	set_Val(AimY,Vertical);
+            }
+			
+			if (get_ival(RecoilHoldOnFly) && get_ptime(RecoilHoldOnFly) >= 600) {
+                
+	            if (event_press(RecoilDownPress)) {
+	            
+	                Vertical = clamp(Vertical++,1,50);
+	                VibA = On;
+	                combo_run(Rumble);
+	            }
+	            
+	            if (event_press(RecoilUpPress)) {
+	            
+	                Vertical = clamp(Vertical--,1,50);
+	                VibB = On;
+	                combo_run(Rumble);
+	            }
+                
+                set_val(RecoilUpPress,0); set_val(RecoilDownPress,0);
+            }
+        }
+        
+        if (CrouchShot && StrafeShot && PerfectAccuracy) {
+        
+        	if (get_ival(Ads) && get_ival(Fire)) {
+        	
+        		if (get_ival(Fire) < 97) {
+        			
+        			combo_run(SmartAccuracy);
+        		
+        		} else {
+        		
+        			combo_stop(SmartAccuracy);
+        		}
+        	}
+        }
+    }
+    
+    if (get_ival(CrouchShotHold) && event_press(CrouchShotPress)) {
+
+    	Shunt = CrouchShotPress;
+        CrouchShot = !CrouchShot;
+        ToggleName = On;
+        Toggle(CrouchShot,ModString[0]);
+    }
+
+    if (get_ival(StrafeShotHold) && event_press(StrafeShotPress)) {
+
+        Shunt = StrafeShotPress;
+        StrafeShot = !StrafeShot;
+        ToggleName = On;
+        Toggle(StrafeShot,ModString[2]);
+    }
+        
+    if (get_ival(JumpShotHold) && event_press(JumpShotPress)) {
+
+        Shunt = JumpShotPress;
+        JumpShot = !JumpShot;
+        ToggleName = On;
+        Toggle(JumpShot,ModString[1]);
+    } 
+    
+    if (get_ival(PumpRampToggleHold) && event_press(PumpRampTogglePress)) {
+
+        Shunt = PumpRampTogglePress;
+        PumpRamp = !PumpRamp;
+        ToggleName = On;
+        Toggle(PumpRamp,ModString[3]);
+    }
+
+    if (get_ival(PerfectAccuracyToggleHold) && event_press(PerfectAccuracyTogglePress)) {
+
+        Shunt = PerfectAccuracyTogglePress;
+        PerfectAccuracy = !PerfectAccuracy;
+        ToggleName = On;
+        Toggle(PerfectAccuracy,ModString[4]);
+    }
+
+    if (get_ival(AntiRecoilHold) && event_press(AntiRecoilPress)) {
+
+        Shunt = AntiRecoilPress;
+        AntiRecoil = !AntiRecoil;
+        ToggleName = On;
+        Toggle(AntiRecoil,ModString[5]);
+    }
+    
+    if (!BuildTracker) {
+    
+    	if (event_press(Build)) {
+    	
+    		CrouchShot = Off;
+    		JumpShot = Off;
+    	}
+    }
+    
+    if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        
+        } else {
+            
+            set_val(Shunt,Off);
+        }
+    }
+    
+    if (ToggleTime) {
+        
+        TimeToggle();
+    }
+    
+    if (LedIdentify) {
+    
+        if (BuildTrack) {  // Dark Blue
+        	
+        	set_rgb(0,0,200);  
+        
+  	    } else if (JumpShot && CrouchShot && StrafeShot) {  // Yellow
+        
+        	set_rgb(200,120,2);    	
+            
+        } else if (CrouchShot && StrafeShot) {  // Orange        //==> BuildTrack On = Dark Blue
+                                                                 //==> JumpShot + CrouchShot + StrafeShot On = Yellow
+        	set_rgb(200,50,0);    	                             //==> CrouchShot + StrafeShot On = Orange
+                                                                 //==> CrouchShot + JumpShot On = Red
+        } else if (CrouchShot && JumpShot) {  // Red             //==> StrafeShot + JumpShot On = White
+                                                                 //==> CrouchShot On = Light Blue
+        	set_rgb(200,0,0);                                    //==> StrafeShot On = Green
+                                                                 //==> JumpShot On = Purple
+        } else if (StrafeShot && JumpShot) {  // White           //==> BuildTrack + JumpShot + CrouchShot + StrafeShot Off = Pink
+        
+        	set_rgb(150,100,50);
+        	
+        } else if (CrouchShot) {  // Light Blue
+        
+        	set_rgb(0,200,200);    	
+        
+        } else if (StrafeShot) {  // Green
+        
+        	set_rgb(0,200,0); 
+        	
+        } else if (JumpShot) {    // Purple
+        
+        	set_rgb(255,0,255);
+        
+        } else {
+        
+        	set_rgb(255,20,20);   // Pink
+        }	
+    } 
+}
+
+combo CrouchShot {
+
+    set_val(Crouch,100);
+    wait(40);
+    wait(CrouchShotWait);
+}
+
+combo StrafeShot {
+
+    set_val(Strafe,-100);
+    wait(StrafeWait);
+    set_val(Strafe,100);
+    wait(StrafeWait);
+}
+
+combo JumpShot {
+
+    set_val(Jump,100);
+    wait(50);
+}
+
+combo Pickaxe {
+    
+    set_val(Pickaxe,100);
+    wait(ButtonTime);
+    Axe = Off;
+}
+
+combo PumpRamp {
+
+    set_val(Fire,100);
+    wait(50);
+ 	set_val(Build,100);
+ 	set_val(Ramp,0);
+    wait(50);
+    set_val(Ramp,100);
+    wait(50);
+    set_val(Build,100);
+    wait(50);
+    wait(30);
+}
+
+combo PerfectAccuracy {
+	
+	set_val(Fire,100);
+	wait(50);
+	wait(300);
+}
+
+combo SmartAccuracy {
+	
+	set_val(Fire,100);
+	wait(50);
+	set_val(Fire,0);	
+	wait(300);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(ButtonTime)
+    set_val(Reset,100);        
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+combo Rumble {
+    
+    if (VibA)
+        
+        set_rumble(RUMBLE_A,15);
+        
+    else if (VibB)
+            
+        set_rumble(RUMBLE_B,15);
+    
+        wait(250);
+        VibA = Off;
+        VibB = Off;
+        reset_rumble();
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    
+    } else {
+        
+        set_rgb(255,0,0);
+        set_rumble(RUMBLE_B,15);
+    }
+    
+    wait(150);
+    set_rgb(0,0,0);
+    wait(250);
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+        else
+            
+        set_rgb(255,0,0);
+
+    reset_rumble();
+    reset_leds();
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        
+        if (get_ival(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		Press(Select);
+        }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        
+   		return;
+            
+            set_val(Button,100);
+}
+
+function AimAssist () {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10 * 2);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10 * 2);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10 * 2));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10 * 2));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_val(Input),-100,100));
+        
+    return; 
+}
+
+function Toggle(ModT,ModP) {
+    
+	Modled = ModT;
+    ToggleT = 0;
+    ToggleTime = On;
+    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[3]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[0]);    
+        
+        } else {
+                
+            printf(36,38,0,1,MiscString[1]);
+        }
+        
+        ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+    if (ToggleT >= 5000) {
+        cls_oled(0);
+        ToggleTime = Off;
+        ToggleT = 0;
+    }
+}

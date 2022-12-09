@@ -1,0 +1,331 @@
+
+		
+							// Offline Default Values (Mr. Green Goblin AKA XBOXGT:iGreen 2EZ Personal Shot Values)
+								  
+								  //Base:98 Release1:Lonzo Ball Release2:Jerry West Speed: 4/4 Blend: 90/10
+								  
+const string SHOW1  = "CatchNShoot";
+const string SHOW2  = "Jumper";
+const string SHOW3  = "Fade";
+const string SHOW4  = "Up/Down";								  
+
+int Steal = TRUE;
+
+int CatchNShoot = 310;		
+int Jumper = 434;		
+int Fade = 685;
+
+define MAX_RANGE = 330;
+define VMSPEED = 10; // 0 = Default Zen Settings [-9 to 30]
+
+int TimeBetweenTriggers,Offline,FIND = 1;
+
+init{  
+	
+	CatchNShoot = get_pvar(SPVAR_1, 150, 3000, CatchNShoot);
+	Jumper 		= get_pvar(SPVAR_2, 150, 3000, Jumper);
+	Fade 		= get_pvar(SPVAR_3, 150, 3000, Fade);
+	Offline 	= get_pvar(SPVAR_4,   0,    1, Offline);
+}
+
+main{
+
+	vm_tctrl(VMSPEED);
+	cls_oled(0);
+   	set_val(PS4_ACCX,0);
+   	
+	//*-*Advanced Defense
+	if(get_ival(PS4_L2) && get_ival(PS4_R2)) {
+		
+		if(FindMax(abs(get_ival(PS4_LX)),abs(get_ival(PS4_LY))) > 15) {
+			
+			TimeBetweenTriggers =  MAX_RANGE - (FindMax(abs(get_ival(XB1_LX)),abs(get_ival(XB1_LY))) * 3);
+			combo_run(ALTERNATE_TRIGGERS);	
+		}
+	}
+                
+	if (event_release(XB1_RB) && (Steal == 1)) {
+		combo_run(STEAL);
+	}
+		
+	// CATCH N SHOOT
+	if (!get_ival(PS4_L2) && event_press(PS4_SQUARE)) {
+		
+		combo_run(CatchNShoot);
+    }
+	
+	// JUMPER AND FADES
+	if (!get_ival(PS4_R2) && get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) >= Jumper) {
+		
+		set_val(PS4_SQUARE,0);		
+    }
+    
+    if (get_ival(PS4_R2) && get_val(PS4_SQUARE) && get_ptime(PS4_SQUARE) >= Fade) {
+    	
+    	set_val(PS4_SQUARE,0);
+	}
+	
+	// Switch Between Online and Offline Modes  	  
+    if(get_ival(PS4_SHARE)) {      
+    	
+    	set_val(PS4_SHARE,0);
+    	
+    	if(event_press(PS4_DOWN) && Offline == TRUE){
+    		
+    		set_val(PS4_DOWN,0);
+    		Offline = FALSE;
+            CatchNShoot = CatchNShoot - 150; 
+			Jumper = Jumper - 150; 
+			Fade = Fade - 150;
+			combo_run(RUMBLE);	
+        }
+        
+        if(event_press(PS4_UP) && Offline == FALSE){
+    		
+    		set_val(PS4_UP,0);
+    		Offline = TRUE;
+        	CatchNShoot = CatchNShoot + 150; 
+			Jumper = Jumper + 150; 
+	    	Fade = Fade + 150;
+			combo_run(RUMBLE);
+        }
+      
+	}
+	
+	// SAVE SHOT VALUES 				
+	if (event_press(PS4_OPTIONS)) {
+        
+        set_pvar(PVAR_1, CatchNShoot);
+        set_pvar(PVAR_2, Jumper);
+        set_pvar(PVAR_3, Fade);
+        set_pvar(PVAR_4, Offline);
+    }
+
+	// Catch N Shoot Value Adjusting
+	if (get_ival(PS4_L1)) {
+		
+		printf(5,5,1,1,SHOW1[0]);
+	   	printf(20,30,0,1,SHOW4[0]);
+		Get(CatchNShoot,Finds(CatchNShoot));
+		
+		if (event_press(PS4_UP)){
+			
+			set_val(PS4_UP,0);		
+			CatchNShoot += 10;
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_DOWN)){
+			
+			set_val(PS4_DOWN,0);		
+			CatchNShoot -= 10;
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_LEFT)){
+			
+			set_val(PS4_LEFT,0);		
+			CatchNShoot -= 1;
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_RIGHT)){
+			
+			set_val(PS4_RIGHT,0);		
+			CatchNShoot += 1;
+       		combo_run(RUMBLE);
+		}
+	}
+	
+	// Jumper Values Adjusting
+	if (get_ival(PS4_SQUARE)) {
+		
+		printf(36,5,1,1,SHOW2[0]);
+	   	printf(20,30,0,1,SHOW4[0]);
+		Get(Jumper,Finds(Jumper));
+		
+		if (event_press(PS4_UP)) {
+			
+			set_val(PS4_UP,0);		
+			Jumper += 10;
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_DOWN)) {
+			
+			set_val(PS4_DOWN,0);		
+			Jumper -= 10;
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_LEFT)) {
+			
+			set_val(PS4_LEFT,0);		
+			Jumper -= 1;
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_RIGHT)) {
+			
+			set_val(PS4_RIGHT,0);		
+			Jumper += 1;
+       		combo_run(RUMBLE);
+		}
+	}
+
+	// Fade Value Adjusting
+	if (get_ival(PS4_R2)){
+		
+		printf(45,5,1,1,SHOW3[0]);
+	   	printf(20,30,0,1,SHOW4[0]);
+		Get(Fade,Finds(Fade));
+		
+		if (event_press(PS4_UP)){
+			
+			set_val(PS4_UP,0);		
+			Fade += 10;	
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_DOWN)){
+			
+			set_val(PS4_DOWN,0);		
+			Fade -= 10;		
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_LEFT)){
+			
+			set_val(PS4_LEFT,0);		
+			Fade -= 1;	
+       		combo_run(RUMBLE);
+		}
+		
+		if (event_press(PS4_RIGHT)){
+			
+			set_val(PS4_RIGHT,0);		
+			Fade += 1;		
+       		combo_run(RUMBLE);
+		}
+	}
+	
+	// ZEN LED
+	if (Offline == TRUE) {
+		
+		set_led(LED_1, 0);
+		set_led(LED_2, 0);
+		set_led(LED_3, 2);
+		set_led(LED_4, 0);
+	
+	} else {
+	    
+	    set_led(LED_1, 0);
+		set_led(LED_2, 2);
+		set_led(LED_3, 0);
+		set_led(LED_4, 0);
+	}
+}
+
+// COMBOS
+combo CatchNShoot{
+	
+	set_val(PS4_SQUARE,100);
+	wait(CatchNShoot);
+}
+
+combo RUMBLE{
+	
+	set_rumble(RUMBLE_A,100);
+	set_rumble(RUMBLE_B,100);
+	wait(200);
+	reset_rumble();
+}
+
+/*
+$__$___$__$___$__$___$__$___$__$___$__$___$
+   			    **Defense**
+$__$___$__$___$__$___$__$___$__$___$__$___$   			    
+*/
+
+combo ALTERNATE_TRIGGERS {
+    
+    set_val(XB1_LT,100);
+    set_val(XB1_RT,0);
+    wait(30);
+    set_val(XB1_LT,0);
+    set_val(XB1_RT,0);
+    wait(TimeBetweenTriggers);
+    set_val(XB1_RT,100);
+    set_val(XB1_LT,0);
+    wait(30);
+    set_val(XB1_LT,0);
+    set_val(XB1_RT,0);
+    wait(TimeBetweenTriggers);
+}
+
+combo STEAL {
+    
+    set_val(XB1_X,100);
+    set_val(XB1_LX,0);
+    set_val(XB1_LY,0);
+    wait(50);
+    set_val(XB1_LX,0);
+    set_val(XB1_LY,0);
+    wait(300);
+}
+
+/*__$__$__$__$__$__$__$__$__$__$
+           **FindMax**
+  __$__$__$__$__$__$__$__$__$__$*/
+  
+  
+function FindMax(a,b) {
+    
+    if(a > b){
+        return a;
+    }
+    return b;
+}
+
+function Get(Number,I_Got) {
+	
+	if(I_Got >= 5) {
+		
+		putc_oled(FIND,(Number / 10000) + 48);
+		Number %= 10000;
+		FIND++;
+	}
+	
+	if(I_Got >= 4) {
+		
+		putc_oled(FIND,(Number / 1000) + 48);
+		Number %= 1000;FIND++;
+	}
+	
+	if(I_Got >= 3) {
+		
+		putc_oled(FIND,(Number / 100) + 48);
+		Number %= 100;FIND++;
+	}
+	
+	if(I_Got >= 2) {
+		
+		putc_oled(FIND,(Number / 10) + 48);
+		Number %= 10;FIND++;
+	}
+	
+	putc_oled(FIND,Number + 48);
+	puts_oled(48,45,1,FIND,1);
+	FIND = 1;
+}
+
+function Finds(Numbers){
+
+	Numbers = abs(Numbers);
+	
+	if(Numbers / 10000 > 0) return 5;
+	if(Numbers / 1000 > 0) return 4;
+	if(Numbers / 100 > 0) return 3;
+	if(Numbers / 10 > 0) return 2;
+	return 1;
+}

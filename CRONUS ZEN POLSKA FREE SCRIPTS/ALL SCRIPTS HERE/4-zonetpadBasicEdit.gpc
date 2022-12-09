@@ -1,0 +1,117 @@
+
+     
+const int16 TPAD4[] = {0, 130, -1, -130};
+int tpad_idx[4],f1x,f1y;
+int Versa4 = TRUE;
+
+define Edit = PS4_TRIANGLE;
+define Reset = PS4_SHARE;
+define Confirm = PS4_L2;
+int EditPressed,EditT;
+
+int BTNUpdate = 30;
+
+main {
+
+	f1x = get_ival(PS4_FINGER1X); 
+	f1y = get_ival(PS4_FINGER1Y); 
+	set_val(TRACE_1,tpad_idx);
+
+	if(Versa4){
+	tpad_calc4();	
+	
+			if(tpad_idx == 1 )
+			{
+					set_val(Edit,100);
+					EditPressed = 1;
+			}
+			if(EditPressed == 1 && event_release(PS4_FINGER1))
+			{
+			combo_run(Confirm);
+			}
+			if(tpad_idx == 2)
+			{
+			
+			}
+			if(tpad_idx == 3)
+			{
+			combo_run(FastReset);
+			}
+			
+			if(tpad_idx == 4){
+			}	
+	}//END VERSA4
+}
+
+combo Confirm
+{
+	set_val(Confirm, 100);
+	wait(BTNUpdate);
+	set_val(Confirm, 0);
+	wait(BTNUpdate - get_rtime());
+	EditT = FALSE;
+	EditPressed = FALSE;
+}
+
+combo FastReset
+{
+	set_val(Edit, 100);
+	wait(BTNUpdate);
+	set_val(Reset, 100);
+	wait(BTNUpdate);
+	set_val(Reset, 0);
+	wait(BTNUpdate - get_rtime());
+	set_val(Confirm, 100);
+	wait(BTNUpdate);
+	set_val(Confirm, 0);
+	wait(BTNUpdate - get_rtime());
+	wait(100);
+}
+
+main{
+
+}
+function tpad_calc4()
+{
+	check_tap();
+	
+	if (tpadtap && f1x < TPAD4[0] && f1x > TPAD4[3] && f1y > TPAD4[3] && f1y < TPAD4[2])
+	{
+		tpad_idx = cycle(tpad_idx, 1, 1);
+	}
+
+	if (tpadtap && f1x < TPAD4[0] && f1x > TPAD4[3] && f1y > TPAD4[0] && f1y < TPAD4[1])
+	{
+		tpad_idx = cycle(tpad_idx, 2, 2);
+	}
+
+	if (tpadtap && f1x < TPAD4[1] && f1x > TPAD4[0] && f1y > TPAD4[3] && f1y < TPAD4[2])
+	
+	{
+		tpad_idx = cycle(tpad_idx, 3, 3);
+	}
+
+	if (tpadtap && f1x < TPAD4[1] && f1x > TPAD4[0] && f1y > TPAD4[0] && f1y < TPAD4[1])
+	{
+		tpad_idx = cycle(tpad_idx, 4, 4);
+	}
+}
+
+int tpadtap;
+function check_tap()
+{
+	if (ps4_touchpad(PS4T_P1)||ps4_touchpad(PS4T_P2))
+		tpadtap += get_rtime();
+	else
+		tpadtap = FALSE;
+		tpad_idx = cycle(tpad_idx, 0, 0);
+}
+
+function cycle(f_val, f_lo, f_hi)
+{
+	if (f_val > f_hi)
+		return f_lo;
+	if (f_val < f_lo)
+		return f_hi;
+	return f_val;
+}

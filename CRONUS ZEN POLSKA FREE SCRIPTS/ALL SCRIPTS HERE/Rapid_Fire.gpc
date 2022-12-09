@@ -1,0 +1,66 @@
+// Rapid Fire Fixed Times
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire = PS4_R2;
+define Ads  = PS4_L2;
+
+define On  = TRUE;
+define Off = FALSE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Times                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define RapidFireHold = 30;
+define RapidFireWait = 30;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define RapidFire    = On;
+define RapidFireHip = On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+main {
+
+
+    if (RapidFire) {
+    
+        if (RapidFireHip) {
+            
+            if (get_ival(Fire)) {
+        
+                combo_run(RapidFire);
+        
+            } 
+        
+        } else if (get_ival(Ads) && get_ival(Fire)) {
+        
+            combo_run(RapidFire);    
+            
+        } else {
+            
+            combo_stop(RapidFire);
+        }
+    }
+}
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidFireHold);
+    set_val(Fire,0);
+    wait(RapidFireWait);
+}

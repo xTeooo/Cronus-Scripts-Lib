@@ -1,0 +1,181 @@
+define HOME  =  0;
+define VIEW  =  1;
+define MENU  =  2;
+define RB    =  3;
+define RT    =  4;
+define RS    =  5;
+define LB    =  6;
+define LT    =  7;
+define LS    =  8;
+define RX    =  9;
+define RY    = 10;
+define LX    = 11;
+define LY    = 12;
+define UP    = 13;
+define DOWN  = 14;
+define LEFT  = 15;
+define RIGHT = 16;
+define Y     = 17;
+define B     = 18;
+define A     = 19;
+define X     = 20;
+
+//  LED indications:                                 
+//  Green:  rapidfire ON  - antirecoil ON            
+//  Pink: antirecoil ON  - rapidfire OFF           
+//  Yellow:  rapidfire ON  - antirecoil OFF           
+//  Red: rapidfire OFF  - antirecoil OFF;         
+                                                     
+//-------------------------------------------------------------------------------------------
+//           INSTRUCTIONS:                       
+// RAPIDFIRE (ON by default - Start value: 14 - Pink led = ON; Red led = OFF)
+// Hold LT/L2 and Press X/SQUARE to Enable or Disable Rapidfire (with rumble notify) 
+// ANTI RECOIL (ON by default - Start value: vertical = 25; Horizontal = 0)                 
+// Hold LT/L2 and Press LB/L1 to Enable or Disable Antirecoil (with rumble notify)
+// HOLD L2 & UP FOR +1 (RY)
+// HOLD L2 & DOWN FOR -1(RY)
+// HOLD L2 & RIGHT FOR +1(RX)
+// HOLD L2 & LEFT FOR -1(RX)
+//-------------------------------------------------------------------------------------------  
+
+//-------------------------------------------------------------------------------------------
+define save       =  2;   // XB1_MENU - PS4_OPTIONS                                          
+//-------------------------------------------------------------------------------------------  
+define Blue       =  1;                                                                       
+define Red        =  2;                                                                        
+define Green      =  3;                                                                        
+define Pink       =  4;                                                                       
+define SkyBlue    =  5;                                                                       
+define Yellow     =  6;                                                                       
+define White      =  7;                                                                       
+//-------------------------------------------------------------------------------------------
+data(1,                                                                                   
+  2,0,0,0, //1. Blue                                                                     
+  0,2,0,0, //2. Red                                                                      
+  0,0,2,0, //3. Lime/Green                                                               
+  0,0,0,2, //4. Fuchsia/Pink                                                             
+  2,0,2,0, //5. SkyBlue                                                                 
+  0,2,2,0, //6. Yellow                                                                  
+  2,2,2,2  //7. White                                                                   
+);                                                                                      
+//-------------------------------------------------------------------------------------------
+                                                                                         
+//VARIABLES - int                                                                        
+int AR_Release = 70;	  // change this value to set when antirecoil stops working (min: antirecoil value + 10)
+int Fire_only     = TRUE; // if TRUE Antirecoil IS ON when JUST firing (HOLDING R2/RT) if FALSE Antirecoil IS ON when (HOLDING L2/LT & R2/RT)
+int recoil_onoff  = TRUE; // if TRUE Antirecoil is ON by default - if FALSE, OFF by default 
+int rapid_onoff   = TRUE; // if TRUE Rapidfire is ON by default - if FALSE, OFF by default  
+int RATE_OF_FIRE  = 14;   // Range: 1 to 25 RPS (Round/s)                                
+int ANTI_RECOIL   = 25;                                                                  
+int ANTI_RECOIL_H =  0;                                                                   
+int anti_recoil;                                                                         
+int anti_recoil_H;                                                                       
+int Col_ind;                                                                             
+int hold_time;                                                                          
+int rest_time;                                                                          
+int rumble_type = 2; 
+     
+main{
+
+    if (get_val(7) && event_press(20))  { 
+        combo_run (vibrate);                          
+        rapid_onoff=!rapid_onoff;                    
+    }                                                
+                                                     
+    if (rapid_onoff   &&  recoil_onoff) colourled(Green); 
+    if (rapid_onoff   && !recoil_onoff) colourled(Pink); 
+    if (recoil_onoff  && !rapid_onoff ) colourled(Yellow);  
+    if (!recoil_onoff && !rapid_onoff ) colourled(Red);  
+                                                         
+                                                         
+    if (rapid_onoff) {                                    
+    	if(get_val(4)) {                                    
+       	 	combo_run (RAPID_FIRE);                       
+        }                                                
+                                                         
+        hold_time = 500 / RATE_OF_FIRE;                  
+        rest_time = hold_time - 20;                       
+        if(rest_time < 0) rest_time = 0;                  
+                                                                    
+} 
+	if (get_val(7) && event_press(6))  { 
+        recoil_onoff=!recoil_onoff;                  
+        set_rumble_type(recoil_onoff);}              
+                                                    
+                                                     
+    if (recoil_onoff){                                                  
+    if (get_val(LT) && event_press(UP)){
+    	set_val(UP,0);
+    	ANTI_RECOIL = ANTI_RECOIL + 1;
+    }
+    if (get_val(LT) && event_press(DOWN)){ 
+    	set_val(DOWN,0);
+    	ANTI_RECOIL = ANTI_RECOIL - 1;
+    }
+    if (get_val(LT) && event_press(RIGHT)){ 
+    	set_val(RIGHT,0);
+    	ANTI_RECOIL_H = ANTI_RECOIL_H + 1;
+    }
+    if (get_val(LT) && event_press(LEFT)){ 
+    	set_val(LEFT,0);
+    	ANTI_RECOIL_H = ANTI_RECOIL_H - 1;}
+    }
+    
+                                                              
+    if ((!Fire_only)||(recoil_onoff)){ 
+    if (get_val(7) && get_val(4 )) {    
+        combo_run(AntiRecoil);}                                      
+    
+     if (Fire_only){
+     if (get_val(4)) {    // CHANGE TO NUMBER 7 IF YOU WISH FOR RECOIL ON ADS ONLY
+        combo_run(AntiRecoil);}                                      
+    }
+                                                                      
+     if( abs(get_val(10)) > AR_Release || abs(get_val(9)) > AR_Release) { 
+        combo_stop (AntiRecoil);}                                        
+    }                                                                   
+}                              
+ 
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+combo vibrate {                                      
+    set_rumble(rumble_type, 100);                    
+    wait(300);                                       
+    reset_rumble();                                  
+}                                                    
+                                                     
+combo RAPID_FIRE {                                   
+    set_val(4, 100);                          
+    wait(hold_time);                                 
+    set_val(4, 0);                            
+    wait(rest_time);                                 
+    set_val(4, 0);                            
+} 
+
+function set_rumble_type ( val) {                    
+    if( val) rumble_type = RUMBLE_A ;                
+    else   rumble_type = RUMBLE_B ;                  
+    combo_run(vibrate);                              
+}
+
+combo AntiRecoil {                                   
+    if(recoil_onoff) {                               
+	    anti_recoil = get_val(10) + ANTI_RECOIL;        
+	    if(anti_recoil > 100) anti_recoil = 100;        
+	    set_val(10, anti_recoil);                       
+	    anti_recoil_H = get_val(9) + ANTI_RECOIL_H;     
+	    if(anti_recoil_H > 100) anti_recoil_H = 100;    
+	    set_val(9, anti_recoil_H);                      
+    }                                                
+}
+// COLOR LED function                                
+//--------------------------------------------------------------
+function colourled(Colour) {                         
+    Col_ind=(Colour*4)- 3;                           
+    set_led(LED_1,dbyte(Col_ind  ));                 
+    set_led(LED_2,dbyte(Col_ind+ 1));                
+    set_led(LED_3,dbyte(Col_ind+ 2));                
+    set_led(LED_4,dbyte(Col_ind+ 3));                
+}

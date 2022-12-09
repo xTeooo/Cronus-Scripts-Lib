@@ -1,0 +1,2565 @@
+//#################################################################################################
+//################################## Rainbow Six Seige ReveLations v1.01 ##########################
+//################################################################################################# 
+//██████╗      ██████╗         ████████████████╗██████╗███████╗
+//██╔══██╗    ██╔════╝         ██╔════██╔════████╔════╝██╔════╝
+//██████╔╝    ███████╗         ████████████╗ ████║  ████████╗  
+//██╔══██╗    ██╔═══██╗        ╚════████╔══╝ ████║   ████╔══╝  
+//██║  ██║    ╚██████╔╝        ████████████████╚██████╔███████╗
+//╚═╝  ╚═╝     ╚═════╝         ╚══════╚══════╚═╝╚═════╝╚══════╝
+//██████╗█████████╗   ███████████╗     █████╗██████████╗██████╗███╗   █████████╗
+//██╔══████╔════██║   ████╔════██║    ██╔══██╚══██╔══████╔═══██████╗  ████╔════╝
+//██████╔█████╗ ██║   ███████╗ ██║    ███████║  ██║  ████║   ████╔██╗ █████████╗
+//██╔══████╔══╝ ╚██╗ ██╔██╔══╝ ██║    ██╔══██║  ██║  ████║   ████║╚██╗██╚════██║
+//██║  █████████╗╚████╔╝████████████████║  ██║  ██║  ██╚██████╔██║ ╚███████████║
+//╚═╝  ╚═╚══════╝ ╚═══╝ ╚══════╚══════╚═╝  ╚═╝  ╚═╝  ╚═╝╚═════╝╚═╝  ╚═══╚══════╝
+//################################## OMEGALABZ ####################################################
+// ██████╗███╗   ██████████╗██████╗ █████╗██╗     █████╗██████╗███████╗
+//██╔═══██████╗ ██████╔════██╔════╝██╔══████║    ██╔══████╔══██╚══███╔╝
+//██║   ████╔████╔███████╗ ██║  ████████████║    █████████████╔╝ ███╔╝ 
+//██║   ████║╚██╔╝████╔══╝ ██║   ████╔══████║    ██╔══████╔══██╗███╔╝  
+//╚██████╔██║ ╚═╝ █████████╚██████╔██║  ███████████║  ████████╔███████╗
+// ╚═════╝╚═╝     ╚═╚══════╝╚═════╝╚═╝  ╚═╚══════╚═╝  ╚═╚═════╝╚══════╝      
+//#################################################################################################                                                   
+//#################################################################################################
+
+const int Lookup_Table[] =
+{
+	0, 	 17,  34,  52,  69,  87,  104, 121, 139, 156, 
+	173, 190, 207, 224, 241, 258, 275, 292, 309, 325,
+	342, 358, 374, 390, 406, 422, 438, 453, 469, 484,
+	500, 515, 529, 544, 559, 573, 587, 601, 615, 629,
+	642, 656, 669, 682, 694, 707, 719, 731, 743, 754,
+	766, 777, 788, 798, 809, 819, 829, 838, 848, 857,
+	866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 
+	939, 945, 951, 956, 961, 965, 970, 974, 978, 981,
+	984, 987, 990, 992, 994, 996, 997, 998, 999, 999,
+	1000
+}
+
+//################################################################################################# 
+define PROCESS_SNAP_AIM_PRO		= 0xFF;
+define PROCESS_SMOOTHINGTWO		= 0xFE;
+define PROCESS_INIT				= 0xFD;
+//################################################################################################# 
+define BASIC_AIM_ASSIST		= 0xFF;
+define POLY_AIM_ASSIST		= 0xFE;
+define SWIRLY_AIM_ASSIST		= 0xFD;
+define DYSWIRLY_AIM_ASSIST	    = 0xFC; 
+define REVELATIONS_AIM_ASSIST		= 0xFB;  
+//Choose Type
+int AIM_ASSIST_TYPE				= REVELATIONS_AIM_ASSIST; // select AA type here
+
+// Only when REVELATIONS_AIM_ASSIST is chosen
+define ADS_TYPE					= REVELATIONS_AIM_ASSIST;		//BELOW DEADZONE
+define ADS_FIRE_TYPE			= REVELATIONS_AIM_ASSIST;		//ADSing AND FIRING
+define ADS_FIRE_TYPE_OVER_DZ	= REVELATIONS_AIM_ASSIST;		//ADSing AND FIRING
+define HIP_FIRE_TYPE			= REVELATIONS_AIM_ASSIST;		//HIP FIRING
+define HIP_FIRE_TYPE_OVER_DZ	= REVELATIONS_AIM_ASSIST;	    //HIP FIRING
+define DRIFT_TYPE				= REVELATIONS_AIM_ASSIST; 	    //PAST DEADZONE
+
+//################################################################################################# 
+
+
+define Z_SHAPES				    = 0xFB;
+define LINEAR_SHAPES			= 0xFA;
+define DIAMOND_SHAPES			= 0xF9;
+define TRIANGULAR_SHAPES		= 0xF8;
+define WILD_SHAPES			    = 0xF7;
+define CIRCULAR_SHAPES			= 0xF6;
+define ELLIPSOID_SHAPES			= 0xF5;
+define PLUTO_SHAPES				= 0xF4;
+
+
+//Choose Pattern
+int	 PATTERN_SHAPE 			= WILD_SHAPES; 
+
+
+// Only usefull when REVELATIONS_AIM_ASSIST is selected
+define ADS_PATTERN					= WILD_SHAPES;		//STICK IS AT OR BELOW DEADZONE
+define DRIFT_PATTERN				= WILD_SHAPES; 		//PAST YOUR DEADZONE
+define ADS_FIRE_PATTERN				= WILD_SHAPES;		//ADSing AND FIRING
+define ADS_FIRE_PATTERN_OVER_DZ		= WILD_SHAPES;		//ADSing AND FIRINGPAST YOUR DEADZONE
+define HIP_FIRE_PATTERN				= WILD_SHAPES;	    //HIP FIRING
+define HIP_FIRE_PATTERN_OVER_DZ		= WILD_SHAPES;		//HIP FIRINGPAST YOUR DEADZONE
+
+//################################################################################################# 
+
+define DISPLACEMENT_VECTOR_BOOST		= 0xF5; 
+define HORIZONTAL_AXIS_BOOST			= 0xF4; 
+
+//Aim Prediction
+													   
+int MOVEMENT_PREDITION_TYPE2 	    	= DISPLACEMENT_VECTOR_BOOST; 
+int MOVEMENT_PREDITION_UPDATE_RATE2		= 10; 
+
+//
+define WILD_SHAPES_UPDATE				= 6;
+
+//################################################################################################# 
+
+define ANGLE_INCREMENT2 			= 24;
+
+//#################################################################################################
+
+//Configure Radius
+define MAX_CIRCUMFRENCE2 				= 16;
+define MIN_CIRCUMFRENCE2 				= 10; 
+
+//#################################################################################################
+
+
+
+define MAX_PYRAMID_HEIGHT 		= 10;  
+define MIN_PYRAMID_HEIGHT 		= 4;		
+
+define PYRAMID_SHAPE_SPEED	    = 8;   
+
+//################################################################################################# 
+
+
+													  
+int USE_STEADY_AIM2	    		= TRUE; 
+define STEADY_AIM_RESOLUTION2	= 10;
+
+//#################################################################################################
+//SPINSENS INSIDE
+//configure speed
+define SPIN_SPEED2				= 8;	// Increase value decrease spinning speed Only for SWIRLY_AIM_ASSIST or DYSWIRLY_AIM_ASSIST
+define OUTSIDE_SENS2			= 0xF2;
+
+//#################################################################################################
+
+//Configure movement smoothness
+define MAX_MAGNITUDE2 			= 10;
+
+define SMOOTHINGTWO				= 1; 
+
+//#################################################################################################
+
+//Configure Virtual machine update time
+
+define VM_UPDATE2				= 0; 
+
+//#################################################################################################
+
+
+
+define SMART_ANTI_RECOIL2				= 0xE4;
+
+int USE_ANTI_RECOIL2 					= FALSE; 
+
+define SRENGTH_SMART_RECOIL2        		= 75; 	// range 50..200  if weapon shot up increase that value, if the weapon shot down decrease it
+define VERTICAL_SMART_RECOIL2   			= 25; 	// not recommended to change max value 100
+
+
+//#################################################################################################
+ 
+define DEAD_ZONE_LIMIT2			= 10;
+//LEGIT
+//it's the limit which separates two zones:
+//  - Above:  < THRESHOLD2 
+//  - Over :  > THRESHOLD2
+define THRESHOLD2 						= 30;
+
+//################################################################################################# 
+
+int Rx2;
+int Ry2;
+int Rx2_Polar;
+int Ry2_Polar;
+int Angle;
+int Polar_Process_Done;
+int ANGLE_INCREMENT2_State; 
+int Angle_Update_Cycle;
+int Init_Agnle_Update_Cycle
+int Radius;
+int SWIRLY_Increment_State;
+int Ellipse_Radius;
+int Smoothing1;
+int REVELATIONS_EX_AIM_STATE;
+
+
+int TRIANGLE_INCREMENT2_State; 
+int Rx2_Tiangle_Hight;
+int Ry2_Tiangle_Hight
+int MAX_TRIANGLE_HEIGHT;
+int Movement_Direction;
+int Actual_Rx2;
+int Last_Rx2;
+int WILD_SHAPES_Flag;
+int WILD_SHAPES_Update;
+int Shape_Step;
+int REVELATIONS_AIM_ASSIST_Falg;
+int invert2;
+int smartrecoil_base;
+int smartrecoil_add,smartrecoil_y;
+int smartrecoil_rumble;
+
+//#################################################################################################
+
+int ret;
+int val1; 
+int val2;
+
+//################################################################################################# 
+
+init
+{
+	REVELATIONS_EX_AIM_STATE = PROCESS_INIT;
+}
+//################################################################################################# 
+
+main 
+{    
+    vm_tctrl(VM_UPDATE2); 
+  
+    
+    set_val(TRACE_1,get_rtime());
+	
+	if( REVELATIONS_EX_AIM_STATE == PROCESS_INIT)
+	{
+		Angle  = 0;
+		Smoothing1 = SMOOTHINGTWO;
+		Polar_Process_Done = TRUE;
+		REVELATIONS_EX_AIM_STATE = PROCESS_SNAP_AIM_PRO;
+		
+		Init_Agnle_Update_Cycle = MOVEMENT_PREDITION_UPDATE_RATE2 * (360/ANGLE_INCREMENT2);
+		
+		
+		if((AIM_ASSIST_TYPE == SWIRLY_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST))
+	
+		{
+			Ellipse_Radius = MAX_CIRCUMFRENCE2;
+				Radius = MAX_CIRCUMFRENCE2;
+				SWIRLY_Increment_State = FALSE;	
+				MAX_TRIANGLE_HEIGHT = MAX_PYRAMID_HEIGHT;
+		    		
+		}
+		
+	
+	else
+	{
+		Ellipse_Radius = MAX_CIRCUMFRENCE2;
+	    Radius = MAX_CIRCUMFRENCE2;
+		SWIRLY_Increment_State = FALSE;
+		MAX_TRIANGLE_HEIGHT = MAX_PYRAMID_HEIGHT;	
+	}
+		
+		Movement_Direction = 1;
+		TRIANGLE_INCREMENT2_State = TRUE;	
+		Rx2_Tiangle_Hight = 0;
+		Actual_Rx2 = 0;
+		
+		if(PATTERN_SHAPE == WILD_SHAPES)
+		{
+			WILD_SHAPES_Flag = 1;
+			PATTERN_SHAPE = (LINEAR_SHAPES + 1);
+		}
+		else
+		{
+			WILD_SHAPES_Flag = 0;
+		}
+		
+		Shape_Step = 0;
+		WILD_SHAPES_Update = WILD_SHAPES_UPDATE;
+		
+		if(PATTERN_SHAPE == PLUTO_SHAPES)
+		{
+			MOVEMENT_PREDITION_TYPE2	= DISPLACEMENT_VECTOR_BOOST; 
+			//MOVEMENT_PREDITION_UPDATE_RATE2	= 1; 
+			
+			Init_Agnle_Update_Cycle = ((180/ANGLE_INCREMENT2) + 1) * MOVEMENT_PREDITION_UPDATE_RATE2;
+		}
+		
+		if(AIM_ASSIST_TYPE == REVELATIONS_AIM_ASSIST)
+		{
+			REVELATIONS_AIM_ASSIST_Falg = TRUE;
+		}
+
+		smartrecoil_base = 100;
+		invert2 = 1;
+		smartrecoil_y = VERTICAL_SMART_RECOIL2 * invert2 * -1;
+		smartrecoil_add = SRENGTH_SMART_RECOIL2 - smartrecoil_base;		
+	}
+    
+    	
+      
+	if(REVELATIONS_AIM_ASSIST_Falg == TRUE)
+    { 
+		ret = isqrt(pow(get_val(PS4_RX), 2) + pow(get_val(PS4_RY), 2));
+				if(get_val(ADS_BUTTON) && !get_val(FIRE_BUTTON) && ret <= THRESHOLD2)
+				{
+					AIM_ASSIST_TYPE = ADS_TYPE;
+					PATTERN_SHAPE = ADS_PATTERN;						
+				}				
+				else if(get_val(ADS_BUTTON) && !get_val(FIRE_BUTTON) && ret > THRESHOLD2)
+				{
+					AIM_ASSIST_TYPE = DRIFT_TYPE;
+					PATTERN_SHAPE = DRIFT_PATTERN;					
+				}			
+				else if(get_val(ADS_BUTTON) && get_val(FIRE_BUTTON) && ret <= THRESHOLD2)
+				{
+					AIM_ASSIST_TYPE = ADS_FIRE_TYPE;
+					PATTERN_SHAPE = ADS_FIRE_PATTERN;
+				}			
+				else if(get_val(ADS_BUTTON) && get_val(FIRE_BUTTON) && ret > THRESHOLD2)
+				{
+					AIM_ASSIST_TYPE = ADS_FIRE_TYPE_OVER_DZ;
+					PATTERN_SHAPE = ADS_FIRE_PATTERN_OVER_DZ;
+				}				
+				else if(!get_val(ADS_BUTTON) && get_val(FIRE_BUTTON) && ret <= THRESHOLD2)
+				{
+					AIM_ASSIST_TYPE = HIP_FIRE_TYPE;
+					PATTERN_SHAPE = HIP_FIRE_PATTERN;
+				}				
+				else if(!get_val(ADS_BUTTON) && get_val(FIRE_BUTTON) && ret > THRESHOLD2)
+				{
+					AIM_ASSIST_TYPE = HIP_FIRE_TYPE_OVER_DZ;
+					PATTERN_SHAPE = HIP_FIRE_PATTERN_OVER_DZ;
+				}    
+	}
+      
+	if((get_val(ADS_BUTTON) > 50) || (get_val(FIRE_BUTTON)> 50))
+	{	
+			
+		
+		if( REVELATIONS_EX_AIM_STATE == PROCESS_SNAP_AIM_PRO)
+		{		
+			Rx2 = get_val(PS4_RX);
+			Ry2 = get_val(PS4_RY);
+			Actual_Rx2 = Rx2;
+
+			if((check_magnitude_overflow(PATTERN_SHAPE, MAX_MAGNITUDE2) == TRUE))
+			{		
+				Polar_Process_Done = TRUE;
+				Smoothing1 = SMOOTHINGTWO;							
+				WILD_SHAPES_Update = WILD_SHAPES_UPDATE;
+				Shape_Step = 0;								
+				REVELATIONS_EX_AIM_STATE = PROCESS_SMOOTHINGTWO;
+			}
+			else	
+			{								
+				if(WILD_SHAPES_Flag == 1)
+				{
+					if( WILD_SHAPES_Update == 0)
+					{
+						WILD_SHAPES_Update = WILD_SHAPES_UPDATE;
+						
+						PATTERN_SHAPE--;
+						
+						if(PATTERN_SHAPE == WILD_SHAPES)
+						{
+							PATTERN_SHAPE = LINEAR_SHAPES;
+						}
+					}
+					
+					WILD_SHAPES_Update--:
+				}
+				
+				
+				if(USE_STEADY_AIM2== TRUE)
+				{
+					Rx2 = get_steady_aim(Rx2, STEADY_AIM_RESOLUTION2);
+					Ry2 = get_steady_aim(Ry2, STEADY_AIM_RESOLUTION2);
+				}
+			
+				if( Polar_Process_Done == TRUE)
+				{	
+					Polar_Process_Done = FALSE;	
+
+					if( (abs(Ry2) > DEAD_ZONE_LIMIT2) && (abs(Rx2) > DEAD_ZONE_LIMIT2))
+					{	
+						
+						Angle = get_full_quadrant_angle(atan2_16bits(inv(Ry2),Rx2));
+						Angle_Update_Cycle = Init_Agnle_Update_Cycle;
+
+						if(MOVEMENT_PREDITION_TYPE2 	== HORIZONTAL_AXIS_BOOST)
+						{
+							if(Actual_Rx2 < Last_Rx2) 
+							{
+								Angle = 180;
+								ANGLE_INCREMENT2_State = TRUE;
+								Movement_Direction = -1;
+							}
+							else if(Actual_Rx2 > Last_Rx2)
+							{
+								Angle = 360;
+								ANGLE_INCREMENT2_State = FALSE;
+								Movement_Direction = 1;
+							}
+						}		
+						else
+						{
+							if(	(Angle >= 0 && Angle <= 90) || (Angle >= 270))
+							{
+								ANGLE_INCREMENT2_State = TRUE;
+								Movement_Direction = 1;
+							}
+							else
+							{
+								ANGLE_INCREMENT2_State = FALSE;
+								Movement_Direction = -1;
+							}					
+						}
+					}
+					else
+					{
+						Angle = 0;
+						ANGLE_INCREMENT2_State = TRUE;
+					}
+					Last_Rx2 = Actual_Rx2;
+				}
+					
+				if(AIM_ASSIST_TYPE == POLY_AIM_ASSIST || AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST)
+				{
+					if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+					{
+						val1 = MAX_PYRAMID_HEIGHT;
+					}
+					else
+					{
+						val1 = MAX_CIRCUMFRENCE2;
+					}
+					
+					ret = val1 - ((abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY)))/1000);
+				
+									
+					if(AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST)
+					{				
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{					
+							
+							
+							
+							if( abs(Rx2_Tiangle_Hight) > ret)
+							{
+							
+								SWIRLY_Increment_State = FALSE;
+								
+								if(Rx2_Tiangle_Hight>= 0)
+									TRIANGLE_INCREMENT2_State = FALSE;
+								else
+									TRIANGLE_INCREMENT2_State = TRUE;	
+							}
+							
+							
+						}
+						else 
+						{
+							if(ret < Radius) 
+							{						
+								Radius = ret;
+								SWIRLY_Increment_State = FALSE;
+							}
+						}				
+					}
+					else
+					{
+						Radius = ret;			
+						Ellipse_Radius = ret;
+						
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{					
+							MAX_TRIANGLE_HEIGHT = ret;
+							
+							if(ret < abs(Rx2_Tiangle_Hight))
+							{						
+								if(Rx2_Tiangle_Hight>= 0)
+									TRIANGLE_INCREMENT2_State = FALSE;
+								else
+									TRIANGLE_INCREMENT2_State = TRUE;									
+							}
+						}
+						
+						
+					}
+				}
+				
+				if(PATTERN_SHAPE == ELLIPSOID_SHAPES)
+				{
+					
+					Radius = calculate_ellipsoid_RADIUS(Ellipse_Radius,cos(Angle));	
+				}
+				
+				if(PATTERN_SHAPE != TRIANGULAR_SHAPES)
+				{
+					if(PATTERN_SHAPE != DIAMOND_SHAPES)
+					{
+						Rx2_Polar = get_polar_coordinate(Radius, cos(Angle));
+						Ry2_Polar = get_polar_coordinate(Radius, sin(Angle));
+					}
+					else
+					{
+						if(PATTERN_SHAPE == Z_SHAPES)
+						{
+							if(Shape_Step == 0)
+							{
+								Ry2_Polar = Radius;
+							}
+							else if(Shape_Step == 1)
+							{
+								Rx2_Polar = Movement_Direction * Radius;
+								Ry2_Polar = Radius;
+							} 
+							else if(Shape_Step == 2)
+							{
+								Rx2_Polar = inv(Movement_Direction * Radius);
+								Ry2_Polar = inv(Radius);
+							}
+							else if(Shape_Step == 3)
+							{
+								Ry2_Polar = inv(Radius);
+							}
+						}
+						else
+						{					
+							if(Shape_Step == 0)
+							{
+								Ry2_Polar = Radius;
+							}
+							else if(Shape_Step == 1)
+							{
+								Rx2_Polar = Movement_Direction * Radius;
+								Ry2_Polar = Radius;
+							} 
+							else if(Shape_Step == 2)
+							{
+								Ry2_Polar = inv(Radius);
+							}
+							else if(Shape_Step == 3)
+							{
+								Rx2_Polar = inv(Movement_Direction * Radius);
+								Ry2_Polar = inv(Radius);
+							}
+						}
+					}
+					
+					Rx2 = process_overflow_check(Rx2, Rx2_Polar);
+					Ry2 = process_overflow_check(Ry2, Ry2_Polar);
+				}
+				else
+				{
+				   if(TRIANGLE_INCREMENT2_State == TRUE)
+				   {
+					   	Ry2_Tiangle_Hight = Rx2_Tiangle_Hight + Movement_Direction;				   	
+					   	Rx2_Tiangle_Hight += PYRAMID_SHAPE_SPEED;
+				   }
+				   else
+				   { 
+				  		Ry2_Tiangle_Hight =  Rx2_Tiangle_Hight - Movement_Direction ;				   	
+						Rx2_Tiangle_Hight -= PYRAMID_SHAPE_SPEED;
+				   }
+				 
+				   
+				   if((abs(Rx2_Tiangle_Hight)) > MAX_TRIANGLE_HEIGHT )
+				   {
+				   		if(Rx2_Tiangle_Hight > 0)
+				   		{
+				   			TRIANGLE_INCREMENT2_State = FALSE;
+				   		}
+				   		else
+				   		{
+				   			TRIANGLE_INCREMENT2_State = TRUE;
+				   		}			   		
+				   }	   	
+				   	
+				   Rx2 += Rx2_Tiangle_Hight;		   				   
+				   Ry2_Tiangle_Hight = inv(Ry2_Tiangle_Hight);
+				   Ry2 += Ry2_Tiangle_Hight;
+				   
+				   Rx2 = process_overflow_check(Rx2, 0);
+				   Ry2 = process_overflow_check(Ry2, 0);
+				}
+				
+				
+				if((USE_ANTI_RECOIL2 == TRUE) && (get_val(ADS_BUTTON) > 50)&& (get_val(FIRE_BUTTON) > 50))
+							
+					
+					
+						{
+							Ry2 += get_smart_recoil();
+							Ry2 = process_overflow_check(Ry2, 0);
+					}
+				
+				
+				if(USE_STEADY_AIM2== TRUE)
+				{
+					Rx2 = get_steady_aim(Rx2, STEADY_AIM_RESOLUTION2);
+					Ry2 = get_steady_aim(Ry2, STEADY_AIM_RESOLUTION2);	
+					
+					Rx2 = process_overflow_check(Rx2, 0);
+					Ry2 = process_overflow_check(Ry2, 0);
+				}
+								
+				if(PATTERN_SHAPE != DIAMOND_SHAPES && PATTERN_SHAPE != Z_SHAPES)
+				{
+					set_right_joystick(Rx2, Ry2, PATTERN_SHAPE);
+				}
+				else
+				{
+					if(PATTERN_SHAPE == DIAMOND_SHAPES)
+					{					
+						if(Shape_Step == 0 || Shape_Step == 2)
+						{
+							set_val(PS4_RY, Ry2);	
+						}
+						else
+						{
+							set_val(PS4_RX, Rx2);
+							set_val(PS4_RY, Ry2);	
+						}
+					}
+					else
+					{
+						if(Shape_Step == 0 || Shape_Step == 3)
+						{
+							set_val(PS4_RY, Ry2);	
+						}
+						else
+						{
+							set_val(PS4_RX, Rx2);
+							set_val(PS4_RY, Ry2);	
+						}
+					}
+					
+					Shape_Step++;
+					
+					if(Shape_Step == 4)
+					{
+						Shape_Step = 0;
+					}
+				}
+								
+				if(((AIM_ASSIST_TYPE == SWIRLY_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST)) && ((Angle_Update_Cycle % SPIN_SPEED2) == 0))
+				{			
+					if(SWIRLY_Increment_State == FALSE)
+					{
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{
+							MAX_TRIANGLE_HEIGHT -= 1;
+				
+							if(MAX_TRIANGLE_HEIGHT < MIN_PYRAMID_HEIGHT)
+							{
+								SWIRLY_Increment_State = TRUE;
+								//MAX_TRIANGLE_HEIGHT = MIN_PYRAMID_HEIGHT ;
+								//TRIANGLE_INCREMENT2_State = TRUE;	
+							}
+						}
+						else
+						{
+							Radius -= 1;		
+				
+							if(Radius < MIN_CIRCUMFRENCE2)
+							{
+								SWIRLY_Increment_State = TRUE;
+								Radius = MIN_CIRCUMFRENCE2;
+							}
+						}
+					}
+					else if(SWIRLY_Increment_State == TRUE)
+					{
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{
+							MAX_TRIANGLE_HEIGHT += 1;
+				
+							if(MAX_TRIANGLE_HEIGHT > MAX_PYRAMID_HEIGHT)
+							{
+								SWIRLY_Increment_State = FALSE;
+								//MAX_TRIANGLE_HEIGHT = MAX_PYRAMID_HEIGHT;
+								//TRIANGLE_INCREMENT2_State = FALSE;	
+							}
+						}
+						else
+						{
+							Radius += 1;
+				
+							if(Radius > MAX_CIRCUMFRENCE2)
+							{
+								SWIRLY_Increment_State = FALSE;
+								Radius = MAX_CIRCUMFRENCE2;
+							}
+						}
+					}
+					
+					//set_val(TRACE_6,Ellipse_Radius);
+				}
+				
+				Angle_Update_Cycle--;
+				
+				//set_val(TRACE_2,Angle_Update_Cycle);
+		
+				if(Angle_Update_Cycle == 0)
+				{
+					Polar_Process_Done = TRUE;
+					
+					Angle_Update_Cycle = Init_Agnle_Update_Cycle;												
+				}
+				else
+				{
+					if((PATTERN_SHAPE == PLUTO_SHAPES) && (Angle_Update_Cycle == (Init_Agnle_Update_Cycle  - 1)))
+					{
+						Angle = Angle + (ANGLE_INCREMENT2 * (Angle_Update_Cycle/2));
+					}
+					else
+					{
+						Angle = update_angle2(Angle, ANGLE_INCREMENT2_State, ANGLE_INCREMENT2);
+					}											
+				}
+			}
+		}
+		else if( REVELATIONS_EX_AIM_STATE == PROCESS_SMOOTHINGTWO)
+		{			
+			if(USE_STEADY_AIM2== TRUE) 
+			{			
+				Rx2 = get_val(PS4_RX);
+				Ry2 = get_val(PS4_RY);
+				
+				if((USE_ANTI_RECOIL2 == TRUE) && (get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON) > 50) && (Smoothing1 == (SMOOTHINGTWO/2)))
+				{														
+					
+					
+					Rx2 = get_steady_aim(Rx2, STEADY_AIM_RESOLUTION2);
+					Ry2 = get_steady_aim(Ry2, STEADY_AIM_RESOLUTION2);
+					
+					Rx2 = process_overflow_check(Rx2, 0);
+					Ry2 = process_overflow_check(Ry2, 0);
+						
+					set_val(PS4_RX, Rx2);
+					set_val(PS4_RY, Ry2);
+				}
+				else 
+				{
+					
+					if((USE_ANTI_RECOIL2 == TRUE) && (get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON) > 50) )
+					{
+						Ry2 += get_smart_recoil();
+						Ry2 = process_overflow_check(Ry2, 0);	
+					}
+											
+					Rx2 = get_steady_aim(Rx2, STEADY_AIM_RESOLUTION2);
+					Ry2 = get_steady_aim(Ry2, STEADY_AIM_RESOLUTION2);
+					
+					Rx2 = process_overflow_check(Rx2, 0);
+					Ry2 = process_overflow_check(Ry2, 0);
+						
+					set_val(PS4_RX, Rx2);
+					set_val(PS4_RY, Ry2);
+				}
+			}
+			else if((USE_ANTI_RECOIL2 == TRUE) && (get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON) > 50))
+			{			
+				Ry2 = get_val(PS4_RY);
+
+				if(USE_ANTI_RECOIL2 == TRUE)
+					{
+						Ry2 += get_smart_recoil();
+						Ry2 = process_overflow_check(Ry2, 0);
+						set_val(PS4_RY, Ry2);
+					}
+					}
+				
+			
+			if(Smoothing1 == 0)
+			{		
+				REVELATIONS_EX_AIM_STATE = PROCESS_SNAP_AIM_PRO;
+			}
+			
+			Smoothing1--;				
+		}
+	}
+	else
+	{
+		Angle = 0;
+		Actual_Rx2 = 0;
+		Polar_Process_Done = TRUE;
+		Angle_Update_Cycle = Init_Agnle_Update_Cycle;
+		Shape_Step = 0;
+		WILD_SHAPES_Update = WILD_SHAPES_UPDATE;
+		
+		
+		Smoothing1 = SMOOTHINGTWO;
+		REVELATIONS_EX_AIM_STATE = PROCESS_SNAP_AIM_PRO;
+		
+		Rx2_Tiangle_Hight = 0;
+		TRIANGLE_INCREMENT2_State = TRUE;
+		
+		if((AIM_ASSIST_TYPE == SWIRLY_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST))
+		{
+			
+				Ellipse_Radius = MAX_CIRCUMFRENCE2;
+			    Radius = MAX_CIRCUMFRENCE2;
+				SWIRLY_Increment_State = FALSE;	
+				MAX_TRIANGLE_HEIGHT = MIN_PYRAMID_HEIGHT;
+			
+		}
+		else
+		{
+			Ellipse_Radius = MAX_CIRCUMFRENCE2;
+		    Radius = MAX_CIRCUMFRENCE2;
+			SWIRLY_Increment_State = FALSE;
+			MAX_TRIANGLE_HEIGHT = MAX_PYRAMID_HEIGHT;
+		}
+		
+		if(PATTERN_SHAPE == WILD_SHAPES)
+		{
+			PATTERN_SHAPE = (LINEAR_SHAPES + 1);
+		}
+	}
+
+
+
+} 
+//#################################################################################################
+function calculate_ellipsoid_RADIUS(Radius, cosinus)
+{		
+	// factor 50%
+	ret = (cosinus * (Radius/2));	
+	ret = (1000 * Radius )- ret;
+	ret /= 100;
+	
+	return (ret);
+}
+
+//#################################################################################################
+
+function update_angle2(angle, increment_state, val)
+{
+	if(increment_state == TRUE)
+	{
+		angle += val;
+	
+		if(angle >= 360)
+		{
+			angle -= 360;
+		}
+	}
+	else
+	{
+		angle -= val;
+	
+		if(angle <= 0)
+		{
+			angle = 360 + angle;
+		}
+	}
+	
+	return angle;
+}
+ 
+//#################################################################################################
+
+function set_right_joystick(x , y, pattern)
+{	
+	set_val(PS4_RX, x);
+	
+	if(pattern != LINEAR_SHAPES)
+	{
+		set_val(PS4_RY, y);	
+	}
+}
+
+//#################################################################################################
+
+function check_magnitude_overflow(pattern, max_val)
+{
+	ret = TRUE;
+	val2 = 0;
+	
+	val1 = isqrt(pow((get_lval(PS4_RX) - get_val(PS4_RX)), 2));
+		
+	if( pattern != LINEAR_SHAPES)
+	{
+		val2 = isqrt(pow((get_lval(PS4_RY) - get_val(PS4_RY)), 2));		
+	}
+	
+	if( (val1 <=  max_val) && (val2 <=  max_val))
+	{
+		ret = FALSE;
+	}
+
+	
+	return ret;
+}
+
+//#################################################################################################
+
+function get_steady_aim(axis, resolution)
+{
+	if(axis >= 0)
+	{
+		ret = (axis % resolution);
+	
+		if(ret >= (resolution / 2))
+		{
+			axis = axis + (resolution - ret);
+		}
+		else
+		{
+			axis -= ret;
+		}
+	}
+	else
+	{
+		ret = (axis % resolution);
+	
+		if( abs(ret) >= (resolution / 2))
+		{
+			axis = axis - (resolution + ret);
+		}
+		else
+		{
+			axis += abs(ret);
+		}
+	}
+	
+	if(axis > 100)
+	{
+		axis = 100;
+	}
+	else if(axis < -100)
+	{
+		axis = -100;
+	}
+	
+	return axis;
+}
+
+//#################################################################################################
+
+function get_polar_coordinate(Radius, coef)
+{
+	
+	 if(Radius > 32) 
+	{
+		Radius = 32;
+	}
+	
+		
+	return((Radius * coef) / 1000);		
+}
+
+
+//#################################################################################################
+
+function process_overflow_check(x, y)
+{
+	ret = x + y;
+	
+	if( ret > 100)
+	{
+		ret = 100;
+	}
+	else if (ret < -100)
+	{
+		ret = -100;
+	}
+	
+	return ret;
+}
+
+//################################################################################################# 
+
+function sin(angle)
+{   
+    if(angle <= 90)
+    {             
+        ret = (Lookup_Table[angle]);
+    }
+    else if (angle <= 180)
+    {      
+        ret = (Lookup_Table[180 - angle]);
+    }
+    else if (angle <= 270)
+    {
+        ret = inv(Lookup_Table[angle - 180]);     
+    }
+    else 
+    {
+       	ret = inv(Lookup_Table[360 - angle]);      
+    }
+    
+    return ret;
+}
+
+//################################################################################################# 
+
+function cos(angle)
+{   
+    if(angle <= 90)
+    {             
+        ret = (Lookup_Table[90 - angle]);
+    }
+    else if (angle <= 180)
+    {      
+        ret = inv(Lookup_Table[angle - 90]);
+    }
+    else if (angle <= 270)
+    {
+        ret = inv(Lookup_Table[270 - angle]);       
+    }
+    else 
+    {
+        ret = (Lookup_Table[angle - 270]);       
+    }
+    
+    return ret;
+}
+
+//################################################################################################# 
+
+function atan2_16bits(y, x) 
+{	
+	
+	if (y >= 0)
+	{ 
+		if (x >= 0) { 
+			if (x > y)
+			{
+				ret = ( (y * 300) / x );
+			}
+			else
+			{
+				if (y == 0)
+				ret = 0; 
+				else
+				ret = 540 - ( (x * 300) / y );
+
+			}
+		}
+		else
+		{ 
+		  
+			if (x >= inv(y))
+			{
+				ret = 540 - ( (x * 300) / y );
+			}
+			else
+			{
+				ret = 1080 + ( (y * 300) / x );
+			}
+		}
+	}
+	else
+	{ 
+		if (x < 0)
+		{ 
+		  
+			if (x < y)
+			{
+				ret = ( (y * 300) / x ) - 1080;
+			}
+			else
+			{
+				ret = ( (inv(x) * 300) / y ) - 540;
+			}
+		} else
+		{ 
+		  
+			if (inv(x) >= y)
+			{
+				ret = ( (inv(x) * 300) / y ) - 540;
+			}
+			else
+			{
+				ret = ( (y * 300) / x );
+			}
+		}
+	}
+	
+	return (ret/6);
+}
+
+//#################################################################################################
+
+function get_full_quadrant_angle(angle)
+{
+
+	if(angle < 0)
+	{
+		angle += 360;
+	}
+	
+	return angle
+}
+
+//#################################################################################################
+
+function get_smart_recoil()
+{	
+	if(get_rumble(RumbleVALToUse())) 
+	{
+	    smartrecoil_rumble = get_rumble(RumbleVALToUse());
+		
+	    if (smartrecoil_rumble > 10 && smartrecoil_rumble < 90)
+	    {
+		    if(abs(get_val(PS4_RY)) < (smartrecoil_rumble + smartrecoil_add + smartrecoil_y) && 
+		       abs(get_val(PS4_RX)) < (smartrecoil_rumble + smartrecoil_add)) 
+			{
+		    
+				return (smartrecoil_rumble + smartrecoil_add + smartrecoil_y);
+	        }			
+    	}
+    }
+	
+	return 0;
+}
+
+//#################################################################################################
+
+function RumbleVALToUse()
+{
+    if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_A;
+    }
+	
+    if(get_rumble(RUMBLE_A) == 100)
+	{
+    	return RUMBLE_B;
+	}
+	
+	if(get_rumble(RUMBLE_B) == 100)
+	{
+    	return RUMBLE_A;
+	}
+	
+    if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_A;
+    }
+	
+    if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_B;
+    }
+	
+    return 0;
+}
+
+//#################################################################################################
+int LS_BUTTON = PS4_L3;
+int RS_BUTTON = PS4_R3;
+int SQUAT_BUTTON = XB1_B;
+
+//####################################################################################################
+
+define ADS_BUTTON 					= PS4_L2;
+define FIRE_BUTTON 					= PS4_R2;
+define CROUCH_BUTTON 				= PS4_R3;  
+define JUMP_BUTTON  				= PS4_CROSS;
+define SWAP_BUTTON					= PS4_TRIANGLE;
+define MELEE_BUTTON					= PS4_CIRCLE;
+define SPRINT_BUTTON				= PS4_L3;
+
+//#####
+
+int USE_FAST_MOVE_SENSITIVITY	= FALSE; // Applied on left stck
+define FAST_MOVEMENT_THRESHOLD	= 35;
+int FRONTAL_MVT_SENS				= 100;
+int DRIFT_MVT_SENS					= 125;		// allow fast turn if value > 100
+
+//######------------TOGGLES---------------------------------######################################
+//######------------TOGGLES---------------------------------######################################
+//######------------TOGGLES---------------------------------######################################
+//######------------TOGGLES---------------------------------######################################
+int USE_RUMBLE						= TRUE;
+int USE_QUICK_TRIGGER				= TRUE;
+int USE_TURBO_MELEE					= FALSE;
+int USE_RABBIT_HOP					= FALSE;
+int USE_AUTO_HOLD_ZOOM				= FALSE;
+int USE_QUICK_SCOPE					= FALSE;
+int USE_LEAN_SPAM                   = FALSE;
+int CROUCH_SPAM                     = FALSE;
+
+//######------------TOGGLES---------------------------------######################################
+//######------------TOGGLES---------------------------------######################################
+//######------------TOGGLES---------------------------------######################################
+define lean_spam_delay              = 170;
+define lean_spam_delay2             = 170;
+define crouch_delay                 = 55;
+define slide_delay 					= 225;
+define quickscope_press_time 		= 150;
+define quickscopedelay				= 350;
+
+
+define RAPID_FIRE_TOGGLE_BUTTON 	= PS4_LEFT;
+
+define BASIC       					= 0x00; 
+define DYNAMIC						= 0x01;
+define STAIR_STEP_MODE 				= 0x02; 
+define INHUMAN_TRIG     			= 0x03;  
+define TURTLE_TRIG	 				= 0x04; 
+define RANDOM	 					= 0x05; 
+
+int RAPIDFIREMODE							= INHUMAN_TRIG;
+
+int TRIGGERCLICKTime						= 16; //8 BIT INTEGERS
+int TRIGGERPAUSETime						= 16; 
+
+int TRIGGERPressure						= 50;
+int TRIGGERSTEP							= 8; 
+int TRIGGERPOLY
+
+int min_random						= 6;
+int max_random						= 31;
+
+//################################################################################################# 
+
+define RESET_TIME					= 16;
+//################################################################################################# 
+
+int USE_ANTI_RECOIL							= TRUE;
+
+define USE_REVELATIONS_SMART_AR					= 0xFF;
+define USE_POLY_REV_AR					= 0xFE;
+int AR_TYPE									= USE_REVELATIONS_SMART_AR;
+
+define VIBRATE_REVELATIONS_AR_STRENGTH   			= 84;
+
+define POLY_AR_UPDATE_CYCLE			= 45;
+define POLY_AR_STRENGTH 				= 12;
+define POLY_AR_MIN_RECOIL_PERSENT	= 10;
+define POLY_AR_ARRAY_LENGTH			= 64;
+define POLY_AR_LIST_COVER 			= POLY_AR_ARRAY_LENGTH - 1; 
+
+//#################################################################################################
+define REGULAR						= 0xFF;
+define RANDOM_STEPZ					= 0xFE;
+define RANDOM_CIRCUMFRENCE				= 0xFD;
+define POLYMORPHIC					= 0xFC; 
+
+int	 AIM_ASSIST 					= REGULAR;
+
+define MAX_STEPZ 					= 24; 
+define MIN_STEPZ 					= 24;
+define MAX_CIRCUMFRENCE 					= 16;
+define MIN_CIRCUMFRENCE 					= 10;	
+
+//#################################################################################################
+
+int USE_POLY_WAVE				= TRUE;
+
+define REGULAR_WAVE					= 0xFF;
+define POLY_SPEED					= 0xFE;
+define BURROW_SPEED					= 0xFD;
+define POLY_STRENGTH				= 0xFC;
+define BURROW_STRENGTH				= 0xFB;
+define POLYMORPHIC_WAVE				= 0xFA;
+define BURROW_WAVE					= 0xF9;
+
+int DYNAMIC_WAVE_TYPE				= REGULAR_WAVE;
+
+//##########
+
+define DEVIL_WAVE						= 0xFF;
+define BOX_WAVE					= 0xFE;
+define STEPS_WAVE					= 0xFD;
+
+int DYNAMIC_CARRIER_WAVE			= DEVIL_WAVE;		
+
+//##########
+
+int DYNAMIC_WAVE_UPDATE_PARAMETERS	= RESET_TIME;
+
+int MAX_POLY_WAVE_STRENGTH		= 4;
+int MIN_POLY_WAVE_STRENGTH		= 2;
+
+int MAX_POLY_WAVE_SPEED			= 5;  //5
+int MIN_POLY_WAVE_SPEED			= 1;  //1
+
+//##########
+
+
+define WESTEAST_WAVE				= 0xFF;
+define NORTHSOUTH_WAVE				= 0xFE;
+define FULL_WAVE					= 0xFD;
+
+int USE_REVELATION_MODULATION				= FULL_WAVE;	
+
+
+int USE_AI_ENHANCEDAIM							= TRUE;
+
+int AI_TUBULAR_THRESHOLD					= 20;
+
+//ADS ONLY
+int FORWARD_ADS_WAVE_TYPE				= REGULAR_WAVE;
+int FORWARD_ADS_WAVE_CARRIER			= DEVIL_WAVE;
+int FORWARD_ADS_AXIS_MODULATION			= NORTHSOUTH_WAVE;
+int FORWARD_ADS_AIM_ASSIST				= REGULAR;
+
+int CARRY_ADS_WAVE_TYPE					= REGULAR_WAVE;
+int CARRY_ADS_WAVE_CARRIER				= DEVIL_WAVE;
+int CARRY_ADS_AXIS_MODULATION			= FULL_WAVE
+int CARRY_ADS_AIM_ASSIST				= REGULAR;
+
+//ADS + FIRE
+int FORWARD_ADS_FIRE_WAVE_TYPE			= REGULAR_WAVE;
+int FORWARD_ADS_FIRE_WAVE_CARRIER		= DEVIL_WAVE;
+int FORWARD_ADS_FIRE_AXIS_MODULATION 	= FULL_WAVE;
+int FORWARD_ADS_FIRE_AIM_ASSIST			= REGULAR;
+
+int CARRY_ADS_FIRE_WAVE_TYPE			= REGULAR_WAVE;
+int CARRY_ADS_FIRE_WAVE_CARRIER			= DEVIL_WAVE;
+int CARRY_ADS_FIRE_AXIS_MODULATION		= FULL_WAVE;
+int CARRY_ADS_FIRE_AIM_ASSIST			= REGULAR;
+
+//HIP FIRE
+int FORWARD_HIP_FIRE_WAVE_TYPE			= POLY_SPEED;
+int FORWARD_HIP_FIRE_WAVE_CARRIER		= DEVIL_WAVE;
+int FORWARD_HIP_FIRE_AXIS_MODULATION	= FULL_WAVE
+int FORWARD_HIP_FIRE_AIM_ASSIST			= REGULAR;
+
+int CARRY_HIP_FIRE_WAVE_TYPE			= POLY_SPEED;
+int CARRY_HIP_FIRE_WAVE_CARRIER			= DEVIL_WAVE;
+int CARRY_HIP_FIRE_AXIS_MODULATION		= FULL_WAVE;
+int CARRY_HIP_FIRE_AIM_ASSIST			= REGULAR;
+
+//################################################################################################# 
+
+
+define KRONOS_BASE					= 8;  //dont change!
+
+define HITBOX_SCAN					= 0xFF;
+define DIAGONAL_SCAN				= 0xFE;
+define TOTAL_SCAN					= 0xFD;
+
+int USE_POLY_SCAN				= TRUE;
+int POLY_SCAN_TYPE				= TOTAL_SCAN;
+int POLY_SCAN_UPDATE_CYCLE		= RESET_TIME; 
+int POLY_SCAN_HOLD_TIME			= 8 * KRONOS_BASE;
+int POLY_SCAN_STENGTH			= 10;
+
+
+//################################################################################################# 
+
+			
+int USE_STEADY_AIM					= FALSE;
+
+define FIXED_RESOLUTION				= 0xFF;	
+define RANDON_RESOLUTION			= 0xFE;	
+define DYNAMIC_RESOLUTION			= 0xFD;	
+
+int STEADY_AIM_RESOLUTION_TYPE		= FIXED_RESOLUTION;
+
+define RESOLUTION					= 12;
+
+//################################################################################################# 
+
+define AIMASSIST_MAGNITUDE					= 75;
+define AI_MVT_PREDICTION_UPDATE_CYCLE 	= 10;  	
+define SMOOTHING				 	= 1;  	
+
+//################################################################################################# 
+
+define DZ_LIMIT						= 10; 
+
+//################################################################################################# 
+
+define  _MAX_W = 6;
+int REVELATIONS_ar_ry;
+int rumble;
+int invert;
+int angle;
+int polar_radius;
+int Actual_Rx;
+int Last_Rx;
+int Actual_Ry;
+int Last_Ry;
+int mvt_predection_update_cycle_counter;
+int mvt_direction;
+int smoothing;
+int polar_ar_ry;
+int angle_increment;
+int _ret;
+int resolution;
+int resolution_inc_dec;
+int _ret1;
+int _Rx;
+int _Ry;
+int magnitude_ok;
+//int rs_sensitivity;
+int ls_sensitivity;
+int polar_scan_strength
+int scan_step;
+int dynamic_scan_update_cycle;
+int ar_cycle;
+int ar_index;
+int ar_strength;
+int ar_buffer;
+int ar_strength_sum;
+int i;
+int dynamic_scan;
+int rx_carrier;
+int ry_carrier;
+int wave_angle;
+int wave_type;
+int wave_carrier;
+int dynamic_wave_update_parameters;
+int dynamic_wave_strength;
+int dynamic_wave_speed;
+int tunnel_dynamic_wave_strength;
+int tunnel_speed_sign;
+int tunnel_strength_sign;
+int max_wave_strength;
+int min_wave_strength;
+int min_wave_speed;
+int min_wave;
+int max_wave;
+int dynamic_wave_update;
+int aim_assist;
+int axis_modulation;
+int toggle_rapid_fire;
+
+//################################################################################################# 
+
+init
+{
+	mvt_direction = 1;
+	mvt_predection_update_cycle_counter = 0;
+	invert = 1;
+	polar_radius = get_polar_radius(MAX_CIRCUMFRENCE);
+	angle_increment = MAX_STEPZ;
+
+	REVELATIONS_ar_ry = inv(VIBRATE_REVELATIONS_AR_STRENGTH) * invert;
+	
+	polar_scan_strength = get_polar_val(POLY_SCAN_STENGTH);
+
+	if(USE_STEADY_AIM == TRUE)
+	{
+		if(STEADY_AIM_RESOLUTION_TYPE == RANDON_RESOLUTION)
+		resolution = random(4,8);
+		else
+		resolution = RESOLUTION;
+
+		resolution_inc_dec = -1;
+	}
+	
+	magnitude_ok = TRUE;
+	
+	ar_strength = POLY_AR_STRENGTH ;
+	
+	set_led(-1,0);
+	set_led(0,0);
+	set_led(1,0);
+	set_led(2,0);
+	set_led(3,0);
+	set_led(4,0);
+	set_led(5,1);
+	set_led(6,0);
+	
+	max_wave_strength = get_polar_val(MAX_POLY_WAVE_STRENGTH);
+	
+	min_wave_strength = get_polar_val(MIN_POLY_WAVE_STRENGTH);
+	min_wave_speed  = MIN_POLY_WAVE_SPEED;
+	
+	if(USE_AI_ENHANCEDAIM == TRUE)
+	{
+		wave_type  = FORWARD_HIP_FIRE_WAVE_TYPE;
+		wave_carrier = FORWARD_HIP_FIRE_WAVE_CARRIER;
+	}
+	else
+	{
+		wave_type  = DYNAMIC_WAVE_TYPE;
+		wave_carrier = DYNAMIC_CARRIER_WAVE;
+	}
+	
+
+	if(wave_type == REGULAR_WAVE)
+	{
+		dynamic_wave_strength = max_wave_strength;
+		dynamic_wave_speed = min_wave_speed;
+	} 
+	else
+	{
+		dynamic_wave_strength = min_wave_strength;
+		dynamic_wave_speed = min_wave_speed;
+				
+		tunnel_strength_sign = 1;
+		tunnel_speed_sign = 1;
+	}
+	
+	tunnel_dynamic_wave_strength = MIN_POLY_WAVE_STRENGTH;
+	
+	min_wave = MIN_POLY_WAVE_STRENGTH;
+	max_wave = MAX_POLY_WAVE_STRENGTH;
+	
+	aim_assist = AIM_ASSIST;
+	axis_modulation = USE_REVELATION_MODULATION;
+}
+
+main
+{
+	vm_tctrl(-2);
+
+	if(USE_RUMBLE == FALSE)
+	{
+		block_rumble();
+	}
+	
+	{
+if(CROUCH_SPAM == TRUE)
+{
+if(get_val(ADS_BUTTON))
+combo_run(CROUCH_SPAM);
+} }
+
+	if(USE_QUICK_TRIGGER)
+	{
+		if(get_ival(PS4_R2) > 10)
+		set_val(PS4_R2, 100);
+
+		if(get_ival(PS4_L2)> 10)
+		set_val(PS4_L2, 100);
+	}
+
+	Actual_Rx = get_ival(PS4_RX);
+	Actual_Ry = get_ival(PS4_RY);
+	
+	
+	if(get_ival(ADS_BUTTON) && event_release(RAPID_FIRE_TOGGLE_BUTTON))
+	{
+			toggle_rapid_fire = !toggle_rapid_fire;
+			combo_run(vibrate);
+			
+			if(!toggle_rapid_fire)
+			{		
+				combo_stop(rapid_fire_Led);
+				set_ledx(2, 1);
+				set_led(0, 2);
+			}
+			else
+			{
+				set_led(0,0);
+			}
+	}
+		
+	if (toggle_rapid_fire && get_ival(FIRE_BUTTON) > 10) 
+	{   
+	   	if (RAPIDFIREMODE == TURTLE_TRIG && get_ival(FIRE_BUTTON)>=TRIGGERPressure) 
+	    	combo_run(cRapidFire);
+	    else if (RAPIDFIREMODE == INHUMAN_TRIG && get_ival(FIRE_BUTTON)< TRIGGERPressure) 
+	    	combo_run(cRapidFire);
+		else 
+			combo_run(cRapidFire);
+	}
+	else if (event_release(FIRE_BUTTON) && combo_running(cRapidFire))
+	{
+	  	combo_stop(cRapidFire); 
+	 }
+
+		
+	if(USE_FAST_MOVE_SENSITIVITY == TRUE)
+	{
+		_ret = isqrt(pow(get_ival(PS4_LX), 2) + pow(PS4_LY, 2));
+		
+		if(_ret <= USE_FAST_MOVE_SENSITIVITY)
+		{
+		
+			ls_sensitivity = FRONTAL_MVT_SENS;
+		}
+		else
+		{
+			ls_sensitivity = DRIFT_MVT_SENS;
+		}
+		
+		sensitivity(PS4_LX, NOT_USE, ls_sensitivity);
+		sensitivity(PS4_LY, NOT_USE, ls_sensitivity);
+	}
+	
+	if((get_val(ADS_BUTTON) > 50) || (get_val(FIRE_BUTTON)> 50))
+	{				
+		
+		
+		magnitude_ok = check_magnitude(AIMASSIST_MAGNITUDE, Actual_Rx, Last_Rx, Actual_Ry, Last_Ry);
+
+		if(mvt_predection_update_cycle_counter > AI_MVT_PREDICTION_UPDATE_CYCLE)
+		{
+			_ret = get_mvt_direction(Actual_Rx, Last_Rx);
+
+			if(_ret != 0)
+			{
+				mvt_direction = _ret;
+				mvt_predection_update_cycle_counter = 0;
+
+				if(mvt_direction == -1 && magnitude_ok == FALSE)
+				{
+					angle = 180;
+				}
+			}
+		}
+
+		mvt_predection_update_cycle_counter++;
+
+		if( magnitude_ok == TRUE)
+		{
+			polar_ar_ry = 0;
+			rx_carrier = 0;
+			ry_carrier = 0;
+
+			if((USE_ANTI_RECOIL == TRUE) && (((get_val(ADS_BUTTON) > 50) && (get_val(FIRE_BUTTON)> 50)) || combo_running(cRapidFire)))
+			{
+				if(AR_TYPE == USE_REVELATIONS_SMART_AR)
+				{
+					polar_ar_ry = get_polar_val(get_VIBRATE_REVELATIONS_STRENGTH());
+				}
+				else
+				{
+					polar_ar_ry = get_polar_val(AntiRecoil(Actual_Rx, Actual_Ry, ar_strength));
+					
+					ar_cycle++;
+		
+					if(ar_cycle == POLY_AR_UPDATE_CYCLE)
+					{ 
+						ar_index = (ar_index + 1) & (POLY_AR_LIST_COVER);
+									
+						if(abs(get_ival(PS4_RY)) >= DZ_LIMIT) 
+						{
+							ar_buffer[ar_index] = get_ival(PS4_RY);
+						}
+						else
+						{
+							ar_buffer[ar_index] = 0;
+						}
+			
+						ar_cycle = 0;
+					}
+					
+					if(event_release(PS4_RY) && abs(get_val(PS4_RY)) < DZ_LIMIT)
+					{		
+						ar_strength_sum = 0;
+						
+						for(i = 0; i <= ar_index; i++)
+						{
+							ar_strength_sum += ar_buffer[i];
+						}
+						ar_strength += (ar_strength_sum/(ar_index + 1));		
+						ar_index = 0;
+					}
+				}
+			}
+			else
+			{
+				ar_strength = POLY_AR_STRENGTH ;
+				ar_index =0;
+				ar_strength_sum = 0;
+			}
+			
+			if(!(dynamic_scan_update_cycle % POLY_SCAN_UPDATE_CYCLE) && USE_POLY_SCAN == TRUE)
+			{
+				dynamic_scan = TRUE;
+			}
+			else
+			{
+				dynamic_scan = FALSE;
+			}
+			
+			if(USE_POLY_SCAN == TRUE)			
+			{
+				dynamic_scan_update_cycle += 1;
+			}
+			
+			if((!(smoothing % SMOOTHING)) && dynamic_scan == FALSE)
+			{			
+				if(USE_POLY_WAVE == TRUE)
+				{				
+					if(USE_AI_ENHANCEDAIM == TRUE)
+					{
+						_ret = isqrt(pow(Actual_Rx, 2) + pow(Actual_Ry, 2));		
+				
+						if(get_ival(ADS_BUTTON) && !get_ival(FIRE_BUTTON) && _ret <= AI_TUBULAR_THRESHOLD)
+						{
+							wave_type  = FORWARD_ADS_WAVE_TYPE;
+							wave_carrier = FORWARD_ADS_WAVE_CARRIER;
+							axis_modulation = FORWARD_ADS_AXIS_MODULATION;
+							aim_assist = FORWARD_ADS_AIM_ASSIST;
+						}				
+						else if(get_ival(ADS_BUTTON) && !get_ival(FIRE_BUTTON) && _ret > AI_TUBULAR_THRESHOLD)
+						{
+							wave_type  = CARRY_ADS_WAVE_TYPE;
+							wave_carrier = CARRY_ADS_WAVE_CARRIER;
+							axis_modulation = CARRY_ADS_AXIS_MODULATION;
+							aim_assist = CARRY_ADS_AIM_ASSIST;
+						}			
+						else if(get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret <= AI_TUBULAR_THRESHOLD)
+						{
+							wave_type  = FORWARD_ADS_FIRE_WAVE_TYPE;
+							wave_carrier = FORWARD_ADS_FIRE_WAVE_CARRIER;
+							axis_modulation = FORWARD_ADS_FIRE_AXIS_MODULATION;
+							aim_assist = FORWARD_ADS_FIRE_AIM_ASSIST;
+						}			
+						else if(get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret > AI_TUBULAR_THRESHOLD)
+						{
+							wave_type  = CARRY_ADS_FIRE_WAVE_TYPE;
+							wave_carrier = CARRY_ADS_FIRE_WAVE_CARRIER;	
+							axis_modulation = CARRY_ADS_FIRE_AXIS_MODULATION;
+							aim_assist = CARRY_ADS_FIRE_AIM_ASSIST;
+						}				
+						else if(!get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret <= AI_TUBULAR_THRESHOLD)
+						{
+							wave_type  = FORWARD_HIP_FIRE_WAVE_TYPE;
+							wave_carrier = FORWARD_HIP_FIRE_WAVE_CARRIER;
+							axis_modulation = FORWARD_HIP_FIRE_AXIS_MODULATION;
+							aim_assist = FORWARD_HIP_FIRE_AIM_ASSIST;
+						}				
+						else if(!get_ival(ADS_BUTTON) && get_ival(FIRE_BUTTON) && _ret > AI_TUBULAR_THRESHOLD)
+						{
+							wave_type  = CARRY_HIP_FIRE_WAVE_TYPE;
+							wave_carrier = CARRY_HIP_FIRE_WAVE_CARRIER;	
+							axis_modulation = CARRY_HIP_FIRE_AXIS_MODULATION;
+							aim_assist = CARRY_HIP_FIRE_AIM_ASSIST;
+						}
+						
+						if(wave_carrier == DEVIL_WAVE)
+						{
+							min_wave = MIN_POLY_WAVE_STRENGTH;
+							max_wave = MAX_POLY_WAVE_STRENGTH;
+						}
+					}
+					
+					
+					if(wave_carrier == DEVIL_WAVE)
+					{
+						set_polar(POLAR_RS, wave_angle, dynamic_wave_strength);
+						rx_carrier = get_val(POLAR_RX);
+						ry_carrier = get_val(POLAR_RY);
+						
+						wave_angle = ((wave_angle + (mvt_direction * dynamic_wave_speed))%360);
+					}
+					else if(wave_carrier == BOX_WAVE)
+					{
+						combo_run(combo_square_wave);
+					}
+					else if(wave_carrier == STEPS_WAVE)
+					{
+						combo_run(combo_stairs_wave);
+					}
+
+					if(wave_type == REGULAR_WAVE)
+					{						
+						if(wave_carrier == DEVIL_WAVE)
+						{				
+							dynamic_wave_strength = max_wave_strength;
+						}
+						else
+						{
+							rx_carrier = dynamic_wave_strength;
+							ry_carrier = rx_carrier;
+						}
+						
+						dynamic_wave_speed = min_wave_speed;
+					}
+					else
+					{						
+						dynamic_wave_update_parameters++;
+						
+						if(dynamic_wave_update_parameters >= DYNAMIC_WAVE_UPDATE_PARAMETERS)
+						{
+							dynamic_wave_update_parameters = 0;
+							dynamic_wave_update = 1;
+							
+							if(wave_type == POLY_SPEED)
+							{
+								dynamic_wave_speed = random(MIN_POLY_WAVE_SPEED, MAX_POLY_WAVE_SPEED);
+							}
+							else if(wave_type == BURROW_SPEED)
+							{
+								dynamic_wave_speed = dynamic_wave_speed + (1 * tunnel_speed_sign);
+								
+								if(dynamic_wave_speed >= MAX_POLY_WAVE_SPEED)
+								{
+									tunnel_speed_sign = -1;
+								}
+								else if(dynamic_wave_speed <= MIN_POLY_WAVE_SPEED)
+								{
+									tunnel_speed_sign = 1;
+								}
+							}
+							else if(wave_type == POLY_STRENGTH)
+							{
+								dynamic_wave_strength = random(min_wave, max_wave);
+								dynamic_wave_strength = get_polar_val(dynamic_wave_strength);
+							}
+							else if(wave_type == BURROW_STRENGTH)
+							{
+								if(wave_carrier == DEVIL_WAVE)
+								{
+									tunnel_dynamic_wave_strength = tunnel_dynamic_wave_strength + (1 * tunnel_strength_sign);
+															
+									if(tunnel_dynamic_wave_strength >= MAX_POLY_WAVE_STRENGTH)
+									{
+										tunnel_strength_sign = -1;
+									}
+									else if(tunnel_dynamic_wave_strength <= MIN_POLY_WAVE_STRENGTH)
+									{
+										tunnel_strength_sign = 1;
+									}
+								}
+							
+								dynamic_wave_strength = get_polar_val(tunnel_dynamic_wave_strength);
+							}
+							else if(wave_type == POLYMORPHIC_WAVE)
+							{
+								dynamic_wave_speed = random(MIN_POLY_WAVE_SPEED, MAX_POLY_WAVE_SPEED);
+								
+								dynamic_wave_strength = random(min_wave, max_wave);
+								dynamic_wave_strength = get_polar_val(dynamic_wave_strength);							
+							}
+							else if(wave_type == BURROW_WAVE)
+							{
+								if(wave_carrier == DEVIL_WAVE)
+								{
+									tunnel_dynamic_wave_strength = tunnel_dynamic_wave_strength + (1 * tunnel_strength_sign);
+															
+									if(tunnel_dynamic_wave_strength >= MAX_POLY_WAVE_STRENGTH)
+									{
+										tunnel_strength_sign = -1;
+									}
+									else if(tunnel_dynamic_wave_strength <= MIN_POLY_WAVE_STRENGTH)
+									{
+										tunnel_strength_sign = 1;
+									}
+								}
+								
+								dynamic_wave_strength = get_polar_val(tunnel_dynamic_wave_strength);
+															
+								dynamic_wave_speed = dynamic_wave_speed + (1 * tunnel_speed_sign);
+								
+								if(dynamic_wave_speed >= MAX_POLY_WAVE_SPEED)
+								{
+									tunnel_speed_sign = -1;
+								}
+								else if(dynamic_wave_speed <= MIN_POLY_WAVE_SPEED)
+								{
+									tunnel_speed_sign = 1;
+								}						
+							}							
+						}
+						
+						if(wave_carrier != DEVIL_WAVE)
+						{
+							rx_carrier = dynamic_wave_strength;
+							ry_carrier = dynamic_wave_strength;
+							
+						
+						}
+					}
+				}
+				
+				set_polar(POLAR_RS,angle, polar_radius);
+								
+				if(aim_assist == POLYMORPHIC)
+				{
+					polar_radius = get_polar_radius(random(MIN_CIRCUMFRENCE,MAX_CIRCUMFRENCE));
+					angle_increment = random(MIN_STEPZ,MAX_STEPZ);
+				}
+				else if(aim_assist == RANDOM_STEPZ)
+				{
+					angle_increment = random(MIN_STEPZ,MAX_STEPZ);
+				}
+				else if(aim_assist == RANDOM_CIRCUMFRENCE)
+				{
+					polar_radius = get_polar_radius(random(MIN_CIRCUMFRENCE,MAX_CIRCUMFRENCE));
+				}
+	
+				angle = update_angle(angle, angle_increment, mvt_direction);		
+			}
+			
+			if(dynamic_scan == TRUE)
+			{					
+				combo_run(COMBO_POLY_SCAN);			
+			}
+			
+			if(axis_modulation == NORTHSOUTH_WAVE)
+			{
+				rx_carrier = 0;	
+			}
+			else if(axis_modulation == WESTEAST_WAVE)
+			{
+				ry_carrier = 0;	
+				
+				if(wave_carrier != DEVIL_WAVE)
+				{
+					rx_carrier *= mvt_direction;
+				}
+			}
+			else
+			{
+				if(wave_carrier != DEVIL_WAVE)
+				{
+					rx_carrier *= mvt_direction;
+				}
+			}
+			
+			if(USE_STEADY_AIM == TRUE)
+			{
+				_ret = polar_clamp(get_val(POLAR_RY)  , rx_carrier);
+				_ret = polar_clamp(_ret , polar_ar_ry);
+				_Ry = polar_clamp(_ret, get_ival(POLAR_RY));
+				_ret = get_polar_val(resolution);
+				_ret1 = _ret/2;
+
+				if((_Ry > (-32768 + _ret1)) && (_Ry < (32767 - _ret1)))
+				{
+					_Ry = get_steady_aim(_Ry, _ret);
+				}
+
+				_Rx = polar_clamp(rx_carrier , get_val(POLAR_RX));
+				_Rx = polar_clamp(_Rx, get_ival(POLAR_RX));
+
+				if((_Rx > (-32768 + _ret1)) && (_Rx < (32767 - _ret1)))
+				{
+					_Rx = get_steady_aim(_Rx, _ret);
+				}
+
+				set_val(POLAR_RX, _Rx);
+				set_val(POLAR_RY, _Ry);
+				
+				if(STEADY_AIM_RESOLUTION_TYPE == RANDON_RESOLUTION)
+				{
+					resolution = random(4,8);
+				}
+				else if(STEADY_AIM_RESOLUTION_TYPE == DYNAMIC_RESOLUTION)
+				{
+					if(resolution == 4)
+					resolution_inc_dec = 1;
+					else if(resolution == 8)
+					resolution_inc_dec = -1;
+	
+					resolution = resolution + (resolution_inc_dec * 1);
+				}
+			}
+			else			{
+				_ret = polar_clamp(get_val(POLAR_RX) ,rx_carrier);	
+				set_val(POLAR_RX, polar_clamp( _ret, (get_ival(POLAR_RX))));
+				
+				_ret = polar_clamp(get_val(POLAR_RY) ,polar_ar_ry);	
+				_ret = polar_clamp(_ret, ry_carrier);	
+				set_val(POLAR_RY, polar_clamp(_ret, get_ival(POLAR_RY)));
+			}
+			
+			smoothing++;
+		}
+	}
+	else
+	{
+		angle = 0;
+		smoothing = 0;
+		dynamic_scan_update_cycle = 0;
+		mvt_predection_update_cycle_counter = AI_MVT_PREDICTION_UPDATE_CYCLE + 1;
+		magnitude_ok = TRUE;
+	}	
+
+	Last_Rx = Actual_Rx;
+	Last_Ry = Actual_Ry;
+
+	
+	if(USE_TURBO_MELEE)
+	{
+		if(get_val(MELEE_BUTTON))
+		{
+			combo_run(TURBO_MELEE);
+		}
+		else
+		{
+			if(combo_running(TURBO_MELEE))
+			combo_stop(TURBO_MELEE);
+		}
+	}
+
+	if(USE_RABBIT_HOP)
+	{
+		if (get_ival(JUMP_BUTTON) && get_ptime(JUMP_BUTTON) > 200)
+		{
+			combo_run(RABBITHOP);
+		}
+		else
+		{
+			if(combo_running(RABBITHOP))
+			combo_stop(RABBITHOP);
+		}
+	}
+	if(USE_LEAN_SPAM)
+{
+
+if(get_val(ADS_BUTTON))
+combo_run(LEAN_SPAM);
+}
+
+	if(USE_AUTO_HOLD_ZOOM)
+	{
+		if(get_val(ADS_BUTTON))
+		set_val(SPRINT_BUTTON,100);
+
+		if(get_val(PS4_LY) <-90 && get_val(ADS_BUTTON) && get_ptime(ADS_BUTTON) > 200 && combo_running(AUTO_HOLD_ZOOM))
+		combo_stop(AUTO_HOLD_ZOOM);
+
+		if(event_press(ADS_BUTTON))
+		combo_run(AUTO_HOLD_ZOOM);
+
+		if(get_val(ADS_BUTTON) && get_lval(SPRINT_BUTTON))
+		set_val(SPRINT_BUTTON,0);
+	}
+
+	if(USE_QUICK_SCOPE)
+	{
+		if(event_release(ADS_BUTTON) && get_ptime(ADS_BUTTON) < quickscope_press_time)
+		combo_run(Quick_Scope);
+	}
+	
+	
+	if(magnitude_ok == FALSE)
+	{
+		combo_run(Alert);
+	}	
+	
+	if(toggle_rapid_fire)
+	{
+		combo_run(rapid_fire_Led);
+	}
+}
+
+//################################################################################################# 
+
+function get_mvt_direction( _val, _lval)
+{
+	if (abs(_val - _lval) <= 2)
+		return 0;
+
+	if (_val < _lval) //move left
+		return -1;
+
+	if (_val > _lval)
+		return 1;
+
+	return 0;
+}
+
+//#################################################################################################
+
+function polar_clamp( _val, _ival)
+{
+	_ret = (_val / 10) + (_ival / 10);
+
+	if (_ret < -3276)
+		return -32768;
+
+	if (_ret > 3276)
+		return 32767;
+
+	return _val + _ival;
+}
+
+
+
+function get_polar_radius( _radius)
+{
+	if (_radius > 100)
+		_radius = 100;
+
+	_radius = (_radius * 327) + ((_radius * 67) / 100);
+
+	return _radius;
+}
+
+//################################################################################################# 
+
+function get_polar_val( _val)
+{
+	if (_val > 100)
+		_val = 100;
+
+	if (_val < -100)
+		_val = -100;
+
+	if (_val >= 0)
+		_ret = (_val * 327) + ((_val * 67) / 100);
+	else
+		_ret = (_val * 327) + ((_val * 68) / 100);
+
+	return _ret;
+}
+
+//################################################################################################# 
+
+
+function update_angle( _angle, _angle_increment, _mvt_direction)
+{
+
+	_angle = _angle + (_mvt_direction * _angle_increment);
+
+	if (_angle < 0)
+	{
+		_angle += 360;
+	}
+
+	return (_angle % 360);
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------
+//#################################################################################################
+
+function check_magnitude( _mag, _x_val, _x_lval, _y_val, _y_lval)
+{
+
+
+	if (isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)) <= _mag)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+
+//#################################################################################################
+
+// Smart Recoil
+function get_VIBRATE_REVELATIONS_STRENGTH()
+{
+	rumble = get_rumble(RumbleVALToUse());
+
+	if (rumble > 10 && rumble < 90)
+	{
+		return (rumble + REVELATIONS_ar_ry);
+	}
+
+	return 0;
+}
+
+//#################################################################################################
+
+
+//#################################################################################################
+
+
+//#################################################################################################
+
+int MinARecoilToApply;
+int MovementARecoilToApply;
+function AntiRecoil(CurrentX, CurrentY, ARecoilToApply)
+{
+    MinARecoilToApply = (POLY_AR_MIN_RECOIL_PERSENT * ARecoilToApply)/100;
+    MovementARecoilToApply = ((100 - POLY_AR_MIN_RECOIL_PERSENT) * ((ARecoilToApply * (100 - isqrt(pow(CurrentX, 2) + pow(CurrentY,2)))) / (100 + abs(CurrentX) + (pow(CurrentY,2)/2))))/100;
+   
+   return clamp((MinARecoilToApply + MovementARecoilToApply),-100,(100 - MinARecoilToApply));
+}
+
+//#################################################################################################
+combo LEAN_SPAM    {
+wait(300);
+set_val(RS_BUTTON, 100);
+wait(lean_spam_delay);
+set_val(LS_BUTTON, 100);
+wait(lean_spam_delay);
+set_val(RS_BUTTON, 100);
+wait(lean_spam_delay);
+set_val(RS_BUTTON, 100);
+wait(lean_spam_delay2);
+set_val(LS_BUTTON, 100);
+wait(lean_spam_delay2);
+set_val(RS_BUTTON, 100);
+wait(lean_spam_delay);
+set_val(LS_BUTTON, 100);
+}
+
+combo CROUCH_SPAM
+{
+wait(120);
+	set_val(SQUAT_BUTTON, 100);
+
+	wait(crouch_delay);
+
+	set_val(SQUAT_BUTTON, 0);
+
+	wait(crouch_delay);
+
+	
+}
+//################################################################################################# 
+
+//#################################################################################################
+
+combo TURBO_MELEE
+{
+	set_val(MELEE_BUTTON, 100);
+	wait(40);
+	set_val(MELEE_BUTTON, 0);
+	wait(30);
+}
+
+//#################################################################################################
+
+combo RABBITHOP
+{
+	set_val(JUMP_BUTTON, 100);
+	wait(30);
+	set_val(JUMP_BUTTON, 0);
+	wait(30);
+	set_val(JUMP_BUTTON, 100);
+	wait(30);
+	set_val(JUMP_BUTTON, 0);
+	wait(30);
+}
+
+//#################################################################################################
+
+combo AUTO_HOLD_ZOOM
+{
+	set_val(SPRINT_BUTTON,0);
+	wait(60);
+	set_val(SPRINT_BUTTON,100);
+	wait(110);
+	set_val(SPRINT_BUTTON,0);
+	wait(110);
+}
+
+//#################################################################################################
+
+combo Quick_Scope
+{
+	set_val(ADS_BUTTON,100);
+	wait(quickscopedelay);
+	set_val(ADS_BUTTON,100);
+	set_val(FIRE_BUTTON,100);
+	wait(40);
+	set_val(ADS_BUTTON,100);
+	wait(40);
+}
+
+//#################################################################################################
+
+ combo Alert
+ {
+	set_led(1, 2);
+ 	wait(250);
+ 	set_led(1,0);
+ 	wait(250);
+ 	set_led(1, 2);
+ 	wait(250);
+ 	set_led(1,0);
+
+ }
+ 
+ //#################################################################################################
+ 
+ combo COMBO_POLY_SCAN
+ {
+	_ret = mvt_direction * polar_scan_strength;
+	
+	if(POLY_SCAN_TYPE == HITBOX_SCAN)
+	{		
+		if(scan_step == 0)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+		else if(scan_step == 1)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+		}
+		else if(scan_step == 2)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+		}
+		else
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) , inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+	}
+	else if(POLY_SCAN_TYPE == DIAGONAL_SCAN)
+	{
+		if(scan_step == 0)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+		else if(scan_step == 1)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+			
+		}
+		else if(scan_step == 2)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+		}
+		else
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) , inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+	}
+	else
+	{
+		if(scan_step == 0)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+		else if(scan_step == 1)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+		}
+		else if(scan_step == 2)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+		}
+		else if(scan_step == 3)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) , inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+		else if(scan_step == 4)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+		else if(scan_step == 5)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+			
+		}
+		else if(scan_step == 6)
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) ,_ret));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , polar_scan_strength));
+		}
+		else
+		{
+			set_val(POLAR_RX, polar_clamp(get_ival(POLAR_RX) , inv(_ret)));
+			set_val(POLAR_RY, polar_clamp(get_ival(POLAR_RY) , inv(polar_scan_strength)));
+		}
+	}
+
+
+	wait(POLY_SCAN_HOLD_TIME);
+	
+	scan_step += 1;
+
+	if(POLY_SCAN_TYPE == TOTAL_SCAN)
+	{
+		if(scan_step == 8)
+		scan_step = 0;
+	}
+	else
+	{
+		if(scan_step == 4)
+		scan_step = 0;
+	}
+ }
+ 
+ 
+ 
+combo combo_square_wave
+{	
+	tunnel_dynamic_wave_strength = MIN_POLY_WAVE_STRENGTH - 1;
+	tunnel_strength_sign = 1;
+	
+	min_wave = MIN_POLY_WAVE_STRENGTH;
+	max_wave = MAX_POLY_WAVE_STRENGTH;
+	
+	if(wave_type == REGULAR_WAVE || wave_type == POLY_SPEED || wave_type == BURROW_SPEED )
+	{											
+		dynamic_wave_strength = max_wave_strength;						
+	}	
+	
+	wait(8);
+	
+	if(((wave_type == BURROW_STRENGTH) || (wave_type == BURROW_WAVE)) && dynamic_wave_update == 1 )
+	{
+		dynamic_wave_update = 0;
+		
+		tunnel_dynamic_wave_strength = tunnel_dynamic_wave_strength + (1 * tunnel_strength_sign);
+								
+		if(tunnel_dynamic_wave_strength >= MAX_POLY_WAVE_STRENGTH)
+		{
+			tunnel_strength_sign = -1;
+		}
+		else if(tunnel_dynamic_wave_strength <= MIN_POLY_WAVE_STRENGTH)
+		{
+			tunnel_strength_sign = 1;
+		}
+	}
+	
+	wait(272 + ((_MAX_W - dynamic_wave_speed) * 136));
+	
+	tunnel_dynamic_wave_strength = (inv(MIN_POLY_WAVE_STRENGTH)) + 1;
+	tunnel_strength_sign = -1;
+	
+	if(wave_type == REGULAR_WAVE || wave_type == POLY_SPEED || wave_type == BURROW_SPEED )
+	{											
+		dynamic_wave_strength = inv(max_wave_strength);					
+	}
+	
+	min_wave = inv(MAX_POLY_WAVE_STRENGTH);
+	max_wave = inv(MIN_POLY_WAVE_STRENGTH);
+	
+	wait(8);
+	
+	if(((wave_type == BURROW_STRENGTH) || (wave_type == BURROW_WAVE)) && dynamic_wave_update == 1 )
+	{
+		dynamic_wave_update = 0;
+		
+		tunnel_dynamic_wave_strength = tunnel_dynamic_wave_strength + (1 * tunnel_strength_sign);
+								
+		if(tunnel_dynamic_wave_strength >= inv(MIN_POLY_WAVE_STRENGTH))
+		{
+			tunnel_strength_sign = -1;
+		}
+		else if(tunnel_dynamic_wave_strength <= inv(MAX_POLY_WAVE_STRENGTH))
+		{
+			tunnel_strength_sign = 1;
+		}
+	}
+	
+	wait(272 + ((_MAX_W - dynamic_wave_speed) * 136));	
+}
+ 
+ 
+combo combo_stairs_wave
+{
+	min_wave = MIN_POLY_WAVE_STRENGTH;
+	max_wave = MAX_POLY_WAVE_STRENGTH;
+	
+	if(wave_type == REGULAR_WAVE || wave_type == POLY_SPEED || wave_type == BURROW_SPEED )
+	{											
+		dynamic_wave_strength = max_wave_strength;						
+	}
+	
+	tunnel_dynamic_wave_strength = MIN_POLY_WAVE_STRENGTH - 1;
+	tunnel_strength_sign = 1;
+	
+	wait(8);
+	
+	if(((wave_type == BURROW_STRENGTH) || (wave_type == BURROW_WAVE)) && dynamic_wave_update == 1 )
+	{
+		dynamic_wave_update = 0;
+		
+		tunnel_dynamic_wave_strength = tunnel_dynamic_wave_strength + (1 * tunnel_strength_sign);
+								
+		if(tunnel_dynamic_wave_strength >= MAX_POLY_WAVE_STRENGTH)
+		{
+			tunnel_strength_sign = -1;
+		}
+		else if(tunnel_dynamic_wave_strength <= MIN_POLY_WAVE_STRENGTH)
+		{
+			tunnel_strength_sign = 1;
+		}
+	}
+	
+	wait(272 + ((_MAX_W - dynamic_wave_speed) * 136));
+	
+	min_wave = -1;
+	max_wave = 1;
+	
+	dynamic_wave_strength = 0;
+	tunnel_dynamic_wave_strength = 0;
+	
+	wait(272 + (dynamic_wave_speed * 136));
+	
+	min_wave = inv(MAX_POLY_WAVE_STRENGTH);
+	max_wave = inv(MIN_POLY_WAVE_STRENGTH);
+	
+	tunnel_dynamic_wave_strength = (inv(MIN_POLY_WAVE_STRENGTH)) + 1;
+	tunnel_strength_sign = -1;
+	
+	if(wave_type == REGULAR_WAVE || wave_type == POLY_SPEED || wave_type == BURROW_SPEED )
+	{											
+		dynamic_wave_strength = inv(max_wave_strength);						
+	}
+	
+	wait(8);
+	
+	if(((wave_type == BURROW_STRENGTH) || (wave_type == BURROW_WAVE)) && dynamic_wave_update == 1 )
+	{
+		dynamic_wave_update = 0;
+		
+		tunnel_dynamic_wave_strength = tunnel_dynamic_wave_strength + (1 * tunnel_strength_sign);
+								
+		if(tunnel_dynamic_wave_strength >= inv(MIN_POLY_WAVE_STRENGTH))
+		{
+			tunnel_strength_sign = -1;
+		}
+		else if(tunnel_dynamic_wave_strength <= inv(MAX_POLY_WAVE_STRENGTH))
+		{
+			tunnel_strength_sign = 1;
+		}
+	}
+	
+	wait(272 + ((_MAX_W - dynamic_wave_speed) * 136));
+	
+	min_wave = -1;
+	max_wave = 1;
+	
+	dynamic_wave_strength = 0;
+	tunnel_dynamic_wave_strength = 0;
+	
+	wait(272 + ((_MAX_W - dynamic_wave_speed) * 136));
+}
+
+ //#################################################################################################
+ 
+ combo rapid_fire_Led
+ {
+	set_led(2, 2);
+ 	wait(500);
+ 	set_led(2,0);
+ 	wait(500);
+ }
+ 
+  //#################################################################################################
+
+int wtime;
+combo cRapidFire 
+{ 
+  set_val(FIRE_BUTTON,100);
+  
+  if(RAPIDFIREMODE == RANDOM)
+ 	 wtime = random(min_random,max_random);
+  else 
+  	wtime = TRIGGERCLICKTime;
+  
+  wait(wtime);
+  
+  set_val(FIRE_BUTTON,0);
+  
+  if(RAPIDFIREMODE == RANDOM)
+ 	 wtime = random(min_random,max_random);
+  else 
+  	wtime = TRIGGERPAUSETime;
+  
+  wait(wtime);
+
+  set_val(FIRE_BUTTON,0);
+  wtime = 0;
+  
+ if (RAPIDFIREMODE == STAIR_STEP_MODE) 
+ { 
+	if (get_ival(FIRE_BUTTON) < TRIGGERPressure) 
+	{	
+		wtime = TRIGGERSTEP ;
+	}
+ }
+ else if (RAPIDFIREMODE == DYNAMIC) 
+ { 	
+	wtime = (get_ival(FIRE_BUTTON) * TRIGGERPOLY)/100 ;
+ }
+ 
+ wait(wtime);
+}
+//#################################################################################################
+
+combo vibrate  
+    {
+         set_val(RAPID_FIRE_TOGGLE_BUTTON, 0);
+         set_rumble(RUMBLE_A, 100);
+         wait(300);
+         reset_rumble();
+     }

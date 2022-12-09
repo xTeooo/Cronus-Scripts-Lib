@@ -1,0 +1,232 @@
+/*
+
+
+// Version: V2
+// Developer: ACFSCRIPTS
+// Thanks to everyone who did not purchase this ass of a script :)
+// ===============================================================================================================
+*/
+int AimAssist = TRUE;
+int AimBot         = TRUE;  
+int pengo = TRUE;
+int BM = TRUE;
+int DS      = FALSE;
+int DJ      = FALSE;
+int RF      = FALSE;
+int PW      = FALSE;
+int PH = FALSE;
+int BPH = FALSE;
+int StopTurbo = FALSE;
+int StopRF = FALSE;
+int spam_auto_reset;
+int editMode = FALSE;
+ data(1,
+     2, 0, 0, 0,                            
+     0, 2, 0, 0,                                
+     0, 0, 2, 0,                              
+     0, 0, 0, 2,                              
+     2, 0, 2, 0,                             
+     0, 2, 2, 0,                             
+     2, 2, 2, 2 
+ );
+int Col_ind;
+int rumble_type = RUMBLE_A;
+int button1;
+int button2; 
+int x = 0;
+int Hold,Rel;
+int pX,pXX,pXXX,pR;
+int WAIT;
+int button;
+int num, i, a;
+int recoil;
+
+main {
+
+{if (a) {
+if (i < num) {
+if (!combo_running(master)) {
+combo_run(master);
+}
+} else if (i > num) {
+a = FALSE;
+}
+}
+
+if (AimBot && pengo) colourled(2);
+if (AimBot && !pengo) colourled(6);
+if (DJ || DS || RF || PW || PH) colourled(1);if (get_val(7) <= 0 && get_val(6) && get_ptime(6) > 250){
+SPAM(6);
+}
+if (get_val(7) <= 0 && get_val(3) && get_ptime(3) > 250){
+SPAM(3);
+}
+
+if (AimAssist) { 
+if(get_val(4) > 70)
+{
+combo_run(AimAssest);
+}
+if ((get_val(4) > 0 && get_ptime (4) > 1000) || (get_val(9) < -19||get_val(9) > 19||get_val(10) < -19||get_val(10) > 19||get_val(9) < -19||get_val(9) > 19||get_val(10) < -19||get_val(10) > 19)){
+combo_stop(AimAssest);
+}
+}
+if(AimBot)
+{
+if(get_val(7)> 70){AimBOT (303,23);}
+if(event_release(7))
+{ 
+combo_stop(AimBot);
+}
+
+}if(get_val(7) && event_press(20))
+{
+RF =! RF;
+rumble_A_if_true(RF);
+set_val(20, 0);
+}
+if(RF)
+{  
+if ((get_val(7) && get_val(4)) || (get_val(4) && 
+get_val(7))) 
+{
+combo_run(RFC);                                          
+} else {
+combo_stop(RFC);                                          
+}
+}
+if (BM && get_val(8) && !get_val(7)) {
+combo_run(EDIT);
+editMode = TRUE;
+}
+
+if (editMode) {
+if(event_release(4) || event_press(5))
+{
+set_click(8, 1, 0);
+combo_run (LastEdit);
+editMode = FALSE;
+BPH = FALSE;
+if (combo_running(EDIT)) { 
+combo_stop(EDIT);
+}
+}
+}
+}
+combo Notify {
+set_rumble(RUMBLE_B, 100);
+wait(300);
+reset_rumble();
+}
+combo BlockButton{ 
+set_val(button1,0);
+set_val(button2,0);
+wait(650);
+}combo AimAssest { 
+set_val(9, (5)); wait(5);wait(4); set_val(9, (0));set_val(9, (-5)); wait(5); set_val(9, (0));
+}combo SPAMX {               
+wait(1);
+set_val(pX, 0);
+wait(1);
+set_val(pX, 0);
+}
+combo SPAMXX {               
+wait(1);
+set_val(pXX, 0);
+wait(1);
+set_val(pXX, 0);
+}
+combo SPAMXXX {               
+wait(1);
+set_val(pXXX, 0);
+wait(1);
+set_val(pXXX, 0);
+}
+combo StopTurbo {
+wait(500);
+}combo master {
+wait(WAIT);
+set_val(button, 100);
+wait(28);
+set_val(button, 0);
+wait(28);
+i = i + 1;
+}
+combo DS{
+set_val(5,100);
+wait(50);
+wait(50);
+set_val(5,100);
+}combo AimBot{
+set_val(7, 100);
+wait(Hold);
+set_val(7, 0);
+wait(Rel);
+}combo RFC {
+set_val(4, 100); 
+wait(15);
+set_val(4, 0); 
+}combo EDIT {
+editMode = TRUE;
+wait(10000);
+editMode = FALSE;
+}
+combo LastEdit{ 
+wait(1000);
+}
+
+
+function rumble_A_if_true(var) {
+if (var) rumble_type = RUMBLE_A;
+else rumble_type = RUMBLE_B;
+combo_run(Notify);
+}function AimBOT(H,R) {
+Hold = H;
+Rel = R;
+combo_run(AimBot);
+}function SPAM(press) {
+if (press != 3 && press != 6) { 
+pX = press;
+combo_run(SPAMX);
+}
+if (press == 3) { 
+pXX = press;
+combo_run(SPAMXX);
+}
+if (press == 6) { 
+pXXX = press;
+combo_run(SPAMXXX);
+}
+}function set_click(B, Num, Wait) {
+WAIT = Wait;
+i = 0;
+button = B;
+num = Num;
+a = TRUE;
+}
+function colourled(Colour) {
+Col_ind = (Colour * 4) - 3;
+set_led(LED_1, dbyte(Col_ind));
+set_led(LED_2, dbyte(Col_ind + 1));
+set_led(LED_3, dbyte(Col_ind + 2));
+set_led(LED_4, dbyte(Col_ind + 3));
+}
+int RIGHT = 250; 
+    int LEFT = 250; 
+    int Flipped = FALSE; 
+ 
+    main {
+    
+    if(Flipped) {
+    swap(3,4);
+    swap(6,7);}
+ 
+    if(get_val(7) && get_val(4))
+    combo_run(Strafe);else 
+    combo_stop(Strafe);}
+ 
+    combo Strafe {
+    set_val(11,100);
+    wait(RIGHT);
+    set_val(11,-100);
+    wait(LEFT);}

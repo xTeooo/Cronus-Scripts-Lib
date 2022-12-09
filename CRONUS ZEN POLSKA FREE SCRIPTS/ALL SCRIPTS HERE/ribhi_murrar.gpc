@@ -1,0 +1,281 @@
+// GPC Online Library
+// ribhi_murrar.gpc
+
+//Fortnite Script//
+// Credits:
+             //RIBHI MURRAR - Main development
+             
+                        //// //* |  ____/ __ \|  __ \__   __| \ | |_   _|__   __|  ____|*
+                          //////*| |__ | |  | | |__) | | |  |  \| | | |    | |  | |*__   
+                          //////*|  __|| |  | |  _  /  | |  | . ` | | |    | |  |  __| * 
+                         ////// *| |   | |__| | | \ \  | |  | |\  |_| |_   | |  | |_*___ 
+                          //////*|_|    \____/|_|  \_\ |_|  |_| \_|_____|  |_|  |______|*
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//AimBot Values Can Be Change//         
+int ABT= TRUE; //L2 + D-PAD LEFT On/Off                                                                        
+int ASD =180                   
+int ASD2=15
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Aim Assist//
+  int ASST = TRUE; /* L2 + D-PAD LEFT- On/Off 
+*/int value   = 26;
+  int value2  = -26;
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Jitter ShotGuns//
+int Jitter_Burst= FALSE; //D-PAD LEFT + SQUARE  On/Off| 
+int JumpShot = FALSE; // X + SQUARE On/Off
+//JumpShot//Don't Touch This
+int tap; 
+int L2_block;
+int R2_block; 
+//END
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+int RF = TRUE; // D-Pad Left + X
+int rfs =5;
+int rfs2 =5;
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+int Drop_shot=FALSE   // D-PAD LEFT + R3 -TURN On/Off
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+int AutoRun =TRUE
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+int Scope_BTN; int Shoot_BTN;int LY;int Run_BTN;int Reload_BTN;int Jump_BTN;int UP;int RY;int RIGHT;int RX;int Crouch_BTN;int RightBumber;int LeftBumber; int Left;int Down;int Drop_BTN
+int a; int b; 
+int rumble_type = RUMBLE_A;
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+//// I NITALIZATION/////
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+init { //-BUTTON LAYOUT-\\  
+if(get_console() == PIO_PS4){ Scope_BTN = PS4_L2; Shoot_BTN = PS4_R2; LY = PS4_LY; Run_BTN = PS4_L3; Reload_BTN = PS4_SQUARE; Jump_BTN = PS4_CROSS; UP = PS4_UP; RY = PS4_RY; RIGHT = PS4_RIGHT;RX = PS4_RX;RY = PS4_RY;Crouch_BTN = PS4_CIRCLE;Left = PS4_LEFT;Down = PS4_DOWN;RightBumber = PS4_R1;LeftBumber = PS4_L1;
+   }else{
+   RightBumber = XB1_RB; Scope_BTN = XB1_LT; Shoot_BTN = XB1_RT; LY = XB1_LY; Run_BTN = XB1_LS; Reload_BTN = XB1_X; Jump_BTN = XB1_A; UP = XB1_UP; RY = XB1_RY; RIGHT = XB1_RIGHT; RX = XB1_RX;RY = XB1_RY; Crouch_BTN = XB1_B; Left = XB1_LEFT; Down = XB1_DOWN; LeftBumber = XB1_LB;
+   }   
+}
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//Main Script
+
+main {
+//AimBot//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+if(get_val(Scope_BTN) && event_press(Left)){
+   ABT =! ABT; 
+   if(ABT == TRUE){combo_run(Notify);a=0;b=2;}
+   if(ABT == FALSE){combo_run(Notify);a=2;b=0;} 
+   rumble_A_if_true(ABT);
+   }
+   if(ABT){
+   if(get_val(Scope_BTN)&&get_ptime(Scope_BTN)>= 245){
+      combo_run(ABT);
+  }
+   if(event_release(Scope_BTN)){ combo_stop(ABT);}
+   } 
+////////////AimAssist/////////////-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    if(get_val(Scope_BTN) && event_press(RIGHT)){
+   ASST =! ASST;
+   if(ASST == TRUE){combo_run(Notify);a=0;b=2;}
+   if(ASST == FALSE){combo_run(Notify);a=2;b=0;} 
+   rumble_A_if_true(ASST);
+   }
+   if(ASST){
+    if((get_val(Scope_BTN)) && (get_val(Shoot_BTN)))  {
+            combo_run(L3_C);
+            combo_run(L2_C);
+      }
+       }    
+          if(get_val(RX) < value2 || get_val(RX) > value || get_val(RY) < value2 || get_val(RY) > value || get_val(RX) < value2 || get_val(RX) > value || get_val(RY) < value2 || get_val(RY) > value) {
+            combo_stop(L2_C);
+            combo_stop(L3_C);
+           
+        }        
+/////////////////////Jitter Burst/////////////////////////--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------      
+if(get_val(Left)&&event_press(Reload_BTN)){ Jitter_Burst=!Jitter_Burst;
+   if(Jitter_Burst == TRUE){combo_run(Notify);a=0;b=2;}
+   if(Jitter_Burst == FALSE){combo_run(Notify);a=2;b=0;}
+   rumble_A_if_true(Jitter_Burst);
+   }   
+   if(Jitter_Burst){
+   if(get_val(Shoot_BTN)){combo_run(Jitter_Burst);combo_stop(RF);}
+      if(event_release(Shoot_BTN)){combo_stop(Jitter_Burst);}
+   } 
+ ///////////////////JumpShot///////////////---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  
+  if (!get_val(Scope_BTN)) {
+        if(get_val(Jump_BTN)&&event_press(Reload_BTN)){
+            JumpShot = !JumpShot;
+             if(JumpShot == TRUE){combo_run(Notify);a=0;b=2;}
+            if(JumpShot == FALSE){combo_run(Notify);a=2;b=0;}
+            tap = FALSE;
+            rumble_A_if_true(JumpShot);
+        }
+    }
+   if(JumpShot){
+    if((get_val(Scope_BTN)) && (get_val(Shoot_BTN)))  {
+        combo_run(Jump_Shot);  
+       } 
+    } 
+ 
+  
+ /////////////////DropShot/////////////////////------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        if (get_val(Left) && event_press(PS4_R3)) {
+       Drop_shot=!Drop_shot;
+         if(Drop_shot == TRUE){combo_run(Notify);a=0;b=2;}
+   if(Drop_shot == FALSE){combo_run(Notify);a=2;b=0;} 
+   rumble_A_if_true(Drop_shot);
+   }
+ 
+ if (Drop_shot) {
+        if (get_val(Scope_BTN) && get_val(Shoot_BTN) > +90) { //Remove > +90 to just drop shot when holding Both L2 and R2
+            combo_run(Drop_shot);
+        }
+    }  
+ ///////////Rapid Fire//////////---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    if(get_val(Left) && event_press(Jump_BTN)){
+   RF = ! RF;
+   if(RF == TRUE){combo_run(Notify);a=0;b=2;}
+   if(RF == FALSE){combo_run(Notify);a=2;b=0;} 
+    rumble_A_if_true(RF);
+   }
+   if(RF){
+    if((get_val(Scope_BTN)) && (get_val(Shoot_BTN)))  {
+        combo_run(RF);  
+       } 
+    }
+     
+////////////AUTO RUN////////////////-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    if (!get_val(7) && get_val(12) < -90) {
+        set_val(8, 100);
+    }
+    }
+//---------Combos Start Here-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+combo Notify {
+   set_led(LED_1,0);
+   set_led(LED_2,a);
+   set_led(LED_3,b);
+   set_led(LED_4,0);
+   wait(550);
+   set_led(LED_1,0);
+   set_led(LED_2,0);
+   set_led(LED_3,0);
+   set_led(LED_4,0);
+   wait(250);
+   set_led(LED_1,0);
+   set_led(LED_2,a);
+   set_led(LED_3,b);
+   set_led(LED_4,0);
+   wait(250);
+   set_led(LED_1,0);
+   set_led(LED_2,0);
+   set_led(LED_3,0);
+   set_led(LED_4,0);
+   wait(250);
+   set_led(LED_1,0);
+   set_led(LED_2,a);
+   set_led(LED_3,b);
+   set_led(LED_4,0);
+   wait(250);
+   reset_leds();
+}
+
+combo JUMP {
+    wait(120);
+    set_val(Jump_BTN, 100);
+    wait(110);
+    set_val(Jump_BTN, 0);
+    wait(200); // how long to wait until next Jump 
+} //end
+
+combo Jump_Shot { //ADVANCED JITTER
+  set_val(Shoot_BTN, 100);
+  set_val(Jump_BTN, 100);
+} //end
+
+combo Jitter_Burst {
+    set_val(Scope_BTN, 100);
+    wait(50);
+    set_val(Shoot_BTN, 100);
+    set_val(Scope_BTN, 100);
+    wait(50);
+    set_val(Shoot_BTN, 100);
+    set_val(Scope_BTN, 0);
+    wait(50);
+    set_val(Shoot_BTN, 0);
+    wait(50);
+    set_val(RightBumber, 100);
+    wait(50);
+    set_val(RightBumber, 0);
+    wait(335); //END
+    set_val(Scope_BTN, 100);
+    wait(50);
+    set_val(Shoot_BTN, 100);
+    set_val(Scope_BTN, 100);
+    wait(50);
+    set_val(Shoot_BTN, 100);
+    set_val(Scope_BTN, 0);
+    wait(50);
+    set_val(Shoot_BTN, 0);
+    wait(50);
+    set_val(LeftBumber, 100);
+    wait(50);
+    set_val(LeftBumber, 0);
+    wait(335); //END
+}
+
+combo RF{
+      set_val(Shoot_BTN, 100); 
+      wait(rfs);
+      set_val(Shoot_BTN, 0);
+      wait(rfs2);
+}
+
+combo ABT{
+   set_val(Scope_BTN,100); 
+   wait(ASD);
+   set_val(Scope_BTN,0);
+   wait(ASD2);
+   }
+ 
+/////////AutoRecoil&AimAssist////////////////////////////  
+       combo L3_C {
+    set_val(RY, 20);
+    wait(10);
+    set_val(RY, 0);
+    wait(10);
+    
+}  
+
+combo L2_C {
+     set_val(RX,-35); 
+     wait(25)
+     set_val(RY,30);
+     wait(25)
+     set_val(RX,35); 
+     wait(25)
+     set_val(RY,-30);
+     }
+ 
+ //////////////////////////////////////////
+      combo Drop_shot {
+    set_val(PS4_R3, 100);
+    wait(80);
+    wait(60); // how long to wait until next jump 
+}
+
+combo VIBRATE {
+    set_rumble(rumble_type, 100);
+    wait(300);
+    reset_rumble();
+}
+
+function rumble_A_if_true(var) {
+    if (var) rumble_type = RUMBLE_A;
+    else rumble_type = RUMBLE_B;
+    combo_run(VIBRATE);
+}
+
+function AntiRecoil(axis,recoil) {
+    set_val(axis,(recoil*(100-abs(get_val(axis))))/100 + get_val(axis));
+}
+ 
+ 
