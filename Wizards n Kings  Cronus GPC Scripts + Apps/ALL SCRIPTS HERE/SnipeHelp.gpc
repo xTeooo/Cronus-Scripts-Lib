@@ -1,0 +1,66 @@
+/*
+
+
+  NBA snipe_toggle??
+
+
+  While Holding UP on D-PAD, Press TOUCHPAD To Activate.
+  Will Continue Running Untill You Do The Same As Above.
+  Green LED when Running, Red LED When Not Running.
+
+
+*/
+
+
+
+int snipe_toggle;
+
+
+
+main {
+
+
+  if(get_val(PS4_UP) && event_press(PS4_CROSS) || get_val(PS4_CROSS) && event_press(PS4_UP)) {
+    snipe_toggle = !snipe_toggle;
+  }
+
+  if(snipe_toggle) {
+    block_all_inputs();
+    combo_run(Scroll);
+    combo_run(SpamOptions);
+    combo_run(SpamCross);
+    combo_run(CirclePress);
+    set_hsb(119, 100, 50);
+  }
+  else {
+    combo_stop_all();
+    set_hsb(1, 100, 50);
+  }
+
+}
+
+
+
+combo SpamOptions {
+  set_val(PS4_OPTIONS, 100);
+  wait(40);
+  wait(60);
+  }  
+  
+  combo SpamCross {
+  set_val(PS4_CROSS, 100);
+  wait(40);
+  wait(1300);
+  } 
+  
+  combo Scroll {
+  set_val(PS4_DOWN, 100);
+  wait(40);
+  wait(1000);
+  }
+  
+  combo CirclePress {
+  set_val(PS4_CIRCLE, 100);
+  wait(40);
+  wait(60000 * 5); //Fadexz can work this one out to be one press every 5 minutes :)
+  }

@@ -1,0 +1,797 @@
+                                                                         
+// BATDANS Compeditive Script.GPC
+
+
+/*                                                                              
+                                                                             
+                                                                           _____ ___  ____ _____ _   _ ___ _____ _____ 
+                                                                          |  ___/ _ \|  _ \_   _| \ | |_ _|_   _| ____|
+                                                                          | |_ | | | | |_) || | |  \| || |  | | |  _|  
+                                                                          |  _|| |_| |  _ < | | | |\  || |  | | | |___ 
+                                                                          |_|   \___/|_| \_\|_| |_| \_|___| |_| |_____|
+                                                                                 
+                                                                                
+                                                                                
+                                                                            /\                    /\                                                                                                                                                                                                                  
+                                                                            /\\                  /\\\                                                                     
+                                                                           //\\\                //\\\\                                                           
+                                                                          ///\\\\              /////\\\                                                                       
+                                                                          //\\\\\\            //////\\\\                         
+                                                                          ////\\\\\__________/____///\\\\                                       
+                                                                         {///\\\///////////   \\\\\\\\\\\\                                                                                                                     
+                                  /\                         /\\         {///////////////       \\\\\\\\\\\                                     
+                                 //\\                       //]\\        {////////////////////\\\\\\\\\\\\\                                                            
+                                //[[[\        /\  /\       /]]]]\\      /\/===============================]        
+                               //[[[[[\      ///\/\\\     /]]]]]]\\     { /\                        _     ]     
+                              //[??[[[[[\====/////\\\\\====]]]]]]]]]\    [// ]     /]      /--\     [ \\   ]\          
+                              \[[[[[[[[[[[[[[[[[[]]]]]]]]]]]]]]]]]]/    /   ]    /  ]    / [  \    [   \  ] \                                                                 
+                               \\[[[[[/\\\///\\\vv/\\\/////\]]]]]//    /----]   /    ]   [    /    [    \ ]__\                                                                                  
+                                \\[[[/  \\//  \\vv//  \\//  \]]]//       \_____/-----]___ \  /_____------\]                                                                                                                 
+                                 \[[/    \/    \\//    \/    \]]/        /\\===============\/============/\
+                                  \/            \/            \/         /////\\\\\\______________/////==//\
+                                                                          \//\__________________________/=\/                                                                                                                                                                                                                                                                                                                    \     \_/      /                     
+                                                                           \  \/\  /\  /  /\  /\  /\  /\  /                                                                                                
+                                                                            \-\  \/  \/ \/  \/  \/  \/ /-/                                                                      
+                                                                              \-\                     /-/  
+                                                                               \-\/\_/\_/\_/\_/\_/\_/-/ 
+                                                                                 \\ \____\\ //_____ //
+                                                                                   \ \\--\===/---///
+                                                                                     \_____\/____/  
+                                                                                      \_________/ 
+                                                                                      
+*/ 
+define deadzone_left   = 11; 
+define  deadzone_right = 13; // Deazone in game CHANGE AT THE BEGINNING OF MAIN
+
+/*------------------------------*
+ |	 AIM ASSIST STICK LINEAR    |
+/*------------------------------*/
+	//
+define 	AimAssistEXPO   			= FALSE;	// Aim Assist Exponential
+define 	AimStickLinear  			= TRUE; 	// Help with aiming moving the joystick linear
+
+int 	BATCOMPUTER_ASSIST 			= FALSE; 
+define 	BATAIM      				= TRUE;  	// Aim Assist Ads only 
+define 	BATHIPFIRE     				= TRUE;     // Aim Assist Fire only
+define 	BuildTracker    			= TRUE; 	// When building, all the modifications will be deactivated so that they do not interfere, when returning to combat mode the modifications that we had activated will be activated again.
+define 	BATGRIP_ANTIRECOIL    		= TRUE;
+define 	BloomReducer    			= TRUE;		// While crouching the character will move back and forth, then the crosses get smaller by the minute, that's why we'll reduce the bloom.                              
+define 	COWLKILLA_Headassist 		= TRUE;     // [(on) or (off)] = Progression HeAdshot Assist
+define 	HeadHipAssist   			= TRUE; 	// [(on) or (off)] = Operate on Fire only [If off It Will only Run on Ads & Fire]
+int 	EchoHip 					= TRUE;     // Hip Fire DoGz The Echo Aim Assist	[(On) or (Off)] = {Operates on [Ads Alone (Off)] Or [Ads or Fire Alone (On)]}
+int 	BATCAVE_ECHO 				= TRUE;
+define 	BATSHOT 					= FALSE; 	// Like a Drop Shot but not as noticable 
+
+//ADS SPECS
+define Radius          = 8;    				// Radius/strength/value
+define STEPS           = 24;   				// Step/speed
+define STEP_INTERVAL   = 3;    				// time
+
+/*------------------------------*
+ |	     HEAD SHOT ASSIST        |
+/*------------------------------*/
+       
+define Power           = 1;        			// [1 - 10] =  DoGz TimeZ Aim Assist Power [1,2,3,4,5] ==> (>> 1 = 5 , 2 = 10 , 3 = 15 , 4 = 20 , 5 = 25 etc  <<) [LINEAR USE VALUE 1]
+define HeAdstep        = 5;         		// [1 - 30] = Step Increment Increasing Until Its Reached HeadMax 
+define HeadMax         = 35;        		// [1 - 70] = Max Head Assist Value 
+define AATime          = 3000;				// Amount is seconds so 3000 = 3 seconds long of the assist. [5000 max 1000 Min]
+
+/*
+//-------------------------------------------------------------------------------------------*/
+//Combat Buttons
+define Fire     = PS4_R2;       //XB1_RT          // Fire In Game
+define Ads      = PS4_L2;       //XB1_LT          // Ads In Game
+define Pickaxe  = PS4_TRIANGLE; //XB1_Y           // Pickaxe In Game
+define Crouch   = PS4_R3;       //XB1_RS          // Crouch In Game
+define N_Weapon = PS4_R1; 		//XB1_RB       // Next Weapon
+define P_Weapon = PS4_L1; 		//XB1_LB
+define Sprint   = PS4_TOUCH; 	// XB1_SYNC
+
+//Build Buttons
+define Build    = PS4_CIRCLE;   //XB1_B	       // Build In Game {Switch/Edit or Switch}
+define Wall     = PS4_R2;       //XB1_RT		 // Wall In Game
+define Floor    = PS4_R1;       //XB1_RB	      // Floor In Game
+define Ramp     = PS4_L2;       //XB1_LT		 // Ramp In Game
+define Trap     = PS4_SQUARE;   //XB1_X	      // Trap In Game
+define Roof     = PS4_L1;       //XB1_LB		 // Roof In Game
+
+//Edit Buttons
+define Edit     = PS4_L3;       //XB1_LS         // Edit In Game (Use This Button If Using HoldTime In Game Or NOT Edit Assist Without Hold Time)
+define Select   = PS4_R2;       //XB1_RT         // Edit Select Piece In Game
+define Confirm  = PS4_L2;       //XB1_LT 	      // Edit Confirm In Game	
+define Reset    = PS4_L1;       //XB1_LB         // Edit Reset In Game
+
+define RY       = PS4_RY;       //XB1_RY         // Vertical Aim Axis In Game
+define RX       = PS4_RX;       //XB1_RX         // Horizontal Aim Axis In Game
+define LY       = PS4_LY;       //XB1_LY
+define LX       = PS4_LX;       //XB1_LX
+define strafe   = RX;  			// Horizontal Walk Axis In Game
+define walk     = RY;  			// Vertical Walk Axis In Game
+define PS       = POLAR_RS;		// Polar Stick In Use [LS/RS] LX       = PS4_LX;       //XB1_LX
+
+//on off Definition
+define on         		= TRUE;
+define off        		= FALSE;
+
+
+
+//  MODIFICATION SPECS
+/*------------------------------*
+ |	  AIM ASSIST EXPonENTIAL    |
+/*------------------------------*/
+
+define strength        = 14;   // Strength/value
+
+/*------------------------------*
+ |	       ANTI RECOIL          |
+/*------------------------------*/
+
+define ARVert          = 26;   // More value, more force on the RY joystick, less value, less force on the RY jyostick
+define ARHoriz         =  0;   // HIGHER VALUE +0 moves the crosshairs to the right, LOWER VALUE -0 moves the crosshairs to the left.
+
+
+/*------------------------------*
+ |	       BLOOM REDUCER        |
+/*------------------------------*/
+
+int ast                		= 99;  // The time while our character moves, against more value slower, less value more speed. (Hint: a value less than 100 is best. 
+
+/*------------------------------*
+ |	       BUILD TRACKER        |
+/*------------------------------*/
+define BuildSyncTime   		= 1000; // Auto De-Sync After 2 Seconds Of being Idol [Pickaxe == Manual Re-Sync]
+
+/*------------------------------*
+ |	    QUICK EDIT ASSIST       |
+/*------------------------------*/
+
+define QuickEditAssist 		= FALSE; // [on / off] Edit Assist
+define EditDelay       		= 20;   // Edit Assist Hold Delay on Select
+define EditAssist      		= PS4_L3; // EDIT ASSIST + FAST RESET EDIT BUTTon (Edit In Game [ NO HOLD TIME!!! ])
+
+/*------------------------------*
+ |	 FAST RESET (one Button)    |
+/*------------------------------*/
+
+define InstaFastReset 		= TRUE;      // Fast Reset [on / off]
+define FastReset      		= PS4_L1; // FAST RESET BUTTon [ MUST BE BLANK IN GAME / OR SOMETHING HARDLY USED!!! ]
+define ButtonTime     		= 20;        // Button Press Time
+
+/*------------------------------*
+ |	      BLOCK RUMBLE          |
+/*------------------------------*/
+
+define BlockRumble    		= TRUE; // If we have vibration activated in the game, when activated, we would block the vibration in the controller.
+
+/*------------------------------*
+ |	      HAIR TRIGGERS         |
+/*------------------------------*/
+
+define HairTriggers   		= TRUE; // Instant Triggers [100%]
+
+
+/*------------------------------*
+ |	      TOUCHPAD  FIX         |
+/*------------------------------*/
+
+define PSonXBOX       		= TRUE; // Touchpad Fix on PC or Xbox 
+
+
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int EchoValue = 1; 		  // Base Power
+int Increase = 1;         // Increment Of Step
+int EchoDelay = 20;       // Combo Speed
+int StepTime = 200;       // Ms Time Before Step Change
+
+
+/*
+ ___      ___       __        __    _____  ___   
+|"  \    /"  |     /""\      |" \  (\"   \|"  \  
+ \   \  //   |    /    \     ||  | |.\\   \    | 
+ /\\  \/.    |   /' /\  \    |:  | |: \.   \\  | 
+|: \.        |  //  __'  \   |.  | |.  \    \. | 
+|.  \    /:  | /   /  \\  \  /\  |\|    \    \ | 
+|___|\__/|___|(___/    \___)(__\_|_)\___|\____\)
+*/
+
+main {
+
+   if(PSonXBOX && get_console() == PIO_XB360 && get_controller() == PIO_PS4) { swap (PS4_TOUCH,PS4_SHARE);}
+                                                                                 
+     
+      if(BlockRumble) block_rumble();
+  
+ 
+        if(HairTriggers) { deadzone(PS4_L2,PS4_R2,100,100);}	
+  
+  
+//DEADZONE
+	if (abs(get_val(walk)) < 0 && abs(get_val(strafe)) < 0 ){ 
+				set_val(XB1_LY,(deadzone_left)); 
+				set_val(XB1_LX,(deadzone_left));}
+	if (abs(get_val(PS4_RY)) < 0 && abs(get_val(PS4_RX)) < 0 ){ 
+				set_val(XB1_RY,(deadzone_right)); 
+				set_val(XB1_RX,(deadzone_right));}
+
+
+  	if(get_val(Ads)){ 
+   		if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit){    
+   		if(abs(X_Last_Value - X_Current_Value) < 15)	{
+       			combo_stop(BATCOMPUTER_ASSIST_Perfection);
+       			Sampling_Done = FALSE;
+   		if(get_val(Fire) > 95)	{ 
+        		combo_stop(BATCOMPUTER_TUNING);
+        		fine_pulse = 0;
+        		combo_run(BATCOMPUTER_AIM_ASSIST);}
+   		else	{
+        		combo_stop(BATCOMPUTER_AIM_ASSIST);
+        		spiroide_pulse = 0;
+        		combo_run(BATCOMPUTER_TUNING);}}}
+   			else if(abs(X_Current_Value) <= 90 && abs(Y_Current_Value) <= 90){ 
+       			combo_stop(BATCOMPUTER_TUNING);
+        		combo_stop(BATCOMPUTER_AIM_ASSIST);
+        		spiroide_pulse = 0;
+        		fine_pulse = 0;
+        		combo_run(BATCOMPUTER_ASSIST_Perfection);}}
+    		else {
+        		combo_stop(BATCOMPUTER_TUNING);
+        		combo_stop(BATCOMPUTER_AIM_ASSIST);
+        		combo_stop(BATCOMPUTER_ASSIST_Perfection);
+       		 	spiroide_pulse = 0;
+        		fine_pulse = 0;
+        		Sampling_Done = FALSE;}
+   
+   if (BATCAVE_ECHO) {
+	    if (get_ival(Ads) || (EchoHip && get_ival(Fire))) {
+		    	BAT_ECHO_ASSIST();    } 
+		   	else {
+		    	TimerEcho = 0;   	}
+		    	}
+ 
+    if (BATT_STICKY_TARGETING) {
+   		if(get_val(Ads)) combo_run(BATT_STICKY_TARGETING);
+        	else combo_stop(BATT_STICKY_TARGETING);}
+	    
+	if (COWLKILLA_Headassist) {
+	    if (get_ival(Ads) && get_ival(Fire) || HeadHipAssist && get_ival(Fire)) {
+	   	if (abs(get_ival(LY)) < HeadMax) 	{ 
+	        	Head += HeAdstep;
+	        	combo_run(COWLKILLA_Headassist);     	}	
+	    if (!get_ival(Fire)) Head = 0;
+	    if (Head >= HeadMax) combo_stop(COWLKILLA_Headassist);}
+	 			}
+	 			
+ 	if (InstaFastReset) {
+    	if (event_press(FastReset)) { 
+       			combo_run(FastReset);}
+				}
+				
+	if(BATSHOT){                             
+		if(get_val(Ads) && get_val(Fire)){  
+				BATSHOT_hold = 140;
+				BATSHOT_rest = 0;            
+				combo_run(BATSHOT);} 
+			else if (combo_running(BATSHOT)){     
+				combo_stop(BATSHOT);}                                             
+					}  
+						
+	if(BATGRIP_ANTIRECOIL){                               
+		if( get_val(PS4_L2) && get_val(PS4_R2)){      
+					combo_run(BATGRIP_ANTIRECOIL); }               
+		if( abs(get_val(RY)) > 36 || abs(get_val(RX)) > 36) { 
+					combo_stop (BATGRIP_ANTIRECOIL); }               
+}
+	if(BloomReducer) {
+		if(get_val(Ads) && (get_val(Fire))) {        
+  
+        combo_run(BATGRIP_ANTIBLOOM);
+}
+     if(abs(get_val(PS4_LX)) > 40 || abs(get_val(PS4_LY)) > 40){
+ 
+        combo_stop(BATGRIP_ANTIBLOOM);
+       }
+}
+
+   if(AimStickLinear) {
+  
+       actual_X = get_val(RX);
+       actual_Y = get_val(RY);
+       actual_Magnitude = isqrt(pow(actual_X, 2) + pow(actual_Y, 2));                                                                                                                                                                                              //CREATED BY EXPLOIT YT
+       max_Magnitude = (actual_Magnitude < 100);
+  
+     if(!(time++ % STEP_INTERVAL)){
+       
+       angle += STEPS;
+}
+       angle = angle % 360;
+       sin_angle = Polar_Array[angle % 360];
+       cos_angle = Polar_Array[(angle + 270) % 360];                   
+       cos_angle = (cos_angle * Radius) / 100;
+       sin_angle = (sin_angle * Radius) / 100;
+  
+  if((BATAIM && get_val(Ads)) || (BATHIPFIRE && get_val(Fire))){
+ 
+    	if(actual_Magnitude <= Radius){
+  
+       sin_angle -= actual_Y;
+       cos_angle -= actual_X;
+       }
+       else {
+       sin_angle = (sin_angle * (200 - ((abs(actual_Y) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;
+       cos_angle = (cos_angle * (200 - ((abs(actual_X) + actual_Magnitude) / 10) * 10) / 200) * max_Magnitude;
+}
+  
+       set_val(RX, clamp(actual_X + cos_angle, -100, 100));
+       set_val(RY, clamp(actual_Y + sin_angle, -100, 100));
+      }
+   } 
+}     
+
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(ButtonTime)
+    set_val(Reset,100);        
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+combo BATCOMPUTER_ASSIST { 
+    wait(4)
+    set_val(RX, valueX);
+    wait(delayA);
+    set_val(RX, valueX*(-1));
+    wait(delayA);
+} 
+
+combo COWLKILLA_Headassist{
+
+  set_val(RY,inv(Head) + get_val(RY));
+}
+
+
+combo BATCOMPUTER_TARGETING {
+set_val(10,xy_val(10,aa_p));
+wait(aa_delay)
+set_val(9,xy_val(9,aa_p));
+set_val(11,xy_val(11,aa_p));
+wait(aa_delay)
+set_val(10,xy_val(10,aa_n));
+wait(aa_delay)
+set_val(9,xy_val(9,aa_n));
+set_val(11,xy_val(11,aa_n));
+wait(aa_delay)
+}
+
+
+combo BATGRIP_ANTIBLOOM { 
+	
+  set_val(PS4_LX,-40);
+  wait(100);
+  set_val(PS4_LX, 40);
+  wait(100);
+  if(ast < 160){ast = 100 + 10;}
+  else {ast = 100;
+   }
+}
+
+combo BATT_STICKY_TARGETING {
+	set_val(PS4_RY,xy_val(PS4_RY, _v));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v));
+	set_val(PS4_LX,xy_val(PS4_LX, _v));
+	wait(20);
+	set_val(PS4_RY,xy_val(PS4_RY, _v * -1));
+	wait(20);
+	set_val(PS4_RX,xy_val(PS4_RX, _v * -1));
+	set_val(PS4_LX,xy_val(PS4_LX, _v * -1));
+	wait(20);
+}
+    
+combo BATCOMPUTER_ASSIST_Perfection 
+           {
+         
+            X_Last_Value = X_Current_Value
+            Y_Last_Value = Y_Current_Value
+     
+             
+            wait(Sampling_Time);
+     
+            
+            X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+            Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+     
+         if (Sampling_Done == TRUE )
+            {
+                 
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+            }
+     
+            X_Last_Value = X_Current_Value;
+            Y_Last_Value = Y_Current_Value;
+     
+            
+            wait(Sampling_Time);
+     
+            
+            X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+            Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+     
+       if (Sampling_Done == TRUE )
+            {
+                
+                
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+            }
+     
+            Sampling_Done = TRUE; 
+            wait(Sampling_Time);
+        }
+     
+combo BATCOMPUTER_TUNING {
+ 
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_LX,(-15 + fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    set_val(PS4_RY,(10 - fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_LX,(15 - fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-15 + fine_pulse)); 
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RY,(-10 + fine_pulse)); 
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    fine_pulse = fine_pulse + 2;
+ 
+ 
+    if ( fine_pulse >10)
+       {
+            fine_pulse = 0;   
+        }
+   }
+
+combo BAT_ECHO_LOCATION {
+
+	set_val(LY,1);
+	wait(20);
+	set_val(LX,inv(1));
+	wait(20);
+	set_val(LX,1);
+	wait(20);
+	set_val(LY,inv(1));
+	wait(20);
+}   
+
+
+combo BATCOMPUTER_AIM_ASSIST {
+ 
+    set_val(PS4_RX,(4 + spiroide_pulse));
+    set_val(PS4_LX,(-15+ spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-4 - spiroide_pulse));
+    set_val(PS4_LX,15 - spiroide_pulse );
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    spiroide_pulse = spiroide_pulse + 2;
+ 
+ 
+    if ( spiroide_pulse >10)
+       {
+            spiroide_pulse = 0;   
+        }
+   } 
+
+combo BATGRIP_ANTIRECOIL {
+ 
+  BATGRIP_ANTIRECOILVertical = get_val(PS4_RY) + ARVert;  
+  if(BATGRIP_ANTIRECOILVertical > 100) BATGRIP_ANTIRECOILVertical = 100;
+  if(abs(get_val(PS4_RY)) < abs(ARVert) + 5)
+  set_val(PS4_RY, (BATGRIP_ANTIRECOILVertical));
+  BATGRIP_ANTIRECOILHorizontal = get_val(PS4_RX) + ARHoriz;
+  if(BATGRIP_ANTIRECOILHorizontal > 100) BATGRIP_ANTIRECOILHorizontal = 100;
+  if(abs(get_val(PS4_RX)) < abs(ARHoriz) + 5)
+  set_val(PS4_RX, BATGRIP_ANTIRECOILHorizontal);
+}
+
+
+combo BATSHOT { 
+set_val(Ads, 100);    
+wait(20);                
+set_val(Ads, 0);      
+wait(20);}
+
+//*========================================================================
+//=============================FUNCTIONS==================================|
+//===================================================================*/
+
+
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < stickyaim_size + 1) 
+        return f_val;
+    return get_val(f_axis); 
+}
+ 
+ 
+function BAT_ECHO_ASSIST() {
+	
+	TimerEcho += get_rtime();
+	
+	if (TimerEcho < StepTime) {
+		
+		EchoVal = EchoValue;
+	
+	} else if (TimerEcho < (StepTime * 2)) {
+		
+		EchoVal = EchoValue + Increase;
+	
+	} else if  (TimerEcho < (StepTime * 3)) {
+		
+		EchoVal = EchoValue + (Increase * 2);
+	
+	} else if  (TimerEcho < (StepTime * 4)) {
+		
+		EchoVal = EchoValue + (Increase * 3);
+	
+	} else if  (TimerEcho < (StepTime * 5)) {
+		
+		EchoVal = EchoValue + (Increase * 4);}
+	
+	if  (TimerEcho > StepTime * 6) {
+		
+		TimerEcho = 0;	}
+	
+	combo_run(BAT_ECHO_LOCATION);
+}
+
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )         { 
+     
+     
+           if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit) 
+                {
+                    
+                    if(Last_Value < Current_Value)
+                        {           
+                            if (Boost)
+                                { 
+                                    if (X_AXIS)
+                                        set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+     
+                                    if (Y_AXIS)
+                                            set_val(PS4_RY, (Current_Value + Aim_Boost));
+                                }
+     
+     
+                            else if(Correction)
+                                {
+                                    if (X_AXIS)
+                                        set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+     
+                                    if (Y_AXIS)
+                                    set_val(PS4_RY, (Current_Value - Aim_Correction));            
+                                }
+                        }
+                    else 
+                        {
+     
+                            if (Boost)
+                                { 
+                                    if (X_AXIS)
+                                        set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+     
+                                    if (Y_AXIS)
+                                            set_val(PS4_RY, (Current_Value - Aim_Boost));
+                                }
+     
+     
+                            else if(Correction)
+                                {
+                                    if (X_AXIS)
+                                        set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+     
+                                    if (Y_AXIS)
+                                    set_val(PS4_RY, (Current_Value + Aim_Correction));            
+                                }
+                        }
+                }
+        } 
+
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |V A R I A B L E S| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | 
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+ 
+int TimerEcho,EchoVal;
+int BATSHOT_hold; 
+int BATSHOT_rest;
+int stickyaim_size;
+define Sampling_Time = 4;
+define Aim_Boost = 7;	
+define Aim_Correction = 14;
+define Aim_Perfection_Limit = 60;
+define POS_Aim_limit = 90;
+define NEG_Aim_Limit = -90;
+define POS_Micro_MVT_Limit = 45;
+define NEG_Micro_MVT_Limit = -45;
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+int valueX = 15;
+int delayA = 7; 
+define INTVERTED_RECOIL   =     1;  //ITzSNACK'S INVERTED RECOIL METHOD ( IF INVERTED SET TO  -1  INSTEAD OF  1 )
+define LETHAL    = PS4_R1;
+define TACTICAL = PS4_L1;
+int spiroide_pulse = 0;
+int fine_pulse = 0;
+int RX_Axis_Joystick_calibrate = 0; 
+int RY_Axis_Joystick_calibrate = 0;
+
+int time;                                          
+define O_f_f		= 0;
+define O_n   		= 1;
+
+/*----------------------------*/
+define GhostPeekPress = PS4_R1 	 // GhostPeek Shot = [ADS + HOLD or TAP => L1/LB]
+define PumpShotPress  = PS4_L1;  	 // Pump Shot = [ADS + TAP => R1/RB] 
+/*
+            
+                     ????????????????????????????????????????????????????????????????????????????????????????????????????????????
+---------------------------------------------------------------*/
+int BATGRIP_ANTIRECOILVertical,BATGRIP_ANTIRECOILHorizontal;
+
+int angle, cos_angle, sin_angle,Head;
+int actual_X, actual_Y, actual_Magnitude, max_Magnitude;
+
+define TimeoutLimit  = 2;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 12;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 14;
+define Batts_Sticky_Menu      = 4;
+define Polar_Aim_Menu         = 5;
+define Enhanced_Menu          = 6;
+define Senses_Menu            = 7;
+define Boosts_Menu            = 8;
+define ButtonLayout           = 9;
+define StickLayout           = 10;
+
+
+
+
+define vm_internal  = -6;
+int BATT_STICKY_TARGETING= TRUE;
+
+
+   
+
+define Ads_BTN    = 7;   //XB1_LT    | PS4_L2
+define Fire_BTN   = 7; 
+ 
+int Sampling_Done = FALSE;
+
+define Btn2Press = 1,Btn1Hold_Btn2Press = 2,Btn2Hold = 3,Btn1Hold_Btn2Hold = 4;
+define PerfectAccuracyHold  		= PS4_L2;  /*Btn1 : Button 1*/ 
+define PerfectAccuracyPress 		= PS4_R3;  /*Btn2 : Button 2*/
+define PerfectAccuracyActive 		= Btn1Hold_Btn2Hold; // MOD TRIGGER STATE == { Btn2Press[1]  or  Btn1Hold_Btn2Press[2]  or  Btn2Hold[3]  or  Btn1Hold_Btn2Hold[4] }
+define GhostPeekHold  				= PS4_L2;        /*Btn1 : Button 1*/
+define _v                =   14;      
+define VIB_A    = RUMBLE_A; //Leave Alone
+define Get_Last_Value     				= 0;
+define Get_Current_Value 				= 1;
+define DoGzDamPolar = 0,DoGzReducer = 1;
+define Polar = 0,Linear = 1;
+define Circle = 0,TallOval = 1,WideOval = 2,Spiral = 3,Helix = 4,KITT = 5,VerticalFlare = 6,TartanArmy = 7,Blade = 8,Bishop = 9,Jupiter = 10,Oscillerate = 11; // Polar
+define Prf = TRUE;
+define Paf = TRUE;
+define Diamond = 0,TallDiamond = 1,WideDiamond = 2,SpiralDiamond = 3,HelixDiamond = 4,KITTL = 5,VerticalFlareL = 6,TartanArmyL = 7,BladeL = 8,BishopL = 9,JupiterL = 10,OscillerateL = 11; //Linear
+define RecoilSet = 0,RecoilProgression = 1;
+define SemiAutomatic = 0,Automatic = 1;
+define AdsFireTrigger = 0,AnyFireTrigger = 1,FireOnlyTrigger = 2;
+define Small = 0,Medium = 1,Large = 2;
+define B_lack = 0,W_hite = 1;
+define PolarValue = 327;
+define VersionOne   = 0;
+define VersionTwo   = 1;
+define VersionThree = 2;
+
+
+//Aim Assist
+int aa_p  = 8;
+int aa_n = -8; 
+int aa_delay  = 20;
+
+ 
+
+ 
+const int8 Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};//CREATED BY EXPLOIT YT
+ ˙∏åªä≤Ü∞Ü∞Éªçπàø

@@ -1,0 +1,138 @@
+// Crouch On Fire With On/Off Toggle
+
+
+
+
+//	Forza Horizon 5 - Farm Skill Point (as of 12/02/21)
+	
+//NEW SCRIPT WORKING INF SCRIPT BY SOFT IF COLD
+	    
+//	    Follow the setup here:  https://youtu.be/uGOgxBw5-IE
+	    
+//	    Use this share code: 743 324 179
+	   
+	    
+//	    At the START RACE EVENT menu screen, start the script (RB/R1 + Dpad DOWN)
+//	    just press (RB/R1 + Dpad DOWN) again to stop the script)
+
+	    
+define Crouch = PS4_CIRCLE;
+define Throttle = XB1_RT;
+// Set This As Your In Game Crouch + Fire Buttons
+
+define SKILL_POINTS_TO_EARN = 50;  //--Change this value to number of skill points you want to farm
+int AutoClutch = FALSE;
+int AutoThrottle = FALSE;
+
+int idx, skillPoints;
+// Set This To True Or False ==> [On/Off By Default]
+    const string TITLE = "FH5"; // 11 char max
+        const string AD = "AT"; // 11 char max
+     const string AC = "FM"; // 11 char max
+define CrouchWaitTime = 150; 
+// Time Before Next Crouch [Milliseconds]
+int DisplayTitle = TRUE;
+define RightBumber  = XB1_RB;
+define LeftBumper = XB1_LB;
+// Buttons To Toggle On/Off In Game
+//function thingie
+function center_x(f_chars,f_font) {           
+//  center_x(number of chars,font size);     
+//        return X for Centering String Horizontally 
+                                                      
+    return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2); 
+}  
+function bottom_x(f_chars,f_font) {           
+//  center_x(number of chars,font size);     
+//        return X for Centering String Horizontally 
+                                                      
+    return (OLED_WIDTH / 9) - ((f_chars * f_font) / 1); 
+}    
+function left_x(f_chars,f_font) {           
+//  center_x(number of chars,font size);     
+//        return X for Centering String Horizontally 
+                                                      
+    return (OLED_WIDTH / 12) - ((f_chars * f_font) / 2); 
+} 
+main {
+cls_oled(000000);	
+    	     printf(center_x(sizeof(TITLE) - 1, OLED_FONT_MEDIUM_WIDTH),13,OLED_FONT_MEDIUM,OLED_WHITE,TITLE[0]);
+    if (get_ival(RightBumber) && event_press(LeftBumper)) {
+        
+        AutoThrottle = !AutoThrottle;
+    }
+    
+    if (AutoThrottle) {
+         
+         combo_run(AutoThrottle);
+             	     printf(bottom_x(sizeof(AD) - 3, OLED_FONT_MEDIUM_WIDTH), 29,OLED_FONT_MEDIUM,OLED_WHITE,AD[0])
+    
+    } else {
+             
+         combo_stop(AutoThrottle);
+    }
+    
+    
+            if (get_ival(XB1_LB) && event_press(XB1_RIGHT)) {
+              combo_run(AutoClutch);
+    }
+        if (get_ival(XB1_RB) && event_press(XB1_DOWN)) {
+        
+        AutoClutch = !AutoClutch;
+    }
+    
+    
+    if (AutoClutch) {
+         
+         combo_run(AutoClutch);
+             	     printf(bottom_x(sizeof(AC) - 3, OLED_FONT_MEDIUM_WIDTH), 9,OLED_FONT_MEDIUM,OLED_WHITE,AC[0])
+             	   
+       
+    
+    } else {
+             
+         combo_stop(AutoClutch);
+    }
+}
+
+combo AutoClutch {
+	set_val(XB1_A, 100);
+	wait(150);
+	set_val(XB1_A, 0);
+	wait(2500);
+	set_val(XB1_RT, 51);
+	wait(1500);
+	set_val(XB1_RT, 95);
+	wait(1500);
+	set_val(XB1_RT, 100);
+	wait(27000);
+	set_val(XB1_RT, 0);
+	wait(450);
+	set_val(XB1_X, 100);
+	wait(150);
+	set_val(XB1_X, 0);
+	wait(150);
+	set_val(XB1_A, 100);
+	wait(150);
+	set_val(XB1_A, 0);
+	wait(150);	
+    set_val(XB1_LB, 100);
+    set_val(XB1_RIGHT, 100);
+	wait(150);
+    set_val(XB1_LB, 0);
+    set_val(XB1_RIGHT, 0);
+}
+
+
+
+combo hello {
+    
+    set_val(XB1_LB,100); 
+    wait(100);
+}
+
+combo AutoThrottle {
+    
+    set_val(Throttle,100); 
+    wait(100);
+}

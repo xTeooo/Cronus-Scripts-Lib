@@ -1,0 +1,175 @@
+/*
+
+
+
+    Forza Horizon 5 - Easy Skillpoints Race AFK
+    By Fadexz
+    
+    
+    * Instructions *
+    
+    From the pause menu go to Creative Hub > EventLab > Event Blueprints > Search > (Enter Share Code: 743 324 179) > Confirm > Favorite Blueprint > Select > Solo > (Prefered car: Lamborghini Sesto Elemento Forza Edition) > Select
+    
+    Difficulty Settings:
+    Braking           > Assisted
+    Steering          > Auto-Steering
+    Traction Control  > On
+    Stability Control > On
+    Shifting          > Automatic
+    
+    From this point you will just want to run the script by ** Holding LB and Press DOWN ** then just leave it running until you are happy with the amount of skillpoints you got
+
+
+    * Notes *
+    
+    You will earn 10 skillpoints per run
+    
+    Adjust the load wait times below based on the speed of your device, I would suggest start by adding '3000' to my times
+
+
+
+*/
+
+
+
+define
+
+// AFK Skillpoints
+Max_Runs = 100,  // e.g 100 = 1000 skillpoints (at default timings: ~ 1hr 22mins)
+Race_Finish_Additional_Load_Wait_Time = 11500,
+Restart_Race_Load_Wait_Time = 5500;
+
+
+
+int
+
+// AFK Skillpoints
+afk_toggle,
+current_run,
+skillpoints,
+// Display
+blank_screen,
+screen_saver = TRUE,
+ran_text_pos_x,
+ran_text_pos_y;
+
+
+
+main {
+
+
+ // AFK Skillpoints
+
+ if(get_ival(XB1_LB) && event_press(XB1_DOWN)) {
+  afk_toggle = !afk_toggle;
+  cls_oled(OLED_BLACK);
+ }
+
+ if(get_ival(XB1_LB) && get_ival(XB1_DOWN))
+  set_val(XB1_DOWN,0);
+
+ if(afk_toggle && (!Max_Runs || current_run <= Max_Runs - 1)) {
+  set_val(XB1_RT,100);
+  combo_run(FH5_AFK_Skillpoints);
+  set_rgb(0,5,0);
+  block_rumble();
+ }
+ else {
+  afk_toggle = FALSE;
+  set_rgb(5,0,0);
+  combo_stop(FH5_AFK_Skillpoints);
+  current_run = 0;
+ }
+
+
+ // Display
+
+ if(!screen_saver) {
+  blank_screen += get_rtime();
+  if(blank_screen >= 16000) {
+   cls_oled(OLED_BLACK);
+   screen_saver = TRUE;
+   blank_screen = 0;
+  }
+ }
+ else blank_screen = 0;
+
+ if(!screen_saver) {
+  cls_oled(OLED_BLACK);
+  skillpoints = (current_run * 10) + 10;
+  number_to_string(skillpoints,find_digits(skillpoints));
+ }
+
+
+}
+
+
+
+// AFK Skillpoints
+
+combo FH5_AFK_Skillpoints {
+ set_val(XB1_A,100);
+ wait(40);
+ wait(32700);
+ ran_text_pos_x = random(-20,20);
+ ran_text_pos_y = random(-10,10);
+ screen_saver = FALSE;
+ wait(get_rtime());
+ wait(Race_Finish_Additional_Load_Wait_Time);
+ set_val(XB1_X,100);
+ wait(40);
+ wait(200);
+ set_val(XB1_A,100);
+ wait(40);
+ wait(Restart_Race_Load_Wait_Time);
+ current_run ++;
+}
+
+
+
+// Display
+
+function center_text(f_chars,f_font) {
+ return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+} 
+
+int i, c, c_val;
+
+const uint8 ASCII_NUM[] = { 48,49,50,51,52,53,54,55,56,57 };
+
+function number_to_string(value,f_digits){
+ i = 1;
+ c_val = 10000;
+ if(value < 0) {
+  putc_oled(i,45);
+  i += 1;
+  value = abs(value);
+ } 
+ for(c = 5; c >= 1; c--) {
+  if(f_digits >= c) {
+   putc_oled(i,ASCII_NUM[value / c_val]);
+   value = value % c_val;
+   i +=  1;
+   if(c == 4) {
+    putc_oled(i,44);
+    i += 1;
+   }
+  }
+  c_val /= 10;
+ }
+ // Display Number
+ puts_oled(center_text(i - 1,OLED_FONT_LARGE_WIDTH) + ran_text_pos_x,22 + ran_text_pos_y,OLED_FONT_LARGE,i - 1,OLED_WHITE);
+}
+
+function find_digits(f_num) {
+ f_num = abs(f_num);
+ if(f_num / 10000 > 0)
+  return 5;
+ if(f_num / 1000 > 0)
+  return 4;
+ if(f_num / 100 > 0)
+  return 3;
+ if(f_num / 10 > 0)
+  return 2;
+ return 1;
+}

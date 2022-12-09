@@ -1,0 +1,452 @@
+// GPC Online Library
+// pubg_italia_cmax_edition.gpc
+
+//
+//
+//==============================================================*/	
+// PUBG ITALIA CMAX EDITION
+// SCRIPT FATTO DA ANDRY85
+// VERSIONE 1.0
+// CONSOLE: XBOX e PS
+// SCRIPT PER PAD 
+//==============================================================*/	
+//                    ISTRUZIONI
+//==============================================================*/
+ // Script fatto per Layout tradizionale miro e sparo con L2 e R2 per play e LT e RT per xbox
+ // RECOIL progressivo 3 STEP VERTICALE e 2 STEP ORIZZONTALE  SEMPRE ATTIVO SU DUE ARMI,ARMA PRIMARIA VERDE ARMA SECONDARIA ROSSO
+ // CAMBIO ARMA TRIANGOLO\Y (LED VERDE PRIMARIA, LED ROSSO SECONDARIA)
+ // RESET ARMA L2\LT + TRIANGOLO\Y  ( SE ARMA/LED NON E' GIUSTO)
+ // RAPID FIRE L2\LT + Freccia SU (LED PINK)(SI ABILITA SOLO SU ARMA SECONDARIA)
+ // PEEKSHOT (ON/OFF  CERCHIO + freccia SU per PS) (B+ freccia SU per XBOX) (bianco se attivo)
+ // AUTOLEAN (ON/OFF  PS4-X + freccia su)(XBOX A + freccia su) (BLU se attivo)
+ // RESPIRO AUTOMATICO SEMPRE ATTIVO
+ // HAIR TRIGGER SU SPARO
+ //
+ //            !!!!!!!!IMPORTANTE!!!!!!!
+ // BLOCCO CAMBIO ARMA PREMENDO MENU/PS4_OPTIONS SBLOCCO PREMENDO MENU'/PS4_OPTIONS O B/CERCHIO
+ //
+ //==============================================================*/	
+ //                    FINE  ISTRUZIONI
+ //==============================================================*/
+ 
+ // SE VI PIACE LO SCRIPT POTETE FARE UNA DONAZIONE SU: IF YOU LIKE A SCRIPT CAN DONATE AT: 
+ // https://www.paypal.com/paypalme/andry1985
+ 
+ // PER ASSISTENZA:
+ 
+ // https://www.facebook.com/groups/cronusmaxitaliaofficial
+ // https://cronusmax.com/forums/forumdisplay.php/262-CronusMAX-Supporto-Italiano
+ 
+//==============================================================*/	
+//                   SETTAGGIO ANTIRECOIL
+//==============================================================*/
+ 
+// ARMA PRIMARIA VERTICALE
+        define    P_Starting_Anti_Recoil_Value  = 25;    //--postive values only
+        define    P_Mid_Point_Anti_Recoil_Value = 25;
+        define    P_Ending_Anti_Recoil_Value    = 25;
+        define    P_Total_Anti_Recoil_Time      = 4000;  //-- 10ms increments (min - 2000)
+        define    P_Progression_Point_Percent   = 50;    //--percentage of total time to transition to mid to end values 10% increments
+ // ARMA PRIMARIA ORIZZONTALE
+    	define    antirecoil_HP_start  = 0;
+    	define    antirecoil_HP_end    = 0;
+    	define    antirecoil_HP_time   = 4000;  //-- 10ms increments
+//ARMA SECONDARIA VERTICALE    	        
+        define    S_Starting_Anti_Recoil_Value  = 22;    //--postive values only
+        define    S_Mid_Point_Anti_Recoil_Value = 22;
+        define    S_Ending_Anti_Recoil_Value    = 20;
+        define    S_Total_Anti_Recoil_Time      = 2500;  //-- 10ms increments (min - 2000)
+        define    S_Progression_Point_Percent   = 50;    //--percentage of total time to transition to mid to end values 10% increments
+//ARMA SECONDARIA ORIZZONTALE
+    	define    antirecoil_HS_start  = -3;
+    	define    antirecoil_HS_end    = -3;
+    	define    antirecoil_HS_time   = 3250;  //-- 10ms increments 
+
+              
+ // PER INVERTIRE I TASTI TRA L2 E L1 E R2 E R1       
+  define SCOPE = 7 // METTERE 6 SE SI MIRA CON L1     
+  define FIRE = 4  // METTERE 3 SE SI SPARA CON R1 
+
+//==============================================================*/	
+//                   SETTAGGIO RAPID FIRE
+//==============================================================*/ 
+// AUMENTA PER DIMINUIRE RATEO DI FUOCO
+define RF_SPEED = 30;
+
+//==============================================================*/	
+//                   VARIABILI
+//==============================================================*/
+                      
+        
+        define Switch_Weapon = 17; //  Y / TRIANGOLO        
+ 		define ON  = TRUE;
+		define OFF = FALSE;
+        define Blue       =  1; 
+        define Red        =  2;                                     
+        define Green      =  3; 
+        define Pink       =  4; 
+        define SkyBlue    =  5; 
+        define Yellow     =  6; 
+        define White      =  7;
+        define Off        =  8;
+		
+//------------------------------------------------------------------------------------------- 
+data(1,
+ 
+  2,0,0,0, //1. Blue
+  0,2,0,0, //2. Red
+  0,0,2,0, //3. Lime/Green
+  0,0,0,2, //4. Fuchsia/Pink
+  2,0,2,0, //5. SkyBlue
+  0,2,2,0, //6. Yellow
+  2,2,2,2,  //7. White
+  0,0,0,0  //8. Off 
+); 
+ 
+        int    Starting_Anti_Recoil_Value;
+        int    Mid_Point_Anti_Recoil_Value;
+        int    Ending_Anti_Recoil_Value;
+        int    Total_Anti_Recoil_Time;
+        int    Progression_Point_Percent;
+		int    antirecoil_H_start;
+    	int    antirecoil_H_end;
+    	int    antirecoil_H_time;  //-- 10ms increments 
+    	int i_val_h;
+    	int i_pnt_h;
+    	int i_num_h;
+    	int i_cnt_h;
+    	int v_x,ar_x;
+        int Col_ind;
+        int rapidfire = FALSE;
+		int colore;
+        int weapon;
+        int p,inc,inc_2,pr,pr_2,vm,vm_2; 
+        int loops,loops_2,vm_count,p_count,v,ar_y;
+        int vm_loops;
+  		int peekshot_on;
+  		int check_leanRight; 
+        int check_leanLeft;    
+  		int autolean_on;
+  		int loot = TRUE;
+
+//==============================================================*/	
+//                   SEZIONE MAIN
+//==============================================================*/
+
+main {
+// RESPIRO
+if(get_val(7) > 99 && get_ptime(7) > 500) {set_val(6, 100);} 
+
+// BLOCCO LOOT
+if(event_press(XB1_MENU))
+ 
+ {loot = !loot;}	
+   if (event_release(XB1_B)){loot = TRUE;}
+
+// PEEKSHOT
+if(get_val(XB1_B) && event_press(XB1_UP))  {peekshot_on=!peekshot_on;} 
+if(peekshot_on) 
+    {  
+    	if(get_val(XB1_LT)){
+    	combo_run(PEEKSHOT);
+     }
+     
+    	if (get_val(XB1_RT)||get_val(XB1_LS)||get_val(XB1_RS)){
+    	combo_stop(PEEKSHOT);
+     }
+    	}
+            
+// AUTOLEAN
+
+if(get_val(XB1_A) && event_press(XB1_UP))  {autolean_on=!autolean_on;}                             
+  if(autolean_on)
+   {
+     	 //se in mira e inclinazione XB1_LX > 99
+                //LEAN RIGHT
+                if (get_val(7) && (get_val(XB1_LX) > 90) && (check_leanRight == FALSE) || get_val(6) && (get_val(XB1_LX) > 90) && (check_leanRight == FALSE)) 
+                {
+                combo_run(AUTO_LEAN_RIGHT);
+                check_leanRight = TRUE;
+                } 
+ 
+                if (get_val(7) && (get_val(XB1_LX) >= -10) && (get_val(XB1_LX) <= 10) && (check_leanRight == TRUE) || get_val(6)  && (get_val(XB1_LX) > 90) && (check_leanRight == FALSE))
+                {
+                combo_run(AUTO_LEAN_RIGHT);
+                check_leanRight = FALSE;
+                } 
+ 
+ 
+                //LEAN LEFT
+                if (get_val(7) && (get_val(XB1_LX) < -90) && (check_leanLeft == FALSE) || get_val(6) && (get_val(XB1_LX) < -90) && (check_leanLeft == FALSE) ) 
+                {
+                combo_run(AUTO_LEAN_LEFT);
+                check_leanLeft = TRUE;
+                }
+ 
+                if ( get_val(7) && (get_val(XB1_LX) >= -10) && (get_val(XB1_LX) <= 10) && (check_leanLeft == TRUE)|| get_val(6) && (get_val(XB1_LX) >= -10) && (get_val(XB1_LX) <= 10) && (check_leanLeft == TRUE )) 
+                {
+                combo_run(AUTO_LEAN_LEFT);
+                check_leanLeft = FALSE;
+                } 
+     }
+//RESET ZONAMORTA
+    if(abs(get_val(PS4_LY)) < 5 && abs(get_val(PS4_LX)) < 5 ){        
+        set_val(PS4_LY,0);                                                
+        set_val(PS4_LX,0); }                                           
+    if(abs(get_val(PS4_RY)) < 5 && abs(get_val(PS4_RX)) < 5 ){         
+        set_val(PS4_RY,0);                                                 
+        set_val(PS4_RX,0); } 
+        
+//VALORE DEL TRIGGER SPARO IMPOSTATO A 100
+
+if (get_val(FIRE)){set_val(FIRE,100);}        
+
+//ANTIRECOIL VERTIALE
+{
+    loops = (Total_Anti_Recoil_Time / 100) * (Progression_Point_Percent / 10);
+    loops_2 = (Total_Anti_Recoil_Time / 10) - loops;
+    if(Starting_Anti_Recoil_Value < Mid_Point_Anti_Recoil_Value)
+        inc = 1;
+    else
+        inc = -1;
+    if(Mid_Point_Anti_Recoil_Value < Ending_Anti_Recoil_Value)
+        inc_2 = 1;
+    else
+        inc_2 = -1;
+    pr = abs(Starting_Anti_Recoil_Value - Mid_Point_Anti_Recoil_Value);
+    pr_2 = abs(Mid_Point_Anti_Recoil_Value - Ending_Anti_Recoil_Value);
+    vm = loops / pr;
+    vm_2 = loops_2 / pr_2;
+}
+//DEVICE MONITOR
+    set_val(30,vm_count);
+    set_val(31,p);
+    set_val(32,ar_y);
+
+//VERTICALE 
+    if(!get_lval(FIRE)) {
+        p = 0;
+        vm_count = 0;
+        p_count = 0;
+        ar_y = Starting_Anti_Recoil_Value;
+    }
+ 
+//VERTICALE
+    if(get_val(FIRE)&& get_val(SCOPE)) {
+        p = p_cycle();
+        if(p != -1)
+            ar_y = p_val();
+        else
+            ar_y = Ending_Anti_Recoil_Value;
+         set_val(10,y_val());
+    }    
+//ANTIRECOIL ORIZZONTALE
+    //--adding or subtracting
+    if(antirecoil_H_start < antirecoil_H_end)
+        i_val_h = 1;
+    else
+        i_val_h = -1;
+    //--iteration point for progression 
+    i_pnt_h = (antirecoil_H_time / 10) / (abs(antirecoil_H_start - antirecoil_H_end));
+//DEVICE MONITOR
+    set_val(TRACE_4,i_cnt_h / 100);
+    set_val(TRACE_5,i_num_h)
+    set_val(TRACE_6,ar_x);
+ 
+//ORIZZONTALE
+    if(!get_lval(FIRE)) 
+    {
+       ar_x = antirecoil_H_start;
+       i_cnt_h = 0;
+       i_num_h = 0;
+    }            	
+   if(get_val(FIRE)&& get_val(SCOPE)) {
+
+//ORIZZONTALE
+        if(!p_complete_x())
+            ar_x = p_val_x();
+        else
+            ar_x = antirecoil_H_end;
+ 
+        if(x_val() > 100)
+        {
+            set_val(PS4_RX, 100);
+        }
+        else //--set RX to anti recoil value
+            set_val(PS4_RX,x_val());
+    }             
+if(loot)
+	{
+if (event_press(Switch_Weapon)&& get_ptime(Switch_Weapon) < 250){
+        weapon = !weapon;}
+ {
+        if(!weapon){
+            Starting_Anti_Recoil_Value  = P_Starting_Anti_Recoil_Value;
+            Mid_Point_Anti_Recoil_Value = P_Mid_Point_Anti_Recoil_Value
+            Ending_Anti_Recoil_Value    = P_Ending_Anti_Recoil_Value;  
+            Total_Anti_Recoil_Time      = P_Total_Anti_Recoil_Time;
+            Progression_Point_Percent   = P_Progression_Point_Percent;
+            
+            antirecoil_H_start = antirecoil_HP_start
+    		antirecoil_H_end = antirecoil_HP_end
+    		antirecoil_H_time = antirecoil_HP_time;
+        }else{
+            Starting_Anti_Recoil_Value  = S_Starting_Anti_Recoil_Value;
+            Mid_Point_Anti_Recoil_Value = S_Mid_Point_Anti_Recoil_Value
+            Ending_Anti_Recoil_Value    = S_Ending_Anti_Recoil_Value;   
+            Total_Anti_Recoil_Time      = S_Total_Anti_Recoil_Time;
+            Progression_Point_Percent   = S_Progression_Point_Percent;
+        	
+        	antirecoil_H_start = antirecoil_HS_start
+    		antirecoil_H_end = antirecoil_HS_end
+    		antirecoil_H_time = antirecoil_HS_time;
+        } }
+ }
+   if (get_val(SCOPE)&& get_val(XB1_Y))
+   		set_val(XB1_Y,0)
+ 
+//RAPID FIRE
+                if (get_val(SCOPE) && event_press(PS4_UP) && weapon )rapidfire = !rapidfire;
+                if ((rapidfire) && get_val(FIRE)&& weapon)
+                        combo_run(RAPIDFIRE);
+                     else  
+                        combo_stop(RAPIDFIRE);
+ 
+
+//COLORI LED IN BASE A COSA ATTIVO E DISATTIVO
+				
+				if(!weapon) colourled(Green);
+            	else colourled(Red);            	
+               
+                if (rapidfire && weapon ) {combo_run(lampeggio);
+                colore = Pink;}
+                if (peekshot_on && !weapon ) colourled(White);
+                if (peekshot_on && weapon ) {combo_run(lampeggio);
+                colore = White;}
+                if (autolean_on && !weapon ) colourled(Blue);
+                if (autolean_on && weapon ) {combo_run(lampeggio);
+                colore = Blue;}           
+}        
+
+//==============================================================*/	
+//                   FUNZIONI
+//==============================================================*/
+
+
+//FUNZIONE ANTIRECOIL VERTICALE 
+function p_val() {
+    p_count++;
+    if(p_count == vm[p]) {
+        p_count = 0;
+        ar_y += inc[p];
+    }
+    return ar_y;
+} 
+
+function p_cycle() { 
+    vm_count++;
+    if (vm_count > loops[p]) { 
+        if(!p) {
+            vm_count = 0;
+            return 1;
+        }
+        else{
+            vm_count = loops_2; 
+            return -1;
+         } 
+     }
+     return p;
+}   
+
+function y_val() {
+    v = get_val(10);
+    if(abs(v) < 10)
+        v = 0;
+    if(abs(v) > ar_y + 10)
+        return v;
+    return v + ar_y;           
+}
+
+//FUNZIONE ANTIRECOIL ORIZZONTALE
+function p_complete_x() { 
+    i_cnt_h++;
+    if (i_cnt_h > antirecoil_H_time / 2) {
+        //--avoid stack overflow
+        i_cnt_h = antirecoil_H_time / 2;
+        //--progression complete
+        return 1;
+    }
+    //--progression not complete
+    return 0;
+}        
+function p_val_x() {
+    i_num_h++;
+    if(i_num_h == i_pnt_h) {
+        //--reset counter
+        i_num_h = 0;
+        //--adjust ar_x 
+        ar_x += i_val_h;
+    }
+    return ar_x;
+} 
+function x_val() {
+    v_x = get_val(PS4_RX);
+    if(abs(v_x) < 10)
+        v_x = 0;
+    if(abs(v_x) > abs(ar_x + 5))
+        return v_x;
+    return v_x + ar_x;           
+}   
+
+
+//==============================================================*/	
+//                   COMBO
+//==============================================================*/
+
+ combo lampeggio {
+             colourled(colore)
+             wait(500)
+             colourled(Off)
+             wait(500)
+             reset_leds();
+             }
+combo PEEKSHOT {
+	set_val(XB1_LS,100);
+	wait(50);
+	wait(50);
+	wait(200);
+	set_val(XB1_RS,100);
+	wait(50);
+	wait(50);
+	wait(200);
+}        
+        
+combo AUTO_LEAN_RIGHT {
+            set_val(XB1_RS, 100); //pressione stick Destro XB1_RS
+            wait(200);
+            }
+ 
+ 
+combo AUTO_LEAN_LEFT {
+            set_val(XB1_LS, 100); //pressione stick Destro XB1_RS
+            wait(200);
+            }
+    
+combo RAPIDFIRE {
+            wait(RF_SPEED);
+            set_val(FIRE,0);
+            wait(RF_SPEED);
+            }
+ 
+// COLOR LED function
+//--------------------------------------------------------------
+function colourled(Colour) {
+    Col_ind=(Colour*4)- 3;
+    set_led(LED_1,dbyte(Col_ind  ));
+    set_led(LED_2,dbyte(Col_ind+ 1));
+    set_led(LED_3,dbyte(Col_ind+ 2));
+    set_led(LED_4,dbyte(Col_ind+ 3));
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E N D | | | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

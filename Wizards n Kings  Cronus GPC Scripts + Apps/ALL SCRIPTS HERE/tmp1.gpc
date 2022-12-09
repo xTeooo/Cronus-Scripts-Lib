@@ -1,0 +1,399 @@
+// GPC Online Library
+// fort.gpc
+
+// GPC Online Library
+// fortnite-aimbot.gpc
+
+// GPC Online Library
+// fortnite_aim_with_polar_(zen_+_max)_[rapidfire,_dropshot,_perfect_accuracy].gpc
+
+                                                                                                                                                             /*
+  _                   _  _     _____  _                    _      
+ | |                 (_)| |   / ____|| |                  | |     
+ | |      ___   __ _  _ | |_ | |     | |  ___   _   _   __| | ____
+ | |     / _ \ / _` || || __|| |     | | / _ \ | | | | / _` ||_  /
+ | |____|  __/| (_| || || |_ | |____ | || (_) || |_| || (_| | / / 
+ |______|\___| \__, ||_| \__| \_____||_| \___/  \__,_| \__,_|/___|  For the aim assist code
+                __/ |                                             
+               |___/                                              
+  __  __             _      _                   _       _   __      
+ |  \/  |           | |    | |                 | |     (_) / _|     
+ | \  / |  ___    __| |  __| |  ___  _ __  ___ | |      _ | |_  ___ 
+ | |\/| | / _ \  / _` | / _` | / _ \| '__|/ __|| |     | ||  _|/ _ \
+ | |  | || (_) || (_| || (_| ||  __/| |   \__ \| |____ | || | |  __/
+ |_|  |_| \___/  \__,_| \__,_| \___||_|   |___/|______||_||_|  \___|  For Amazing aim assist tracking on linear/exponential
+                                                                                                                                        
+  _____  _          _____                      _    
+ |_   _|| |        / ____|                    | |   
+   | |  | |_  ____| (___   _ __    __ _   ___ | | __
+   | |  | __||_  / \___ \ | '_ \  / _` | / __|| |/ /
+  _| |_ | |_  / /  ____) || | | || (_| || (__ |   < 
+ |_____| \__|/___||_____/ |_| |_| \__,_| \___||_|\_\  For Dropshot and a few other codes 
+                                                                                                        
+   _____  _____  _   _  _  _           _         _ 
+  / ____|/ ____|| \ | |(_)| |         | |       (_)
+ | (___ | (___  |  \| | _ | | __ ___  | |  __ _  _ 
+  \___ \ \___ \ | . ` || || |/ // _ \ | | / _` || |
+  ____) |____) || |\  || ||   <| (_) || || (_| || |
+ |_____/|_____/ |_| \_||_||_|\_\\___/ |_| \__,_||_|  For putting all this together
+            ______                                 
+           |______|                                
+                                                                                                                                                             */
+//Controls
+define VIEW       = PS4_SHARE;
+define MENU       = PS4_OPTIONS;
+define RX         = PS4_RX;
+define RY         = PS4_RY;
+define LX         = PS4_LX;
+define LY         = PS4_LY;
+define UP         = PS4_UP;
+define DOWN       = PS4_DOWN;
+define LEFT_DPAD  = PS4_LEFT;
+define RIGHT_DPAD = PS4_RIGHT;
+define CONFIRM    = PS4_LEFT;
+define SELECT     = PS4_R2;
+define RESET      = PS4_R1;
+define PICKAXE    = PS4_TRIANGLE;
+define BUILD      = PS4_CIRCLE;
+define INVENT     = PS4_UP;
+define CROUCH     = PS4_R3;
+define ADS        = PS4_L2;
+define FIRE       = PS4_R2;
+define PREV       = PS4_L1;
+define NEXT       = PS4_R1;
+define RELOAD     = PS4_SQUARE;
+define JUMP       = PS4_CROSS;
+define SPRINT     = PS4_L3;
+define TOUCH      = PS4_TOUCH;
+
+//Rapid Fire (L2 + LEFT)
+int Rapid_Fire = FALSE;
+
+//Dropshot (L2 + RIGHT)
+int DropShot = FALSE; 
+int DropShotSpeed = 30; 
+
+//PUMP SMG - L2 + DOWN
+int PUMP_SMG = FALSE;
+
+//100% Perfect Accuracy [ALWAYS ON] (L2 + R1)
+int PerfectAccuracy = TRUE;
+
+//Anti Recoil (Leave Alone)
+define AR_Release = 36;    // change this value to set when antirecoil stops working (min: antirecoil value + 10) 
+define Scope_only = TRUE;  // if TRUE Antirecoil IS ON only when scoping - if FALSE, is always ON 
+int antirecoil    = TRUE
+define ANTI_RECOIL   = 6; 
+define ANTI_RECOIL_H = 2; 
+
+//Aim Assist (Leave Alone)
+define STEP_INTERVAL = 1;
+define STEPS = 20;
+int bUseAimAssist = TRUE;
+int aaboost	= 2;        
+int right_stick_deadzone = 9;  
+int fub = 3;        
+int fob = 3;           
+int leftDboost = 5;    
+int rightDboost = 5;   
+int ADS_ASSIST = TRUE;
+int FIRE_ASSIST = TRUE;
+int DRIFT_ASSIST = TRUE;
+
+//Aim Assist #2 (Leave Alone)
+int TRACKER       = TRUE;                
+int AUTO_AIM      = TRUE;                
+define AiM_M      = 270;          
+define AiM_A      =  18;
+define VIB_A      = 200;                
+define VIB_B      = 250;
+define N_DiV      =  19;  
+
+//Leave Alone
+define Blue          =  1;                 
+define Red           =  2;                 
+define Green         =  3;                 
+define Pink          =  4;                 
+define SkyBlue       =  5;                 
+define Black         =  6;                 
+define White         =  7;                 
+
+data( 1,                 
+  2,0,0,0 , //1. Blue                  
+  0,2,0,0 , //2. Red                   
+  0,0,2,0 , //3. Green                 
+  0,0,0,2 , //4. Pink                  
+  2,0,2,0 , //5. SkyBlue               
+  0,0,0,0 , //6. Black                
+  2,2,2,2   //7. White                  
+) //End of data segment
+
+//Variables (Leave Alone)
+int tap; 
+int R2_block;
+int anti_recoil, anti_recoil_H;       
+int interval_t, angle;
+int x_stick, y_stick, cos_angle, sin_angle;
+init {
+combo_run(BLINK);
+combo_run(BLIINK);
+combo_run(BLIIINK)}
+const char Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main {
+	block_rumble();
+	 if(bUseAimAssist) {
+	  	interval_t += get_rtime();
+  		if(!(interval_t % STEP_INTERVAL)) {
+    		angle = (angle+STEPS) % 360; 
+  		}
+    			if(ADS_ASSIST){
+					if(isqrt(abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY))) <= right_stick_deadzone + 5) {
+						if(get_val(PS4_L2) > 90 && !get_val(PS4_R2)){
+							Shake();	
+						}
+					}
+				}
+				if(DRIFT_ASSIST){
+					if(isqrt(abs(get_val(PS4_RX)) * abs(get_val(PS4_RX))) >= right_stick_deadzone + 5) {
+						if(get_val(PS4_L2) > 90 && !get_val(PS4_R2)){
+							combo_run(leftDrift);	
+						}
+					}
+					if(isqrt(abs(get_val(PS4_RX)) * abs(get_val(PS4_RX))) >= right_stick_deadzone + 5) {
+						if(get_val(PS4_L2) > 90 && !get_val(PS4_R2)){
+							combo_run(rightDrift);	
+						}
+					}
+				}
+				if(FIRE_ASSIST){
+					if(get_val(PS4_R2)){
+						if(isqrt(abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY))) <= right_stick_deadzone + 5) {
+    						combo_run(fire_under);
+    					}
+    					if(isqrt(abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY))) >= right_stick_deadzone + 5) {
+    						combo_run(fire_over);
+    					}
+					}
+				}
+			}
+     if(antirecoil){                               
+            if( get_val(PS4_L2) && get_val(PS4_R2 )) {      
+                combo_run(AntiRecoil);                 
+            }                                          
+            if( abs(get_val(PS4_RY)) > AR_Release || abs(get_val(PS4_RX)) > AR_Release) { 
+                combo_stop (AntiRecoil);               
+        }
+     }
+if (get_val(PS4_L2)) {
+if (event_press(PS4_DOWN)) {
+combo_run (vibrate);
+combo_run (BLINK);
+PUMP_SMG = !PUMP_SMG;
+tap = FALSE;}
+set_val(PS4_L3, 0);}
+if (PUMP_SMG) {
+if (R2_block) {
+set_val(PS4_L2, 0);
+set_val(PS4_R2, 0);}
+if (get_val(PS4_L2) && event_press(PS4_R2)) {
+if (!tap) { 
+tap = TRUE;
+combo_run(Double_Tact_R1);
+set_val(PS4_R2, 0);}
+}
+if (event_press(PS4_L2)) {
+tap = FALSE;}
+}
+if(get_val(PS4_L2) && event_press(PS4_LEFT)) {
+combo_run (vibrate);
+combo_restart(BLIINK);
+Rapid_Fire=!Rapid_Fire;}
+if (Rapid_Fire) {
+if(get_val(PS4_R2)) {
+combo_run (Rapiid_Fire);}
+}
+if(get_val(PS4_L2) && event_press(PS4_RIGHT)) {
+combo_run (vibrate);
+combo_restart(BLIIINK);
+DropShot=!DropShot;}
+if (DropShot) {
+if(get_val(PS4_R2)) {
+combo_run (DroppShott);}
+}
+if(TRACKER) {
+	if(get_val(PS4_L2)){   
+   	combo_run(TRACKER);}  
+    if(get_val(PS4_RX)<-38  
+     ||get_val(PS4_RX)> 37){  
+    combo_stop(TRACKER);}}
+if (get_val(PS4_L2) && get_val(PS4_R1)) {
+PerfectAccuracy = !PerfectAccuracy;
+combo_run(PerfectionAccuracy);
+set_val(PS4_R1, 0);
+} else {
+combo_stop(PerfectionAccuracy);
+}				                          
+if(AUTO_AIM) {			 
+   	if(get_val(PS4_L2)>90){   
+   	combo_run(ALOCK);}		  
+   	if(event_release(PS4_L2)){
+   	combo_stop(ALOCK);}}
+if(abs(get_val(PS4_LY)) < 9 && abs(get_val(PS4_LX)) < 9 ){        
+set_val(PS4_LY,0);                                                
+set_val(PS4_LX,0); }                                               
+if(abs(get_val(PS4_RY)) < 9 && abs(get_val(PS4_RX)) < 9 ){         
+set_val(PS4_RY,0);                                                 
+set_val(PS4_RX,0); }
+    }
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+combo AntiRecoil {  
+anti_recoil = get_val(PS4_RY) + ANTI_RECOIL;      
+if(anti_recoil > 100) anti_recoil = 100;      
+offset(PS4_RY, anti_recoil);
+anti_recoil_H = get_val(PS4_RX) + ANTI_RECOIL_H;   
+if(anti_recoil_H > 100) anti_recoil_H = 100;  
+offset(PS4_RX, anti_recoil_H);
+}
+combo vibrate {     
+set_rumble(RUMBLE_A, 85);      
+wait(225);                         
+reset_rumble();                    
+}
+combo leftDrift {
+offset(PS4_RX,right_stick_deadzone + leftDboost);
+wait(30);
+offset(PS4_RX,(right_stick_deadzone + leftDboost) * -1);
+wait(30);
+}  
+combo BLINK {                                       
+if(PUMP_SMG) LED_CM (Green); 
+else  LED_CM (Red);
+wait(1000);
+LED_CM (Black)
+}
+combo BLIINK {                                       
+if(Rapid_Fire) LED_CM (Green); 
+else  LED_CM (Red);
+wait(1000);
+LED_CM (Black)
+}
+combo BLIIINK {                                       
+if(DropShot) LED_CM (Green); 
+else  LED_CM (Red);
+wait(1000);
+LED_CM (Black)
+}
+combo TRACKER {		 	
+set_val(PS4_RY, N_DiV);
+wait(10);   
+set_val(PS4_RY, -18);  
+wait(10);   
+set_val(PS4_RX, 18);   
+wait(10); 
+set_val(PS4_RX, -18); 
+wait(10); 
+set_val(PS4_RY, 18); 
+wait(10);
+set_val(PS4_RY, -18); 
+wait(10); 
+set_val(PS4_RX, 18); 
+wait(10); 
+set_val(PS4_RX, -18); 
+wait(10);
+} 
+combo ALOCK {         
+set_val(PS4_L2, 100);
+wait(AiM_M);         
+set_val(PS4_L2, 0);    
+wait(AiM_A);
+}
+combo rightDrift {
+offset(PS4_RX,right_stick_deadzone + rightDboost);
+wait(30);
+offset(PS4_RX,(right_stick_deadzone + rightDboost) * -1);
+wait(30);
+}
+combo fire_under {
+offset(PS4_RX,right_stick_deadzone + fub);
+wait(30);
+offset(PS4_RX,(right_stick_deadzone + fub) * -1);
+wait(30);
+}
+combo fire_over {
+offset(PS4_RX,right_stick_deadzone + fob);
+wait(40);
+offset(PS4_RX,(right_stick_deadzone + fob) * -1);
+wait(40);
+}                                    
+combo Double_Tact_R1 { 
+R2_block = TRUE;
+set_val(PS4_R2, 100);
+wait(10);
+wait(10);
+set_val(PS4_L2, 100);
+set_val(PS4_L3, 100);
+set_val(PS4_R1, 100);
+wait(15);
+R2_block = FALSE;
+} 
+combo Rapiid_Fire {
+set_val(PS4_R2, 100); 
+wait(35);
+set_val(PS4_R2, 0); 
+wait(25);
+}
+combo DroppShott {
+set_val(PS4_R3,100);
+wait(40);
+wait(DropShotSpeed);
+set_val(PS4_R3,100);
+}
+combo PerfectionAccuracy {
+set_val(PS4_R2,100);
+wait(100);
+wait(250);
+set_val(PS4_R2,100);
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+function LED_CM(Colour) {            
+    set_led(LED_1,dbyte(( Colour * 4)- 3     )); 
+    set_led(LED_2,dbyte(((Colour * 4)- 3) + 1)); 
+    set_led(LED_3,dbyte(((Colour * 4)- 3) + 2)); 
+    set_led(LED_4,dbyte(((Colour * 4)- 3) + 3)); 
+}
+function Set_polar(stick, angle, radius){
+  x_stick = 7 + stick; 
+  y_stick = 8 + stick;
+  if(angle < 0) angle = 360 + (angle % 360);
+  angle = (angle + 90) % 360;
+  radius = clamp(radius, 0, 100);
+  sin_angle = Polar_Array[angle];
+  cos_angle = Polar_Array[(angle + 90) % 360];
+  offset(x_stick, inv(radius * cos_angle / 100));
+  offset(y_stick, inv(radius * sin_angle / 100));
+  return;
+}
+function offset(int axis, int offset_val) {
+  set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+return 
+}
+
+function Shake() { 
+Set_polar(2, angle, right_stick_deadzone + aaboost);    
+} 
+function clamp(v, lo, hi) 
+{
+    if(v < lo) return lo;
+    if(v > hi) return hi;
+    return v;
+}
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | D | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/

@@ -1,0 +1,530 @@
+
+                                                                                                                                                                                                                                                                                             /*
+              %%%%    %%%%   %%    %%%%%     %%%%%%   %%%     %%%%%%    %%%      %%%                    
+               %%%%%   %%%%%  %%  %%%       %%         %%%   %%%    %%%  %%%%%%    %%                   
+                %%% %% %% %%   %%   %%%%%%%   %%%%%%%%   %%  %%%      %%% %%% %%%   %%                  
+                 %%  %%%%  %%  %%%        %%%        %%% %%%  %%%     %%%  %%    %%%%%%                 
+                  %%  %%%  %%%  %%% %%%%%%%%   %%%%%%%%   %%%   %%%%%%%%   %%%      %%%%                
+                  %%%       %%%  %%                                         %%%        %%               
+                 %%%  %%%  %%%  %%%  %%%%    %%%  %%%%    %%%  %%%%%%%%%%  %%%  %%%  %%%                
+                 %%  %%%% %%%  %%%  %%%%%   %%%  %%%%%%  %%% %%%      %%%  %%  %%%% %%%                 
+                %%%%%  %% %%  %%%  %%%  %% %%%  %%%  %%  %%  %%%      %%  %%%%%  %% %%                  
+               %%%%%   %%%%%  %%  %%%    %%%%%  %%    %%%%   %%%%%%%%%%  %%%%%   %%%%%                  
+________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+
+                     GBM#@.BB#@@@    #M   ###@@@  @@  ##  hM@#  #BB#@@@   ##;                           
+                    2@@@@@ B@#      ,@#@  @H@@@@  @@  @@ @@#M#@ X@@     @@B@@X                          
+                    B@G    @@G:Si   @@ #@   @@H  h@@  @@ @@  #@ #@#,iS  @@#                             
+                    @@@@@# @@@     B@5 B#   @@&  @@# ,#@ @@@@@  @@h      @@#@                           
+                    B@s    @##     @@@@#Ah  3@   @@@ @@@ @@ @@H @@9         @Hs                         
+                    @@s    BBB#@@ @@@  @@@  &@    @@@@@  @@  @@ MAMB@@# A@@@@@                          
+
+
+
+
+	Automatic detection of the weapon slot in the weapon selector that is used.
+	Automatic switching of modes depending on the selected slot.
+	Skip tonics animation.
+	Using tonics during dead eye.
+	Horse running clicker.
+	Clicker for pistols.
+	Clicker for repeaters.
+	Hip-fire mode with 100 percent accuracy (usualy use for sniper rifles, increases the rate of fire).
+	Rapid fire for Carcano using touchpad glitch.
+	Rapid fire for Carcano using touchpad glitch and horse.
+	Rapid fire for bow.
+	The script itself determines when you are in the pause menu or inventor menu and don't use hip-fire for sniper rifles and A - Button clicker.
+	Automatic return to previous settings after exiting the menu.
+	User interaction via the lightbar of cronus when changing sniper rifle and auto headshot modes.
+	Auto headshot for long range.
+	Auto headshot for middle range.
+	Automatic activation of dead eye during auto headshot if not used by user.
+	Option to not use auto headshot without switches.
+	Slots are configured using code.
+	Low battery notification.
+	Improved aim assist for sniper rifles.
+	Enable / disable improved aim assist for sniper rifles.
+	User interaction via vibration.
+	Hair trigger.
+	Quickly put on a hat from a legendary costume.
+__________________________________________________________________________________________________________________________________________________________________________
+	
+	 // Hold LT, A & Press UP        -> AUTO DEADEYE
+	 
+______________________________________________________________________________________________________________________________________________________________________________
+
+	 //-------------------------------> ADVANCED AUTO HEADSHOT
+    
+    // Hold LT & Press RIGHT        -> ON/ LOW HEIGHT MODE
+    // Hold LT & Press RIGHT again  -> MEDIUM HEIGHT MODE
+    // Hold LT & Hold RIGHT         -> OFF
+    // for 0,5s
+    
+    // If MEDIUM HEIGHT MODE is selected, holding LT & pressing RIGHT will select LOW HEIGHT MODE.
+    // And vice versa.
+
+________________________________________________________________________________________________________________________________________________________________________________________________________________
+
+
+
+
+
+
+
+
+              %%%%    %%%%   %%    %%%%%     %%%%%%   %%%     %%%%%%    %%%      %%%                    
+               %%%%%   %%%%%  %%  %%%       %%         %%%   %%%    %%%  %%%%%%    %%                   
+                %%% %% %% %%   %%   %%%%%%%   %%%%%%%%   %%  %%%      %%% %%% %%%   %%                  
+                 %%  %%%%  %%  %%%        %%%        %%% %%%  %%%     %%%  %%    %%%%%%                 
+                  %%  %%%  %%%  %%% %%%%%%%%   %%%%%%%%   %%%   %%%%%%%%   %%%      %%%%                
+                  %%%       %%%  %%                                         %%%        %%               
+                 %%%  %%%  %%%  %%%  %%%%    %%%  %%%%    %%%  %%%%%%%%%%  %%%  %%%  %%%                
+                 %%  %%%% %%%  %%%  %%%%%   %%%  %%%%%%  %%% %%%      %%%  %%  %%%% %%%                 
+                %%%%%  %% %%  %%%  %%%  %% %%%  %%%  %%  %%  %%%      %%  %%%%%  %% %%                  
+               %%%%%   %%%%%  %%  %%%    %%%%%  %%    %%%%   %%%%%%%%%%  %%%%%   %%%%%                  
+
+
+
+*/
+
+
+define Green   = 0;
+define White   = 1;
+define Red     = 2;
+define Off     = 3;
+define Yellow  = 4;
+define Pink    = 5;
+define SkyBlue = 6;
+
+// Auto HeadShot From Exat 
+define autoheadshot_button = XB1_LT;
+define autodeadeye_button = XB1_LT;
+
+//Default Toggles
+int autoheadshot_onoff = FALSE;
+int autodeadeye_onoff = FALSE;
+
+// HeadShot Variables
+int headshot_mode;
+int medium_running;
+int low_running;
+int wait_time;
+
+
+int BATTERY;
+
+
+data(
+
+0,0,2,0, // Green
+2,2,2,2, // White
+0,2,0,0, // Red
+0,0,0,0, // Off
+0,2,2,0, // Yellow
+0,0,0,2, // Pink
+2,0,2,0  // SkyBlue
+
+);
+
+
+
+int REPEATER_OR_PISTOLS, SNIPER_RIFLE; 
+int AIM_ASSIST_ON;
+int MENU_SECTION_RUNNING;
+int AIM_ASSIST_RUNNING;
+int SELECTOR_RUNNING;
+int SELECTOR_SECTION;
+int PLACE_ON_MENU;
+int RX;
+int RY;
+int LB_PRESS;
+int SNIPER_MODE;
+int TONICS_RX;
+int TONICS_RY;
+int TONICS;
+int MAP_RUNNING;
+int TONICS_RUNNING;
+int VIBRATE_RUMBLE;
+
+
+// MAIN SECTION
+
+main 
+
+{
+
+
+
+/////////////////////////////////////////////////////////////////////   CHANGE_SETTINGS_OF_MODES
+
+
+    if(!MENU_SECTION_RUNNING&&!AIM_ASSIST_RUNNING&&get_lval(XB1_LB))
+    {
+    	SELECTOR_RUNNING=TRUE;
+    	if(event_press(XB1_RB)) SELECTOR_SECTION=!SELECTOR_SECTION;
+    	RX=get_lval(XB1_RX);
+    	RY=get_lval(XB1_RY);    
+    }
+    
+    
+    if(SELECTOR_RUNNING&&event_release(XB1_LB))
+    {
+    	SELECTOR_RUNNING=FALSE;
+    	if(!SELECTOR_SECTION)
+    	{
+    		if((RX*RX+RY*RY)>=150)
+    		{ 
+    			RY=-1*RY;   
+    			if(((100*RY)-(41*RX))>0)                                 {   REPEATER_OR_PISTOLS=TRUE;  SNIPER_RIFLE=FALSE; } 
+    			else
+    			{
+    				if((((100*RY)-(241*RX))>0)||(((100*RY)+(241*RX))>0)) {   REPEATER_OR_PISTOLS=FALSE; SNIPER_RIFLE=FALSE; }
+    				else                                                 {   REPEATER_OR_PISTOLS=FALSE; SNIPER_RIFLE=TRUE;  }
+    			}    
+    		}
+    	}
+    	SELECTOR_SECTION=FALSE;
+    	RX=0;
+    	RY=0;
+    }
+    
+    if(!TONICS_RUNNING&&get_lval(XB1_DOWN)&&get_ptime(XB1_DOWN)>300) MAP_RUNNING=TRUE; else MAP_RUNNING=FALSE;
+
+    if(!MAP_RUNNING&&get_lval(XB1_LB)&&!get_lval(XB1_LT))
+    {
+    	TONICS_RUNNING=TRUE;
+    	
+    	set_val(XB1_X,0);
+    	set_val(XB1_Y,0);
+    	set_val(XB1_B,0);
+    	set_val(XB1_A,0);
+    	
+    	if(get_lval(XB1_X))   { TONICS_RX = -100; TONICS_RY = -100; TONICS = 100; combo_run(TONICS); }  
+    	if(get_lval(XB1_Y))     { TONICS_RX = 0;    TONICS_RY = -100; TONICS = 100; combo_run(TONICS); }
+    	if(get_lval(XB1_B))  { TONICS_RX = 100;  TONICS_RY = -100; TONICS = 100; combo_run(TONICS); }
+    	if(get_lval(XB1_A))   { TONICS_RX = -100; TONICS_RY = 100;  TONICS = 0;   combo_run(TONICS); }
+    } 
+    else TONICS_RUNNING=FALSE;
+    
+    
+    if(get_battery()<=1) combo_run(LOW_BATTERY);
+    
+    if(!BATTERY)
+    {   
+    	if(MENU_SECTION_RUNNING)set_colour(Yellow);
+    	else
+    	if(!SNIPER_RIFLE&&!REPEATER_OR_PISTOLS) set_colour(Yellow);
+    	
+    	if(SNIPER_RIFLE)
+    	{
+    		if(!SNIPER_MODE)set_colour(White);
+    		else
+    		{
+    			if(test_bit(SNIPER_MODE,0))set_colour(Green);
+    			else set_colour(Red);
+    		}
+    	}
+    	
+    	if(REPEATER_OR_PISTOLS)
+    	{
+    		if(!headshot_mode)set_colour(Yellow);
+    		else
+    		{
+    			if(test_bit(headshot_mode,0))set_colour(SkyBlue);
+    			else set_colour(Pink);
+    		}
+    	}
+    }
+    
+    deadzone(XB1_LT,XB1_RT,99,99);
+     
+/////////////////////////////////////////////////////////////////////   CHANGE_SETTINGS_OF_MODES
+
+
+
+/////////////////////////////////////////////////////////////////////   MENU_SECTION
+    
+    if(MENU_SECTION_RUNNING)
+    {
+    	if(event_press(XB1_A)) PLACE_ON_MENU = PLACE_ON_MENU + 1;  
+    	if(event_press(XB1_B))PLACE_ON_MENU = PLACE_ON_MENU - 1; 
+    	if((PLACE_ON_MENU<0)||(get_lval(XB1_B)&&get_ptime(XB1_B)>800)){ SNIPER_RIFLE=TRUE; PLACE_ON_MENU=0; MENU_SECTION_RUNNING=FALSE;  } 
+    }
+    else
+    if(get_lval(XB1_A)&&get_ptime(XB1_A)>2000)combo_run(RUN_HORSE); 
+    
+/////////////////////////////////////////////////////////////////////   MENU_SECTION
+
+
+
+/////////////////////////////////////////////////////////////////////   SNIPER
+    if(SNIPER_RIFLE&&!SELECTOR_RUNNING)
+    {
+    	if(get_lval(XB1_LT))
+    	{
+    		set_val(XB1_LB,0);
+    		AIM_ASSIST_RUNNING=TRUE;
+    		
+    		if(event_release(XB1_RIGHT)) SNIPER_MODE = SNIPER_MODE + 1;
+    		if(get_lval(XB1_RIGHT)&&get_ptime(XB1_RIGHT)>500) SNIPER_MODE = 0;
+    		
+    		if(!LB_PRESS&&get_lval(XB1_LB)){ LB_PRESS=TRUE; AIM_ASSIST_ON=!AIM_ASSIST_ON; vibrate(AIM_ASSIST_ON); } 
+    		
+    		if(AIM_ASSIST_ON)combo_run(AIM_ASSIST);
+    		
+    		if(SNIPER_MODE)
+    		{
+    			if(test_bit(SNIPER_MODE,0)&&get_lval(XB1_RT))                        { combo_run(RAPID_CARCANO); }
+    			if(!test_bit(SNIPER_MODE,0)&&get_lval(XB1_RT)&&get_ptime(XB1_RT)>350){ set_val(XB1_RT,0); combo_run(HORSE_RAPID_CARCANO); }
+    		}
+    	}
+    	
+    	if(event_release(XB1_LT))AIM_ASSIST_RUNNING=FALSE;
+    	
+    	if(SNIPER_MODE)
+    	{
+    		if(!SELECTOR_RUNNING)
+    		{
+    			if(test_bit(SNIPER_MODE,0)||!get_lval(XB1_LT))set_val(XB1_RT,0);
+    			if(!get_lval(XB1_LT)&&get_lval(XB1_RT)) combo_run(HIP_FIRE); 
+    		}
+    		
+    		if((get_lval(XB1_LEFT)&&get_ptime(XB1_LEFT)>800)||(get_lval(XB1_RIGHT)&&get_ptime(XB1_RIGHT)>800)||event_press(XB1_MENU))
+    		{
+    			MENU_SECTION_RUNNING=TRUE; 
+    			SNIPER_RIFLE=FALSE;
+    		}
+    	}
+    }
+    
+    
+    if(LB_PRESS&&!get_lval(XB1_LB)) LB_PRESS=FALSE;
+/////////////////////////////////////////////////////////////////////   SNIPER
+
+
+
+						//Added by SENDIT#1320
+////////////////////////////////////////////////////////////////////   AUTO_HEADSHOT
+    //ON/OFF ADVANCED AUTO HEADSHOT
+    if((get_lval(autoheadshot_button)) && !(get_val(XB1_LB))) {
+    		if(event_release(XB1_RIGHT))
+            headshot_mode = headshot_mode + 1;
+    		if(get_lval(XB1_RIGHT) && get_ptime(XB1_RIGHT)>500)
+            headshot_mode = 0;
+    		autoheadshot_onoff=TRUE;
+    		set_val(XB1_LB, 0);
+
+    //ADVANCED AUTO HEADSHOT
+        if(headshot_mode && !low_running && !medium_running)
+    		{
+            if(!low_running && test_bit(headshot_mode,0))   {
+            wait_time=250; combo_run(low_height);   } 
+            if(!medium_running && !test_bit(headshot_mode,0)){
+            wait_time=250; combo_run(medium_height); }
+    		}
+    	}
+    	if(event_release(XB1_LT)) { 
+        combo_stop(low_height);
+        combo_stop(plus_height);
+        combo_stop(medium_height);
+        low_running=FALSE;
+        medium_running=FALSE;
+        autoheadshot_onoff=FALSE;
+        }
+        
+        
+        
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF AUTO DEADEYE
+    if((get_val(autodeadeye_button)) && !(get_val(XB1_LB))) {
+        if((event_press(XB1_UP)) && (get_val(XB1_A))){
+        autodeadeye_onoff = !autodeadeye_onoff; //toggle ON/OFF
+        }
+
+    //AUTO DEADEYE
+    if(autodeadeye_onoff) {
+        if(((get_val(autodeadeye_button)) && (get_ptime(XB1_LT)) < 120) && !(get_val(XB1_LB))) {
+        combo_run(autodeadeye);}
+    } else if(combo_running(autodeadeye))
+        combo_stop(autodeadeye);
+    }
+
+
+
+
+/////////////////////////////////////////////////////////////////////   HORSE SPLINT AUTO
+    if((get_val(XB1_DOWN)) && (event_press(XB1_LB))) {
+        if((get_val(TRACE_2)) == 0) {
+            set_val(TRACE_2, 1);
+        } else {
+            set_val(TRACE_2, 0);
+        }
+    }
+    if((get_val(XB1_LY)) < -95 && (get_val(TRACE_2)) == 1) {
+        combo_run(Turbo_3);
+        combo_run(Turbo_4);
+    }
+    }
+/////////////////////////////////////////////////////////////////////   FINAL
+
+
+combo LOW_BATTERY{
+BATTERY=TRUE;
+set_colour(Off);
+wait(500);
+BATTERY=FALSE;
+wait(1500);
+}
+
+combo autodeadeye {
+    wait(120);
+    set_val(XB1_RS, 100);
+    wait(80);
+}
+
+combo low_height
+{
+	wait(wait_time);
+	set_val(XB1_RY, -100);
+	set_val(XB1_RX, -30);
+	wait(140);
+	low_running=TRUE;
+}
+
+combo plus_height
+{
+	set_val(XB1_RY, -100);
+	set_val(XB1_RX, -15);
+	wait(40); 
+	medium_running=TRUE;
+}
+
+combo medium_height
+{
+	call(low_height);
+	call(plus_height);
+}
+
+combo RUN_HORSE
+{
+	set_val(XB1_A,0);
+	wait(50);
+	wait(100);
+}
+
+combo HORSE_RAPID_CARCANO
+{
+	set_val(XB1_RT,100);
+	set_val(XB1_VIEW,100);
+	wait(50);
+	wait(100);
+}
+
+combo HIP_FIRE
+{
+	set_val(XB1_LT,100);
+	wait(20);
+	set_val(XB1_LT,100);
+	set_val(XB1_RT,100);
+	wait(40);
+	wait(400);
+	set_val(XB1_LT,100);
+	wait(70);
+	wait(100);
+}
+
+combo TONICS
+{
+	set_val(XB1_LB,100);
+	set_val(XB1_RB,100);
+	wait(60); 
+	set_val(XB1_RX, TONICS_RX);
+	set_val(XB1_RY, TONICS_RY);
+	set_val(XB1_X,TONICS);
+	wait(80); 
+	wait(100);
+}
+
+combo RAPID_CARCANO
+{                        
+	set_val(XB1_RT,100);
+	wait(50); 
+	set_val(XB1_VIEW, 100);
+	wait(50);
+	wait(200); 
+	set_val(XB1_VIEW , 100);
+	wait(50);
+	wait(150); 
+	set_val(XB1_VIEW , 100);
+	wait(50); 
+	wait(30); 
+}
+
+combo AIM_ASSIST
+{
+	set_val(XB1_RX, XY(XB1_RX, 20)); 
+	wait(40); 
+	wait(40);
+	set_val(XB1_RX, XY(XB1_RX, -20)); 
+	wait(40);
+	wait(40);
+	set_val(XB1_RY, XY(XB1_RY, 20)); 
+	wait(40); 
+	wait(40);
+	set_val(XB1_RY, XY(XB1_RY, -20)); 
+	wait(40); 
+	wait(40);
+}
+
+combo vibrate
+{
+	set_rumble(VIBRATE_RUMBLE,100);
+	wait(200);
+	reset_rumble();
+}
+
+function XY(BUTTON, VALUE)
+{
+	if(abs(get_lval(BUTTON))<25)
+	return VALUE;
+	return get_lval(BUTTON);
+}
+
+combo Turbo_3 {
+    set_val(XB1_LS, 100);
+    wait(40);
+    set_val(XB1_LS, 0);
+    wait(40);
+    set_val(XB1_LS, 0);
+}
+
+combo Turbo_4 {
+    set_val(XB1_A, 100);
+    wait(40);
+    set_val(XB1_A, 0);
+    wait(40);
+    set_val(XB1_A, 0);
+}
+
+function set_colour(colour) 
+{
+	set_led(LED_1, duint8(colour * 4));
+	set_led(LED_2, duint8((colour * 4) + 1));
+	set_led(LED_3, duint8((colour * 4) + 2));
+	set_led(LED_4, duint8((colour * 4) + 3)); 
+}
+
+function vibrate(BOOL)
+{
+	if(BOOL) VIBRATE_RUMBLE = RUMBLE_A; 
+	if(!BOOL)VIBRATE_RUMBLE = RUMBLE_B;
+	combo_run(vibrate);
+} ú»ˆ±ˆ¼Œ¹‰ÊùÎùÉø¾

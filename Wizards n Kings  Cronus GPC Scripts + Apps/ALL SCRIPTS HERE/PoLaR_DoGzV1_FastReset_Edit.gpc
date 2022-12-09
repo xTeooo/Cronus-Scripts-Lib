@@ -1,0 +1,108 @@
+/*
+	       8888888b.            .d8888b.       88888888888 888               8888888888 d8b  .d8888b.  888  88888888888       8888888b.         
+           888  "Y88b          d88P  Y88b          888     888               888        Y8P d88P  Y88b 888      888           888   Y88b         
+           888    888          888    888          888     888               888            888    888 888      888           888    888        
+           888    888  .d88b.  888        88888888 888     88888b.   .d88b.  8888888    888 888        88888b.  888   .d88b.  888   d88P         
+           888    888 d88""88b 888  88888    d88P  888     888 "88b d8P  Y8b 888        888 888  88888 888 "88b 888  d8P  Y8b 8888888P"             
+           888    888 888  888 888    888   d88P   888     888  888 88888888 888        888 888    888 888  888 888  88888888 888 T88b                
+           888  .d88P Y88..88P Y88b  d88P  d88P    888     888  888 Y8b.     888        888 Y88b  d88P 888  888 888  Y8b.     888  T88b         
+           8888888P"   "Y88P"   "Y8888P88 88888888 888     888  888  "Y8888  888        888  "Y8888P88 888  888 888   "Y8888  888   T88b
+*/
+		define PXS     =     90;  				    	
+    	define PXSE    =    270;				    
+    	define PVSI    =     20;    				
+   	 	define PVS     =     20;
+   	 	define PYS     =   -200;				
+    	define PYSE    =    200;		    	
+   	    int    PPFX    =    PXS;
+    	int    PPFY    =    PYS;				  	  
+ 		int    PVID;
+    	int    PFD     =      1;		    
+   	    int    PPFD    =      1;
+		int    RX;
+		int    RY;
+        int Edit1,Edit2,EditT,Shunt
+       
+       
+        int InstaFastReset  =  TRUE;
+
+        define FastReset     = XB1_RS;
+
+        define Reset  = XB1_RS;
+
+        define Confirm  = XB1_LS;
+
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ | | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+
+	main{
+		
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+// Dynamic Aim Assist (Progression Polar Flow)																														║
+//══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╣
+
+			RX = PS4_RX;
+			RY = PS4_RY;
+			RX =   PPFX;
+			RY =   PPFY;
+    	if(get_val(PS4_L2) > 80){
+    	if(abs(get_val(XB1_RX) < 30)) 
+    	if(abs(get_val(XB1_RY) < 20)) 
+    	if(abs(get_val(XB1_RX) > -30)) 
+    	if(abs(get_val(XB1_RY) > -20)){
+   			PPFX = PolarFlow(PPFX,PXS,PXSE,PVSI,PFD,1);
+        	PPFY = PolarFlow(PPFY,PYS,PYSE,PVS,PPFD,2);
+       	    set_polar(POLAR_RS,30,PPFX);
+    		set_polar(POLAR_RS,30,PPFY);
+}
+}
+
+if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       
+    		Shunt = Reset;
+    		combo_run(FastReset);
+    	}
+    }
+}
+    
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(20);
+    set_val(Confirm,0);
+    wait(20);
+}
+
+combo FastReset {
+
+    set_val(Reset,100);        
+    wait(20);
+    combo_run(Confirm);
+}
+ 
+ /*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ | | | | | | | | |F|U N|C|T|I|O|N S| | | | | | | | | | | | | | | | | | | | | | | | | | |  
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+function PolarFlow(PFB,PSV,PFV,PV,PF,PID) {
+    	if(PF) {
+       		PFB += PV;
+    	if(PFB <= PFV)  
+    	return PFB;
+    	if(PFB > PFV) {
+        	PVID[PID] = 0;
+    	return PFB - PV;}
+}
+		else{
+        	PFB -= PV;    
+    	if(PFB >= PSV)  
+    	return PFB;
+    	if(PFB < PSV) {
+    		PVID[PID] = 1; 
+        return PFB + PV;}
+} 
+   		return FALSE;    
+}  
+

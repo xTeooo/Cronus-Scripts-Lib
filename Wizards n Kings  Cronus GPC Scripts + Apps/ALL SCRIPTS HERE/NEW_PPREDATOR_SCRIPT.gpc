@@ -1,0 +1,261 @@
+// GPC Online Library
+// modern_warfare_predator.gpc
+
+/*
+ ______     ______     ______     _____     __     ______  
+/\  ___\   /\  == \   /\  ___\   /\  __-.  /\ \   /\__  _\ 
+\ \ \____  \ \  __<   \ \  __\   \ \ \/\ \ \ \ \  \/_/\ \/ 
+ \ \_____\  \ \_\ \_\  \ \_____\  \ \____-  \ \_\    \ \_\ 
+  \/_____/   \/_/ /_/   \/_____/   \/____/   \/_/     \/_/
+  
+ ______     ______     ______   ______   ______       
+/\  == \   /\  __ \   /\__  _\ /\__  _\ /\  ___\      
+\ \  __<   \ \  __ \  \/_/\ \/ \/_/\ \/ \ \___  \     
+ \ \_____\  \ \_\ \_\    \ \_\    \ \_\  \/\_____\    
+  \/_____/   \/_/\/_/     \/_/     \/_/   \/_____/   
+                                                                                                
+ ______     __  __     ______     ______     __         __     ______     __  __     ______    
+/\  ___\   /\_\_\_\   /\  ___\   /\  __ \   /\ \       /\ \   /\  == \   /\ \/\ \   /\  == \   
+\ \  __\   \/_/\_\/_  \ \ \____  \ \  __ \  \ \ \____  \ \ \  \ \  __<   \ \ \_\ \  \ \  __<   
+ \ \_____\   /\_\/\_\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\  \ \_____\  \ \_____\  \ \_\ \_\ 
+  \/_____/   \/_/\/_/   \/_____/   \/_/\/_/   \/_____/   \/_/   \/_____/   \/_____/   \/_/ /_/                                                                                                  
+                                                                                                
+                                                                                                
+__     ______   ______     ______     __   __     ______     ______     __  __    
+/\ \   /\__  _\ /\___  \   /\  ___\   /\ "-.\ \   /\  __ \   /\  ___\   /\ \/ /    
+\ \ \  \/_/\ \/ \/_/  /__  \ \___  \  \ \ \-.  \  \ \  __ \  \ \ \____  \ \  _"-.  
+ \ \_\    \ \_\   /\_____\  \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_____\  \ \_\ \_\ 
+  \/_/     \/_/   \/_____/   \/_____/   \/_/ \/_/   \/_/\/_/   \/_____/   \/_/\/_/
+  
+ ______   ______     __    __    
+/\__  _\ /\  __ \   /\ "-./  \   
+\/_/\ \/ \ \ \/\ \  \ \ \-./\ \  
+   \ \_\  \ \_____\  \ \_\ \ \_\ 
+    \/_/   \/_____/   \/_/  \/_/ 
+                                                           
+                          
+visit https://cronusmax.com/forums/showthread.php/196318-Modern-Warfare-Predator-Support for help */
+
+// Swap Trigger/Bumper
+int Trigger_Swap = FALSE;// Set TURE if you want to swap trigger/bumper, else set FALSE
+
+//Aim Assist
+int SnapShot_AimAssist  = TRUE;// Toggle L2+DPAD-DOWN if TRUE SnapShot is ON by default - if FALSE, OFF by default
+
+int AimAssist  = TRUE
+int AimAssist_Strength  = 22;
+/*NOTES:
+I don't recommend going over 25 for aim assist strength
+ADS+FIRE activates SnapShoT
+When mounting your weapon disable SnapShot
+It'll cause your weapon to unmount*/
+
+//Target Tracker
+int toms_Target_Tracker = TRUE;// ADS+FIRE activates Target Tracker
+
+//Anti Recoil
+int AR = 20; //Anti Recoil
+int AR_H = 0; //Anti Recoil Horizontal
+int AR_I = 1; //Change 1 to -1 If you play with Inverted
+int ARS
+
+ int AIM_Assist_ON = TRUE; // Set TRUE to enable AIM Assist by default
+int aimAssist_size    = 12; 
+int aimAssist_time    = 25000; 
+
+//Rapid Fire
+int Rapid_Fire = FALSE;// Toggle L2+DPAD-UP if TRUE Rapidfire is ON by default - if FALSE, OFF by default
+
+//Auto Run
+int Auto_Run = FALSE//Sprint by Default
+
+//Main
+main {
+    vm_tctrl(-9);
+     	
+if(Trigger_Swap)
+	{
+swap(PS4_R1, PS4_R2);
+swap(PS4_L1, PS4_L2);
+	}
+    
+if(toms_Target_Tracker){
+if(get_val(PS4_L2) && get_val(PS4_R2)){
+sensitivity(PS4_RX,0,tt_aim_speed); 
+sensitivity(PS4_RY,0,tt_aim_speed);
+            }
+        }
+        
+if (Auto_Run) {
+if((get_val(PS4_LY)) < -95) {
+combo_run(Auto_Run);
+    }}      
+
+if (AimAssist) {                            
+if (get_val(PS4_L2))                       
+combo_run(Auto_Aimm);                     
+else        
+combo_stop(Auto_Aimm);                    
+
+if(get_val(7) && get_val(4))
+    combo_run(AR);
+ 
+ 
+if(abs(get_val(10)) > AR + 2 || abs(get_val(9)) > AR + 2) {
+    combo_stop(AR);}
+                                                      
+if (get_val(PS4_L2)) {                        
+if (abs(get_val(9)) > 21 || abs(get_val(10)) > 21){ 
+combo_stop(Auto_Aimm);}                                         
+}}
+
+if (SnapShot_AimAssist) {                             
+if(get_val(PS4_L2) && get_val(PS4_R2)) {  
+SnapShot_hold = 300;
+SnapShot_rest = 0;            
+combo_run(SnapShot);} 
+else if (combo_running(SnapShot)) {     
+combo_stop(SnapShot);}                                             
+}                         
+
+if(get_val(PS4_L2) && event_press(PS4_UP)) {
+combo_run (vibrate);
+Rapid_Fire=!Rapid_Fire;
+}
+
+if(Rapid_Fire) colourled(White);
+else colourled(Red);
+
+if(get_val(PS4_L2) && event_press(PS4_DOWN)) {
+combo_run (vibrate);
+SnapShot_AimAssist=!SnapShot_AimAssist;
+}
+
+if(SnapShot_AimAssist) colourled(Green);
+else colourled(Red);
+
+if(Rapid_Fire) {
+if(get_val(PS4_R2)) {
+combo_run (RAPID_FIRE);
+}}
+
+if(get_val(PS4_R2)>=1) set_val(PS4_R2, 100);
+if(get_val(PS4_L2)>=1) set_val(PS4_L2, 100);
+
+hold_time = 500 / RATE_OF_FIRE;
+rest_time = hold_time - 20;
+if(rest_time < 0) rest_time = 0;}
+
+combo vibrate{ 
+wait(300);
+reset_rumble();
+}
+
+combo RAPID_FIRE {
+set_val(PS4_R2, 100);
+wait(hold_time);
+set_val(PS4_R2, 0);
+wait(rest_time);
+set_val(PS4_R2, 0);
+}
+
+combo Auto_Aimm {          
+set_val(10, AimAssist_Strength * -1); //1  
+wait(20)               
+set_val(9,  AimAssist_Strength); //1  
+wait(20)              
+set_val(10, AimAssist_Strength); //1  
+wait(20)               
+set_val(9,  AimAssist_Strength * -1); //1  
+wait(20)               
+}
+
+combo Auto_Run {
+set_val(PS4_L3, 100);
+wait(40);
+set_val(PS4_L3, 0);
+wait(40);
+set_val(PS4_L3, 0);
+}
+
+combo SnapShot { //
+set_val(PS4_L2, 100);    
+wait(SnapShot_hold);                
+set_val(PS4_L2, 0);      
+wait(SnapShot_rest);}
+
+combo AR {
+ARS = get_val(10) + AR;
+if(ARS > 100) ARS = 100;
+set_val(10,ARS * AR_I);
+ARS = get_val(9) + AR_H;
+if(ARS > 100) ARS = 100;
+set_val(9,ARS);}
+
+int tt_aim_speed = 95;
+int RATE_OF_FIRE = 400;
+int Col_ind;
+int hold_time;
+int rest_time;
+int SnapShot_hold; 
+int SnapShot_rest;
+
+function colourled(Colour) {
+Col_ind=(Colour*4)- 3;
+set_led(LED_1,dbyte(Col_ind ));
+set_led(LED_2,dbyte(Col_ind+ 1));
+set_led(LED_3,dbyte(Col_ind+ 2));
+set_led(LED_4,dbyte(Col_ind+ 3));
+}
+define OFF       = 0;
+define Blue      = 1;
+define Red       = 2;
+define Green     = 3;
+define Pink      = 4;
+define SkyBlue   = 5;
+define Yellow    = 6;
+define White     = 7;
+//-------------------------------------------------------------------------------------------
+data(1,
+2,0,0,0, //1. Blue
+0,2,0,0, //2. Red
+0,0,2,0, //3. Lime/Green
+0,0,0,2, //4. Fuchsia/Pink
+2,0,2,0, //5. SkyBlue
+0,2,2,0, //6. Yellow
+2,2,2,2  //7. White
+);
+/*
+ ______     ______     ______     _____     __     ______  
+/\  ___\   /\  == \   /\  ___\   /\  __-.  /\ \   /\__  _\ 
+\ \ \____  \ \  __<   \ \  __\   \ \ \/\ \ \ \ \  \/_/\ \/ 
+ \ \_____\  \ \_\ \_\  \ \_____\  \ \____-  \ \_\    \ \_\ 
+  \/_____/   \/_/ /_/   \/_____/   \/____/   \/_/     \/_/
+  
+ ______     ______     ______   ______   ______       
+/\  == \   /\  __ \   /\__  _\ /\__  _\ /\  ___\      
+\ \  __<   \ \  __ \  \/_/\ \/ \/_/\ \/ \ \___  \     
+ \ \_____\  \ \_\ \_\    \ \_\    \ \_\  \/\_____\    
+  \/_____/   \/_/\/_/     \/_/     \/_/   \/_____/   
+                                                                                                
+ ______     __  __     ______     ______     __         __     ______     __  __     ______    
+/\  ___\   /\_\_\_\   /\  ___\   /\  __ \   /\ \       /\ \   /\  == \   /\ \/\ \   /\  == \   
+\ \  __\   \/_/\_\/_  \ \ \____  \ \  __ \  \ \ \____  \ \ \  \ \  __<   \ \ \_\ \  \ \  __<   
+ \ \_____\   /\_\/\_\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\  \ \_____\  \ \_____\  \ \_\ \_\ 
+  \/_____/   \/_/\/_/   \/_____/   \/_/\/_/   \/_____/   \/_/   \/_____/   \/_____/   \/_/ /_/                                                                                                  
+                                                                                                
+                                                                                                
+__     ______   ______     ______     __   __     ______     ______     __  __    
+/\ \   /\__  _\ /\___  \   /\  ___\   /\ "-.\ \   /\  __ \   /\  ___\   /\ \/ /    
+\ \ \  \/_/\ \/ \/_/  /__  \ \___  \  \ \ \-.  \  \ \  __ \  \ \ \____  \ \  _"-.  
+ \ \_\    \ \_\   /\_____\  \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_____\  \ \_\ \_\ 
+  \/_/     \/_/   \/_____/   \/_____/   \/_/ \/_/   \/_/\/_/   \/_____/   \/_/\/_/
+  
+ ______   ______     __    __    
+/\__  _\ /\  __ \   /\ "-./  \   
+\/_/\ \/ \ \ \/\ \  \ \ \-./\ \  
+   \ \_\  \ \_____\  \ \_\ \ \_\ 
+    \/_/   \/_____/   \/_/  \/_/ 
+                                                           
+                          
+visit https://cronusmax.com/forums/showthread.php/196318-Modern-Warfare-Predator-Support for help */

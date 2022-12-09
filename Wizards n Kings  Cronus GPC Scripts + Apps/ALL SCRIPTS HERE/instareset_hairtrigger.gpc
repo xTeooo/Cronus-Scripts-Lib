@@ -1,0 +1,37 @@
+
+define Off = 0,On = 1;
+
+define Edit     = PS4_L3;       // Edit In Game No Hold Time
+define Select   = PS4_R2;       // Edit Select In Game
+define Confirm  = PS4_R1;       // Edit Confirm In Game    
+define Reset    = PS4_L1;       // Edit Reset In Game
+
+define FastReset = PS4_RIGHT;   // FastReset Button, NOT Bound To Anything In Game!!
+define InstaFastReset = On;
+ 
+ main {
+ 
+     if(get_ival(PS4_L2) > 1)
+        set_val(PS4_L2, 100);
+
+    if(get_ival(PS4_R2) > 1)
+        set_val(PS4_R2, 100);
+    
+    if(InstaFastReset) {
+        if(event_press(FastReset)) 
+               combo_run(FastReset);
+    }
+ }
+  combo FastReset {
+    set_val(Edit,100);
+    wait(20)
+     set_val(Reset,100);        
+     wait(20);
+      combo_run(Confirm);
+}
+combo Confirm {
+    set_val(Confirm,100);
+    wait(20);
+     set_val(Confirm,0);
+     wait(20);
+}

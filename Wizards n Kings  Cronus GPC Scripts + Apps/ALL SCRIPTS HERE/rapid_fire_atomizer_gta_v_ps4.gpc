@@ -1,0 +1,114 @@
+// GPC Online Library
+// rapid_fire_atomizer_gta_v_ps4.gpc
+
+
+// ANY QUESTIONS OR YOUR INTERESTED IN HAVING YOUR OWN CUSTOM SCRIPT MADE FOR YOU
+// DONT HESITATE TO MESSAGE ME ON DISCORD STRAPCRAFTER#9465, I ALSO HAVE A NUMBER
+// OF OTHER GTA V TITAN SCRIPTS AVAILABLE FOR SALE
+
+
+//THIS ONLY WORKS IN FIRST PERSON
+//script by strapcrafter78, hold down dpad and press r3 to activate/deactivate
+//sticky bomb in grenade slot
+//when holding atomizer hold shoot button for full auto
+
+int FIRE_RATE = 10;
+int OnOFF = FALSE;
+
+init {
+    set_led(0, 0);
+    set_led(1, 1);
+    set_led(2, 0);
+    set_led(3, 0);
+}
+
+main {
+    if ((get_val(PS4_R2) > 85) && (OnOFF == TRUE)) {
+        combo_run(ATOM_SPAM);
+    }
+    if (get_val(PS4_DOWN)) {
+        if (event_press(PS4_R3)){
+            if (OnOFF == TRUE) {
+                set_led(0, 0);
+                set_led(1, 1);
+                set_led(2, 0);
+                set_led(3, 0);
+                OnOFF = FALSE;
+                combo_run(vibrate1);
+            } else {
+                set_led(0, 0);
+                set_led(1, 0);
+                set_led(2, 1);
+                set_led(3, 0);
+                OnOFF = TRUE;
+                combo_run(vibrate2);
+            }
+        }
+    }
+}
+
+combo ATOM_SPAM {
+    set_val(PS4_L1, 0)
+    set_val(PS4_L1, 0)
+    set_val(PS4_RX, 0)
+    wait(450)
+    set_val(PS4_L1, 100)
+    wait(220)
+    set_val(PS4_L1, 100)
+    set_val(PS4_RX, -100)
+    set_val(PS4_RY, -100)
+    wait(70)
+    set_val(PS4_RX, 0)
+    set_val(PS4_RY, 0)
+    set_val(PS4_L1, 0)
+    wait(70)
+    set_val(PS4_L1, 100)
+    wait(220)
+    set_val(PS4_L1, 100)
+    set_val(PS4_RX, 0)
+    set_val(PS4_RY, -100)
+    wait(70)
+}
+
+combo ledsave {
+    set_led(0, 1);
+    set_led(1, 0);
+    set_led(2, 0);
+    set_led(3, 0);
+    wait(100);
+    set_led(0, 0);
+    set_led(3, 1);
+    wait(100);
+    set_led(0, 1);
+    set_led(3, 0);
+    wait(100);
+    set_led(0, 0);
+    set_led(3, 1);
+    wait(100);
+    set_led(0, 1);
+    set_led(3, 0);
+    wait(100);
+    set_led(0, 0);
+    set_led(3, 1);
+    wait(100)
+    set_led(0, 0);
+    set_led(1, 0);
+    set_led(2, 0);
+    set_led(3, 0);
+    if (OnOFF == TRUE) set_led(0, 1);
+    if (OnOFF == FALSE) set_led(1, 1);
+}
+
+combo vibrate1 {
+    set_rumble(RUMBLE_A, 100);
+    wait(300);
+    reset_rumble();
+}
+
+combo vibrate2 {
+    set_rumble(RUMBLE_B, 100);
+    wait(300);
+    reset_rumble();
+}
+
+

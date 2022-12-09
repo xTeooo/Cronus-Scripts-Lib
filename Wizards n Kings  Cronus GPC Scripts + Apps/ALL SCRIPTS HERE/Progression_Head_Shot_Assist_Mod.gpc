@@ -1,0 +1,37 @@
+// Progression Head Shot Assist Mod
+
+int HeadTime,Head;
+
+define Fire = PS4_R2; // Fire In Game
+define Ads  = PS4_L2; // Ads In Game
+define AimY = PS4_RY; // Vertical Aim Axis In Game
+
+int HeadAssist    = TRUE; // Main Toggle ON/OFF
+int HeadHipAssist = TRUE; // Operate on Fire Only [If FALSE It Will Only Run On ADS & FIRE]
+
+int HeadStep = 2;  // Step Increment Increasing Until Its Reached HeadMax
+int HeadMax  = 30; // Max Head Assist Value
+
+main {
+
+	if (HeadAssist) {
+	    
+	    if (get_ival(Ads) && get_ival(Fire) || HeadHipAssist && get_ival(Fire)) {
+	    
+	    	if (abs(get_ival(AimY)) < HeadMax) { 
+	    		
+	    		Head += HeadStep;
+	    		combo_run(HeadAssist);
+	    	}	
+	    }
+	    
+	    if (!get_ival(Fire)) Head = 0;
+	    	
+	    if (Head >= HeadMax) combo_stop(HeadAssist);
+	}	
+}
+
+combo HeadAssist{
+
+	set_val(AimY,inv(Head) + get_val(AimY));
+}

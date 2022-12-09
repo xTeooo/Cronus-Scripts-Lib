@@ -1,0 +1,24 @@
+// Noozbar's RPS Rapid Fire
+int rounds_per_second = 12; // Range: 1 to 25 RPS (Round/s)
+
+int rapidfire_hold;
+int rapidfire_release;
+
+main {
+	set_val(TRACE_1, rapidfire_hold);
+	set_val(TRACE_2, rapidfire_release);
+	
+	rapidfire_hold = 500 / rounds_per_second;
+	rapidfire_release = rapidfire_hold - 10;
+	if(rapidfire_hold < 0)
+		rapidfire_hold = 0;
+ 
+	if(get_val(PS4_R2))
+		combo_run(RAPIDFIRE);
+}
+
+combo RAPIDFIRE {
+	wait(rapidfire_hold);
+	set_val(PS4_R2, 0);
+	wait(rapidfire_release);
+}

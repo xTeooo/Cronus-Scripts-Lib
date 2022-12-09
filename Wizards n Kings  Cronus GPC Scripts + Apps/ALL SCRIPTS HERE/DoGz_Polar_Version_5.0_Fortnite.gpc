@@ -1,0 +1,1338 @@
+/*
+     _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+    |       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+    | ▓▓▓▓▓▓▓\ ______ |  ▓▓▓▓▓▓\________ \▓▓▓▓▓▓▓▓ ▓▓____   ______ | ▓▓▓▓▓▓▓▓\▓▓  ▓▓▓▓▓▓\ ▓▓____  \▓▓▓▓▓▓▓▓ ______ | ▓▓▓▓▓▓▓\ ▓▓ _______ 
+    | ▓▓  | ▓▓/      \| ▓▓ __\▓▓        \  | ▓▓  | ▓▓    \ /      \| ▓▓__   |  \ ▓▓ __\▓▓ ▓▓    \   | ▓▓   /      \| ▓▓__| ▓▓\▓ /       \
+    | ▓▓  | ▓▓  ▓▓▓▓▓▓\ ▓▓|    \\▓▓▓▓▓▓▓▓  | ▓▓  | ▓▓▓▓▓▓▓\  ▓▓▓▓▓▓\ ▓▓  \  | ▓▓ ▓▓|    \ ▓▓▓▓▓▓▓\  | ▓▓  |  ▓▓▓▓▓▓\ ▓▓    ▓▓  |  ▓▓▓▓▓▓▓
+    | ▓▓  | ▓▓ ▓▓  | ▓▓ ▓▓ \▓▓▓▓ /    ▓▓   | ▓▓  | ▓▓  | ▓▓ ▓▓    ▓▓ ▓▓▓▓▓  | ▓▓ ▓▓ \▓▓▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓    ▓▓ ▓▓▓▓▓▓▓\   \▓▓    \ 
+    | ▓▓__/ ▓▓ ▓▓__/ ▓▓ ▓▓__| ▓▓/  ▓▓▓▓_   | ▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓     | ▓▓ ▓▓__| ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓▓▓▓▓▓▓ ▓▓  | ▓▓   _\▓▓▓▓▓▓\
+    | ▓▓    ▓▓\▓▓    ▓▓\▓▓    ▓▓  ▓▓    \  | ▓▓  | ▓▓  | ▓▓\▓▓     \ ▓▓     | ▓▓\▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓   \▓▓     \ ▓▓  | ▓▓  |       ▓▓
+     \▓▓▓▓▓▓▓  \▓▓▓▓▓▓  \▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓   \▓▓   \▓▓   \▓▓ \▓▓▓▓▓▓▓\▓▓      \▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓    \▓▓▓▓▓▓▓\▓▓   \▓▓   \▓▓▓▓▓▓▓ 
+                                    ________  ______  _______  ________ __    __ ______ ________ ________ 
+                                   |        \/      \|       \|        \  \  |  \      \        \        \
+                                   | ▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓\ ▓▓▓▓▓▓▓\\▓▓▓▓▓▓▓▓ ▓▓\ | ▓▓\▓▓▓▓▓▓\▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓▓
+                                   | ▓▓__   | ▓▓  | ▓▓ ▓▓__| ▓▓  | ▓▓  | ▓▓▓\| ▓▓ | ▓▓    | ▓▓  | ▓▓__    
+                                   | ▓▓  \  | ▓▓  | ▓▓ ▓▓    ▓▓  | ▓▓  | ▓▓▓▓\ ▓▓ | ▓▓    | ▓▓  | ▓▓  \   
+                                   | ▓▓▓▓▓  | ▓▓  | ▓▓ ▓▓▓▓▓▓▓\  | ▓▓  | ▓▓\▓▓ ▓▓ | ▓▓    | ▓▓  | ▓▓▓▓▓   
+                                   | ▓▓     | ▓▓__/ ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓ \▓▓▓▓_| ▓▓_   | ▓▓  | ▓▓_____ 
+                                   | ▓▓      \▓▓    ▓▓ ▓▓  | ▓▓  | ▓▓  | ▓▓  \▓▓▓   ▓▓ \  | ▓▓  | ▓▓     \
+                                    \▓▓       \▓▓▓▓▓▓ \▓▓   \▓▓   \▓▓   \▓▓   \▓▓\▓▓▓▓▓▓   \▓▓   \▓▓▓▓▓▓▓▓                                                                       
+                     ________ ________ __    __      _______  ________  ______  ______  ______  __    __ ________ _______  
+                    |        \        \  \  |  \    |       \|        \/      \|      \/      \|  \  |  \        \       \ 
+		     		 \▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓▓ ▓▓\ | ▓▓    | ▓▓▓▓▓▓▓\ ▓▓▓▓▓▓▓▓  ▓▓▓▓▓▓\\▓▓▓▓▓▓  ▓▓▓▓▓▓\ ▓▓\ | ▓▓ ▓▓▓▓▓▓▓▓ ▓▓▓▓▓▓▓\
+		     		    /  ▓▓| ▓▓__   | ▓▓▓\| ▓▓    | ▓▓  | ▓▓ ▓▓__   | ▓▓___\▓▓ | ▓▓ | ▓▓ __\▓▓ ▓▓▓\| ▓▓ ▓▓__   | ▓▓__| ▓▓
+                       /  ▓▓ | ▓▓  \  | ▓▓▓▓\ ▓▓    | ▓▓  | ▓▓ ▓▓  \   \▓▓    \  | ▓▓ | ▓▓|    \ ▓▓▓▓\ ▓▓ ▓▓  \  | ▓▓    ▓▓
+                      /  ▓▓  | ▓▓▓▓▓  | ▓▓\▓▓ ▓▓    | ▓▓  | ▓▓ ▓▓▓▓▓   _\▓▓▓▓▓▓\ | ▓▓ | ▓▓ \▓▓▓▓ ▓▓\▓▓ ▓▓ ▓▓▓▓▓  | ▓▓▓▓▓▓▓\
+                     /  ▓▓___| ▓▓_____| ▓▓ \▓▓▓▓    | ▓▓__/ ▓▓ ▓▓_____|  \__| ▓▓_| ▓▓_| ▓▓__| ▓▓ ▓▓ \▓▓▓▓ ▓▓_____| ▓▓  | ▓▓
+                    |  ▓▓    \ ▓▓     \ ▓▓  \▓▓▓    | ▓▓    ▓▓ ▓▓     \\▓▓    ▓▓   ▓▓ \\▓▓    ▓▓ ▓▓  \▓▓▓ ▓▓     \ ▓▓  | ▓▓
+                     \▓▓▓▓▓▓▓▓\▓▓▓▓▓▓▓▓\▓▓   \▓▓     \▓▓▓▓▓▓▓ \▓▓▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓▓▓▓▓ \▓▓   \▓▓\▓▓▓▓▓▓▓▓\▓▓   \▓▓
+                                                                                                                            
+******************** You Created This Script At 09:36:48 On 08/06/2021 Using DoGzTheFiGhTeRs Fortnite Zen Designer 8 ) ********************
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+  ¦¦¦¦ MOD MENU SYSTEM ¦¦¦¦
+
+* Enter Menu   = L2/LT + OPTIONS/MENU
+* Switch Menu  = CROSS/A
+* Exit Menu    = TRIANGLE/Y
+
+* Next Mod     = RIGHT
+* Previous Mod = LEFT
+
+* Adjust +     = UP
+* Adjust -     = DOWN
+* Toggle ON    = UP
+* Toggle OFF   = DOWN
+  
+  ¦¦¦¦ SHOW CURRENT SLOT IN USE ¦¦¦¦
+  
+* Show Slot    = R3/RS + LEFT
+
+  ¦¦¦¦ MOD TOGGLES ¦¦¦¦
+
+* Rapid Fire  = L2/LT + UP
+* Drop Shot   = L2/LT + DOWN
+* Jump Shot   = L2/LT + RIGHT
+* Build Mods  = L2/LT + LEFT
+* Kill Switch = L2/LT + SHARE/VIEW
+
+  ¦¦¦¦ MOD TRIGGERS ¦¦¦¦
+
+* Pump Wall = L2/LT + R1/RB
+* Wall Take = R2/RT + L1/LB
+* Roof Take = R2/RT + SQUARE/X
+
+  ¦¦¦¦ EDIT MOD TRIGGERS ¦¦¦¦
+
+* Edit Assist = L3/LS 			(Must Be Edit In Game NO Hold Time (Used For Fast Reset Also))
+* Fast Reset  = TOUCHPAD/VIEW  	(Blocked Hold L2/LT To Use Button Normally)
+
+  ¦¦¦¦ OTHER MODS ¦¦¦¦
+
+* Instant Pickaxe = Tap Pickaxe Then When Releasing Fire It Will Swap To Your Weapon
+* Build Tracker   = Press Build To Enter/Exit Build Mode (This Will Isolate Any Conflicting Mods) (Pickaxe Is a Backup To Resync If it Becomes Unsynced)
+
+  ¦¦¦¦ AUTO MOD ¦¦¦¦
+
+* LED RAINBOW FLOW
+* BLOCK IN GAME RUMBLE TO THE CONTROLLER
+* PIPE SCREEN SAVER
+
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦¦
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Menu Arrays                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","DoGzTheFiGhTeR's","Zen Designer V2.0","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off"};
+const string ModToggle [] = {"" , "DoGz Polar Assist" , "Aim Assist Style" , " Circle > Spiral" , "Angle/Speed Boost" , "   Radius Boost" , "    Drop Shot" , "    Jump Shot" , "   Rapid Fire" , "Dynamic RapidFire" , "   Burst Fire" , "    Pump Wall" , "    Wall Take" , "    Roof Take " , "    Ramp Roof" , "    Floor Roof" , " Instant Pickaxe" , "InstantEditReset" , "Quick Edit Assist" , "Insta Fast Reset" , "Builder Tracking" , "   Block Rumble" , "LED Rainbow Flow" };
+const string ModValue [] = {"" , "  Radius Minimum" , "  Radius Maximum" , "   Radius Boost" , "   Angle/Speed" , "Angle/Speed Boost" , "SwitchStyle Value" , "In Game DeadZone" , "  Drop Shot Wait"  , "  Jump Shot Wait"  , " Rapid Fire Hold"  , " Rapid Fire Wait"  , "Dynamic Fire Hold" , "Dynamic Fire Wait" , " Burst Fire Hold" , " Burst Fire Wait" , " Pump Wall Time" , "InstaPickaxe Hold" , " Wall Take Hold" , "Edit Assist Delay" , " LED Brightness" };
+const string ModAimAssist [] = {"" , "Circle" , "Spiral"  , "Mixed"};
+const int16 ModDigitMin [] = {  0 , 1  , 1  , 1  , 1  , 1  , 1  , 5  , 40   , 50   , 30  , 30  , 30 , 33 , 30  , 100 , 20  , 20  , 20  , 20  , 1 };
+const int16 ModDigitMax [] = {  0 , 40 , 40 , 20 , 90 , 90 , 80 , 40 , 1500 , 2000 , 600 , 600 , 60 , 70 , 600 , 900 , 150 , 150 , 150 , 150 , 50};
+const int16 ModIncrement[] = {  0 , 1  , 1  , 1  , 1  , 1  , 1  , 1  , 10   , 10   , 10  , 10  , 10 , 1  , 10  , 10  , 10  , 10  , 10  , 10  , 1 };
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Toggle Strings                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+const string DropShotL   = "  Drop Shot Mod";
+const string JumpShotL   = "  Jump Shot Mod";
+const string BuildModL   = "Quick Build Mods";
+const string FireModL    = " Master Fire Mod";
+const string KillSwitchL = "Master KillSwitch";
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define N_Weapon = PS4_R1;
+define P_Weapon = PS4_L1;
+define Pickaxe  = PS4_TRIANGLE;
+define Reload   = PS4_SQUARE;
+define Jump     = PS4_CROSS;
+define Crouch   = PS4_R3;
+define Edit     = PS4_CIRCLE;
+define Select   = PS4_R2;
+define Confirm  = PS4_CIRCLE;
+define Reset    = PS4_R3;
+define Build    = PS4_CIRCLE;
+define Wall     = PS4_R2;
+define Floor    = PS4_R1;
+define Ramp     = PS4_L2;
+define Roof     = PS4_L1;
+define Options  = PS4_OPTIONS;
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define RX       = PS4_RX;
+define RY       = PS4_RY;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define PY       = POLAR_RY;
+define PX       = POLAR_RX;
+define PS       = POLAR_RS;
+define On       = TRUE;
+define Off      = FALSE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Edit Buttons/Options                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define EditAssist   = PS4_L3;
+define FastReset    = PS4_TOUCH;
+
+define EditHold     =  On; // Select On When Using Edit Hold Time (Select Off When You Use Instant)
+define EditHoldTime = 130; // Match Your In Game Edit Hold Time 
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Triggers                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define PumpWallHold   = PS4_L2;
+define PumpWallPress  = PS4_R1;
+
+define WallTakeHold   = PS4_R2;
+define WallTakePress  = PS4_L1;
+
+define RoofTakeHold   = PS4_R2;
+define RoofTakePress  = PS4_SQUARE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define BuildModHold    = PS4_L2;
+define BuildModPress   = PS4_LEFT;
+
+define DropShotHold    = PS4_L2;
+define DropShotPress   = PS4_DOWN;
+
+define JumpShotHold    = PS4_L2;
+define JumpShotPress   = PS4_RIGHT;
+
+define FireModHold     = PS4_L2;
+define FireModPress    = PS4_UP;
+
+define KillSwitchHold  = PS4_L2;
+define KillSwitchPress = PS4_SHARE;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Menu Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define MenuEnterHold   = PS4_L2;
+define MenuEnterPress  = PS4_OPTIONS;
+define MenuExitPress   = PS4_TRIANGLE;
+define ChangeMenuPress = PS4_CROSS;
+
+define FindSlotHold    = PS4_R3;
+define FindSlotPress   = PS4_LEFT;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+
+define Circle = 1;
+define Spiral = 2;
+define Mixed  = 3;
+
+define TimeoutLimit  = 1;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 22;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 20;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int ToggleT,ToggleTime,ToggleName,Modled,Saver,Ms,Sec,Min,ScreenTime,LedDec,Rgb,LedInc,Colour[3];
+int TimeL,TimerP,TimerE,Length,X_POS1,Y_POS1,X_POS2,Y_POS2,Steps1,Steps2,XorY1,XorY2,Dir1,Dir2;
+int Speed,Output,Size,Radius,BoostAngle,BoostRadius,Axis,BuildTrack,Axe,WallReplace,RoofReplace;
+int Edit1,Edit2,EditT,DynamicWait,KillSwitch,Shunt;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(            Rapid Fire Trigger Options              ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+define RapidFireHip = On; 	// On = Activates Pressing [Fire] || Off = Activates Pressing [Ads + Fire]
+define DynaFireHip  = On;	// On = Activates Pressing [Fire] || Off = Activates Pressing [Ads + Fire]
+define BurstFireHip = On;	// On = Activates Pressing [Fire] || Off = Activates Pressing [Ads + Fire]
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+//                              -- Also Accessed Via Zen Menu In Game --
+int ModDigit;				//                	 		¦¦¦Values In Use¦¦¦
+int RadiusMin     =  5; 	// Min Power           		(Spiral/Mixed) 
+int RadiusMax     = 12; 	// Max Power           		(Circle/Spiral/Mixed) (Circle Default Power)
+int RadiusBoost   =  5; 	// Power Boost         		(Circle/Spiral/Mixed) (Added To The Current Value)
+int Angle         = 20; 	// Default Speed       		(Circle/Spiral/Mixed) 
+int AngleBoost    = 10; 	// Speed Boost         		(Circle/Spiral/Mixed) (Added To The Current Value)
+int Switch        = 20;		// Axis Limit/Switch   		(Spiral/Mixed) Switch Over Value From Right Stick Axis (Once RX Or RY Go Over Switch Value It Will Change State(Style))
+int Deadzone      = 10;		// Match In Game DeadZone	(Circle/Spiral/Mixed)
+int DropShotWait  = 110;	// Crouch Wait Time
+int JumpShotWait  = 80;		// Jump Shot Wait Time 
+int RapidFireHold = 30;		// Rapid Fire Press Time
+int RapidFireWait = 30;		// Rapid Fire Release Time
+int DynaFireHold  = 40; 	// Dynamic Fire Press Time
+int DynaFireWait  = 33; 	// Dynamic Fire Release Time (33 to 70) 
+int BurstFireHold = 510;	// Burst Fire Press Time 
+int BurstFireWait = 350;	// Burst Fire Release Time
+int PumpWallHTime = 50;     // Pump Wall Press Time
+int PickaxeHold   = 30;     // Pickaxe Press Time
+int WallTakeHTime = 20;     // Wall Take Press Time
+int EditDelay     = 30;     // Edit Assist Hold Delay Time
+int LedBrightness = 10;    	// Zen Eyes   -- ADJUST HERE FOR BRIGHTNESS (1 - 50) (1 = Brightest)
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+//               -- On or Off   -- Also Accessed Via Zen Menu In Game --
+int ModSwitch;
+int AimAssist        =  On;     // Aim Assist
+int Style            = Mixed;  	// Aim Assist Method = (1.Circle/2.Spiral/3.Mixed)       
+int CircleSpiral     =  On;		// Aim Assist Mixed Method  On = (Circle then Spiral) || Off = (Spiral then Circle)
+int BoostSpeed       =  On;		// Aim Assist When Pressing Fire Angle Boost is Added to the Angle (Angle + AngleBoost)
+int BoostPower       =  On;		// Aim Assist When Pressing Fire Radius Boost is Added to the Radius (RadiusMax/Current + RadiusBoost)
+int DropShot         =  On;     // Drop Shot / Crouch Shot  (While Holding Fire ([CROUCH] Blocks Mod))
+int JumpShot         =  On;     // Jump Shot    			(On Press Of Fire   ([ADS] Or [JUMP] Blocks Mod))
+int RapidFire        = Off;     // Rapid Fire   			(Only Set One On In The Compiler Either ([Rapid Fire] or [Dynamic Fire] or [Burst Fire])
+int DynaRapidFire    =  On;     // Dynamic Fire				(Only Set One On In The Compiler Either ([Rapid Fire] or [Dynamic Fire] or [Burst Fire])
+int BurstFire        = Off;		// Burst Fire				(Only Set One On In The Compiler Either ([Rapid Fire] or [Dynamic Fire] or [Burst Fire])
+int PumpWall         =  On;     // Pump Wall
+int WallTake         =  On;		// Wall Take (Steal Wall)
+int RoofTake         =  On;		// Roof Take (Steal Roof)
+int RampRoof         =  On;		// Ramp Rush (Double Tap Ramp to Place Roof In Build Mode)
+int FloorRoof        =  On;		// Instant Floor/Roof (Double Tap Floor to Place Roof + Floor In Build Mode)
+int InstantPickaxe   =  On;		// Instant Pickaxe (Instantly Swap To Weapon When Releasing Fire after Pickaxing)
+int InstantEditReset =  On;		// Instant Edit + Reset (Holdtime and Method Set Above In Edit Buttons/Options)
+int QuickEditAssist  =  On;		// Quick Edit Assist (WHILE HOLDING EditAssist,The Select button will be automatically held for you,To confirm the edit RELEASE EditAssist)
+int InstaFastReset   =  On;		// One Tap Fast Reset (TAP FastReset to RESET the Building Piece that you are currently looking at)
+int BuildTracker     =  On;		// Build Tracking (Disable Conflicting Mods While In Build Mode) Tap Pickaxe to Resync (After entering Inventory or Options Tap Pickaxe)
+int BlockRumble      =  On;		// Block Controller Rumble 
+int LEDRainbowFlow   =  On; 	// LED Flow  (Zen Eyes)             
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Default State                   ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+int DropShotMod =  On;	// Drop Shot  -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off )(Only Set One On In The Compiler ([Drop Shot] or [Jump Shot])
+int JumpShotMod =  Off;	// Jump Shot  -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off )(Only Set One On In The Compiler ([Drop Shot] or [Jump Shot])
+int FireMod     =  On;	// Fire Mods  -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off )
+int BuildMod    =  On;	// Build Mods -- ADJUST HERE IF YOU WANT THE MOD ACTIVE WHEN THE SLOT FIRST LOADS ( On or Off )
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+init {
+
+    combo_run(Boot);
+    LedInc = 1
+    Colour = 150;
+    
+    if (DropShotMod && JumpShotMod)
+    	JumpShotMod = Off;
+}
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+
+    if (BlockRumble) {
+        block_rumble();
+    }
+	
+	if (QuickEditAssist) {
+	
+	 	if (get_ival(EditAssist)) {
+			EditAssist();
+			Edit1 = On;
+		}
+
+			if (event_release(EditAssist)) {
+				Edit1 = Off;
+				EditT = Off;
+			}
+	}
+	
+	if (InstaFastReset) {
+	
+		if (!get_ival(Ads) && event_press(FastReset)) { 
+	        Shunt = FastReset;
+	        combo_run(FastReset);
+	        Edit1 = Off;
+	        Edit2 = Off;
+	    }
+	}
+	    
+	if (InstantEditReset) {
+	
+	    if ((EditHold && get_ival(Edit) && get_ptime(Edit) > EditHoldTime) || (!EditHold && event_press(Edit))) {
+	        Edit2 = On;
+	    }
+	
+	    if (Edit2) {
+	    
+	    	if (event_release(Select)) {  
+	            Edit2 = Off;
+	            BuildTrack = Off;
+	        }
+		}
+	}    
+    
+    if (Edit1 || Edit2) {
+
+        if (event_press(Reset)) {  
+	        combo_run (InstantReset);
+	        Edit1 = Off;
+	        Edit2 = Off;
+	        BuildTrack = Off;
+        }
+
+		if (event_press(Pickaxe) || event_press(Build) || event_press(Ads)) {
+            Edit1 = Off;
+            Edit2 = Off;
+            BuildTrack = Off;
+        }
+    }
+	
+	if (!KillSwitch) {
+	
+	    if (BuildTracker) {
+            
+            if (event_press(Build)) 
+                BuildTrack = !BuildTrack;
+            
+        	if (BuildTrack) {
+                
+                if (BuildMod) {
+                
+                    if (RampRoof && event_press(Ramp) && get_brtime(Ramp) < 300)
+                    	combo_run(Roof);
+            	    
+                    if (FloorRoof && event_press(Floor) && get_brtime(Floor) < 200) 
+            	    	combo_run(Roof);
+	    		}
+                
+                if (event_press(Pickaxe) || event_press(Up) || event_press(Down) || event_press(Options)) 
+                    BuildTrack = Off;
+            }
+        }
+	    
+	    if (!MainMenu) {
+	    
+            if ((RampRoof || FloorRoof) && get_ival(BuildModHold) && event_press(BuildModPress)) {
+                Shunt = BuildModPress;
+                BuildMod = !BuildMod;
+                ToggleName = On;
+                Toggle(BuildMod,BuildModL[0]);
+            }
+            
+            if (DropShot && get_ival(DropShotHold) && event_press(DropShotPress)) {
+                Shunt = DropShotPress;
+                DropShotMod = !DropShotMod;
+                ToggleName = On;
+                Toggle(DropShotMod,DropShotL[0]);
+                JumpShotMod = Off;
+            }
+	        
+            if (JumpShot && get_ival(JumpShotHold) && event_press(JumpShotPress)) {
+                Shunt = JumpShotPress;
+                JumpShotMod = !JumpShotMod;
+                ToggleName = On;
+                Toggle(JumpShotMod,JumpShotL[0]);
+                DropShotMod = Off;
+            }
+	        
+	        if ((RapidFire || DynaRapidFire || BurstFire) && (get_ival(FireModHold) && event_press(FireModPress))) {
+                Shunt = FireModPress;
+                FireMod = !FireMod;
+                ToggleName = On;
+                Toggle(FireMod,FireModL[0]);
+            }
+        }
+        
+        if (!BuildTrack) { 
+	    	
+	    	if (RoofTake) {
+	    	    
+	    	    if (get_ival(RoofTakeHold) && event_press(RoofTakePress)) {
+                    Shunt = RoofTakePress;
+                    combo_run(RoofReplace);
+                    RoofReplace = On;
+                }
+                    if (RoofReplace && !combo_running(RoofReplace) && event_release(RoofTakeHold)) {
+                        combo_run(Pickaxe);
+                        RoofReplace = Off;
+                    }
+	    	}	
+	    	
+	    	if (WallTake) {	
+                
+                if (get_ival(WallTakeHold) && event_press(WallTakePress)) {
+                    Shunt = WallTakePress;
+                    combo_run(WallReplace);
+                    WallReplace = On;
+                }
+                    if (WallReplace && !combo_running(WallReplace) && event_release(WallTakeHold)) {
+                        combo_run(Pickaxe);
+                        WallReplace = Off;
+                    }
+            }
+	    	
+            if (InstantPickaxe) {
+            
+                if (event_press(Pickaxe)) 
+                    Axe = On;
+            
+                if (Axe) {
+                    if (event_press(Build) || event_press(Ads) || event_press(N_Weapon) || event_press(P_Weapon)) 
+                        Axe = Off;
+                        
+                        if (event_release(Fire))
+                            combo_run(Pickaxe);
+                }
+            }
+	    
+	    	if (AimAssist) {
+	    		
+	    		if (get_ival(Ads) || get_ival(Fire)) {
+                	
+                	Axis = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)))
+                	DoGzStyle();
+                	
+                	if (Axis <= Deadzone) {
+                		set_polar(PS,Speed = (Speed + (Angle + BoostAngle)) % 360,(Radius + BoostRadius) * 327);
+	    			}	
+	    				else {
+	    					DoGzPolar(Speed = (Speed + (Angle + BoostAngle)) % 360,(Radius + BoostRadius) * 327); 
+        				}
+        		}
+            }
+	    
+        	if (DropShotMod) {
+        
+            	if (DropShot&& !get_ival(Crouch) && get_ival(Fire)) {
+                	combo_run(DropShot);
+            	}    
+                	else {
+                    	combo_stop(DropShot);
+                	}
+              	
+              	if ((!BuildTracker) && (event_press(Build) || event_press(EditAssist))) {
+                    DropShotMod = On;
+                }  	
+        
+        	}
+	    
+        	if (JumpShotMod) {
+        
+            	if (JumpShot && !get_ival(Ads) && !get_ival(Jump) && event_press(Fire)) {
+                	combo_run(JumpShot);
+            	}    
+                	else {
+                    	combo_stop(JumpShot);
+                	}
+        		
+        		if ((!BuildTracker) && (event_press(Build) || event_press(EditAssist))) {
+                    JumpShotMod = Off;
+                } 
+        	}
+	    	
+	    	if (FireMod) {
+        
+                if ((RapidFire && !RapidFireHip && get_ival(Ads) && get_ival(Fire)) || (RapidFire && RapidFireHip && get_ival(Fire))) {
+                    combo_run(RapidFire);
+                }    
+                    else {
+                        combo_stop(RapidFire);
+                    }
+	    	    
+                if ((DynaRapidFire && !DynaFireHip && get_ival(Ads) && get_ival(Fire)) || (DynaRapidFire && DynaFireHip && get_ival(Fire))) {
+                    DynamicWait = DynaFireWait * 10 - (get_ival(Fire) * 3);
+                    combo_run(DynaFire);
+                }    
+                    else {
+                        combo_stop(DynaFire);
+                    }
+	    	    
+                if ((BurstFire && !BurstFireHip && get_ival(Ads) && get_ival(Fire)) || (BurstFire && BurstFireHip && get_ival(Fire))) {
+                    combo_run(BurstFire);
+                }    
+                    else {
+                        combo_stop(BurstFire);
+                    }
+	    	}
+	    	
+	    	if (PumpWall && get_ival(PumpWallHold) && event_press(PumpWallPress)) {
+            
+            	Shunt = PumpWallPress;
+            	combo_run(PumpWall);
+        	}
+	    }
+	}
+    
+    if (get_ival(KillSwitchHold) && event_press(KillSwitchPress)) {
+        Shunt = KillSwitchPress;
+        KillSwitch = !KillSwitch;
+        ToggleName = On;
+        Toggle(KillSwitch,KillSwitchL[0]);
+    }
+
+	if (!MainMenu && get_ival(MenuEnterHold) >= 90 && event_press(MenuEnterPress)) {
+
+		MenuToggle(On,On,On,On,Off);
+	}
+
+	if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        MenuTimeout += get_rtime();
+
+		if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(ChangeMenuPress)) {
+
+			MenuTimeout = Off;
+		}
+
+			if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+
+				MenuToggle(Off,Off,Off,Off,Off);
+			}
+
+			if (event_press(ChangeMenuPress)) {
+
+				MenuValues = !MenuValues;
+				MenuSwitch = !MenuSwitch;
+				ModIndex = On;
+				Update = On;
+			}
+
+
+		if (MenuValues) {
+
+			ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModIncrement[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+		if (MenuSwitch && ModIndex != 2) {
+
+			ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}	
+			else if (MenuSwitch && ModIndex == 2) {
+			
+				ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],1,3,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}
+			BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+	}
+ 
+    if (!MainMenu && get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+        Slot = On;
+        combo_run(Boot);
+    }
+
+    if (!MainMenu && Saver) { 
+        ScreenTime (); 
+     	Saver (); 
+	} 
+
+    if (!MainMenu && LEDRainbowFlow) { 
+        LedFlow();
+    }
+    
+    if (ToggleTime) {
+        TimeToggle();
+    }
+
+    if (Shunt) {
+        if (event_release(Shunt)) {
+            Shunt = Off;
+        }
+            else {
+                set_val (Shunt,Off);
+            }
+    }
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+ combo DropShot {
+
+	set_val(Crouch,100);
+	wait(50);
+	set_val(Crouch,0);
+	wait(20);
+	wait(DropShotWait);
+}
+
+combo JumpShot {
+
+    set_val(Jump,100);
+    wait(50);
+    set_val(Jump,0);
+    wait(20);
+    wait(JumpShotWait);
+}
+
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidFireHold);
+    set_val(Fire,0);
+    wait(RapidFireWait);
+}
+
+combo DynaFire {
+
+    set_val(Fire,100);
+    wait(DynaFireHold);
+    set_val(Fire,0);
+    wait(DynamicWait);
+}
+
+combo BurstFire {
+
+    set_val(Fire,100);
+    wait(BurstFireHold);
+    set_val(Fire,0);
+    wait(BurstFireWait);
+}
+
+combo PumpWall {
+
+    set_val(Fire,100);
+    wait(PumpWallHTime);
+ 	set_val(Build,100);
+    wait(PumpWallHTime);
+    set_val(Wall,100);
+    wait(PumpWallHTime);
+    set_val(Build,100);
+    wait(50);
+    wait(30);
+}
+
+combo Pickaxe {
+    
+    set_val(Pickaxe,100);
+    wait(PickaxeHold);
+    Axe = Off;
+}
+
+combo WallReplace {
+    
+    wait(10);
+    set_val(Fire,100);
+    wait(WallTakeHTime + 50);
+    set_val(Build,100);
+    wait(WallTakeHTime);
+    set_val(Wall,100);
+    wait(WallTakeHTime);
+    set_val(Build,100);
+    wait(10);
+    combo_run(Pickaxe);
+    BuildTrack = Off;
+    Edit1  = Off;
+    
+}
+
+combo RoofReplace {
+    
+    set_val(Fire,0);
+    set_val(Build,100);
+    wait(30);
+    set_val(Roof,100);
+    set_val(Fire,0);
+    wait(30);
+    set_val(Roof,100);
+    set_val(Fire,0);
+    wait(30);
+    set_val(Build,100);
+    wait(10);
+    combo_run(Pickaxe);
+}
+
+combo Roof {    
+    
+    set_val(Roof,100);
+    wait(30);
+    wait(20);
+    set_val(Roof,100);
+    wait(30);
+    wait(20);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(30);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(30)
+    set_val(Reset,100);        
+    wait(30);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+combo Boot {
+        
+        wait(Slot);
+    if (Slot == 20000)    
+        cls_oled(0);
+        
+        if (Slot) {
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    }    
+        else {
+            set_rgb(255,0,0);
+            set_rumble(RUMBLE_B,15);
+        }
+     	
+     	wait(150);
+    	set_rgb(0,0,0);
+    	wait(150);
+    	reset_rumble();    
+    
+    if (Modled)
+        set_rgb(0,255,0);
+    
+        else
+            set_rgb(255,0,0);
+	
+		wait(150);
+		reset_leds();
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        if (get_ival(EditAssist)) {
+            if (EditT >= EditDelay)
+                  Press(Select);
+          }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        return;
+            set_val(Button, 100);
+}
+
+function DoGzStyle () {
+
+	if (BoostPower && get_ival(Fire)) 
+		BoostRadius = RadiusBoost;
+		
+		else
+			BoostRadius = Off;
+
+	if (BoostSpeed && get_ival(Fire)) 
+		BoostAngle = AngleBoost;
+		
+		else
+			BoostAngle = Off;
+
+	if ((Style == Circle) || (Style == Mixed && CircleSpiral && Axis <= Switch) || (Style == Mixed && !CircleSpiral && Axis >= Switch)) 
+		Radius = RadiusMax;
+	
+	if ((Style == Spiral || Style == Mixed && !CircleSpiral) && (event_press(Ads) || event_press(Fire))) 
+		Radius = RadiusMin;
+	
+	if ((Style == Spiral) || (Style == Mixed && CircleSpiral && Axis >= Switch) || (Style == Mixed && !CircleSpiral && Axis <= Switch)) {
+	
+		if (Size) 
+			Radius ++;
+			
+			else 
+				Radius --;
+
+		if (Radius > RadiusMax) {
+			Size = Off;
+		}
+	
+		if (Radius < RadiusMin) {
+			Size = On;
+		}
+	}
+}  	
+
+function GetPolar (Current,Received) {         
+    
+    Output = Current / 10 + Received / 10;
+    
+        if(Output <= -3276) return -32768; 
+        if(Output >=  3276) return  32767; 
+
+    return Current + Received; 
+} 
+
+function DoGzPolar (Rotation,Radial) {       
+      
+    set_polar(PS,Rotation,Radial);
+    set_val(PX,GetPolar(get_val(PX),get_ival(PX)));
+    set_val(PY,GetPolar(get_val(PY),get_ival(PY)));    
+}
+
+function Toggle(ModT,ModP) {
+    
+    if (combo_running(Boot))    
+        combo_stop(Boot);
+       
+        Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+	    combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        Saver = 0;
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[8]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            printf(41,38,0,1,MiscString[6]);    
+        }
+            else {
+                printf(36,38,0,1,MiscString[7]);
+            }
+                ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+        if (ToggleT >= 7000) {
+            cls_oled(0);
+            ToggleTime = Off;
+            ToggleT = 0;
+            Saver = On;
+            ScreenTime = On;
+    }
+}
+
+function LedFlow () {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 120) {
+        set_rgb(Colour / LedBrightness,Colour[1] / LedBrightness,Colour[2] / LedBrightness);
+        Colour[LedDec] -= 2; 
+        Colour[LedInc] += 2;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+}
+
+function Saver () {
+    
+    if (Saver) { 
+
+		TimeL += get_rtime();
+	
+		if(TimeL == 30) {            
+  			pixel_oled(X_POS1,Y_POS1,1);
+        	pixel_oled(X_POS2,Y_POS2,1);
+             
+             	TimerP += 1;    Length -= 1;
+             	TimerE += 1;    Length -= 1;
+                
+            	if(XorY1)  X_POS1 +=Dir1;
+            	if(XorY2)  X_POS2 +=Dir2;
+            	if(!XorY1) Y_POS1 +=Dir1;
+            	if(!XorY2) Y_POS2 +=Dir2;
+ 
+            if(Y_POS1 < 1)   Y_POS1 = 63;
+            if(Y_POS2 < 1)   Y_POS2 = 63;
+            if(X_POS1 < 1)   X_POS1 = 127;
+            if(X_POS2 < 1)   X_POS2 = 127;
+            if(Y_POS1 > 63)  Y_POS1 = 1;
+            if(Y_POS2 > 63)  Y_POS2 = 1;
+            if(X_POS1 > 127) X_POS1 = 1;
+            if(X_POS2 > 127) X_POS2 = 1;
+    
+    	if(Length < 1) {
+        	cls_oled(0);
+        	Y_POS2 = random(1,64);
+        	Y_POS1 = random(1,64);
+        	X_POS1 = random(1,128);
+        	X_POS2 = random(1,128);
+        	Steps1 = random(5,25);
+        	Steps2 = random(5,25);
+        	Length = random(200,1000);
+    	}
+    
+        	if(TimerP > Steps1) { 
+            	TimerP = 0;
+            	Steps1 = random(5,25);
+            	XorY1 = !XorY1;
+            	Dir1 = random(1,3);
+    
+           	 		if(Dir1 == 2) Dir1 = -1;
+        	} 
+
+		if(TimerE > Steps2)    {
+			TimerE = 0;
+            Steps2 = random(5,25);
+            XorY2 = !XorY2;
+            Dir2 = random(1,3);
+    
+				if(Dir2 == 2) Dir2 = -1;
+		}                                    
+        	TimeL = 0;
+     	}
+ 	}   
+	
+		if (!Saver)
+			cls_oled(0);
+}
+
+function ScreenTime () { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+             Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+
+function BlockButton (Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+  
+function MenuToggle (Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod (ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch && ModIndex != 2) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			} 
+			
+			else if (MenuSwitch && ModIndex == 2) {
+				
+					printf(51,24,1,1,ModAimAssist[ModVal]); 
+			}
+			
+		Update = Off; 
+	} 
+
+	if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+		Update = On;
+		ModVal += ModValInc;
+		ModMonitor(ModValLbl);
+		
+            if (ModVal >= ModValMax){ 
+                return ModValMax;
+            }
+	} 
+ 
+		if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+			Update = On;
+			ModVal -= ModValInc;
+			ModMonitor(ModValLbl);
+			
+				if (ModVal <= ModValMin){
+					return ModValMin;
+				}
+		}
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+
+function ModMonitor (Mon) {
+    
+    if (Mon == ModToggle[8]) {
+        DynaRapidFire   = Off;
+        BurstFire       = Off;
+    }
+        if (Mon == ModToggle[9]) {
+            RapidFire       = Off;
+            BurstFire       = Off;
+        }
+    	    if (Mon == ModToggle[10]) {
+    	        RapidFire       = Off;
+    	        DynaRapidFire   = Off;
+    	    }
+} 
+
+function Grid () { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll () {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit (Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue (Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod (Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,  TRIANGLE ,   SPACE   ,     O     ,     r     ,   SPACE   ,     Y     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   };

@@ -1,0 +1,38 @@
+define Smart_AR            = TRUE;
+int smartrecoil_str        = 110;
+int smartrecoil_vertical   =  60;
+int smartrecoil_horizontal =  -1;
+
+define smartrecoil_base = 100;
+int smartrecoil_add, smartrecoil_x, smartrecoil_y;
+int smartrecoil_rumble;
+int Invert_Recoil = 1;
+
+main {
+    if(Smart_AR) {
+        smartrecoil_y = smartrecoil_vertical * Invert_Recoil * -1;
+        smartrecoil_x = smartrecoil_horizontal; 
+        smartrecoil_add = (smartrecoil_str - smartrecoil_base) * Invert_Recoil;
+    if(get_val(PS4_L2) && get_val(PS4_R2) && get_rumble(RumbleToUse())) {
+        smartrecoil_rumble = get_rumble(RumbleToUse());
+    if (smartrecoil_rumble > 10 && smartrecoil_rumble < 90) {
+      if(abs(get_val(PS4_RY)) < (smartrecoil_rumble + smartrecoil_add + smartrecoil_y) && 
+        abs(get_val(PS4_RX)) < (smartrecoil_rumble + smartrecoil_add + smartrecoil_x)) {
+            set_val(PS4_RY, (smartrecoil_rumble + smartrecoil_add + smartrecoil_y)); }
+        }
+            offset(PS4_RX, smartrecoil_x);
+        }
+    }
+}
+
+function RumbleToUse() {
+    if(get_rumble(RUMBLE_A) >= get_rumble(RUMBLE_B)) 
+        return RUMBLE_A;
+    if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B)) 
+        return RUMBLE_B;
+        
+    return 0;
+}
+function offset(axis, offset_val) {
+    set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+}

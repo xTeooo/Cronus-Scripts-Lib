@@ -1,0 +1,514 @@
+/* *
+* Exclusive Advanced Tools
+* 
+*  Copyright 2021 Exat.
+*  All rights reserved.
+* *********************************************************** */
+
+    // Exclusive Advanced Tools
+    // Private Project
+    // By Wolthy
+    // Email : exatplay@gmail.com
+    // Instagram : @exatplay
+    // Version : 2.0.0
+    // Optimized for Standard FPS settings
+
+                          ///////////////////////
+                        //                   __  //
+                      //    ___  _  ______ _/ /_  //
+                     //    / _ \| |/_/ __ `/ __/   //
+                     //   /  __/>  </ /_/ / /_     //
+                     //   \___/_/|_|\__,_/\__/     //
+                      //                          //
+                       //                       //
+                         ///////////////////////
+
+//----------------------------------------------------------------------//
+
+    // READ THE INSTRUCTIONS BELOW ON HOW TO ENABLE/DISABLE THE FEATURES
+
+    // QUICK TOGGLE                 // ACTION
+
+    //-------------------------------> TONIC JUMP/ QUICK BEAVER HAT
+
+    // Hold R3 & Press RIGHT        -> ON/ LEVEL 1/3 TONIC MODE
+    // Hold R3 & Press RIGHT again  -> LEVEL 2 TONIC MODE
+    // Hold R3 & Hold RIGHT         -> OFF
+    // for 0,5s
+    
+    // If LEVEL 2 TONIC MODE is selected, holding R3 & pressing RIGHT will select LEVEL 1/3 TONIC MODE.
+    // And vice versa.
+    
+    //------------------------------//
+    
+    // Hold R1 & Press DOWN         -> TONIC GOD MODE
+    // Hold R2 & Press DOWN         -> PISTOL SPAM
+    // Hold R1 & Press RIGHT        -> CARCANO RAPID FIRE
+    // Hold L3 & Press RIGHT        -> AUTO SPIN RIGHT
+    // Hold L3 & Press UP           -> AUTO SPIN LEFT
+    // Hold R2 & Press LEFT         -> FAST SHOT
+    // Hold L2, CROSS & Press UP    -> AUTO DEADEYE
+    
+    //-------------------------------> ADVANCED AUTO HEADSHOT
+    
+    // Hold L2 & Press RIGHT        -> ON/ LOW HEIGHT MODE
+    // Hold L2 & Press RIGHT again  -> MEDIUM HEIGHT MODE
+    // Hold L2 & Hold RIGHT         -> OFF
+    // for 0,5s
+    
+    // If MEDIUM HEIGHT MODE is selected, holding L2 & pressing RIGHT will select LOW HEIGHT MODE.
+    // And vice versa.
+    
+//----------------------------------------------------------------------//
+
+    // READ THE GUIDE BELOW ON HOW TO USE THE ENABLED FEATURES
+
+    // FEATURE                      // DESCRIPTION
+
+    // TONIC JUMP/ QUICK BEAVER HAT -> Once the tonic mode is selected (read the instructions above),
+    //                                 hold a weapon (except pistols/ revolvers/ bows), press R3 and move
+    //                                 the joystick simultaneously towards the tonic you want to take instantly
+    //                                 (level 1/3 or 2 depending on the selected mode).
+    //                                 Same thing for the Beaver Hat (works with any mode).
+
+    // TONIC GOD MODE               -> Hold R1 and move the joystick towards the
+    //                                 tonic you want to spam.
+    //                                 Recommended : Level 2 tonics.
+
+    // PISTOL SPAM                  -> While aiming with L2, hold R2 to fire automatically.
+
+    // CARCANO RAPID FIRE           -> Put yourself in 3rd person view.
+    //                                 Get your Carcano to the point where pulling
+    //                                 the trigger will fire the weapon.
+    //                                 While aiming with L2, hold R1 to rapid fire automatically.
+    //                                 Release R1 after each reload. Clean your Carcano regularly.
+    
+    // AUTO SPIN                    -> Point L3 in any direction and hold L3 while holding
+    //                                 a weapon to automatically spin.
+    
+    // FAST SHOT                    -> While aiming with L2, press R2 once.
+    //                                 Release L2 and R2 after each shot. Clean your weapon regularly.
+    //                                 Recommended for use with : Lancaster, Evans, Cattleman, Varmint,
+    //                                 Pump-Action Shotgun.
+    
+    // AUTO DEADEYE                 -> Once the feature is activated, simply aim with L2
+    //                                 to automatically activate the deadeye.
+    
+    // ADVANCED AUTO HEADSHOT       -> Once the auto headshot mode is selected (read the instructions above),
+    //                                 aim with L2, activate the deadeye (PIB*) manually (with R3) or automatically (with AUTO DEADEYE) 
+    //                                 and then shoot with R2 to kill your target.
+    //                                 Manually adjust the aim for increased accuracy.
+    //                                 Recommended : Medium height for short/ middle range,
+    //                                 Low height for long range.
+    //                                 Optimized for repeaters.
+    //                                 *PIB = Paint It Black
+    
+//----------------------------------------------------------------------//
+
+    // CHOOSE BELOW WHICH FEATURES TO ENABLE OR DISABLE BY DEFAULT
+    // WHEN LAUNCHING THE SCRIPT :
+
+    // ** TO ENABLE A FEATURE BY DEFAULT PUT "TRUE"
+    // ** TO DISABLE A FEATURE BY DEFAULT PUT "FALSE"
+    
+    // It is recommended not to change the current settings.
+    
+    // FEATURES CAN BE ENABLED/DISABLED IN-GAME (RECOMMENDED)
+    // (READ THE INSTRUCTIONS ABOVE)
+
+    //  TONIC GOD MODE
+int tonicspam_onoff = FALSE;
+
+    // PISTOL SPAM
+int pistolspam_onoff = FALSE;
+
+    // CARCANO RAPID FIRE
+int carcanospam_onoff = FALSE;
+
+    // FAST SHOT
+int fastshot_onoff = FALSE;
+
+//----------------------------------------------------------------------//
+
+    // Do not edit anything below this line. /!\
+
+//----------------------------------------------------------------------//
+
+int autodeadeye_onoff = FALSE;
+int tonicjump_onoff = FALSE;
+int tonicjump_mode;
+int tonicjump_2_running;
+int tonicjump_1_running;
+int autospin_right_onoff = FALSE;
+int autospin_left_onoff = FALSE;
+int autoheadshot_onoff = FALSE;
+int headshot_mode;
+int medium_running;
+int low_running;
+int wait_time;
+
+define autodeadeye_button = XB1_LT;
+define tonicjump_button = XB1_RS;
+define tonicspam_button = XB1_RB;
+define pistolspam_button = XB1_RT;
+define carcanospam_button = XB1_RB;
+define autospin_right_button = XB1_LS;
+define autospin_left_button = XB1_LS;
+define fastshot_button = XB1_RT;
+define autoheadshot_button = XB1_LT;
+
+//////////////////////////////////////////////////////////////////////////
+
+main {
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF TONIC JUMP/ QUICK BEAVER HAT
+    if((get_lval(tonicjump_button)) && !(get_val(XB1_LT))) {
+    		if(event_release(XB1_RIGHT))
+            tonicjump_mode = tonicjump_mode + 1;
+    		if(get_lval(XB1_RIGHT) && get_ptime(XB1_RIGHT)>500)
+            tonicjump_mode = 0;
+    		tonicjump_onoff=TRUE;
+    		set_val(XB1_RIGHT, 0);
+
+    //TONIC JUMP/ QUICK BEAVER HAT
+        if(((tonicjump_mode && !tonicjump_1_running && !tonicjump_2_running) && (get_ptime(XB1_RS)) < 120) && !(get_val(XB1_LB)))
+    		{
+            if(!tonicjump_1_running && test_bit(tonicjump_mode,0))   {
+            combo_run(tonicjump_1);} 
+            if(!tonicjump_2_running && !test_bit(tonicjump_mode,0)){
+            combo_run(tonicjump_2);}
+    		}
+    	}
+    	if(get_lval(XB1_LT)) { 
+        combo_stop(tonicjump_1);
+        combo_stop(tonicjump_2);
+        tonicjump_1_running=FALSE;
+        tonicjump_2_running=FALSE;
+        tonicjump_onoff=FALSE;
+        }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF TONIC SPAM
+    if((get_val(tonicspam_button)) && !(get_val(XB1_LT))) {
+        if(event_press(XB1_DOWN)) {
+        tonicspam_onoff = !tonicspam_onoff; //toggle ON/OFF
+        }
+
+    //TONIC SPAM
+    if(tonicspam_onoff) {
+        if((get_val(tonicspam_button)) && !(get_val(XB1_LB))) {
+        combo_run(tonicspam);}
+    } else if(combo_running(tonicspam))
+        combo_stop(tonicspam);
+    }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF PISTOL SPAM
+    if((get_val(pistolspam_button))) {
+        if(event_press(XB1_DOWN)) {
+        pistolspam_onoff = !pistolspam_onoff; //toggle ON/OFF
+        }
+        
+    //PISTOL SPAM
+    if(pistolspam_onoff) {
+        if(((get_val(XB1_LT)) && (get_val(pistolspam_button)) && (get_ptime(XB1_RT)) > 120) && !(get_val(XB1_LB))) {
+        combo_run(pistolspam);}
+    } else if(combo_running(pistolspam))
+        combo_stop(pistolspam);
+    }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF CARCANO SPAM
+    if((get_val(carcanospam_button))) {
+        if(event_press(XB1_RIGHT)) {
+        carcanospam_onoff = !carcanospam_onoff; //toggle ON/OFF
+        set_val(XB1_RIGHT, 0);
+        }
+        
+    //CARCANO SPAM
+    if(carcanospam_onoff) {
+        if((get_val(XB1_LT)) && (get_val(carcanospam_button))) {
+        set_val(XB1_RT, 100);
+        combo_run(carcanospam);}
+    } else if(combo_running(carcanospam))
+        combo_stop(carcanospam);
+    }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF AUTO SPIN RIGHT
+    if((get_val(autospin_right_button))) {
+        if(event_press(XB1_RIGHT)) {
+        autospin_right_onoff = !autospin_right_onoff; //toggle ON/OFF
+        }
+        
+    //AUTO SPIN RIGHT
+    if(autospin_right_onoff) {
+        if((get_val(autospin_right_button)) && (get_ptime(XB1_LS)) > 250 && !(get_val(XB1_LT)) && !(get_val(XB1_RT))) {
+        combo_run(autospin_right);}
+    } else if(combo_running(autospin_right))
+        combo_stop(autospin_right);
+    if(autospin_right_onoff) {
+    autospin_left_onoff = FALSE;
+        }
+    }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF AUTO SPIN LEFT
+    if((get_val(autospin_left_button))) {
+        if(event_press(XB1_UP)) {
+        autospin_left_onoff = !autospin_left_onoff; //toggle ON/OFF
+        }
+        
+    //AUTO SPIN LEFT
+    if(autospin_left_onoff) {
+        if((get_val(autospin_left_button)) && (get_ptime(XB1_LS)) > 250 && !(get_val(XB1_LT)) && !(get_val(XB1_RT))) {
+        combo_run(autospin_left);}
+    } else if(combo_running(autospin_left))
+        combo_stop(autospin_left);
+    if(autospin_left_onoff) {
+    autospin_right_onoff = FALSE;
+        }
+    }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF FAST SHOT
+    if((get_val(fastshot_button))) {
+        if(event_press(XB1_LEFT)) {
+        fastshot_onoff = !fastshot_onoff; //toggle ON/OFF
+        }
+        
+    //FAST SHOT
+    if(fastshot_onoff) {
+        if(((get_val(XB1_LT)) && (get_val(fastshot_button)) && (get_ptime(XB1_RT)) < 250) && !(get_val(XB1_LB)) && !(get_val(XB1_RB))) {
+        combo_run(fastshot);}
+        }
+    }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF ADVANCED AUTO HEADSHOT
+    if((get_lval(autoheadshot_button)) && !(get_val(XB1_LB))) {
+    		if(event_release(XB1_RIGHT))
+            headshot_mode = headshot_mode + 1;
+    		if(get_lval(XB1_RIGHT) && get_ptime(XB1_RIGHT)>500)
+            headshot_mode = 0;
+    		autoheadshot_onoff=TRUE;
+    		set_val(XB1_LB, 0);
+
+    //ADVANCED AUTO HEADSHOT
+        if(headshot_mode && !low_running && !medium_running)
+    		{
+            if(!low_running && test_bit(headshot_mode,0))   {
+            wait_time=200; combo_run(low_height);   } 
+            if(!medium_running && !test_bit(headshot_mode,0)){
+            wait_time=200; combo_run(medium_height); }
+    		}
+    	}
+    	if(event_release(XB1_LT)) { 
+        combo_stop(low_height);
+        combo_stop(plus_height);
+        combo_stop(medium_height);
+        low_running=FALSE;
+        medium_running=FALSE;
+        autoheadshot_onoff=FALSE;
+        }
+//////////////////////////////////////////////////////////////////////////
+    //ON/OFF AUTO DEADEYE
+    if((get_val(autodeadeye_button)) && !(get_val(XB1_LB))) {
+        if((event_press(XB1_UP)) && (get_val(XB1_A))){
+        autodeadeye_onoff = !autodeadeye_onoff; //toggle ON/OFF
+        }
+
+    //AUTO DEADEYE
+    if(autodeadeye_onoff) {
+        if(((get_val(autodeadeye_button)) && (get_ptime(XB1_LT)) < 120) && !(get_val(XB1_LB))) {
+        combo_run(autodeadeye);}
+    } else if(combo_running(autodeadeye))
+        combo_stop(autodeadeye);
+    }
+}
+//////////////////////////////////////////////////////////////////////////
+
+combo autodeadeye {
+    wait(120);
+    set_val(XB1_RS, 100);
+    wait(80);
+}
+
+combo tonicjump_1
+{
+    set_val(XB1_LB, 100);
+    set_val(XB1_RB, 100);
+    wait(40)
+    set_val(XB1_LB, 0);
+    set_val(XB1_RB, 0);
+    wait(900)
+    set_val(XB1_X, 100);
+    wait(40);
+    set_val(XB1_X, 0);
+    wait(80);
+}
+
+combo tonicjump_2
+{
+    set_val(XB1_LB, 100);
+    set_val(XB1_RB, 100);
+    wait(40)
+    set_val(XB1_LB, 0);
+    set_val(XB1_RB, 0);
+    wait(1095)
+    set_val(XB1_X, 100);
+    wait(40);
+    set_val(XB1_X, 0);
+    wait(80);
+}
+
+combo tonicspam {
+    set_val(XB1_LB, 100);
+    set_val(XB1_RB, 100);
+    wait(40);
+    set_val(XB1_LB, 0);
+    set_val(XB1_RB, 0);
+    wait(80);
+}
+
+combo pistolspam {
+    set_val(XB1_RT, 100);
+    wait(40);
+    set_val(XB1_RT, 0);
+    wait(30);
+    set_val(XB1_RT, 0);
+}
+
+combo carcanospam {
+    wait(20)
+    set_val(XB1_RT, 0);
+    wait(95);
+    set_val(XB1_RT, 100);
+    wait(10);
+    set_val(XB1_RT, 100);
+    set_val(XB1_A, 100);
+    wait(20);
+}
+
+combo fastshot {
+    set_val(XB1_A, 100);
+    wait(100);
+    set_val(XB1_A, 0);
+    wait(50);
+    set_val(XB1_A, 100);
+    wait(100);
+    set_val(XB1_A, 0);
+}
+
+combo low_height
+{
+	wait(200);
+	set_val(XB1_RY, -100);
+	set_val(XB1_RX, -30);
+	wait(140);
+	low_running=TRUE;
+}
+
+combo plus_height
+{
+	set_val(XB1_RY, -100);
+	set_val(XB1_RX, -15);
+	wait(40); 
+	medium_running=TRUE;
+}
+
+combo medium_height
+{
+	call(low_height);
+	call(plus_height);
+}
+
+combo basespin
+{
+    set_val(XB1_LT, 100);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, -100);
+    set_val(XB1_A, 100);
+    wait(50); 
+    set_val(XB1_LT, 100);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, -100);
+    set_val(XB1_A, 100);
+    wait(10); 
+    set_val(XB1_LT, 100);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, -100);
+    set_val(XB1_A, 0);
+    wait(10);
+    set_val(XB1_LT, 0);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 0);
+    wait(50);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(30);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(20);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(10); 
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(10);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(20);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(10);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, 100);
+    wait(20);
+    set_val(XB1_LX, 0);
+    set_val(XB1_LY, 100);
+    wait(50);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, 100);
+    wait(20);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, 100);
+    set_val(XB1_A, 100);
+    wait(10);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, 100);
+    set_val(XB1_A, 100);
+    wait(20);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, 100);
+    set_val(XB1_A, 100);
+    wait(30);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, 100);
+    set_val(XB1_A, 100);
+    wait(30);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, 0);
+    set_val(XB1_A, 100);
+    wait(50);
+    set_val(XB1_LX, -100);
+    set_val(XB1_A, 0);
+    wait(50);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, -100);
+    wait(20);
+    set_val(XB1_LX, -100);
+    set_val(XB1_LY, -100);
+    wait(10);
+}
+combo autospin_right
+{
+    set_val(XB1_LT, 100);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, -100);
+    wait(50);
+    call(basespin);
+}
+
+combo autospin_left {
+    set_val(XB1_LT, 100);
+    set_val(XB1_LX, 100);
+    set_val(XB1_LY, -100);
+    wait(80)
+    set_val(XB1_LEFT, 100);
+    wait(50); 
+    call(basespin);
+}

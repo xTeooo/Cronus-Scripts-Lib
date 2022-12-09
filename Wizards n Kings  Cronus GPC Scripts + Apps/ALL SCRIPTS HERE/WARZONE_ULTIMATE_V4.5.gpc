@@ -1,0 +1,608 @@
+/*
+------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------   
+------------------------------------FABRICIO KEITEL ULTIMATE WARZONE SCRIPT-------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+Version: 4.5
+Platform: Multi
+Controller: Multi
+Game: WARZONE
+Author: FABRICIO KEITEL
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+*/
+int ULTIMATEV_V4_001 = FALSE; 
+int ULTIMATEV_V4_002 = FALSE; 	
+int ULTIMATEV_V4_003 = FALSE; 
+int ULTIMATEV_V4_004 = FALSE;
+int ULTIMATEV_V4_AUTO_RUN = TRUE; 
+int AIM__BOT = TRUE;
+int release= 21;
+int AIM_BOT__VALUE=	20;
+int AIM_BOT_VALUE=	-20;	
+
+
+// PRIMARY WEAPON:
+int AR_Primary = 22; // ULTIMATEV_V4_COMBO_007 Vertical
+int ARH_Primary = 0; // ULTIMATEV_V4_COMBO_007 Horizontal
+int RF_Primary_onoff = FALSE; // Set TRUE to enable RapidFire by default on Primary else set FALSE
+int RoF_Primary = 8; // Range: 1 to 25 RPS (Round/s)
+ 
+// SECONDARY WEAPON:
+int AR_Secondary = 24; // ULTIMATEV_V4_COMBO_007 Vertical
+int ARH_Secondary = 0; // ULTIMATEV_V4_COMBO_007 Horizontal
+int RF_Secondary_onoff = FALSE; // Set TRUE to enable RapidFire by default on Secondary else set FALSE
+int RoF_Secondary = 10; // Range: 1 to 25 RPS (Round/s)
+ 
+
+////////// Do not modify //////////
+
+define Off       = 0;
+define Blue      = 1;
+define Red       = 2;
+define Green     = 3;
+define Pink      = 4;
+define SkyBlue   = 5;
+define Yellow    = 6;
+define White     = 7;
+ 
+data(
+  0,0,0,0, //0. Off
+  2,0,0,0, //1. Blue
+  0,2,0,0, //2. Red
+  0,0,2,0, //3. Lime/Green
+  0,0,0,2, //4. Fuchsia/Pink
+  2,0,2,0, //5. SkyBlue
+  0,2,2,0, //6. Yellow
+  2,2,2,2  //7. White
+);
+int USE_SENS;
+int weapon;
+
+int ARV;
+int ARH;
+int arv;
+int arh;
+ 
+int idx;
+ 
+int RATE_OF_FIRE;
+int hold_time;
+int rest_time;
+ 
+init {
+    AR_Primary = get_pvar(SPVAR_1, -100, 100, 0);   ARH_Primary = get_pvar(SPVAR_4, -100, 100, 0);   RoF_Primary = get_pvar(SPVAR_7, 0, 25, 0); 
+    AR_Secondary = get_pvar(SPVAR_2, -100, 100, 0); ARH_Secondary = get_pvar(SPVAR_5, -100, 100, 0); RoF_Secondary = get_pvar(SPVAR_8, 0, 25, 0);
+
+} 
+  //Ultimate Sensitivity 
+    int ADS_SENS = 98;                            
+    int ADS_FIRE_SENS = 91; 	
+	int FIRE_SENS = 82; 	                   
+    int GEN_SENS = 84;   
+    /*NOTE:
+    Default = 100
+    Ranges from 0 to 327*/
+    define MIDPOINT = 52;   
+    
+    
+main {     
+    
+    if(get_val(XB1_LT)) 
+    sensitivity(PS4_RX, 54, 100);
+	sensitivity(PS4_RY, 58, 93);
+ 
+    if(get_val(XB1_RT)) 
+    sensitivity(PS4_RX, NOT_USE, 100);
+	sensitivity(PS4_RY, NOT_USE, 112);
+ 
+    if((get_val(PS4_RX)) && (get_val(PS4_RY) && (get_val(PS4_LY) && (get_val(PS4_LX)&& (!get_val(XB1_LT) && (!get_val(XB1_RT))))))) {
+    sensitivity(PS4_RX, NOT_USE, 94);        
+    sensitivity(PS4_RY, NOT_USE, 106);}
+    
+    
+    if(!get_val(XB1_LT) && !get_val(XB1_RT)) { 
+    USE_SENS=GEN_SENS;}
+    else if(get_val(XB1_LT) && !get_val(XB1_RT)) { 
+    USE_SENS=ADS_SENS;}    
+    else if(!get_val(XB1_LT) && get_val(XB1_RT)) { 
+    USE_SENS=FIRE_SENS;}
+    else if(get_val(XB1_LT) && get_val(XB1_RT)) { 
+    USE_SENS=ADS_FIRE_SENS;}
+    sensitivity(9, MIDPOINT ,USE_SENS);
+	sensitivity(10, MIDPOINT ,USE_SENS);
+
+
+if((get_val(7)) >= 100) { 
+    set_val(XB1_LS, 100);  
+      }  
+    
+if(event_press(PS4_TRIANGLE))
+   combo_run(ULTIMATEV_RUMBLE_OFF);
+           
+   deadzone(PS4_L2,PS4_R2,99,99);	
+   
+if(ULTIMATEV_V4_AUTO_RUN){ 
+if(get_val(PS4_LY) <=-85 && !get_val(XB1_LT) && !get_val(XB1_RT))
+   combo_run(ULTIMATEV_V4_COMBO_002);
+   else
+   combo_stop(ULTIMATEV_V4_COMBO_002); 
+    	 
+
+    if(event_release(XB1_Y) && get_ptime(XB1_Y) >= 550)
+     combo_run(ULTIMATEV_V4_COMBO_004);
+     
+    if(event_press(PS4_TRIANGLE) || (event_press(PS4_R2) || get_val(PS4_L2)))
+     combo_stop(ULTIMATEV_V4_COMBO_004);
+     
+    if(event_release(XB1_X) && get_ptime(XB1_X) >= 800)
+    combo_run(Auto_X);
+    
+     
+    if(event_press(PS4_SQUARE) || (event_press(PS4_R2) || get_val(PS4_L2)))
+     combo_stop(Auto_X);
+    	 
+if(!get_val(PS4_L2))
+	{
+if(event_press(XB1_X))
+ 	combo_run(ULTIMATEV_V4_COMBO_003);
+
+}}}
+main{
+//DEAD ZONE
+if(abs(get_val(XB1_RY)) <=5 && abs(get_val(XB1_RX)) <=5)
+    {
+        set_val(XB1_RY,0);                                                 
+        set_val(XB1_RX,0);
+
+if(abs(get_val(XB1_LY)) <=5 && abs(get_val(XB1_LX)) <=5)
+    	{
+        	set_val(XB1_RY,0);                                                 
+        	set_val(XB1_RX,0);
+}}
+if(get_val(PS4_UP) && event_press(PS4_SQUARE)){
+    ULTIMATEV_V4_002 = !ULTIMATEV_V4_002;
+if (ULTIMATEV_V4_002) combo_run (ULTIMATEV_RUMBLE);
+if (!ULTIMATEV_V4_002) combo_run (ULTIMATEV_RUMBLE_OFF);}
+    
+if(ULTIMATEV_V4_002){
+if((get_val(XB1_LT)) >= 1) { 
+    set_val(XB1_RT, 100);}
+}{
+
+
+if(ULTIMATEV_V4_004) if(ULTIMATEV_V4_003){
+
+  if(get_val(XB1_LT) || (get_val(XB1_RT)))
+     combo_run(ULTIMATEV_V4_COMBO_001);
+     else
+     combo_stop(ULTIMATEV_V4_COMBO_001);}
+
+     
+ if(event_release(XB1_A) || (event_release(XB1_B) || (event_press(XB1_LT) )))
+    combo_stop(ULTIMATEV_V4_COMBO_001); 
+    
+}   
+if(get_val(PS4_UP) && event_press(PS4_CROSS)){
+    ULTIMATEV_V4_004 = !ULTIMATEV_V4_004;
+if (ULTIMATEV_V4_004) combo_run (ULTIMATEV_RUMBLE);
+if (!ULTIMATEV_V4_004) combo_run (ULTIMATEV_RUMBLE_OFF);}
+    
+if(ULTIMATEV_V4_004){
+
+  if(get_val(XB1_LT) && (get_val(XB1_RT))) { 
+   set_val(XB1_A, 100);}
+}{
+
+if(get_val(PS4_UP) && event_press(PS4_CIRCLE)){
+    ULTIMATEV_V4_003 = !ULTIMATEV_V4_003;
+if (ULTIMATEV_V4_003) combo_run (ULTIMATEV_RUMBLE);
+if (!ULTIMATEV_V4_003) combo_run (ULTIMATEV_RUMBLE_OFF);}
+    
+if(ULTIMATEV_V4_003){
+
+  if(get_val(XB1_LT) && (get_val(XB1_RT))) { 
+   set_val(XB1_B, 100);}
+   
+}{
+if(get_val(PS4_UP) && event_press(PS4_R3)){
+    ULTIMATEV_V4_001 = !ULTIMATEV_V4_001;
+if (ULTIMATEV_V4_001) combo_run (ULTIMATEV_RUMBLE);
+if (!ULTIMATEV_V4_001) combo_run (ULTIMATEV_RUMBLE_OFF);} 
+    
+if(ULTIMATEV_V4_001){
+if (get_val(XB1_RT) && (!get_val(XB1_RS)))
+     combo_run(ULTIMATEV_V4_COMBO_005);
+     else
+     combo_stop(ULTIMATEV_V4_COMBO_005);}
+}    
+if(AIM__BOT){
+if(get_val(XB1_LT)) 
+   combo_run(AIM_BOT);
+   else 
+   combo_stop(AIM_BOT);
+}}
+
+			
+    set_val(TRACE_1, ARV);
+    set_val(TRACE_2, ARH);
+    set_val(TRACE_3, RATE_OF_FIRE);
+    set_val(TRACE_5, weapon);
+
+
+    if(event_press(PS4_TRIANGLE) || (event_press(PS4_DOWN) && !get_val(PS4_L2)))
+    { 
+        weapon=!weapon;          
+    }
+
+    if(get_val(PS4_L2) && get_val(PS4_OPTIONS))
+    {
+        set_pvar(SPVAR_1, AR_Primary);   set_pvar(SPVAR_4, ARH_Primary);   set_pvar(SPVAR_7, RoF_Primary);
+        set_pvar(SPVAR_2, AR_Secondary); set_pvar(SPVAR_5, ARH_Secondary); set_pvar(SPVAR_8, RoF_Secondary);
+        combo_run(ULTIMATEV_RUMBLE);              combo_run(ULTIMATEV_V4_COMBO_009);                 set_val(PS4_OPTIONS, 0)
+    }
+ 
+     if(get_val(PS4_L2) && get_val(PS4_R2))
+        combo_run(ULTIMATEV_V4_COMBO_007);
+            else 
+                combo_stop(ULTIMATEV_V4_COMBO_007);
+ 
+    hold_time = 500 / RATE_OF_FIRE;
+    rest_time = hold_time - 20;
+    if(rest_time < 0) rest_time = 0;
+ 
+    
+        {
+            if(!weapon) 
+            {
+                AR_Primary = edit_val (0, PS4_L2, PS4_CROSS, AR_Primary, PS4_UP, PS4_DOWN, 0, 100);
+                ARH_Primary = edit_val (1, PS4_L2, PS4_CROSS, ARH_Primary, PS4_RIGHT, PS4_LEFT, -100, 100);
+
+                if(RF_toggle (PS4_L2, PS4_RIGHT, PS4_RIGHT))
+                    RF_Primary_onoff = !RF_Primary_onoff;
+
+                if(RF_Primary_onoff)
+                {
+                    RoF_Primary = edit_val (2, PS4_L2, PS4_CIRCLE, RoF_Primary, PS4_UP, PS4_DOWN, 0, 25); 
+                    RF ();
+                }   
+            }
+ 
+            if(weapon) 
+            {
+                AR_Secondary = edit_val (0, PS4_L2, PS4_CROSS, AR_Secondary, PS4_UP, PS4_DOWN, 0, 100);
+                ARH_Secondary = edit_val (1, PS4_L2, PS4_CROSS, ARH_Secondary, PS4_RIGHT, PS4_LEFT, -100, 100);
+
+                if(RF_toggle (PS4_L2, PS4_RIGHT, PS4_RIGHT))
+                    RF_Secondary_onoff = !RF_Secondary_onoff;
+
+                if(RF_Secondary_onoff)
+                {
+                    RoF_Secondary =  edit_val (2, PS4_L2, PS4_CIRCLE, RoF_Secondary, PS4_UP, PS4_DOWN, 0, 25); 
+                    RF ();
+               }   
+            }
+        }
+
+         if(!weapon) LED(Blue);
+             else LED(Green); 
+              } 
+combo AIM_BOT {
+	set_val(XB1_RY,xy_val(XB1_RY, AIM_BOT_VALUE));
+    wait(15);
+    set_val(XB1_RX,xy_val(XB1_RX, AIM_BOT__VALUE));
+    set_val(XB1_LX,xy_val(XB1_LX, AIM_BOT_VALUE));
+    wait(15);
+    set_val(XB1_RY,xy_val(XB1_RY, AIM_BOT__VALUE ));
+    wait(15);
+    set_val(XB1_RX,xy_val(XB1_RX, AIM_BOT_VALUE ));
+    set_val(XB1_LX,xy_val(XB1_LX, AIM_BOT__VALUE ));
+    wait(15);
+}
+combo ULTIMATEV_V4_COMBO_006 {
+    wait(hold_time);
+    set_val(PS4_R2, 0);
+    wait(rest_time);
+
+} 
+combo ULTIMATEV_RUMBLE_OFF {
+   set_rumble(RUMBLE_B, 100);
+    wait(150);
+    set_rumble(RUMBLE_B, 0);
+    wait (150);
+    set_rumble(RUMBLE_B, 100);
+    wait(150);
+    reset_rumble();
+
+}
+combo ULTIMATEV_RUMBLE {
+    set_rumble(RUMBLE_A, 50);
+    wait(300);
+    reset_rumble();
+}
+ 
+combo ULTIMATEV_V4_COMBO_009 {
+    wait(400);
+    LED(Off);
+    wait(400);
+}
+ 
+combo ULTIMATEV_V4_COMBO_007 { 
+    arv = get_val(10) + ARV;
+    if(arv > 100) arv = 100;
+    set_val(10, arv);
+    arh = get_val(9) + ARH;
+    if(arh > 100) arh = 100;
+    set_val(9, arh);
+} 
+combo ULTIMATEV_V4_COMBO_002{
+    set_val(XB1_LS, 100);
+    wait(50);
+    set_val(XB1_LS, 0);
+    wait(100);
+}    
+  combo Auto_X {
+    set_val(XB1_X,100);
+    wait(10500);
+}   
+combo ULTIMATEV_V4_COMBO_003 {
+    set_val(XB1_LS, 0);
+    wait(2200);
+    set_val(XB1_LS, 100);
+}
+ combo ULTIMATEV_V4_COMBO_005 {
+	set_val(PS4_UP, 100);
+	wait(40);
+	set_val(PS4_UP, 0);
+	wait(70);
+}	
+ combo ULTIMATEV_V4_COMBO_004 {
+    set_val(XB1_Y,100);
+    wait(5500);
+}   
+combo ULTIMATEV_V4_COMBO_001 {
+   set_val(XB1_B,100);
+   wait(50);
+   set_val(XB1_A,0);
+   set_val(XB1_B,0);
+   wait(30000);      
+} 
+function edit_val (f_idx, f_btn1, f_btn2, f_var, f_inc, f_dec, f_min, f_max) { 
+    idx = f_idx; 
+ 
+    if(idx == 0)
+        ARV = f_var; 
+    if(idx == 1)
+        ARH =  f_var; 
+    if(idx == 2)
+        RATE_OF_FIRE = f_var; 
+ 
+    if(get_val(f_btn1) && get_lval(f_btn2))
+    {
+        if(event_press(f_inc))
+            f_var += 1;        
+        if(event_press(f_dec))
+            f_var -= 1;
+        set_val(f_inc, 0); set_val(f_dec, 0);
+
+        if(f_var < f_min)
+        {
+            f_var = f_min;
+            combo_run(ULTIMATEV_RUMBLE);
+        }
+        if(f_var > f_max)
+        {
+            f_var = f_max;
+            combo_run(ULTIMATEV_RUMBLE);
+        }
+        set_val(f_btn2, 0);
+    }
+    return f_var;
+}
+//################################################################################################# 
+//######################################### Aim Abuse ####################################### 
+//################################################################################################# 
+//
+// State machine variable
+//
+ 
+ 
+int Current_State          = 0;
+int Aim_Abuse_State      = 2;
+ 
+ 
+define Get_Last_Value     = 0;
+define Get_Current_Value = 1;
+define Aim_Correction      = 12;
+define Aim_Boost          = 7;
+ 
+ 
+define Aim_Perfection_Limit = 99;
+ 
+ 
+//
+//################################################################################################# 
+//######################################### Script variable ####################################### 
+//################################################################################################# 
+//
+// Dont't change!
+//
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+ 
+int mvt = 0;
+int Aim_Boost_Val = 0; 
+int Aim_Correction_Val = 0;
+ 
+ 
+//
+//################################################################################################# 
+//############################################# MAIN ############################################## 
+//################################################################################################# 
+//
+main
+{
+ //update main eveXB1_RY 8ms --> only for XB1
+   // vm_tctrl(-2); 
+ 
+    //--LT pulled 
+ 
+	if(get_val(XB1_LT)||(get_val(XB1_RT))) 
+        {        
+            if (Current_State == Get_Last_Value)
+            {
+                X_Last_Value = get_lval(XB1_RX);
+                Y_Last_Value = get_lval(PS4_RY);
+ 
+                Current_State = Get_Current_Value;
+ 
+            }
+            else if (Current_State == Get_Current_Value)
+            {
+                X_Current_Value = get_val(XB1_RX);
+                Y_Current_Value = get_val(PS4_RY);
+ 
+                if(Aim_Abuse_State == Aim_Correction)
+                {    
+                    Current_State = Aim_Boost;
+                }
+                else
+                {
+                    Current_State = Aim_Correction;
+                }    
+            }
+            if (Current_State == Aim_Boost)
+            {
+                //Applying BOOST
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+                Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Boost;  
+            }
+            else if (Current_State == Aim_Correction)
+            {
+                //Applying CORRECTION
+                //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+                Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+                Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+ 
+                Current_State = Get_Last_Value;
+                Aim_Abuse_State = Aim_Correction; 
+            } 
+        }
+        else //--LT not pulled
+        {
+            Current_State = Get_Last_Value;
+            Aim_Abuse_State = Aim_Correction; 
+        }
+}
+//
+//################################################################################################# 
+//############################################# FUNC ############################################## 
+//################################################################################################# 
+//           
+ 
+function 
+Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) 
+    { 
+       mvt = abs(Last_Value) + abs(Current_Value);
+       Aim_Boost_Val = ( mvt + 1 )/2; //Rounding integer division (instead of truncating)
+       Aim_Correction_Val = Aim_Boost_Val + 4;
+ 
+       if(Aim_Boost_Val >= 10)
+       {
+           Aim_Boost_Val = 10;
+           Aim_Correction_Val = 14;
+       }
+       else if(Aim_Boost_Val == 0)
+       {
+            Aim_Boost_Val = 2
+            Aim_Correction_Val = 4;
+       }
+ 
+ 
+       if(mvt < Aim_Perfection_Limit) 
+       {
+            //--moving right
+            if(Last_Value < Current_Value)
+            {           
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value + Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value + Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value - Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value - Aim_Correction_Val));            
+                }
+            }
+            else //--moving left
+            {
+                if (Boost)
+                { 
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value - Aim_Boost_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value - Aim_Boost_Val));
+                }
+                else if(Correction)
+                {
+                    if (X_AXIS)
+                        set_val(XB1_RX, (Current_Value + Aim_Correction_Val)); 
+ 
+                    if (Y_AXIS)
+                        set_val(XB1_RY, (Current_Value + Aim_Correction_Val));            
+                }
+            }
+        }
+    } 
+ 
+function RF_toggle (f_hbtn1, f_hbtn2, f_pbtn) {
+    if((get_val(f_hbtn1) && get_val(f_hbtn2)) && event_press(f_pbtn))
+    {
+        combo_run(ULTIMATEV_RUMBLE);
+        return TRUE;
+    }
+    return FALSE;
+}  
+ 
+
+ 
+ 
+function RF () {
+    combo_run(ULTIMATEV_V4_COMBO_009);
+ 
+    if(get_val(PS4_R2))
+        combo_run(ULTIMATEV_V4_COMBO_006);
+        else 
+            combo_stop(ULTIMATEV_V4_COMBO_006);
+}
+ 
+ 
+function LED(Colour) {
+    set_led(LED_1,dbyte(Colour*4));
+    set_led(LED_2,dbyte((Colour*4) + 1));
+    set_led(LED_3,dbyte((Colour*4) + 2));
+    set_led(LED_4,dbyte((Colour*4) + 3));
+}
+    
+function xy_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < release)
+	return f_val;
+	return get_val(f_axis);
+}

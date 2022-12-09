@@ -1,0 +1,508 @@
+// GPC Online Library
+// modern_warfare_predator_sweetevil.gpc
+
+/*
+ ______     ______     ______     _____     __     ______  
+/\  ___\   /\  == \   /\  ___\   /\  __-.  /\ \   /\__  _\ 
+\ \ \____  \ \  __<   \ \  __\   \ \ \/\ \ \ \ \  \/_/\ \/ 
+ \ \_____\  \ \_\ \_\  \ \_____\  \ \____-  \ \_\    \ \_\ 
+  \/_____/   \/_/ /_/   \/_____/   \/____/   \/_/     \/_/
+  
+ ______     ______     ______   ______   ______       
+/\  == \   /\  __ \   /\__  _\ /\__  _\ /\  ___\      
+\ \  __<   \ \  __ \  \/_/\ \/ \/_/\ \/ \ \___  \     
+ \ \_____\  \ \_\ \_\    \ \_\    \ \_\  \/\_____\    
+  \/_____/   \/_/\/_/     \/_/     \/_/   \/_____/   
+                                                                                                
+ ______     __  __     ______     ______     __         __     ______     __  __     ______    
+/\  ___\   /\_\_\_\   /\  ___\   /\  __ \   /\ \       /\ \   /\  == \   /\ \/\ \   /\  == \   
+\ \  __\   \/_/\_\/_  \ \ \____  \ \  __ \  \ \ \____  \ \ \  \ \  __<   \ \ \_\ \  \ \  __<   
+ \ \_____\   /\_\/\_\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\  \ \_____\  \ \_____\  \ \_\ \_\ 
+  \/_____/   \/_/\/_/   \/_____/   \/_/\/_/   \/_____/   \/_/   \/_____/   \/_____/   \/_/ /_/                                                                                                  
+                                                                                                
+                                                                                                
+__     ______   ______     ______     __   __     ______     ______     __  __    
+/\ \   /\__  _\ /\___  \   /\  ___\   /\ "-.\ \   /\  __ \   /\  ___\   /\ \/ /    
+\ \ \  \/_/\ \/ \/_/  /__  \ \___  \  \ \ \-.  \  \ \  __ \  \ \ \____  \ \  _"-.  
+ \ \_\    \ \_\   /\_____\  \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_____\  \ \_\ \_\ 
+  \/_/     \/_/   \/_____/   \/_____/   \/_/ \/_/   \/_/\/_/   \/_____/   \/_/\/_/
+  
+ ______   ______     __    __    
+/\__  _\ /\  __ \   /\ "-./  \   
+\/_/\ \/ \ \ \/\ \  \ \ \-./\ \  
+   \ \_\  \ \_____\  \ \_\ \ \_\ 
+    \/_/   \/_____/   \/_/  \/_/    
+  ___________      ___________________________________ _______________   ____.___.____     
+ /   _____/  \    /  \_   _____/\_   _____/\__    ___/ \_   _____/\   \ /   /|   |    |    
+ \_____  \\   \/\/   /|    __)_  |    __)_   |    |     |    __)_  \   Y   / |   |    |    
+ /        \\        / |        \ |        \  |    |     |        \  \     /  |   |    |___ 
+/_______  / \__/\  / /_______  //_______  /  |____|    /_______  /   \___/   |___|_______ \
+        \/       \/          \/         \/                     \/                        \/                        
+*/
+
+// Swap Trigger/Bumper
+int Trigger_Swap = TRUE;// Set TURE if you want to swap trigger/bumper, else set FALSE
+//Aim Assist
+int AimAssist  = TRUE
+int AimAssist_Strength            = 21; 
+/*NOTE:
+I don't recommend going over 25 for aim assist strength*/
+//Target Tracker
+int toms_Target_Tracker = TRUE;// ADS+FIRE activates Target Tracker
+int aim_speed = 95;
+//Anti Recoil
+int AR = 24; //Anti Recoil
+int AR_H = 0; //Anti Recoil Horizontal
+int AR_I = 1; //Change 1 to -1 If you play with Inverted
+int ARS
+//Rapid Fire
+int Rapid_Fire = FALSE;// Toggle L2+DPAD-UP if TRUE Rapidfire is ON by default - if FALSE, OFF by default
+//Auto Run
+int Auto_Run = FALSE//Sprint by Default
+//Main
+main{
+ 
+if (Joystick_calibration == FALSE)
+{
+RX_Axis_Joystick_calibrate = get_val(PS4_RX); 
+RY_Axis_Joystick_calibrate = get_val(PS4_RY); 
+Joystick_calibration = TRUE;     
+}
+ 
+X_Last_Value = X_Current_Value;
+Y_Last_Value = Y_Current_Value;
+X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate;
+ 
+if(get_val(PS4_L2)) 
+{  
+if(abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit) 
+{
+         
+if(abs(X_Last_Value - X_Current_Value) < 15) 
+{
+combo_stop(Aim_Assist_Perfection);
+Sampling_Done = FALSE;
+ 
+if(get_val(PS4_R2) > 95) 
+{
+combo_stop(Fine_Tune_Aim);
+fine_pulse = 0;
+combo_run(spiroide_Aim_Assit);
+}
+else
+{
+combo_stop(spiroide_Aim_Assit);
+spiroide_pulse = 0;
+combo_run(Fine_Tune_Aim);
+}    
+}
+}           
+else if(abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit) 
+{
+combo_stop(Fine_Tune_Aim);
+combo_stop(spiroide_Aim_Assit);
+spiroide_pulse = 0;
+fine_pulse = 0;
+combo_run(Aim_Assist_Perfection);
+}
+}
+else
+{
+combo_stop(Fine_Tune_Aim);
+combo_stop(spiroide_Aim_Assit);
+combo_stop(Aim_Assist_Perfection);
+spiroide_pulse = 0;
+fine_pulse = 0;
+Sampling_Done = FALSE;    
+}
+     	
+if(Trigger_Swap)
+	{
+swap(PS4_R1, PS4_R2);
+swap(PS4_L1, PS4_L2);
+	}
+    
+if(toms_Target_Tracker){
+if(get_val(PS4_L2) && get_val(PS4_R2)){
+sensitivity(PS4_RX,0,aim_speed); 
+sensitivity(PS4_RY,0,aim_speed);
+            }
+        }
+        
+if (Auto_Run) {
+if((get_val(PS4_LY)) < -95) {
+combo_run(Auto_Run);
+    }}      
+
+if (AimAssist) {                            
+if (get_val(PS4_L2))                       
+combo_run(Auto_Aimm);                     
+else        
+combo_stop(Auto_Aimm);                    
+
+if(get_val(7) && get_val(4))
+    combo_run(AR);
+ 
+ 
+if(abs(get_val(10)) > AR + 2 || abs(get_val(9)) > AR + 2) {
+    combo_stop(AR);}
+                                                      
+if (get_val(PS4_L2)) {                        
+if (abs(get_val(9)) > 21 || abs(get_val(10)) > 21){ 
+combo_stop(Auto_Aimm);                  
+}                                         
+}                                             
+}
+
+if(get_val(PS4_L2) && event_press(PS4_UP)) {
+combo_run (vibrate);
+Rapid_Fire=!Rapid_Fire;
+}
+
+if(Rapid_Fire) colourled(Green);
+else colourled(Red);
+
+if(Rapid_Fire) {
+if(get_val(PS4_R2)) {
+combo_run (RAPID_FIRE);
+}}
+
+if(get_val(PS4_R2)>=1) set_val(PS4_R2, 100);
+if(get_val(PS4_L2)>=1) set_val(PS4_L2, 100);
+
+hold_time = 500 / RATE_OF_FIRE;
+rest_time = hold_time - 20;
+if(rest_time < 0) rest_time = 0;}
+
+combo Aim_Assist_Perfection 
+    {        
+        
+        X_Last_Value = X_Current_Value
+        Y_Last_Value = Y_Current_Value
+ 
+         
+        wait(Sampling_Time);
+ 
+         
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+ 
+     if (Sampling_Done == TRUE )
+        { 
+            Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+            Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+        }
+ 
+        X_Last_Value = X_Current_Value;
+        Y_Last_Value = Y_Current_Value;
+ 
+         
+        wait(Sampling_Time);
+ 
+       
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+ 
+   if (Sampling_Done == TRUE )
+        {
+
+            Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+            Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+        }
+ 
+        Sampling_Done = TRUE; 
+        wait(Sampling_Time);
+    }
+ 
+ 
+ 
+combo Fine_Tune_Aim {
+ 
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_LX,(-15 + fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    set_val(PS4_RY,(10 - fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_LX,(15 - fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RY,(-10 + fine_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(15 - fine_pulse));
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse))
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    fine_pulse = fine_pulse + 2;
+ 
+ 
+    if ( fine_pulse >10)
+       {
+            fine_pulse = 0;   
+        }
+   }
+ 
+    combo spiroide_Aim_Assit {
+ 
+    set_val(PS4_RX,(4 + spiroide_pulse));
+    set_val(PS4_LX,(-15+ spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-4 - spiroide_pulse));
+    set_val(PS4_LX,15 - spiroide_pulse );
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    spiroide_pulse = spiroide_pulse + 2;
+ 
+ 
+    if ( spiroide_pulse >10)
+       {
+            spiroide_pulse = 0;   
+        }
+   }
+
+combo vibrate{ 
+wait(300);
+reset_rumble();
+}
+
+combo RAPID_FIRE {
+set_val(PS4_R2, 100);
+wait(hold_time);
+set_val(PS4_R2, 0);
+wait(rest_time);
+set_val(PS4_R2, 0);
+}
+
+combo Auto_Aimm {          
+set_val(10, AimAssist_Strength * -1);   
+wait(20)               
+set_val(9,  AimAssist_Strength);   
+wait(20)              
+set_val(10, AimAssist_Strength);   
+wait(20)               
+set_val(9,  AimAssist_Strength * -1);   
+wait(20)               
+}
+
+combo Auto_Run {
+set_val(PS4_L3, 100);
+wait(40);
+set_val(PS4_L3, 0);
+wait(40);
+set_val(PS4_L3, 0);
+}
+
+combo AR {
+ARS = get_val(10) + AR;
+if(ARS > 100) ARS = 100;
+set_val(10,ARS * AR_I);
+ARS = get_val(9) + AR_H;
+if(ARS > 100) ARS = 100;
+set_val(9,ARS);}
+
+int X_Last_Value     = 0;
+int Y_Last_Value     = 0;
+int X_Current_Value  = 0;
+int Y_Current_Value  = 0;
+int Sampling_Done = FALSE;
+int spiroide_pulse = 0;
+int fine_pulse = 0;
+int Joystick_calibration = FALSE;
+int RX_Axis_Joystick_calibrate = 0; 
+int RY_Axis_Joystick_calibrate = 0;
+int RATE_OF_FIRE = 32767;
+int Col_ind;
+int hold_time;
+int rest_time;
+
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+    { 
+ 
+ 
+
+       if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit) 
+            {
+
+                if(Last_Value < Current_Value)
+                    {           
+                        if (Boost)
+                            { 
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+ 
+                                if (Y_AXIS)
+                                        set_val(PS4_RY, (Current_Value + Aim_Boost));
+                            }
+ 
+ 
+                        else if(Correction)
+                            {
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+ 
+                                if (Y_AXIS)
+                                set_val(PS4_RY, (Current_Value - Aim_Correction));            
+                            }
+                    }
+                else
+                    {
+ 
+                        if (Boost)
+                            { 
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+ 
+                                if (Y_AXIS)
+                                        set_val(PS4_RY, (Current_Value - Aim_Boost));
+                            }
+ 
+ 
+                        else if(Correction)
+                            {
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+ 
+                                if (Y_AXIS)
+                                set_val(PS4_RY, (Current_Value + Aim_Correction));            
+                            }
+                    }
+            }
+    }
+function colourled(Colour) {
+Col_ind=(Colour*4)- 3;
+set_led(LED_1,dbyte(Col_ind ));
+set_led(LED_2,dbyte(Col_ind+ 1));
+set_led(LED_3,dbyte(Col_ind+ 2));
+set_led(LED_4,dbyte(Col_ind+ 3));
+}
+define Sampling_Time = 10;
+define Aim_Boost = 7;
+define Aim_Correction = 12;
+define Aim_Perfection_Limit = 30;
+define POS_Aim_Limit = 70;
+define NEG_Aim_Limit = -70;
+define POS_Micro_MVT_Limit = 25;
+define NEG_Micro_MVT_Limit = -25;
+define OFF       = 0;
+define Blue      = 1;
+define Red       = 2;
+define Green     = 3;
+define Pink      = 4;
+define SkyBlue   = 5;
+define Yellow    = 6;
+define White     = 7;
+//-------------------------------------------------------------------------------------------
+data(1,
+2,0,0,0, //1. Blue
+0,2,0,0, //2. Red
+0,0,2,0, //3. Lime/Green
+0,0,0,2, //4. Fuchsia/Pink
+2,0,2,0, //5. SkyBlue
+0,2,2,0, //6. Yellow
+2,2,2,2 //7. White
+);
+/*
+ ______     ______     ______     _____     __     ______  
+/\  ___\   /\  == \   /\  ___\   /\  __-.  /\ \   /\__  _\ 
+\ \ \____  \ \  __<   \ \  __\   \ \ \/\ \ \ \ \  \/_/\ \/ 
+ \ \_____\  \ \_\ \_\  \ \_____\  \ \____-  \ \_\    \ \_\ 
+  \/_____/   \/_/ /_/   \/_____/   \/____/   \/_/     \/_/
+  
+ ______     ______     ______   ______   ______       
+/\  == \   /\  __ \   /\__  _\ /\__  _\ /\  ___\      
+\ \  __<   \ \  __ \  \/_/\ \/ \/_/\ \/ \ \___  \     
+ \ \_____\  \ \_\ \_\    \ \_\    \ \_\  \/\_____\    
+  \/_____/   \/_/\/_/     \/_/     \/_/   \/_____/   
+                                                                                                
+ ______     __  __     ______     ______     __         __     ______     __  __     ______    
+/\  ___\   /\_\_\_\   /\  ___\   /\  __ \   /\ \       /\ \   /\  == \   /\ \/\ \   /\  == \   
+\ \  __\   \/_/\_\/_  \ \ \____  \ \  __ \  \ \ \____  \ \ \  \ \  __<   \ \ \_\ \  \ \  __<   
+ \ \_____\   /\_\/\_\  \ \_____\  \ \_\ \_\  \ \_____\  \ \_\  \ \_____\  \ \_____\  \ \_\ \_\ 
+  \/_____/   \/_/\/_/   \/_____/   \/_/\/_/   \/_____/   \/_/   \/_____/   \/_____/   \/_/ /_/                                                                                                  
+                                                                                                
+                                                                                                
+__     ______   ______     ______     __   __     ______     ______     __  __    
+/\ \   /\__  _\ /\___  \   /\  ___\   /\ "-.\ \   /\  __ \   /\  ___\   /\ \/ /    
+\ \ \  \/_/\ \/ \/_/  /__  \ \___  \  \ \ \-.  \  \ \  __ \  \ \ \____  \ \  _"-.  
+ \ \_\    \ \_\   /\_____\  \/\_____\  \ \_\\"\_\  \ \_\ \_\  \ \_____\  \ \_\ \_\ 
+  \/_/     \/_/   \/_____/   \/_____/   \/_/ \/_/   \/_/\/_/   \/_____/   \/_/\/_/
+  
+ ______   ______     __    __    
+/\__  _\ /\  __ \   /\ "-./  \   
+\/_/\ \/ \ \ \/\ \  \ \ \-./\ \  
+   \ \_\  \ \_____\  \ \_\ \ \_\ 
+    \/_/   \/_____/   \/_/  \/_/                                                            
+  ___________      ___________________________________ _______________   ____.___.____     
+ /   _____/  \    /  \_   _____/\_   _____/\__    ___/ \_   _____/\   \ /   /|   |    |    
+ \_____  \\   \/\/   /|    __)_  |    __)_   |    |     |    __)_  \   Y   / |   |    |    
+ /        \\        / |        \ |        \  |    |     |        \  \     /  |   |    |___ 
+/_______  / \__/\  / /_______  //_______  /  |____|    /_______  /   \___/   |___|_______ \
+        \/       \/          \/         \/                     \/                        \/                          
+ */

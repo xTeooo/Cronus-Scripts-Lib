@@ -1,0 +1,454 @@
+define Green   = 0;
+define White   = 1;
+define Red     = 2;
+define Off     = 3;
+define Yellow  = 4;
+define Pink    = 5;
+define SkyBlue = 6;
+ 
+ 
+int BATTERY;
+ 
+ 
+ 
+ 
+data(
+ 
+ 
+0,0,2,0, // 
+2,2,2,2, // 
+0,2,0,0, // 
+0,0,0,0, // 
+0,2,2,0, // 
+0,0,0,2, // 
+2,0,2,0  // 
+ 
+ 
+);
+ 
+ 
+ 
+ 
+ 
+ 
+int REPEATER_OR_PISTOLS, SNIPER_RIFLE; 
+ 
+ 
+int AIM_ASSIST_ON;
+ 
+ 
+int AUTO_HEADSHOT_RUNNING;
+int MENU_SECTION_RUNNING;
+int AIM_ASSIST_RUNNING;
+int SELECTOR_RUNNING;
+int MIDDLE_RUNNING;
+int LONG_RUNNING;
+ 
+ 
+int SELECTOR_SECTION;
+int R3_ACTIVATION;
+int PLACE_ON_MENU;
+int RX;
+int RY;
+ 
+ 
+ 
+ 
+int L1_PRESS;
+int R2_PRESS;
+ 
+ 
+int HEADSHOT_MODE;
+int SNIPER_MODE;
+ 
+ 
+int WAIT;
+int TONICS_RX;
+int TONICS_RY;
+int TONICS;
+int VIBRATE_RUMBLE;
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+main 
+ 
+ 
+{
+ 
+ 
+    vm_tctrl(-9);
+ 
+ 
+/////////////////////////////////////////////////////////////////////Don't touch my shit   
+ 
+ 
+    if(!MENU_SECTION_RUNNING&&!AIM_ASSIST_RUNNING&&!AUTO_HEADSHOT_RUNNING&&get_lval(PS4_L1))
+    {
+    	SELECTOR_RUNNING=TRUE;
+    	if(event_press(PS4_R1)) SELECTOR_SECTION=!SELECTOR_SECTION;
+    	RX=get_lval(PS4_RX);
+    	RY=get_lval(PS4_RY);
+    }
+ 
+ 
+    if(SELECTOR_RUNNING&&event_release(PS4_L1))
+    {
+    	SELECTOR_RUNNING=FALSE;
+    	if(!SELECTOR_SECTION)
+    	{
+    		if((RX*RX+RY*RY)>=150)
+    		{ 
+    			RY=-1*RY;   
+    			if(((100*RY)-(41*RX))>0)                                 {   REPEATER_OR_PISTOLS=TRUE;  SNIPER_RIFLE=FALSE; } 
+    			else
+    			{
+    				if((((100*RY)-(241*RX))>0)||(((100*RY)+(241*RX))>0)) {   REPEATER_OR_PISTOLS=FALSE; SNIPER_RIFLE=FALSE; }
+    				else                                                 {   REPEATER_OR_PISTOLS=FALSE; SNIPER_RIFLE=TRUE;  }
+    			}    
+    		}
+    	}
+    	SELECTOR_SECTION=FALSE;
+    	RX=0;
+    	RY=0;
+    }
+ 
+    if(get_lval(PS4_FINGER1Y)<-20||get_lval(PS4_FINGER1X)<=-66)
+ 
+    	set_val(PS4_TOUCH,0);
+ 
+    	if(get_lval(PS4_TOUCH))
+    	{
+    		if(get_lval(PS4_FINGER1Y)<-20)
+    		{
+    			if(get_lval(PS4_FINGER1X)<=-66)                               { TONICS_RX = -75; TONICS_RY = -75; TONICS=100; }   // Health
+    			if(get_lval(PS4_FINGER1X)>-66 && get_lval(PS4_FINGER1X)<66)   { TONICS_RX = 0;    TONICS_RY = -100; TONICS=100; } // Stamina
+    			if(get_lval(PS4_FINGER1X)>=66)                                { TONICS_RX = 75;  TONICS_RY = -75; TONICS=100; }   // DeadEye
+    		}
+    		else if(get_lval(PS4_FINGER1X)<=-66)                              { TONICS_RX = -100; TONICS_RY = 100; TONICS=0; }    
+    		combo_run(TONICS);
+    	}
+ 
+ 
+ 
+    if(get_battery()<=1) combo_run(LOW_BATTERY);
+ 
+    if(!BATTERY)
+    {   
+    	if(MENU_SECTION_RUNNING)set_ds4_led(Yellow);
+    	else
+    	if(!SNIPER_RIFLE&&!REPEATER_OR_PISTOLS) set_ds4_led(White);
+ 
+    	if(SNIPER_RIFLE)
+    	{
+    		if(!SNIPER_MODE)set_ds4_led(White);
+    		else
+    		{
+    			if(test_bit(SNIPER_MODE,0))set_ds4_led(Green);
+    			else set_ds4_led(Red);
+    		}
+    	}
+ 
+    	if(REPEATER_OR_PISTOLS)
+    	{
+    		if(!HEADSHOT_MODE)set_ds4_led(White);
+    		else
+    		{
+    			if(test_bit(HEADSHOT_MODE,0))set_ds4_led(SkyBlue);
+    			else set_ds4_led(Pink);
+    		}
+    	}
+    }
+ 
+    deadzone(PS4_L2,PS4_R2,99,99);
+ 
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+ 
+ 
+ 
+ 
+ 
+ 
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+ 
+    if(MENU_SECTION_RUNNING)
+    {
+    	if(event_press(PS4_CROSS)) PLACE_ON_MENU = PLACE_ON_MENU + 1;  
+    	if(event_press(PS4_CIRCLE))PLACE_ON_MENU = PLACE_ON_MENU - 1; 
+    	if((PLACE_ON_MENU<0)||(get_lval(PS4_CIRCLE)&&get_ptime(PS4_CIRCLE)>800)){ SNIPER_RIFLE=TRUE; PLACE_ON_MENU=0; MENU_SECTION_RUNNING=FALSE;  } 
+    }
+    else
+    if(get_lval(PS4_CROSS)&&get_ptime(PS4_CROSS)>2000)combo_run(RUN_HORSE); 
+ 
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+ 
+ 
+ 
+ 
+ 
+ 
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+    if(SNIPER_RIFLE&&!SELECTOR_RUNNING)
+    {
+    	if(get_lval(PS4_L2))
+    	{
+    		set_val(PS4_L1,0);
+    		AIM_ASSIST_RUNNING=TRUE;
+ 
+    		if(event_release(PS4_RIGHT)) SNIPER_MODE = SNIPER_MODE + 1;
+    		if(get_lval(PS4_RIGHT)&&get_ptime(PS4_RIGHT)>500) SNIPER_MODE = 0;
+ 
+    		if(!L1_PRESS&&get_lval(PS4_L1)){ L1_PRESS=TRUE; AIM_ASSIST_ON=!AIM_ASSIST_ON; vibrate(AIM_ASSIST_ON); } 
+ 
+    		if(AIM_ASSIST_ON)combo_run(AIM_ASSIST);
+ 
+    		if(SNIPER_MODE)
+    		{
+    			if(test_bit(SNIPER_MODE,0)&&!R2_PRESS&&get_lval(PS4_R2))             { R2_PRESS=TRUE; combo_run(RAPID_CARCANO); }
+    			if(!test_bit(SNIPER_MODE,0)&&get_lval(PS4_R2)&&get_ptime(PS4_R2)>350){ set_val(PS4_R2,0); combo_run(HORSE_RAPID_CARCANO); }
+    		}
+    	}
+ 
+    	if(event_release(PS4_L2))AIM_ASSIST_RUNNING=FALSE;
+ 
+    	if(SNIPER_MODE)
+    	{
+    		if(!SELECTOR_RUNNING)
+    		{
+    			if(test_bit(SNIPER_MODE,0)||!get_lval(PS4_L2))set_val(PS4_R2,0);
+    			if(!get_lval(PS4_L2)&&get_lval(PS4_R2)) combo_run(HIP_FIRE); 
+    		}
+ 
+    		if((get_lval(PS4_LEFT)&&get_ptime(PS4_LEFT)>800)||(get_lval(PS4_RIGHT)&&get_ptime(PS4_RIGHT)>800)||event_press(PS4_OPTIONS))
+    		{
+    			MENU_SECTION_RUNNING=TRUE; 
+    			SNIPER_RIFLE=FALSE;
+    		}
+    	}
+    }
+ 
+    if(R2_PRESS&&!get_lval(PS4_R2)) R2_PRESS=FALSE; 
+    if(L1_PRESS&&!get_lval(PS4_L1)) L1_PRESS=FALSE;
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+ 
+ 
+ 
+ 
+ 
+ 
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+    if(REPEATER_OR_PISTOLS&&!SELECTOR_RUNNING)
+    {
+    	if(get_lval(PS4_L2))
+    	{
+    		if(event_release(PS4_RIGHT)) HEADSHOT_MODE = HEADSHOT_MODE + 1;
+    		if(get_lval(PS4_RIGHT)&&get_ptime(PS4_RIGHT)>500) HEADSHOT_MODE = 0;
+ 
+    		AUTO_HEADSHOT_RUNNING=TRUE;
+ 
+    		set_val(PS4_L1,0);
+ 
+    		if(!HEADSHOT_MODE)
+    		{
+    			if(event_press(PS4_R3))R3_ACTIVATION = !R3_ACTIVATION;
+    			if(!LONG_RUNNING&&get_lval(PS4_L1)){ WAIT=100; combo_run(LONG_DISTANCE); if(!R3_ACTIVATION) combo_run(R3_PRESS); }
+ 
+    			if(LONG_RUNNING)
+    			{
+    				if(!MIDDLE_RUNNING&&get_lval(PS4_L1))combo_run(PLUS_DISTANCE);
+    				else MIDDLE_RUNNING=TRUE; 
+    			}
+    		}
+ 
+    		if(HEADSHOT_MODE&&!LONG_RUNNING&&!MIDDLE_RUNNING)
+    		{
+    			if(!LONG_RUNNING&&test_bit(HEADSHOT_MODE,0))   {  WAIT=260; combo_run(LONG_DISTANCE);   }  
+    			if(!MIDDLE_RUNNING&&!test_bit(HEADSHOT_MODE,0)){  WAIT=260; combo_run(MIDDLE_DISTANCE); }
+    			combo_run(R3_PRESS); 
+    		}
+ 
+    	}
+ 
+    	if(event_release(PS4_L2)){ combo_stop(R3_PRESS); combo_stop(LONG_DISTANCE); combo_stop(PLUS_DISTANCE); combo_stop(MIDDLE_DISTANCE); MIDDLE_RUNNING=FALSE; LONG_RUNNING=FALSE; R3_ACTIVATION=FALSE; AUTO_HEADSHOT_RUNNING=FALSE; }
+ 
+    	if(get_lval(PS4_R2)&&get_ptime(PS4_R2)>130)combo_run(R2_PRESS);
+    }
+/////////////////////////////////////////////////////////////////////Don't touch my shit    
+ 
+ 
+ 
+ 
+ 
+ 
+}
+ 
+ 
+ 
+ 
+ 
+ 
+combo LOW_BATTERY{
+BATTERY=TRUE;
+set_ds4_led(Off);
+wait(500);
+BATTERY=FALSE;
+wait(1500);
+}
+ 
+ 
+combo RUN_HORSE
+{
+	set_val(PS4_CROSS,0);
+	wait(50);
+	wait(100);
+}
+ 
+ 
+combo R2_PRESS
+{
+	set_val(PS4_R2,0);
+	wait(50);
+	wait(50);
+}
+ 
+ 
+combo HORSE_RAPID_CARCANO
+{
+	set_val(PS4_R2,100);
+	set_val(PS4_TOUCH,100);
+	wait(50);
+	wait(100);
+}
+ 
+ 
+combo R3_PRESS
+{
+	wait(WAIT); 
+	set_val(PS4_R3,100);
+	wait(100);
+	wait(110);
+}
+ 
+ 
+combo HIP_FIRE
+{
+	set_val(PS4_L2,100);
+	wait(20);
+	set_val(PS4_L2,100);
+	set_val(PS4_R2,100);
+	wait(40);
+	wait(400);
+	set_val(PS4_L2,100);
+	wait(70);
+	wait(100);
+}
+ 
+ 
+combo TONICS
+{
+	set_val(PS4_L2, 0);
+	set_val(PS4_L1,100);
+	set_val(PS4_R1,100);
+	wait(60); 
+	set_val(PS4_L2, 0);
+	set_val(PS4_RX, TONICS_RX);
+	set_val(PS4_RY, TONICS_RY);
+	set_val(PS4_SQUARE,TONICS);
+	wait(80); 
+	wait(100);
+}
+ 
+ 
+combo RAPID_CARCANO
+{
+	set_val(PS4_R2,100);
+	set_val(PS4_CROSS,100);
+	wait(40);
+	wait(180);
+	set_val(PS4_R2,100);
+	set_val(PS4_CROSS,100);
+	wait(40);
+	wait(50);
+}
+ 
+ 
+combo LONG_DISTANCE
+{
+	wait(WAIT);
+	set_val(PS4_RY, -100);
+	set_val(PS4_RX, -30);
+	wait(140);
+	LONG_RUNNING=TRUE;
+}
+ 
+ 
+combo PLUS_DISTANCE
+{
+	set_val(PS4_RY, -100);
+	set_val(PS4_RX, -15);
+	wait(40); 
+	MIDDLE_RUNNING=TRUE;
+}
+ 
+ 
+combo MIDDLE_DISTANCE
+{
+	call(LONG_DISTANCE);
+	call(PLUS_DISTANCE);
+}
+ 
+ 
+combo AIM_ASSIST
+{
+	set_val(PS4_RX, XY(PS4_RX, 20)); 
+	wait(40); 
+	wait(40);
+	set_val(PS4_RX, XY(PS4_RX, -20)); 
+	wait(40);
+	wait(40);
+	set_val(PS4_RY, XY(PS4_RY, 20)); 
+	wait(40); 
+	wait(40);
+	set_val(PS4_RY, XY(PS4_RY, -20)); 
+	wait(40); 
+	wait(40);
+}
+ 
+ 
+combo vibrate
+{
+	set_rumble(VIBRATE_RUMBLE,100);
+	wait(200);
+	reset_rumble();
+}
+ 
+ 
+function XY(BUTTON, VALUE)
+{
+	if(abs(get_lval(BUTTON))<25)
+	return VALUE;
+	return get_lval(BUTTON);
+}
+ 
+ 
+function set_ds4_led(colour) 
+{
+	set_led(LED_1, dbyte(colour * 4));
+	set_led(LED_2, dbyte((colour * 4) + 1));
+	set_led(LED_3, dbyte((colour * 4) + 2));
+	set_led(LED_4, dbyte((colour * 4) + 3)); 
+}
+ 
+ 
+function vibrate(BOOL)
+{
+	if(BOOL) VIBRATE_RUMBLE = RUMBLE_A; 
+	if(!BOOL)VIBRATE_RUMBLE = RUMBLE_B;
+	combo_run(vibrate);
+}

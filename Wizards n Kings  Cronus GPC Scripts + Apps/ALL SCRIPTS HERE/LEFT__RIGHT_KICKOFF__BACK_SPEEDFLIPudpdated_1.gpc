@@ -1,0 +1,214 @@
+////////////////////////////////////////
+//                                    //
+//          KICKOFF-SPEEDFLIP         //
+//              BY CULAN              //
+define//////////////////////////////////
+
+// TURN SCRIPT ON/OFF
+
+// >>  OFF <<		= 	HOLD TURN_ON_OFF_BUTTON_1 + TURN_ON_OFF_BUTTON_2 >>LONGER<< THAN A SECOND		-> RED LED 				
+//  >> ON << 		= 	HOLD TURN_ON_OFF_BUTTON_1 + TURN_ON_OFF_BUTTON_2 >>SHORTER<< THAN A SECOND	 	-> BLINKS GREEN LED		
+                                                                                                            							
+TURN_ON_OFF_BUTTON_1 				= PS4_OPTIONS, // you can change this if you want
+TURN_ON_OFF_BUTTON_2              	= PS4_DOWN, // you can change this if you want
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CONTROLLER LAYOUT // ADD YOUR CONTROLLER LAYOUT! 
+
+DRIVE_FORWARDS_BUTTON 	= PS4_R2,
+DRIVE_BACKWARDS_BUTTON 	= PS4_L2,
+JUMP_BUTTON				= PS4_CIRCLE,
+BOOST_BUTTON 			= PS4_CROSS,
+POWERDRIFT_BUTTON		= PS4_L1,
+AIRROLL_BUTTON		    = PS4_L2,
+BALLCAM_BUTTON 			= PS4_SQUARE,
+AIRROLL_RIGHT_BUTTON	= PS4_RIGHT,
+AIRROLL_LEFT_BUTTON 	= PS4_LEFT, 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+LEFT_KICKOFF_MOD  		= TRUE, // MOD ON/OFF // ON = TRUE // OFF = FALSE
+RIGHT_KICKOFF_MOD		= TRUE,
+BACK_SPEEDFLIP_MOD 	= TRUE,
+
+LEFT_KICKOFF	 		= PS4_LEFT, // activate LEFT KICK OFF
+RIGHT_KICKOFF			= PS4_RIGHT, // activate RIGHT KICK OFF
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+double_tap_max_time = 400
+
+int TURN_SCRIPT_ON_OFF = TRUE // Dont change this!
+int double_tap_timer;
+main {
+	if((TURN_SCRIPT_ON_OFF) && get_val(TURN_ON_OFF_BUTTON_1) && get_ptime(TURN_ON_OFF_BUTTON_1)> 500 && get_val(TURN_ON_OFF_BUTTON_2) && get_ptime(TURN_ON_OFF_BUTTON_2) > 500){
+	TURN_SCRIPT_ON_OFF = FALSE;
+	set_led(LED_2, 3);
+  } 
+    if((!TURN_SCRIPT_ON_OFF) && get_val(TURN_ON_OFF_BUTTON_1) && get_ptime(TURN_ON_OFF_BUTTON_1)< 500 && get_val(TURN_ON_OFF_BUTTON_2) && get_ptime(TURN_ON_OFF_BUTTON_2) < 500){
+    TURN_SCRIPT_ON_OFF = TRUE;
+	set_ledx(LED_3, 3);
+  }
+   if(!get_ledx() && TURN_SCRIPT_ON_OFF) {
+   reset_leds();
+  }
+	if ((TURN_SCRIPT_ON_OFF) && (LEFT_KICKOFF_MOD) && get_val(LEFT_KICKOFF)){
+		combo_run(LEFT_KICKOFF);
+}
+	if ((TURN_SCRIPT_ON_OFF) && (LEFT_KICKOFF_MOD) && combo_running(LEFT_KICKOFF) >480){
+		set_val(PS4_LX, 100);
+}
+	if ((TURN_SCRIPT_ON_OFF) && (RIGHT_KICKOFF_MOD) && get_val(RIGHT_KICKOFF)){
+		combo_run(RIGHT_KICKOFF);
+}
+	if ((TURN_SCRIPT_ON_OFF) && (RIGHT_KICKOFF_MOD) && combo_running(RIGHT_KICKOFF) >480){
+		set_val(PS4_LX, 100);
+}
+	if(BACK_SPEEDFLIP_MOD) {
+	if(double_tap_timer)
+   	  double_tap_timer -= get_rtime();
+
+  if(event_press(JUMP_BUTTON) && get_val(DRIVE_BACKWARDS_BUTTON) && get_val(PS4_LY) >= 95)
+    if(!double_tap_timer) {
+    double_tap_timer = double_tap_max_time;
+   }
+   else combo_run(LEFT_BACK_SPEEDFLIP);
+
+  if(combo_running(LEFT_BACK_SPEEDFLIP)){
+   set_val(PS4_LY,0);
+   set_val(PS4_LX,0);
+  }
+
+
+ }
+
+
+}
+combo RIGHT_KICKOFF {
+	set_val(JUMP_BUTTON, 0);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(PS4_LX, -100);
+	wait(80)	
+	set_val(JUMP_BUTTON, 0);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	wait(100)
+	set_val(JUMP_BUTTON, 100);
+	set_val(PS4_LX, -25);
+	set_val(PS4_LY, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	wait(50);
+	set_val(JUMP_BUTTON, 0);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    set_val(AIRROLL_BUTTON, 100);
+    wait(30);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(JUMP_BUTTON, 100);
+    set_val(PS4_LX, 100);
+    set_val(PS4_LY, -100);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+   	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    wait(20);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(JUMP_BUTTON, 0);
+    set_val(PS4_LX, -100);
+    set_val(PS4_LY, 80);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+   	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    wait(600);
+    set_val(PS4_LX, 100);
+    set_val(AIRROLL_RIGHT_BUTTON, 100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+   	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    wait(200);
+    set_val(POWERDRIFT_BUTTON, 100);
+    wait(200);	
+}
+combo LEFT_KICKOFF {
+	set_val(JUMP_BUTTON, 0);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(PS4_LX, 100);
+	wait(80)	
+	set_val(JUMP_BUTTON, 0);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	wait(100)
+	set_val(JUMP_BUTTON, 100);
+	set_val(PS4_LX, 25);
+	set_val(PS4_LY, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	wait(50);
+	set_val(JUMP_BUTTON, 0);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(DRIVE_FORWARDS_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    set_val(AIRROLL_BUTTON, 100);
+    wait(30);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(JUMP_BUTTON, 100);
+    set_val(PS4_LX, -100);
+    set_val(PS4_LY, -100);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+   	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    wait(20);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(JUMP_BUTTON, 0);
+    set_val(PS4_LX, 100);
+    set_val(PS4_LY, 80);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+   	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    wait(600);
+    set_val(PS4_LX, -100);
+    set_val(AIRROLL_LEFT_BUTTON, 100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+   	set_val(DRIVE_FORWARDS_BUTTON, 100);
+    wait(200);
+    set_val(POWERDRIFT_BUTTON, 100);
+    wait(200);	
+}
+
+combo LEFT_BACK_SPEEDFLIP {
+    set_val(PS4_LY, 100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    wait(320);
+    set_val(PS4_LY, -100);
+    set_val(PS4_LX, 100);
+    set_val(AIRROLL_LEFT_BUTTON, 100);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(BOOST_BUTTON, 100);
+    wait(300);
+    set_val(PS4_LY, -100);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(DRIVE_FORWARDS_BUTTON, 100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(PS4_LX, 100);
+    wait(50);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(JUMP_BUTTON, 100);
+    set_val(DRIVE_FORWARDS_BUTTON, 100);
+    set_val(PS4_LY, 0);
+    set_val(POWERDRIFT_BUTTON, 100);
+    wait(20);
+    set_val(AIRROLL_BUTTON, 100);
+    set_val(DRIVE_FORWARDS_BUTTON, 100);
+    set_val(PS4_LX, 100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    wait(100);
+    set_val(POWERDRIFT_BUTTON, 100);
+    set_val(PS4_LY, 100);
+    wait(100);
+}

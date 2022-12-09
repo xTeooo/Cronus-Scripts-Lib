@@ -1,0 +1,303 @@
+// GPC Online Library
+// fortnite_destroyer.gpc
+
+
+ /*
+ = = = = = = = = = = = = = = = = = = = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = /\/\/\  Made By ItzSnack  /\/\/\  = 
+ = /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\  =
+ = = = = = = = = = = = = = = = = = = = 
+ 
+ ================                                                        
+ === FEATURES ===
+ ================
+ Aim Abuse - Hold L2/LT All the way down
+ Aim Assist
+ Ghost Peek
+ Rapid Fire
+ 100% ACCURACY
+ Drop Shot
+ Jump Shot
+ Ramp Rush - You must run! First time make sure you run all the way to the wall before using ramp rush
+ Insta Edit
+ Auto Run
+ 
+ =============================
+ === Thanks to legitclouds ===
+ =============================
+ 
+ =================
+ === Important ===
+ ===========================
+ === Made ON Builder Pro ===
+ =============================================================
+ === Some features will have to be turned on in the script ===
+ =============================================================
+ 
+ ===================================================================================
+ ===                          TOGGLES YOU CAN ACTIVATE                           ===
+ ===================================================================================
+ === Hold L2/LT And Press OPTIONS/START For Rapid Fire                           ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ === Hold L2/LT And Hold/Tap R1/RB For 100% ACCURACY                             ===
+ =================================================================================== 
+ === Hold L1/LB And Press PS/XBOX For Drop Shot                                  ===
+ ===================================================================================
+ === Hold L2/LT And Tap D-PAD LEFT For Ghost Peek                                ===
+ ===================================================================================
+ === Hold L2/LT & R1/RB And Press R3/RS                                          ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ === Double TAP Square/X To Run Ramp Rush /Must be in build mode                 ===
+ ===================================================================================
+ === Press Hold L2/LT And Press D-PAD RIGHT For Jump Shot                        ===
+ === 1 Rumble = ON 2 = OFF                                                       ===
+ ===================================================================================
+ */
+
+    //Layout
+    define PS = 0;
+    define SHARE = 1;
+    define OPTIONS = 2;   
+    define R1 = 3;
+    define R2 = 4;        
+    define R3 = 5;        
+    define L1 = 6;       
+    define L2 = 7;      
+    define L3 = 8;    
+    define RX = 9;       
+    define RY = 10;      
+    define LX = 11;       
+    define LY = 12;      
+    define UP = 13;       
+    define DOWN = 14;    
+    define LEFT = 15; 
+    define RIGHT = 16;
+    define TRIANGLE = 17;
+    define CIRCLE = 18;  
+    define CROSS = 19;   
+    define SQUARE = 20
+    define TOUCHPAD = 27;
+    
+    //Customize
+    int R1L1 = OFF; //Change OFF TO ON If you want Flipped Triggers
+    int XR3 = OFF; //Change OFF TO ON If you want to swap CROSS/A To R3/RS Make sure to change this in the layout too!
+    int ABT = ON; //Change ON TO OFF If you don't want Aim Abuse
+    int AST = ON; //Change ON TO FALSE If you don't want Aim Assist
+    int ART = OFF; //Change ON TO OFF If you don't Auto Run
+    
+    //insta edit
+	int EDIT_BUTTON = CIRCLE; //Insta edit will allow you to confirm the edit quickly
+    int EDIT_BUTTON_HOLD = ON; //Does your edit button has a hold delay? True means Yes -- False mean No
+	int HOLD_TIME = 150; //Type the hold time which is shown in Fortnite settings, in hundereds because cronusmax already know its in MS. |0.10 = 100| |0.25 = 250|
+    int RESET_EDIT_BUTTON = R3 //Insta Reset will allow you to confirm the edit reset quickly
+    int edit = OFF;
+                                                                                                                                              
+    //Aim Assist
+    int AP = 18;
+    int AM = -18;
+    int Delay = 20
+    int ARelease = 19;
+
+    //Aim Abuse
+    int HOLD = 310; //Old Value 200
+    int RELEASE = 17; //Old Value 20
+
+    //Anti Recoil
+    int AR = 4; //Anti Recoil
+    int Release = 4; //Maximum 10+ Higher than Anti Recoil
+
+    //Toggles
+    int roblox;
+    int tap;
+    int DST;
+    
+    int ARS;
+    int JST;
+    int WAIT;                                                                                
+    int num,i,a;
+    int button;
+
+    main {
+
+    if(R1L1) {
+    swap(R1,R2); 
+    swap(L1,L2);}
+    
+    if(ART)
+    if(get_val(LY) == -100)  
+    set_val(L3,100);
+    
+    if(XR3)
+    swap(CROSS,R3);
+ 
+    if(AST)
+    if(get_val(L2)) combo_run(AS);
+    
+    if(get_val(L2) && event_press(RIGHT)) {
+    JST=!JST;
+    if(JST)combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    if(JST && event_press(R2))
+    combo_run(JumpShot);
+	
+    
+  
+    if(get_val(L2) && get_val(LEFT)) {
+    set_val(LEFT,0);
+    combo_run(GhostPeek);}                                                                          
+ 
+    if(get_val(L2) && get_val(R1)) {
+    set_val(R1,0);
+    combo_run(PerfectAccuracy);
+    } else {
+    combo_stop(PerfectAccuracy);}
+ 
+    if(ABT) 
+    if(get_val(L2)> 90){
+    combo_run(AimAbuse);}
+    if(event_release(L2)){ combo_stop(AimAbuse);}
+ 
+    if(get_val(L2) && event_press(OPTIONS)) { 
+    roblox=!roblox;
+    if(roblox)combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    if(roblox && get_val(R2)) 
+    combo_run(RapidFire);
+        
+    if(get_val(L2) && get_val(R2)) {
+    combo_run(AR);}
+    if(abs(get_val(RY)) > Release || abs(get_val(RX)) > Release) {
+    combo_stop (AR);}
+
+    if(get_val(L1) && event_press(PS) ){                                        
+    DST=!DST;
+    if(DST)combo_run(Flash_ON); 
+    else combo_run(Flash_OFF);}
+    if(DST && get_val(L2) && get_val(R2)) {
+    combo_run(DropShot);
+    if(event_press(CIRCLE))
+    DST = OFF;}
+
+    if(EDIT_BUTTON_HOLD) {
+    if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME) {
+    edit = ON;}}
+    else if(!EDIT_BUTTON_HOLD) {
+    if(get_val(EDIT_BUTTON)) {
+    edit = ON; }}
+	if(edit == ON) {  
+    if(event_release(R2) || event_press(RESET_EDIT_BUTTON) || get_val(TRIANGLE)) {
+    set_click(CIRCLE, 1, 0);
+    edit = OFF;}}
+    if(a) {
+	if(i < num) {
+    if(!combo_running(RESET)) {
+    combo_run(RESET);}}
+    else if 
+    (i > num) {a = OFF;}}}
+    
+ 
+    combo GhostPeek {                                                                            
+    set_val(R3, 100);                                                                    
+    wait(20);
+    wait(10);
+    set_val(R2, 100);                                                                     
+    wait(20);                                                                                                                                                                        
+    set_val(R3, 100);                                                                    
+    wait(15);
+    wait(4);}  
+
+    combo JumpShot {
+    set_val(CROSS,100);
+    wait(40);}
+
+    
+
+    combo AS { 
+    set_val(RY,a_f(RY,AP));
+    wait(Delay)
+    set_val(RX,a_f(RX,AP));
+    wait(Delay)
+    set_val(RY,a_f(RY,AM));
+    wait(Delay)
+    set_val(RX,a_f(RX,AM));
+    wait(Delay)}
+
+    function a_f(p,m) {
+    if(abs(get_val(p)) < ARelease)
+    return m;
+    return get_val(p);}
+
+    combo AR {
+	ARS = get_val(RY) + AR;
+	if(ARS > 100) ARS = 100;
+	set_val(RY,ARS);}
+ 
+    combo DropShot{                                                                              
+    set_val(R3,100);                                                                     
+    wait(60);                                                                          
+    wait(40);                                                                            
+    set_val(R3,100);} 
+
+    combo PerfectAccuracy {
+    set_val(R2,100);
+    wait(100);
+    wait(250);
+    set_val(R2,100);}
+ 
+    combo AimAbuse {
+    set_val(L2, 100);
+    wait(HOLD);
+    set_val(L2, 0);
+    wait(RELEASE);}
+ 
+    combo RapidFire {
+    set_val(R2,100);
+    wait(40);
+    set_val(R2,0);
+    wait(40);}
+ 
+    combo Flash_ON {
+    LED(0,0,2,0);
+    set_rumble(RUMBLE_A,100);
+    wait(400);
+    reset_rumble();
+    reset_leds();}
+ 
+    combo Flash_OFF {
+    LED(0,2,0,0);
+    set_rumble(RUMBLE_B,100);
+    wait(200);
+    reset_rumble();
+    LED(0,0,0,0);
+    wait(100);
+    set_rumble(RUMBLE_B,100);
+    LED(0,2,0,0);
+    wait(200);
+    reset_rumble();
+    reset_leds();}
+    
+    combo RESET {
+	wait(WAIT);
+	set_val(button, 100);
+	wait(28);
+	set_val(button, 0);
+	wait(28);
+	i = i + 1;}
+	
+    function set_click(B, Num, Wait) {
+	WAIT = Wait;
+	i = 0;
+	button = B;
+	num = Num;
+	a = ON;}
+    
+    function LED(a,b,c,d) {
+    set_led(LED_1,a);
+    set_led(LED_2,b);
+    set_led(LED_3,c);
+    set_led(LED_4,d);}
+    
+    define ON = TRUE;
+    define OFF = FALSE;

@@ -1,0 +1,763 @@
+
+	// DO NOT TOUCH \\ 
+	const uint8 FONT_STATS [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }}; 
+	const uint8 REFERENCE [] = {48,49,50,51,52,53,54,55,56,57};	
+
+	// DO NOT TOUCH \\
+	define SMALL = 0,MEDIUM = 1,LARGE = 2,TEXT_HORIZONTAL = 5,TEXT_VERTICAL = 8,OLED_W = 127,OLED_H = 63,START = 0,SINGLE = 1;  
+	define FONT_W = 0,FONT_H = 1,FONT_L = 2,FONT_VERTICAL = 25,BLACK = 0,WHITE = 1,UNFILL = 0,FILL = 1,THICKNESS = 2,NEG = 45;
+	
+	const string A      = "  POLAR RADIUS";
+	const string B      = "  RADIUS HEIGHT";
+	const string C      = "  RADIUS WIDTH";
+	const string D      = "   UNDER BOOST";
+	const string E      = "   OVER BOOST";
+	const string F      = "   SIDE BOOST";
+	const string G      = "STEADYAIM VALUE";
+	const string H      = "  ANGLE SPEED 1";
+	const string I      = "  ANGLE SPEED 2";
+	const string J      = "  ANGLE SPEED 3";
+	const string MENU1  = "MENU1";
+	const string MOD1   = "MOD1";
+	const string MOD2   = "MOD2";
+	const string MOD3   = "MOD3";
+	const string MOD4   = "MOD4";
+	const string MOD5   = "MOD5";
+	const string MOD6   = "MOD6";
+	const string MOD7   = "MOD7";
+	const string MOD8   = "MOD5";
+	const string MOD9   = "MOD6";
+	const string MOD10  = "MOD10";
+	const string MODS   = " < >";
+	const string VALUE  = "v";
+	const string VALUE1 = "^";
+	const string MODE0  = " CIRCLE TO EXIT";
+	const string MODE1  = "TRIANGLE TO EXIT";
+	const string MODES  = " 8)";
+	
+	// DO NOT TOUCH \\
+	define RX  = PS4_RX;
+	define RY  = PS4_RY;
+	define PRS = POLAR_RS;
+	define ON  = TRUE;
+	define OFF = FALSE;
+	
+	// DO NOT TOUCH \\
+	define MENU_TIMEOUT_  = 25000;
+	define IDX_MIN = 1,IDX_MAX = 10;
+	
+	// DO NOT TOUCH \\
+	data(-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100);
+	
+	// DO NOT TOUCH \\
+	int ANGLE,SPEED,MENU,CHANGE,AA,IDX,SHUNT,MENU_TIMEOUT,COUNT,ADJUST,NO = ON,SELECTOR,DIRECTION,INVERT,STEADY_VALUE;						
+	int x_Out,y_Out,angle_Out,cos_angle1,sin_angle1,angle_Out1,x_Out9,y_Out9,angle_Out9,angle9,x9[2],y9[2],angle2,xaa,yaa;
+	
+	// DO NOT TOUCH \\
+	define STEP_INTERVAL = 1;
+	define STEPS         = 8;
+	define Tall_Oval     = 1;
+	define Wide_Oval     = 2;
+	define Ellipse       = 3;
+	define Circle        = 4;
+
+	int ADS_ASSIST      = TRUE; 	//<---- ADS Aim Assist <---- TRUE  or  FALSE
+	int ADS_PATTERN     = Circle; 	//<---- Pattern == Circle  or  Tall_Oval  or  Wide_Oval  or  Ellipse
+
+	int ADSFIRE_ASSIST  = TRUE; 	//<---- ADS + FIRE Aim Assist <---- TRUE  or  FALSE 
+	int ADSFIRE_PATTERN = Tall_Oval;//<---- Pattern == Circle  or  Tall_Oval  or  Wide_Oval  or  Ellipse
+
+	int HIPFIRE_ASSIST  = TRUE; 	//<---- Hipfire Pattern <---- TRUE  or  FALSE
+	int HIPFIRE_PATTERN = Wide_Oval;//<---- Pattern == Circle  or  Tall_Oval  or  Wide_Oval  or  Ellipse
+
+	int DRIFT_ASSIST    = TRUE; 	//<---- Drift Aim Assist <----  TRUE  or  FALSE
+	int DRIFT_PATTERN   = Ellipse; 	//<---- Pattern == Circle  or  Tall_Oval  or  Wide_Oval  or  Ellipse
+	
+	// PRE GAME CONFIG SETTINGS \\ (ADJUST IN MENU VIA ZEN ALSO)
+	// |ROW1_DEFAULT____|   ROW2_MINIMUM______________|   ROW3_MAXIMUM________|	___VALUE REFERENCE____|
+	int ASSIST      = 15;   define ASSIST_MIN      = 1,   ASSIST_MAX      = 30;	// <---- AA Polar Value (Circluar Shake)
+	int OVAL_BIG    = 14;   define OVAL_BIG_MIN    = 1,   OVAL_BIG_MAX    = 30;	// <---- AA Oval Big Value 
+	int OVAL_SMALL  = 10;   define OVAL_SMALL_MIN  = 1,   OVAL_SMALL_MAX  = 30;	// <---- AA Oval Small Value 
+	
+	int UNDER_BOOST =  3;   define UNDER_BOOST_MIN = 0,   UNDER_BOOST_MAX = 20;	// <---- AA Fire Under Boost
+	int OVER_BOOST  =  2;   define OVER_BOOST_MIN  = 0,   OVER_BOOST_MAX  = 20;	// <---- AA Fire Over Boost
+	int SIDE_BOOST  =  1;   define SIDE_BOOST_MIN  = 0,   SIDE_BOOST_MAX  = 20;	// <---- AA Side Drift Boost
+	
+	int STEADY_AIM  = 15;   define STEADY_AIM_MIN  = 2,   STEADY_AIM_MAX  = 90;	// <---- Steady Aim Value. Range: (2 - 90)
+	
+	int A_SPEED     =  8;   define A_SPEED_MIN     = 5,   A_SPEED_MAX     = 90;	// <---- AA Rotational Speed 1
+	int B_SPEED     = 10;   define B_SPEED_MIN     = 5,   B_SPEED_MAX     = 90;	// <---- AA Rotational Speed 2
+	int C_SPEED     = 20;   define C_SPEED_MIN     = 5,   C_SPEED_MAX     = 90;	// <---- AA Rotational Speed 3
+	
+	define ADS      = PS4_L2;
+	define FIRE     = PS4_R2;
+	
+init { 
+	STEADY_AIM = (360 / STEADY_AIM) / 2; 
+}
+
+main {   
+	
+    	AIMASSIST();
+    
+	if (get_ival(PS4_L2) && event_press(PS4_OPTIONS)) {
+		MENU = ON;
+		AA = ON;
+		IDX = ON;
+		NAME();
+		SHUNT = PS4_OPTIONS;
+	}
+	if (MENU) {
+	if (AA) { 	
+		MENU_TIMEOUT += get_rtime();
+	}
+	if (get_ival(PS4_UP) || get_ival(PS4_DOWN) || get_ival(PS4_LEFT) || get_ival(PS4_RIGHT)) {
+		MENU_TIMEOUT = OFF;
+	}
+	if (MENU_TIMEOUT >= MENU_TIMEOUT_ || event_press(PS4_TRIANGLE) || event_press(PS4_CIRCLE)) {
+		cls_oled(BLACK);
+		MENU = OFF;
+		AA = OFF;
+		IDX = OFF;
+		combo_stop (EXIT);
+		MENU_TIMEOUT = OFF;
+		SHUNT = PS4_CIRCLE;
+	}
+	if (AA) {
+		IDX = ADJUSTA(IDX,IDX_MIN,IDX_MAX,SINGLE,IDX);
+	if (IDX == 1) {
+		ASSIST = ADJUST(ASSIST,ASSIST_MIN,ASSIST_MAX,SINGLE,IDX);
+    }
+	if (IDX == 2) {
+		OVAL_BIG = ADJUST(OVAL_BIG,OVAL_BIG_MIN,OVAL_BIG_MAX,SINGLE,IDX);
+    }
+	if (IDX == 3) {
+		OVAL_SMALL = ADJUST(OVAL_SMALL,OVAL_SMALL_MIN,OVAL_SMALL_MAX,SINGLE,IDX);
+    }
+	if (IDX == 4) {
+		UNDER_BOOST = ADJUST(UNDER_BOOST,UNDER_BOOST_MIN,UNDER_BOOST_MAX,SINGLE,IDX);
+    }
+	if (IDX == 5) {
+		OVER_BOOST = ADJUST(OVER_BOOST,OVER_BOOST_MIN,OVER_BOOST_MAX,SINGLE,IDX);
+    }
+	if (IDX == 6) {
+		SIDE_BOOST = ADJUST(SIDE_BOOST,SIDE_BOOST_MIN,SIDE_BOOST_MAX,SINGLE,IDX);
+    }
+	if (IDX == 7) {
+		STEADY_AIM = ADJUST(STEADY_AIM,STEADY_AIM_MIN,STEADY_AIM_MAX,SINGLE,IDX);
+    		}
+    if (IDX == 8) {
+		A_SPEED = ADJUST(A_SPEED,A_SPEED_MIN,A_SPEED_MAX,SINGLE,IDX);
+    }
+	if (IDX == 9) {
+		B_SPEED = ADJUST(B_SPEED,B_SPEED_MIN,B_SPEED_MAX,SINGLE,IDX);
+    }
+	if (IDX == 10) {
+		C_SPEED = ADJUST(C_SPEED,C_SPEED_MIN,C_SPEED_MAX,SINGLE,IDX);
+    		}		
+		}
+	BLOCK(PS4_DOWN); BLOCK(PS4_UP); BLOCK(PS4_LEFT); BLOCK(PS4_RIGHT);
+	}
+    
+    if (get_val(ADS) && event_press(PS4_SHARE)) {
+        SHUNT = PS4_SHARE
+        SELECTOR++;
+    }
+    if (SELECTOR > 2) 
+    	SELECTOR = 0;
+	if (SELECTOR == 0) {
+        SPEED = A_SPEED;
+        set_ledx(0 + 1,3);
+    }
+    if (SELECTOR == 1) {
+        SPEED = B_SPEED;
+        set_ledx(1 + 1,3);
+    }
+    if (SELECTOR == 2) {
+        SPEED = C_SPEED;
+        set_ledx(2 + 1,3);
+    }
+	
+	if (isqrt(abs(get_ival(XB1_RX)) * abs(get_ival(XB1_RX)) + abs(get_ival(XB1_RY)) * abs(get_ival(XB1_RY))) > ASSIST) {
+  		STEADY_VALUE = atan2(get_val(POLAR_RY)/256,get_val(POLAR_RX)/256);
+	if (get_val(POLAR_RY) > 0) 
+  		STEADY_VALUE =  map(0,STEADY_AIM,0,180,(STEADY_VALUE * STEADY_AIM) / 180);
+   	else
+   		STEADY_VALUE = map(0,STEADY_AIM,180,360,(((STEADY_VALUE - 180) * STEADY_AIM) / 180));
+
+  		Set_polar1(POLAR_RS,STEADY_VALUE,isqrt((get_val(PS4_RX) * get_val(PS4_RX)) + (get_val(PS4_RY) * get_val(PS4_RY))),FALSE);
+  	}
+  	
+  	if (SHUNT) {
+	if (event_release(SHUNT)) {
+		SHUNT = 0;
+	}
+	else {
+		set_val(SHUNT,0);
+		}
+	}     
+}
+
+combo BOOST {
+	offset2(XB1_RX,ASSIST + SIDE_BOOST);
+	wait(30);
+	offset2(XB1_RX,(ASSIST + SIDE_BOOST) * -1);
+	wait(30);
+}
+
+combo UNDER {
+    offset2(XB1_RX,ASSIST + UNDER_BOOST);
+    wait(30);
+    offset2(XB1_RY,ASSIST + UNDER_BOOST + 1);
+    wait(30);
+    offset2(XB1_RX,(ASSIST + UNDER_BOOST) * -1);
+    wait(30);
+    offset2(XB1_RY,(ASSIST + UNDER_BOOST + 1) * -1);
+    wait(30);
+}
+
+combo OVER {
+    offset2(XB1_RX,ASSIST + OVER_BOOST);
+    wait(40);
+    offset2(XB1_RY,ASSIST + OVER_BOOST + 1);
+    wait(40);
+    offset2(XB1_RX,(ASSIST + OVER_BOOST) * -1);
+    wait(40);
+    offset2(XB1_RY,(ASSIST + OVER_BOOST + 1) * -1);
+    wait(40);
+}
+
+combo EXIT {
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 40,SMALL,WHITE,MODE0[START]);
+	wait(500);
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 40,SMALL,WHITE,MODE1[START]);
+}    
+
+function BLOCK (BUTTON) {
+if (!get_ival(BUTTON)) 
+		return; 
+	set_val(BUTTON,OFF);
+}
+
+function AIMASSIST() {
+	angle9 = (angle9 + SPEED + DIRECTION) % 360;
+if ((get_ival(XB1_RX) > ASSIST) && !INVERT) {
+    INVERT = TRUE;
+	}
+if ((get_ival(XB1_RX) < -ASSIST) && INVERT) {
+	INVERT = FALSE;
+    }
+if (INVERT) {
+    DIRECTION = 344;
+	}
+if (!INVERT) {
+    DIRECTION = 0;
+	}
+if (ADS_ASSIST) {
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) <= ASSIST) {
+if (get_val(ADS) > 98 && !get_val(FIRE)) {
+if (ADS_PATTERN == 1) {
+    TALL();
+    }
+if (ADS_PATTERN == 2) {
+    WIDE();
+	}
+if (ADS_PATTERN == 3) {
+  	set_ellipse(POLAR_RS, angle9, OVAL_BIG, OVAL_SMALL);
+	}
+if (ADS_PATTERN == 4) {
+	Shake();
+			}			
+		}
+	}
+}
+if (DRIFT_ASSIST){
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX))) >= ASSIST) {
+if (get_val(ADS) > 98 && !get_val(FIRE)) {
+if (DRIFT_PATTERN == 1) {
+	TALL_OVAL();
+	}
+if (DRIFT_PATTERN == 2) {
+    WIDE_OVAL();
+	}
+if (DRIFT_PATTERN == 3) {
+  	set_ellipse(POLAR_RS,angle9,OVAL_BIG,OVAL_SMALL);
+	}
+if (DRIFT_PATTERN == 4){
+	combo_run(BOOST);
+    	}	
+	}
+}
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX))) >= ASSIST) {
+if (get_val(ADS) > 98 && !get_val(FIRE)) {
+if (DRIFT_PATTERN == 1) {
+    TALL_OVAL();
+	}
+if (DRIFT_PATTERN == 2) {
+    WIDE_OVAL();
+	}
+if (DRIFT_PATTERN == 3) {
+	set_ellipse(POLAR_RS,angle9,OVAL_BIG,OVAL_SMALL);
+	}
+if (DRIFT_PATTERN == 4){
+	combo_run(BOOST);
+			}	
+		}
+	}
+}
+if (ADSFIRE_ASSIST) {
+if ((get_ival(ADS) && (get_val(FIRE)))) {
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) <= ASSIST) {
+if (ADSFIRE_PATTERN == 1) {
+	TALL();
+	}
+if (ADSFIRE_PATTERN == 2) {
+	WIDE();
+	}
+if (ADSFIRE_PATTERN == 3) {
+  	set_ellipse(POLAR_RS, angle9, OVAL_BIG, OVAL_SMALL);
+	}
+if (ADSFIRE_PATTERN == 4) {
+	combo_run(UNDER);
+    }
+}
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) > ASSIST) {
+if (ADSFIRE_PATTERN == 1) {
+	TALL_OVAL();
+	}
+if (ADSFIRE_PATTERN == 2) {
+	WIDE_OVAL();
+	}
+if (ADSFIRE_PATTERN == 3) {
+	set_ellipse(POLAR_RS, angle9, OVAL_BIG,OVAL_SMALL);
+	}
+if (ADSFIRE_PATTERN == 4) {
+	combo_run(OVER);
+			}	
+		}
+	}
+}
+if (HIPFIRE_ASSIST) {
+if ((!get_ival(ADS) && (get_val(FIRE)))) {
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) <= ASSIST) {
+if (HIPFIRE_PATTERN == 1) {
+    TALL();
+    }
+if (HIPFIRE_PATTERN == 2){
+    WIDE();
+    }
+if (HIPFIRE_PATTERN == 3) {
+  	set_ellipse(POLAR_RS, angle9, OVAL_BIG, OVAL_SMALL);
+	}
+if (HIPFIRE_PATTERN == 4) {
+	combo_run(UNDER);
+    }	
+}
+if (isqrt(abs(get_val(XB1_RX)) * abs(get_val(XB1_RX)) + abs(get_val(XB1_RY)) * abs(get_val(XB1_RY))) > ASSIST) {
+if (HIPFIRE_PATTERN == 1) {
+	TALL_OVAL();
+	}
+if (HIPFIRE_PATTERN == 2) {
+	WIDE_OVAL();
+}
+if (HIPFIRE_PATTERN == 3) {
+  	set_ellipse(POLAR_RS, angle9, OVAL_BIG, OVAL_SMALL);
+	}
+if (HIPFIRE_PATTERN == 4) {
+	combo_run(OVER);
+				}	
+			}
+		}
+	}
+}
+
+function TALL() {
+    angle2 = (angle2 + SPEED + DIRECTION) % 360;
+	set_polar(POLAR_RS,angle2,OVAL_SMALL * 327);
+    xaa = get_val(POLAR_RX);
+	set_polar(POLAR_RS,angle2,OVAL_BIG * 327);
+    yaa = get_val(POLAR_RY);
+	set_val(POLAR_RX, get_ival(POLAR_RX));
+    set_val(POLAR_RY, get_ival(POLAR_RY));
+	set_val(POLAR_RY, yaa);
+    set_val(POLAR_RX, xaa);
+}
+
+function WIDE() {
+    angle2 = (angle2 + SPEED + DIRECTION) % 360;
+    set_polar(POLAR_RS,angle2,OVAL_BIG * 327);
+    xaa = get_val(POLAR_RX);
+	set_polar(POLAR_RS,angle2,OVAL_SMALL * 327);
+    yaa = get_val(POLAR_RY);
+	set_val(POLAR_RX,get_ival(POLAR_RX));
+    set_val(POLAR_RY,get_ival(POLAR_RY));
+	set_val(POLAR_RY, yaa);
+    set_val(POLAR_RX, xaa);
+}
+
+function TALL_OVAL() {
+	ANGLE = (ANGLE + STEPS + DIRECTION) % 360;
+    f_set_polar(2,ANGLE, OVAL_SMALL);
+	xaa = get_val(XB1_RX);
+	f_set_polar(2, ANGLE, OVAL_BIG);
+	yaa = get_val(XB1_RY);
+	set_val(XB1_RX, get_ival(XB1_RX));
+	set_val(XB1_RY, get_ival(XB1_RY));
+	set_val(XB1_RY, yaa);
+	set_val(XB1_RX, xaa);
+}
+
+function WIDE_OVAL() {
+    ANGLE = (ANGLE + STEPS + DIRECTION) % 360;
+    f_set_polar(2,ANGLE, OVAL_BIG);
+	xaa = get_val(XB1_RX);
+	f_set_polar(2, ANGLE, OVAL_SMALL);
+	yaa = get_val(XB1_RY);
+	set_val(XB1_RX, get_ival(XB1_RX));
+	set_val(XB1_RY, get_ival(XB1_RY));
+	set_val(XB1_RY, yaa);
+	set_val(XB1_RX, xaa);
+}
+
+function Shake() { 
+	angle2 = (angle2 + SPEED + DIRECTION) % 360;
+    set_polar(POLAR_RS,angle2, ASSIST * 327);
+  	xaa = get_val(POLAR_RX);
+  	yaa = get_val(POLAR_RY);
+	set_val(POLAR_RX, get_ival(POLAR_RX));
+  	set_val(POLAR_RY, get_ival(POLAR_RY));
+	set_val(POLAR_RX, xaa);
+  	set_val(POLAR_RY, yaa);
+}
+
+function set_ellipse(stick,angle9,width,height) {
+	Set_polar(stick, angle9, width);
+  	x9[stick/4] = get_val(stick + 7);
+  	Set_polar(stick, angle9, height);
+  	y9[stick/4] = get_val(stick + 8);
+  	set_val(stick + 7,offset3(stick + 7, x9[stick/4]));
+  	set_val(stick + 8,offset3(stick + 8, y9[stick/4]));
+}
+
+function Set_polar(stick,angle9,radius) {
+  	set_val(7 + stick, (cos(angle9) * radius) / 100);
+  	set_val(8 + stick, (sin(angle9) * radius) / 100);
+  		return;
+}
+
+function Set_polar1(stick,angle,radius,offset13) {
+if (angle < 0) 
+	angle = 360 + (angle % 360);
+	
+	angle = (angle + 90) % 360;
+	sin_angle1 = dint8(angle);
+  	cos_angle1 = dint8((angle + 90) % 360);
+if (offset13) {
+    offset1(7 + stick, (cos_angle1 * radius) / 100);
+    offset1(8 + stick, (sin_angle1 * radius) / 100);
+  	} 
+else {
+    set_val(7 + stick, (cos_angle1 * radius) / 100);
+    set_val(8 + stick, (sin_angle1 * radius) / 100);
+  	}
+  	return;
+}
+
+function f_set_polar(stick, angle, radius) {
+  	offset2(7 + stick, f_clamp((f_cos(angle) * radius) / 100,-100, 100));
+  	offset2(8 + stick, f_clamp((f_sin(angle) * radius) / 100,-100, 100));
+  		return;
+}
+
+function cos (angle9) {
+if (angle9 < 0) 
+	angle9 = (angle9 % 360) + 360;
+	
+	angle9 = (angle9 % 360);
+	x_Out9 = 100;
+	y_Out9 = 100;
+	angle_Out9 = angle9 % 45;
+if (angle9 < 45) {
+	y_Out9 = (100 * angle_Out9) / 45; 
+}
+else if (angle9 < 90)  { 
+	x_Out9 = (100 * (45 - angle_Out9)) / 45; 
+	}
+else if (angle9 < 135) { 
+	x_Out9 = (-100 * angle_Out9) / 45; 
+	}
+else if (angle9 < 180) {
+	y_Out9 = (100 * (45 - angle_Out9)) / 45; x_Out9 = -100; 
+	}
+else if (angle9 < 225) {
+	y_Out9 = (100 * angle_Out9) / 45; x_Out9 = -100; 
+	}
+else if (angle9 < 270) { 
+	x_Out9 = (-100 * (45 - angle_Out9)) / 45; y_Out9 = -100; 
+	}
+else if (angle9 < 315) { 
+	x_Out9 = (100 * angle_Out9) / 45; y_Out9 = -100; 
+	}
+else { y_Out9 = ( 100 * (45 - angle_Out9)) / 45; 
+	}
+	angle_Out9 = abs(y_Out9);
+if (abs(x_Out9) > angle_Out9) 
+	angle_Out9 = abs(x_Out9);
+		return (x_Out9 * angle_Out9 / isqrt((pow(x_Out9, 2) + pow(y_Out9,2))));
+}
+
+function f_cos(angle) {
+if (angle < 0) angle = (angle % 360) + 360;
+  	angle = (angle % 360);
+	x_Out = 100;
+  	y_Out = 100;
+  	angle_Out = angle % 45;
+if (angle < 45) { 
+	y_Out = (100 * angle_Out) / 45; 
+	}
+else if (angle < 90)  { 
+	x_Out = (100 * (45 - angle_Out)) / 45; 
+	}
+else if (angle < 135) { 
+	x_Out = (-100 * angle_Out) / 45; 
+	}
+else if (angle < 180) { 
+	y_Out = (100 * (45 - angle_Out)) / 45; x_Out = -100; 
+}
+else if (angle < 225) { 
+	y_Out = (100 * angle_Out) / 45; x_Out = -100; 
+}
+else if (angle < 270) { 
+	x_Out = (-100 * (45 - angle_Out)) / 45; y_Out = -100; 
+}
+else if (angle < 315) { 
+	x_Out = (100 * angle_Out) / 45; y_Out = -100; 
+}
+else { 
+	y_Out = ( 100 * (45 - angle_Out)) / 45; 
+}
+	angle_Out = abs(y_Out);
+if (abs(x_Out) > angle_Out) angle_Out = abs(x_Out);
+	return (x_Out * angle_Out / isqrt((pow(x_Out, 2) + pow(y_Out, 2))));
+}
+
+function atan2(y, x) {
+if (x >= 0 && y > 0) 
+	angle_Out1 = -90;
+else if (x  < 0 && y >= 0) 
+	angle_Out1 = 90;
+else if (x <= 0 && y < 0) 
+	angle_Out1 = -270;
+else 
+	angle_Out1 = 270;
+	
+	x = abs(x);
+  	y = abs(y);
+if (x < y) 
+	angle_Out1 += (x * 45 / y);
+else if (x > y) 
+	angle_Out1 += 90 - (y * 45 / x);
+else 
+	angle_Out1 += 45;
+
+  	angle_Out1 = abs(angle_Out1 % 360);
+		return (angle_Out1);
+}
+
+function offset1(axis,offset_val) {
+  	set_val(axis,clamp13(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis),-100,100));
+  		return;
+}
+
+function offset2(axis,offset_val) {
+      set_val(axis,clamp13(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis),-100,100));
+    return;
+} 
+
+function offset3(axis, offset_val) { 
+	return clamp13(offset_val * (100 - abs(get_ival(axis))) / 100 + get_ival(axis),-100,100); 
+}
+
+function map (inMin,inMax,outMin,outMax,x) {
+  	return (x - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+}
+
+function f_clamp(v, lo, hi) { 
+if(v < lo) 
+	return lo; 
+if(v > hi) 
+	return hi; 
+		return v; 
+}
+function clamp13(v, lo, hi) { 
+if(v < lo) 
+	return lo; 
+if(v > hi) 
+	return hi; 
+		return v; 
+}
+function f_sin(angle) { 
+	return (f_cos(angle - 90)); 
+}
+
+function sin (angle9) { 
+	return (cos(angle9 - 90)); 
+}
+
+function NAME () {
+	cls_oled(BLACK);
+if (AA == ON) {
+	GRID ();
+	printf(TEXT_HORIZONTAL + 83,TEXT_VERTICAL + 15,SMALL,WHITE,MENU1[START]);
+	CHANGE = OFF;
+	combo_run (EXIT); 
+if (IDX == 1) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,A[START]);
+	EDITNUMBER(ASSIST,NUMBER(ASSIST));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD1[START]);
+}
+if (IDX == 2) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,B[START]);
+	EDITNUMBER(OVAL_BIG,NUMBER(OVAL_BIG));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD2[START]);
+}
+if (IDX == 3) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,C[START]);
+	EDITNUMBER(OVAL_SMALL,NUMBER(OVAL_SMALL));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD3[START]);
+}
+if (IDX == 4) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,D[START]);
+	EDITNUMBER(UNDER_BOOST,NUMBER(UNDER_BOOST));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD4[START]);
+}
+if (IDX == 5) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,E[START]);
+	EDITNUMBER(OVER_BOOST,NUMBER(OVER_BOOST));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD5[START]);
+}
+if (IDX == 6) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,F[START]);
+	EDITNUMBER(SIDE_BOOST,NUMBER(SIDE_BOOST));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD6[START]);
+}
+if (IDX == 7) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,G[START]);
+	EDITNUMBER(STEADY_AIM,NUMBER(STEADY_AIM));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD7[START]);
+		}
+if (IDX == 8) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,H[START]);
+	EDITNUMBER(A_SPEED,NUMBER(A_SPEED));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD8[START]);
+}
+if (IDX == 9) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,I[START]);
+	EDITNUMBER(B_SPEED,NUMBER(B_SPEED));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD9[START]);
+}
+if (IDX == 10) {
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL,SMALL,WHITE,J[START]);
+	EDITNUMBER(C_SPEED,NUMBER(C_SPEED));
+	printf(TEXT_HORIZONTAL + 3,TEXT_VERTICAL + 15,SMALL,WHITE,MOD10[START]);
+		}		
+	}
+}
+
+function GRID () {
+	line_oled(OLED_W - 3,START + 20,START + 4,START + 20,THICKNESS,WHITE);
+	rect_oled(START + 1,START + 1,OLED_W,OLED_H,UNFILL,WHITE);
+	rect_oled(START + 4,START + 3,OLED_W - 6,OLED_H - 4,UNFILL,WHITE);
+	rect_oled(START + 7,OLED_H - 17,OLED_W - 12,START + 13,UNFILL,WHITE);
+	rect_oled(START + 5,START + 20,OLED_H - 31,START + 22,UNFILL,WHITE);
+	rect_oled(OLED_W - 40,START + 23,OLED_H - 25,START + 22,UNFILL,WHITE);
+	printf(TEXT_HORIZONTAL,TEXT_VERTICAL + 23,SMALL,WHITE,MODS[START]);
+	printf(TEXT_HORIZONTAL + 74,TEXT_VERTICAL + 18,SMALL,WHITE,VALUE1[START]);
+	printf(TEXT_HORIZONTAL + 74,TEXT_VERTICAL + 24,SMALL,WHITE,VALUE[START]);
+	printf(TEXT_HORIZONTAL + 87,TEXT_VERTICAL + 25,SMALL,WHITE,MODES[START]);
+}
+
+function ADJUST (VALUE,MIN,MAX,AMOUNT,INDEX) {
+if (event_press(PS4_UP) || get_ival (PS4_UP) && get_ptime (PS4_UP) >= 250) {
+	CHANGE = ON;
+	VALUE += AMOUNT;
+		return VALUE;
+    }
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(PS4_DOWN) || get_ival (PS4_DOWN) && get_ptime (PS4_DOWN) >= 250) {
+	CHANGE = ON;
+	VALUE -= AMOUNT;
+		return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (CHANGE == ON && INDEX == IDX) {
+	NAME();
+	}		
+	return VALUE;
+}
+
+function ADJUSTA (VALUE,MIN,MAX,AMOUNT,INDEX) {
+if (event_press(PS4_RIGHT)) {
+	CHANGE = ON;
+	VALUE += AMOUNT;
+	return VALUE;
+	}
+if (VALUE > MAX) { 
+	return MIN;
+	}
+if (event_press(PS4_LEFT)) {
+	CHANGE = ON;
+	VALUE -= AMOUNT;
+	return VALUE;
+	}
+if (VALUE < MIN) {
+	return MAX;
+	}
+if (CHANGE == ON && INDEX == IDX) {
+	NAME();
+	}		
+	return VALUE;
+}
+
+function EDITNUMBER (DIGIT,FDIGIT) {
+if (DIGIT < START) {
+	putc_oled(NO,NEG);
+	NO += 1;
+	DIGIT = abs(DIGIT);
+	COUNT = ON;
+	}
+else 
+	COUNT = START;
+if (FDIGIT >= 3) {
+	putc_oled(NO,REFERENCE[DIGIT / 100]);
+	DIGIT = DIGIT % 100;
+	NO +=  1;
+	}
+if (FDIGIT >= 2) {
+	putc_oled(NO,REFERENCE[DIGIT / 10]);
+	DIGIT = DIGIT % 10;
+	NO += 1;
+	}
+	putc_oled(NO,REFERENCE[DIGIT]);
+	puts_oled(CENTER(FDIGIT + COUNT,FONT_H),FONT_VERTICAL,MEDIUM,NO,WHITE);    
+	NO = ON;
+} 
+
+function NUMBER (NUM) {
+    NUM = abs(NUM);
+if (NUM /  100 > START) 
+	return 3;
+if (NUM /   10 > START) 
+	return 2;
+		return 1;
+}    
+
+function CENTER (CHAR,SIZE) {
+    ADJUST = CHAR * FONT_STATS[SIZE][FONT_W];
+    ADJUST = (OLED_W - ADJUST) / FONT_L;
+		return ADJUST;
+}

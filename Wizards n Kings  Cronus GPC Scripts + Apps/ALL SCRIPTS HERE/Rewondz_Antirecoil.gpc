@@ -1,0 +1,105 @@
+//--Button Assignments
+define Fire					= PS4_R2;
+define Ads					= PS4_L2;
+define AimX					= PS4_RX;
+define AimY					= PS4_RY;
+define Strafe				= PS4_LX;
+define Walk					= PS4_LY;
+
+define ToggleHairTriggers	= TRUE; // (IF L2/LT OR R2/RT IS HELD MORE THEN 10% IT'LL REGISTER AS 100% IN THE GAME)
+
+define DeadZone				=	10; // Anything Below This Value Is Registered As 0, Good For Old Controllers With Stick Drift
+
+define ToggleBattsStickyAim	= TRUE;	// TRUE = ON \\ FALSE = OFF //
+int    AimAssistTime		=	20;	// Aim Assist Time \\ Higher = Slower Time // Lower = Faster Time \\ // Adjust Time by Increasing/Decreasing the value by 10's
+int    AimAssistSize		=	12;	// Aim Assist Size \\ Higher = More Strength - More Screen Shake // Lower = Less Strength - Less Screen Shake 
+
+define ToggleAntiRecoil		= TRUE; // Main Toggle
+int    Vertical_Recoil		=	34; // Vertical Value
+int    Horizontal_Recoil	=	-9; // Horizontal Value
+
+int A, B, C, D;
+
+main {
+	RemoveStickNoise();
+
+	if(ToggleHairTriggers)
+	{
+		if(get_ival(PS4_R2) > 10) // We don't assign these as Ads, Fire variable because ONLY L2/LT and R2/RT can have a hair triggers to them
+			set_val(PS4_R2, 100);
+
+		if(get_ival(PS4_L2) > 10)
+			set_val(PS4_L2, 100);
+	}
+
+	if(ToggleBattsStickyAim)
+	{
+		if(get_ival(Fire))
+			combo_run(cStickyAim);
+		else
+			combo_stop(cStickyAim);
+	}
+
+	if(ToggleAntiRecoil)
+	{
+		if(get_ival(Ads) && get_ival(Fire))
+		{
+			AntiRecoil(AimY, Vertical_Recoil);
+			AntiRecoil(AimX, Horizontal_Recoil);
+		}
+	}
+}
+
+combo cStickyAim {
+	Offset(AimY, AimAssistSize);
+	wait(AimAssistTime);
+	Offset(AimX, AimAssistSize);
+	Offset(Strafe, AimAssistSize);
+	wait(AimAssistTime);
+	Offset(AimY, inv(AimAssistSize));
+	wait(AimAssistTime);
+	Offset(AimX, inv(AimAssistSize));
+	Offset(Strafe, inv(AimAssistSize));
+	wait(AimAssistTime);
+}
+
+function AntiRecoil(Axis, Value) {
+	A = get_val(Axis) + Value;
+	B = (Value) / 100;
+	C = 1 + (B);
+	D = 1 - (B); 
+
+	if(A == (get_val(Axis) > 0))
+	{ 
+		A = A * D + Value - sq(10) * (D * (C - 1));
+	}
+	else
+	{
+		A = A *  C - Value * (1 - D);
+	}
+		set_val(Axis, clamp(A, -100, 100));  
+	return;
+}
+
+function sq(v) {
+	return v * v;
+}
+
+function Offset(Stick,Value) {
+	set_val(Stick, clamp(Value * (100 - abs(get_val(Stick))) / 100 + get_val(Stick), -100, 100));
+		return;
+}
+
+function RemoveStickNoise() {
+	if(isqrt(pow(get_ival(AimY), 2) + pow(get_ival(AimX), 2)) <= DeadZone)
+	{
+		set_val(AimY, 0);
+		set_val(AimX, 0);
+	}
+
+	if(isqrt(pow(get_ival(Strafe), 2) + pow(get_ival(Walk), 2)) <= DeadZone)
+	{
+		set_val(Strafe, 0);
+		set_val(Walk  , 0);
+	}
+}

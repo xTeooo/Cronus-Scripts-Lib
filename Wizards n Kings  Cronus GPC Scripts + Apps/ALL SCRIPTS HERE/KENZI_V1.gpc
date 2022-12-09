@@ -1,0 +1,289 @@
+// GPC kenzi juzi
+// fortnite_aimbot_-_juzi_&_KENZI_(personal_script).gpc
+
+// GPC kenzi juzi
+// Tunes_Script.gpc
+
+/*######################################################################################################################################################################################################################################
+################################## FORTNITE - BATTLE ROYAL GAMEPACK FOR CRONUSMAX ##############################################################################################################################
+##################################========================================================================##############################################################################################################################
+##################################========================================================================##############################################################################################################################
+################################## TOGGLE MENU ############################################# DESCRIPTION ###############################################################################################################################
+##################################=============#############################################=============###############################################################################################################################
+######################|------*/int In_Game_Sens   = 7.3;     /*#######|------------------- ADD YOUR SENSITIVITY! -------------------|###################################################################################################
+######################|------------------------------------/*###########################################################################################################################################################################
+######################|------*/int RapidFire      = FALSE;  /*#######|------- HOLD "Scope_BTN" and press "Right" for toggle ---------|##################################################################################################
+######################|------*/int AntiRecoil     = TRUE;  /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+######################|------*/int AutoRun        = FALSE;  /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+######################|------*/int Aimbot         = TRUE;  /*#######|------- HOLD "Scope_BTN" and press "UP" for toggle ------|#########################################################################################################
+######################|------*/int RampRush       = FALSE; /*#######|------- HOLD "Scope_BTN" and press "Switch_BTN" for toggle ON_OFF-----|#############################################################################################
+######################|------*/int AimAssist      = TRUE; /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+######################|------*/int DropShot       = FALSE; /*#######|------- HOLD "Scope_BTN" and press "Jump_BTN" for toggle -------|###################################################################################################
+######################|------*/int RumbleNotify   = FALSE;  /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+######################|------*/int HairTrigger    = FALSE;  /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+######################|------*/int ButtonSwap     = FALSE; /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+######################|------*/int InstaSwap      = FALSE;  /*#######|--------------------- CHANGE TO TRUE FOR ACTIVATION! --------------------|###################################################################################################
+#######################################################################################################################################################################################################################################*/
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\|
+// DONATIONS: $kenzi  | COMMUNITY: cronusmax.com                  |
+//----------------------------------------------------------------------------------|
+// CREDITS GO TO: CRONUSMAX (Tunes)                                                   |
+//----------------------------------------------------------------------------------|                                                                         
+// VERSION: GAMEPACK X                                                           |
+//----------------------------------------------------------------------------------|
+// NOTICE: - Sniper/ADS Weapon Scope - FIXED! (Now works flawless)                           |
+//         - To optimize this GamePack for your sensitivity you have to change:     |
+//           "int In_Game_Sens"                                                     |
+//----------------------------------------------------------------------------------|
+// MOD - DESCRIPTION:                                                               |
+// ==================                                                               |
+// - Aimbot: Like Aim Assist but with a 100% better target-tracking                  |
+// - AimAssist: Shakes your screen slightly and gives you a little target-tracking           |
+// - DropShot: You crouch and stand, and so on... While you aim and shoot            |
+// - HairTrigger: Sets your Triggers to 100% if you press less then 100%            |
+// - InstaSwap: You swap instant to your next weapon                                |
+// - RapidFire: Allows you to shoot as fast as possible                             |
+// - AntiRecoil: Reduces recoil significantly of each weapon                                      |
+// - AutoRun: You run permanently                                                   |
+// - ButtonSwap: Swap R2 with R1 and L2 with L1                                     |
+// - BatteryNotify: Notify if your controller accu is under 20% + color notify      |
+//                  for toggle functions                                            |
+////////////////////////////////////////////////////////////////////////////////////|
+//###########################################################################################################
+define Scope_BTN   = 7; //XB1_LB //PS4_L2
+define Shoot_BTN   = 4; //XB1_RB //PS4_R2
+define LY          = 12; //XB1_LY //PS4_LY
+define Run_BTN     = 8; //XB1_LS //PS4_L3
+define Jump_BTN    = 19; //XB1_A  //PS4_CROSS
+define Up          = 13; //XB1_UP //PS4_UP
+define RY          = 10; //XB1_RY //PS4_RY
+define Right       = 16; //XB1_RIGHT //PS4_RIGHT
+define LX          = 11; //XB1_LX //PS4_LX
+define Down        = 14; //XB1_DOWN //PS4_DOWN
+define Reload_BTN  = 20; //XB1_X //PS4_SQAURE
+define RX          = 9; //XB1_RX //PS4_RX
+define Crouch_BTN  = 18; //XB1_LS  //PS4_L3
+define RightBumber = 3; //XB1_RT //PS4_R1
+define LeftBumber  = 6; //XB1_LT //PS4_L1
+define Left        = 15; //XB1_LEFT //PS4_LEFT
+define Melee_BTN   = 5; //XB1_RS //PS4_R3
+define Switch_BTN  = 17; //XB1_B  //PS4_CIRCLE
+define WALL_BTN = 4; //XB1_RB //PS4_R2
+define STAIRS_BTN = 7; //XB1_LB //PS4_L2
+define FLOOR_BTN = 3; //XB1_RT //PS4_R1
+define ROOF_BTN = 6; //XB1_LT //PS4_L1
+//###########################################################################################################
+int a;int b;
+
+//Build Speed
+ define build_speed = 50;
+ define speed = 50;
+
+//Jitter
+int tap; //ADVANCED JITTER
+int R2_block; //ADVANCED JITTER
+
+//RapidFire:
+  int shoot_rate           = 6;                   // Bullets per second
+  int rapidfire;
+  
+//AimAssist:  
+  int valueX               = 20;
+  int delayA;                  
+    
+//NoRecoil:
+  int antirecoil_sg        = 19;                  // NoRecoil_value for slow guns
+  int antirecoil_fg        = 19;                  // NoRecoil_value for fast guns
+  int antirecoil;
+  
+//Aimbot:
+  int AimSpeed             = 170;                               
+  int delay                = 14; 
+  define Aimbot_BTN        = 8;              // Button which runs the Aimbot, PLAYSTATION: "PS4_L2" for L2, "PS4_R2" for R2 
+//++INSERT THERE THE BUTTON---^+++                                                        XBOX: "XB1_LT" for LT, "XB1_RT" for RT      
+
+//ToggleSystem:
+  define toggleMainButton  = PS4_OPTIONS;         //Activates ToggleMenu (PS4_OPTIONS = XB1_MENU!)
+
+//InstaSwap:
+  int button;
+  
+//BlockMod:
+  int button1;
+  int button2; 
+  int blockmod;
+//###########################################################################################################
+init { //-BUTTON LAYOUT-\\  
+if(get_controller() == PIO_WII){ combo_run(Notify);a=2;b=0;} 
+   else { combo_run(Notify);a=0;b=2;} 
+     
+   //RapidFire - Settings
+   rapidfire = (1000/shoot_rate); 
+   
+   //NoRecoil - InGameSens Optimizing
+   antirecoil_sg = pow((antirecoil_fg / In_Game_Sens),2); //antirecoil_sg*4/In_Game_Sens;
+   antirecoil_fg = pow((antirecoil_fg / In_Game_Sens),2);
+   
+   //AimAssist Settings
+   delayA = pow((valueX / In_Game_Sens),2);  
+   
+}//CREDITS: TUNES
+//###########################################################################################################
+main {
+if(ButtonSwap){
+   swap (PS4_R2,PS4_R1);
+   swap (PS4_L2,PS4_L1);  
+}
+
+if(abs(get_val(RY)) < 23 && abs(get_val(RX)) < 23 ){         
+  set_val(PS4_RY,0);                                                 
+  set_val(PS4_RX,0);                                                
+}
+if(HairTrigger){ 
+   if(get_val(Scope_BTN)){set_val(Scope_BTN,100);}
+   if(get_val(Shoot_BTN)){set_val(Shoot_BTN,100);}
+   }
+if(AimAssist){
+   if(get_val(Scope_BTN)){
+      combo_run(AssX); 
+      }
+      if((get_val(RX)) > valueX || (get_val(RX)) < valueX*(-1)){
+          combo_stop(AssX);
+          }
+      }    
+
+if(get_val(Scope_BTN) && event_press(Right)){
+   button1 = Right;
+   button2 = Scope_BTN;
+   combo_run(BlockButton);
+   RapidFire =! RapidFire;
+   if(RapidFire == TRUE){combo_run(Notify);a=0;b=2;}
+   if(RapidFire == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(RapidFire){
+     if(get_val(Shoot_BTN)){
+        combo_run(Rapidfire);                                          
+       } 
+     } 
+ 
+if(get_val(Reload_BTN) && event_press(Switch_BTN)){
+   button1 = Switch_BTN
+   button2 = Reload_BTN
+   combo_run(BlockButton);
+   RampRush =! RampRush;
+   if(RampRush == TRUE){combo_run(Notify);a=0;b=2;}
+   if(RampRush == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(RampRush){
+     if(get_val(Shoot_BTN)){
+     	combo_run(RampRush);
+       }
+     }
+
+if(get_val(Scope_BTN) && event_press(Up)){
+   Aimbot =! Aimbot; 
+   button1 = Up;
+   button2 = Scope_BTN;
+   combo_run(BlockButton);
+   if(Aimbot == TRUE){combo_run(Notify);a=0;b=2;}
+   if(Aimbot == FALSE){combo_run(Notify);a=2;b=0;} 
+   }
+   if(Aimbot){
+   if(get_val(Aimbot_BTN)&&get_ptime(Aimbot_BTN)>= 240){
+      combo_run(Aimbot1);}
+   if(event_release(Aimbot_BTN)){ combo_stop(Aimbot1);}
+   } 
+
+if(AutoRun){if(get_val(LY) <= -20){set_val(Run_BTN, 100);}} 
+      
+if(AntiRecoil){
+  if(get_val(Shoot_BTN)){combo_run(Antirecoil);}
+  if(get_rumble(RUMBLE_A) > 5 && get_rumble(RUMBLE_A) <= 50){antirecoil = antirecoil_sg;}
+  if(get_rumble(RUMBLE_A) > 50){antirecoil = antirecoil_fg;}
+  if(abs(get_val(RY)) >= antirecoil+ 10){combo_stop(Antirecoil);}
+   }
+
+   
+}//CREDITS: TUNES
+//###########################################################################################################
+combo Notify {
+set_rumble(RUMBLE_B, 100);
+wait(300);
+reset_rumble();
+}
+
+combo instaswap{
+set_val(button,100);
+wait(15);
+set_val(Left,100);
+wait(13);
+wait(700);//Cooldown timer
+}
+
+combo BlockButton{ 
+set_val(button1,0);
+set_val(button2,0);
+wait(650);
+}
+
+combo DropShot{
+set_val(Melee_BTN,100);
+wait(27);
+wait(115);
+set_val(Melee_BTN,100);
+}
+
+combo AssX { 
+set_val(RX, valueX);
+wait(delayA);
+wait(4);
+set_val(RX, valueX*(-1));
+wait(delayA);
+} 
+
+combo Rapidfire {
+set_val(Shoot_BTN, 100); 
+wait(120);
+set_val(Shoot_BTN, 0); 
+wait(30);
+}
+
+combo RampRush {
+set_val(STAIRS_BTN, 100); //Pull out STAIRS
+wait(build_speed);
+wait(build_speed);
+set_val(STAIRS_BTN, 100); //Place STAIRS
+wait(50);
+set_val(RY, 100);
+wait(20);
+set_val(FLOOR_BTN, 100); //Pull out FLOOR
+wait(build_speed);
+wait(build_speed);
+set_val(FLOOR_BTN, 100); //Place FLOOR
+wait(50);
+set_val(RY, -100);
+wait(20);
+set_val(WALL_BTN, 100); //Pull out WALLS
+wait(build_speed);
+wait(build_speed);
+set_val(WALL_BTN, 100); //Place WALLS
+wait(80);
+set_val(Jump_BTN, 100);
+wait(80);
+set_val(STAIRS_BTN, 100); //Pull out STAIRS
+wait(build_speed);
+wait(build_speed);
+set_val(STAIRS_BTN, 100); //Place STAIRS
+wait(150);
+}
+
+combo Aimbot1{
+set_val(Scope_BTN,100); 
+wait(AimSpeed); 
+set_val(Scope_BTN,0);
+wait(delay);    
+}
+
+combo Antirecoil {
+set_val(RY, antirecoil);     
+}

@@ -1,0 +1,48 @@
+// GPC Online Library
+// playing_with_leds_and_rumble.gpc
+
+/* *
+*  Playing with Leds and Rumble
+*
+*   DPAD: UP   -> Led 1, RIGHT -> Led 2, 
+*         DOWN -> Led 3, LEFT  -> Led 4
+*
+*   R1 + DPad = Turn led off
+*   L1 + DPad = Led Blinking
+*   Only DPad = Turn led on
+*
+*    L2 = Rumble A
+*    R2 = Rumble B
+* *********************************************************** */
+
+int l2=0, r2=0;
+
+main {
+    // Player Leds
+    if(get_val(PS3_R1)) {            // Led Off
+        if(event_press(PS3_UP)) set_led(LED_1, 0);
+        if(event_press(PS3_RIGHT)) set_led(LED_2, 0);
+        if(event_press(PS3_DOWN)) set_led(LED_3, 0);
+        if(event_press(PS3_LEFT)) set_led(LED_4, 0);
+    } else if(get_val(PS3_L1)) {    // Led Blinking
+        if(event_press(PS3_UP)) set_led(LED_1, 2);
+        if(event_press(PS3_RIGHT)) set_led(LED_2, 2);
+        if(event_press(PS3_DOWN)) set_led(LED_3, 2);
+        if(event_press(PS3_LEFT)) set_led(LED_4, 2);
+    } else {                        // Led On
+        if(event_press(PS3_UP)) set_led(LED_1, 1);
+        if(event_press(PS3_RIGHT)) set_led(LED_2, 1);
+        if(event_press(PS3_DOWN)) set_led(LED_3, 1);
+        if(event_press(PS3_LEFT)) set_led(LED_4, 1);
+    }
+
+    // Rumble
+    if(l2 != get_val(PS3_L2)) { 
+        l2 = get_val(PS3_L2); 
+        set_rumble(RUMBLE_A, l2);
+    }
+    if(r2 != get_val(PS3_R2)) {
+        r2 = get_val(PS3_R2);
+        set_rumble(RUMBLE_B, r2);
+    }
+}

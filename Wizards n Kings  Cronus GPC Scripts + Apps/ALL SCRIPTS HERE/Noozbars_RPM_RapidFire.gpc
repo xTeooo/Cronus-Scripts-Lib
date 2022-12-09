@@ -1,0 +1,43 @@
+// Noozbar's RPM Rapid Fire
+
+int rounds_per_mintue; // Set the RPM of your veapon (range 40 to 750)
+
+int rapidfire_hold;
+int rapidfire_release;
+
+
+main {
+	set_val(TRACE_1, rapidfire_hold);
+	set_val(TRACE_2, rapidfire_release);
+	set_val(TRACE_3, rounds_per_mintue);
+	
+	if(get_val(PS4_L2))
+	{
+		if(event_press(PS4_UP))
+			rounds_per_mintue += 10;
+		if(event_press(PS4_DOWN))
+			rounds_per_mintue -= 10;
+		if(event_press(PS4_RIGHT))
+			rounds_per_mintue += 1;
+		if(event_press(PS4_LEFT))
+			rounds_per_mintue -= 1;
+	}
+	if(rounds_per_mintue < 40)
+		rounds_per_mintue = 40;
+	if(rounds_per_mintue > 750)
+		rounds_per_mintue = 750;
+			
+	rapidfire_hold = 5000 / ((rounds_per_mintue * 10) / 60);
+	rapidfire_release = rapidfire_hold - 20;
+	if(rapidfire_hold < 0)
+		rapidfire_hold = 0;
+ 
+	if(get_val(PS4_R2))
+		combo_run(RAPIDFIRE);
+}
+
+combo RAPIDFIRE {
+	wait(rapidfire_hold);
+	set_val(PS4_R2, 0);
+	wait(rapidfire_release);
+}
