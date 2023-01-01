@@ -1,0 +1,278 @@
+/*                                                                                                                                                                          
+=============================================================                                                                                                            
+Created By @1 On Twitter
+Join My Discord For More Info And Updates
+https://discord.gg/UJPgQXNkXN
+=============================================================                                                                        
+
+*///--------------------------
+
+
+
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define N_Weapon = PS4_R1;
+define P_Weapon = PS4_L1;
+define Pickaxe  = PS4_TRIANGLE;
+define Reload   = PS4_SQUARE;
+define Jump     = PS4_CROSS;
+define Crouch   = PS4_R3;
+define Edit     = PS4_L3;
+define Select   = PS4_R2;
+define Confirm  = PS4_CIRCLE;
+define Reset    = PS4_R1;
+define Build    = PS4_CIRCLE;
+define RX       = PS4_RX;
+define RY       = PS4_RY;
+define LX       = PS4_LX;
+define LY       = PS4_LY;
+define On       = TRUE;
+define Off      = FALSE;
+
+
+/*
+Toggles:
+*/ 
+int PlayStationOnXbox = On;
+int antirecoil    = TRUE;
+int AimAssistPro  = TRUE;
+int Ads_Assist    = FALSE;
+int Fire_Assist   = FALSE;
+int Drift_Assist  = FALSE;
+int BuildMode 	  = FALSE;
+int Strafe        = FALSE;
+int display_title = TRUE;
+  
+/*
+Walves Times:
+*/ 
+
+//DEAD ZONE
+//==============================
+int right_stick_deadzone = 8;
+
+//Anti-Recoil 
+//==============================
+int Anti_Recoil   = 5; 
+int Anti_Recoil_H = 1; 
+int AR_Release = 36;    // change this value to set when antirecoil stops working (min: antirecoil value + 10) 
+define Scope_only = TRUE;  // if TRUE Antirecoil IS ON only when scoping - if FALSE, is always ON 
+
+//Aim Assist Pro
+//==============================
+int STEP_INTERVAL = 1;
+int STEPS = 1;
+int aaboost	= 1;        
+int fub = 1;        
+int fob = 1;           
+
+//Fire Assist
+//==============================
+int leftDboost = 1;    
+int rightDboost = 1;   
+
+//Strafe 
+//==============================
+int ast     = 100;// store auto strafe time (200ms-360ms).
+
+/*
+Variables:
+*/
+//==============================
+int anti_recoil, anti_recoil_H;       
+int interval_t, angle;
+int x_stick, y_stick, cos_angle, sin_angle;
+int display_black;      
+int count_black; 
+ 
+const int8 Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+main 
+
+
+{
+block_rumble();
+if(event_press(Build)){
+BuildMode = !BuildMode;}
+if(!BuildMode){
+if(AimAssistPro) {
+if(BuildMode){
+interval_t += get_rtime();
+if(!(interval_t % STEP_INTERVAL)) {
+angle = (angle + STEPS) % 360;}}}}
+if(Ads_Assist){
+if(BuildMode){
+if(isqrt(abs(get_val(RX)) * abs(get_val(RX)) + abs(get_val(RY)) * abs(get_val(RY))) <= right_stick_deadzone + 5){
+if(get_val(Ads) > 90 && !get_val(Fire)){
+Shake();}}}}
+if(Drift_Assist){
+if(BuildMode){
+if(isqrt(abs(get_val(RX)) * abs(get_val(RX))) >= right_stick_deadzone + 5) {
+if(get_val(Ads) > 90 && !get_val(Fire)){
+combo_run(leftDrift);}}
+if(isqrt(abs(get_val(RX)) * abs(get_val(RX))) >= right_stick_deadzone + 5) {
+if(get_val(Ads) > 90 && !get_val(Fire)){
+combo_run(rightDrift);}}}}
+if(Fire_Assist){
+if(BuildMode){
+if(get_val(Fire)){
+if(isqrt(abs(get_val(RX)) * abs(get_val(RX)) + abs(get_val(RY)) * abs(get_val(RY))) <= right_stick_deadzone + 5) {
+combo_run(fire_under);}
+if(isqrt(abs(get_val(RX)) * abs(get_val(RX)) + abs(get_val(RY)) * abs(get_val(RY))) >= right_stick_deadzone + 5) {
+combo_run(fire_over);}}}
+if(antirecoil){                               
+if(BuildMode){
+if( get_val(Ads) && get_val(Fire )) {      
+combo_run(AntiRecoil);}                                          
+if( abs(get_val(RY)) > AR_Release || abs(get_val(RX)) > AR_Release) { 
+combo_stop (AntiRecoil);}}
+if(Strafe){
+if(BuildMode){
+if(get_val(Ads) && get_val(Fire)){         
+combo_run(AntiBloom);}
+if(abs(get_val(LX)) > 40 || abs(get_val(LY)) > 40){
+combo_stop(AntiBloom);}}}
+if(abs(get_val(LY)) < 9 && abs(get_val(PS4_LX)) < 9 ){        
+set_val(LY,0);                                                
+set_val(LX,0);}                                               
+if(abs(get_val(RY)) < 9 && abs(get_val(RX)) < 9 ){         
+set_val(RY,0);                                                 
+set_val(RX,0);}}}
+if(display_title){           
+cls_oled(0);            
+DrawLogo(0, 0, 0);
+display_title = FALSE;  
+display_black = TRUE;}                            
+if(display_black){                            
+count_black += get_rtime();
+if(count_black >= 5000){                        
+cls_oled(0);         
+count_black = 0;      
+display_black = FALSE;}}}
+
+
+/*______    ______   ___      ___  _______     ______    ________  
+Sombos:
+*/
+
+combo AntiBloom {	
+set_val(LY,-30);
+wait(ast);
+set_val(LY, 30);
+wait(ast);
+if(ast < 160){ast = ast + 10;}
+else {ast = 100;}}
+combo AntiRecoil {  
+anti_recoil = get_val(RY) + Anti_Recoil;      
+if(anti_recoil > 100) anti_recoil = 100;      
+offset(RY, anti_recoil);
+anti_recoil_H = get_val(RX) + Anti_Recoil_H;   
+if(anti_recoil_H > 100) anti_recoil_H = 100;  
+offset(RX, anti_recoil_H);}
+combo leftDrift {
+offset(RX,right_stick_deadzone + leftDboost);
+wait(5);
+offset(RX,(right_stick_deadzone + leftDboost) * -1);
+wait(5);}  
+combo rightDrift {
+offset(RX,right_stick_deadzone + rightDboost);
+wait(5);
+offset(RX,(right_stick_deadzone + rightDboost) * -1);
+wait(5);}
+combo fire_under {
+offset(RX,right_stick_deadzone + fub);
+wait(5);
+offset(RX,(right_stick_deadzone + fub) * -1);
+wait(5);}
+combo fire_over {
+offset(RX,right_stick_deadzone + fob);
+wait(5);
+offset(RX,(right_stick_deadzone + fob) * -1);
+wait(5);
+}                                    
+ 
+/*_______  ____  ____  _____  ___    ______  ___________  __      ______    _____  ___    ________  
+Functions:
+*/ 
+
+function Set_polar(stick, angle, radius){
+x_stick = 7 + stick; 
+y_stick = 8 + stick;
+if(angle < 0) angle = 360 + (angle % 360);
+angle = (angle + 90) % 360;
+radius = clamp(radius, 0, 100);
+sin_angle = Polar_Array[angle];
+cos_angle = Polar_Array[(angle + 90) % 360];
+offset(x_stick, inv(radius * cos_angle / 100));
+offset(y_stick, inv(radius * sin_angle / 100));
+return;}
+function offset(int axis, int offset_val) {
+set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+return}
+function Shake() { 
+Set_polar(2, angle, right_stick_deadzone + aaboost);} 
+
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | D | | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+*/
+/*     
+============================================================================================================================ 
+     Logo Picture : Fortnite ZEN Logo
+============================================================================================================================ 
+*/// picture
+const int16 BOOT_LOGO[] = { 
+128, 64,
+    0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFF0,0x0000,0x0007,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFE00,0x0001,0xFFF8,0x3FFF,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFF,0xFC80,0x0001,0xFFFF,0x8FFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xF800,0x0000,0x0000,0x0FFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xF200,0x0000,0x0003,0x07FF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xE607,0xF000,0x07FE,0x33FF,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFF,0xEA01,0xC000,0x01F8,0x31FF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xD600,0x0000,0x0000,0x38FF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xAC00,0x0007,0x0000,0x3C7F,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0x0000,0x010F,0x0000,0x1E7F,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFE,0x4000,0x010E,0x0000,0x073F,0xFFFF,0xFFFF,0xFFFF,0xFFFE,0x0000,0x070C,0x0000,0x003F,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0x0000,0x0000,0x0000,0x003F,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0x803E,0x0000,0x0200,0x027F,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFF,0xC000,0x0C00,0x1E40,0x0EFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xC000,0x0600,0x38E0,0x1DFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xE001,0x0700,0x11F0,0x3BFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xF101,0x8202,0x01F0,0x73FF,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFF,0xF880,0xC007,0x83F0,0xE7FF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFC60,0x0007,0xC3E1,0xCFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFC20,0x000F,0xC7C3,0xDFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFE10,0x000F,0xC707,0xBFFF,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFF,0xFF38,0x000F,0x8E07,0x3FFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFF98,0x300F,0x8E0E,0x7FFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFC0,0x300E,0x0C1C,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFC0,0x100C,0x9C3D,0xFFFF,0xFFFF,0xFFFF,
+    0xFFFF,0xFFFF,0xFFE0,0x1800,0x983B,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFF0,0x0000,0x8073,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFF8,0x0000,0x00E7,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFC,0x0001,0x20EF,0xFFFF,0xFFFF,0xFFFF,
+    0xFFF0,0x003F,0xFFFC,0x0001,0x01DF,0xFFFF,0xFFFC,0x0FFF,0xFFF7,0xFF38,0x1FFE,0x0001,0x0030,0x1FFF,0xFE03,0xEFFF,0xFFF4,0x0027,0xCEFF,0x03C0,0x01AF,0xCF9F,0xFEFE,0x0FFF,0xFFF4,0x001F,0xE6FF,0xC3FF,0xEF8C,0x1F80,0x0080,0x0FFF,
+    0xFFF4,0x0030,0x0280,0x0200,0x080C,0x103F,0xFE80,0x0FFF,0xFFF4,0x0020,0x0080,0x0200,0x0804,0x1020,0x0080,0x0FFF,0xFFF4,0x0060,0x0080,0x0200,0x0804,0x1020,0x0080,0x0FFF,0xFFF4,0x0040,0x0080,0x0300,0x0804,0x1020,0x0080,0x0FFF,
+    0xFFF4,0x0040,0x8080,0x0000,0x0804,0x1020,0x0080,0x0FFF,0xFFF4,0x0FC0,0xC080,0x8020,0x0804,0x1000,0x0080,0xFFFF,0xFFF4,0x06C0,0xC080,0x8020,0x0804,0x1000,0x0081,0xFFFF,0xFFF4,0x0E80,0xC080,0x8020,0x0804,0x1002,0x0680,0x1FFF,
+    0xFFF4,0x0E80,0xC080,0x8020,0x6804,0x181A,0x0681,0xDFFF,0xFFF4,0x0080,0xC081,0x81A0,0x6804,0x181A,0x0680,0x1FFF,0xFFF4,0x0080,0xC083,0x01A0,0x6800,0x181A,0x0680,0x1FFF,0xFFF4,0x0080,0xC080,0x03A0,0x6800,0x181A,0x0680,0x1FFF,
+    0xFFF4,0x0080,0xC080,0x03A0,0x6800,0x181A,0x0680,0x1FFF,0xFFF4,0x0080,0xC080,0x07A0,0x6820,0x181A,0x0680,0x1FFF,0xFFF4,0x0080,0xC080,0x07A0,0x6820,0x181A,0x0680,0x1FFF,0xFFF4,0x06C0,0xC081,0x03A0,0x6810,0x181A,0x0681,0xFFFF,
+    0xFFF4,0x0740,0xC081,0x03A0,0x6810,0x181A,0x0680,0x3FFF,0xFFF4,0x0740,0x8081,0x03A0,0x6800,0x181A,0x0681,0xCFFF,0xFFF4,0x0700,0x8081,0x01A0,0x6808,0x181A,0x0680,0x4FFF,0xFFF4,0x0780,0x0080,0x81A0,0x6808,0x181A,0x0680,0x0FFF,
+    0xFFF4,0x0780,0x0180,0x81E0,0x6804,0x181A,0x0680,0x0FFF,0xFFF4,0x07C0,0x0600,0x8080,0x6014,0x181A,0x0680,0x0FFF,0xFFF4,0x07E0,0x0E00,0x0000,0x6010,0x001A,0x0680,0x0FFF,0xFFF4,0x07FC,0x3FFE,0x00FF,0xFFF9,0xC018,0x0600,0x0FFF,
+    0xFFF4,0x07FF,0xFFFF,0xFFFF,0xFFFF,0xFFF8,0x0600,0x0FFF,0xFFF0,0x3FFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFE,0x0FFF,0xFFF3,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF,0xFFFF
+ } // picture 
+/*     
+============================================================================================================================ 
+     DrawLogo(x, y, invert)                                                                                                  
+============================================================================================================================ 
+*/                                                    
+int logoX,logoX2,logoY, logoY2;                       
+int logoBit,logoOffset,logoData;                      
+ 
+function DrawLogo(x, y, invert) {                     
+    logoOffset = 2;                                    
+    logoBit = 16;                                           
+    for (logoY = 0; logoY < BOOT_LOGO[1]; logoY++) {         // Loop the Y axis 
+        for (logoX = 0; logoX < BOOT_LOGO[0]; logoX++) {     // Loop the X axis 
+            logoData = BOOT_LOGO[logoOffset]          
+            logoX2 = x + logoX;                       
+            logoY2 = y + logoY;                       
+            if (logoX2 < 0 || logoX2 >= 128) {        
+                logoX2 -= 128;                        
+            }                                         
+            if (logoY2 < 0 || logoY2 >= 64) {         
+                logoY2 -= 64;                         
+            }                                         
+            if (test_bit(logoData, logoBit - 1)) {     
+                pixel_oled(logoX2, logoY2, !invert);   
+            }else{                                     
+                pixel_oled(logoX2, logoY2, invert);    
+            }                                            
+            logoBit--;             // Decrement the bit flag, we are moving to the next bit 
+            if (!logoBit) {     // Check if we have just handled the last bit  
+                logoBit = 16;     // Reset the bit flag     
+                logoOffset++;     // Move to the next value 
+            }  
+        }   
+    }    
+} ˙∏ä∫èøá±Å±Ç¡ˆ≈Ù∂

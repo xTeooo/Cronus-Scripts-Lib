@@ -1,0 +1,97 @@
+// GPC Online Library
+// rainbow_six_siege_[ps4].gpc
+
+/*'########:::::'###::::'####:'##::: ##:'########:::'#######::'##:::::'##:::::'######::'####:'##::::'##:
+   ##.... ##:::'## ##:::. ##:: ###:: ##: ##.... ##:'##.... ##: ##:'##: ##::::'##... ##:. ##::. ##::'##::
+   ##:::: ##::'##:. ##::: ##:: ####: ##: ##:::: ##: ##:::: ##: ##: ##: ##:::: ##:::..::: ##:::. ##'##:::
+   ########::'##:::. ##:: ##:: ## ## ##: ########:: ##:::: ##: ##: ##: ##::::. ######::: ##::::. ###::::
+   ##.. ##::: #########:: ##:: ##. ####: ##.... ##: ##:::: ##: ##: ##: ##:::::..... ##:: ##:::: ## ##:::
+   ##::. ##:: ##.... ##:: ##:: ##:. ###: ##:::: ##: ##:::: ##: ##: ##: ##::::'##::: ##:: ##::: ##:. ##::
+   ##:::. ##: ##:::: ##:'####: ##::. ##: ########::. #######::. ###. ###:::::. ######::'####: ##:::. ##:
+  ..:::::..::..:::::..::....::..::::..::........::::.......::::...::...:::::::......:::....::..:::::..::
+This is my competitive Rainbow Six: Siege Script. It includes Quick Lean, Recoil Control, and Crouch Spam. The
+reason I did not include rapid fire is because this is meant for people who want it to be less detectable that
+they are using macros. Whether that be because they are keeping it secret from friends or they are competing in
+ESL GO4s or GameBattles where macros are banned. Hopefully you like my script.
+
+If you enjoy my script it would be much appreciated if you can check my YouTube out and maybe drop a sub.
+
+YouTube - Alloy
+
+PSN - NRT-Alloy
+
+*/
+define RECOIL_CONTROL = 5;       // Adjust the value from 0 - 100 to tune vertical recoil control
+define RECOIL_CONTROL_LEFT = 0;  // Adjust the value from 0 - 100 to tune recoil control from the left
+define RECOIL_CONTROL_RIGHT = 0; // Adjust the value from 0 - 100 to tune recoul control from the right
+ 
+int recoil_control;          
+int recoil_control_left;    
+int recoil_control_right;                 
+
+main {
+
+//FastLean        
+    if (get_val(PS4_L2) && event_press(PS4_L3)) combo_run(LeanLeft);
+    if(combo_running(LeanLeft)) {set_val(PS4_L3, 0);}
+ 
+ 
+    if (get_val(PS4_L2) && event_press(PS4_R3)) combo_run(LeanRight);
+    if(combo_running(LeanRight)) set_val(PS4_R3, 0);
+
+//CrouchSpam  		
+if((get_val(PS4_L2)) && (get_val(PS4_CIRCLE))) {
+        combo_run(Crouch_Spam);
+        }
+        
+//AntiRecoil
+    if (get_val(PS4_R2)) combo_run(Recoil_Control);
+}    
+
+//COMBOS
+ 
+//CROUCH SPAM COMBO 
+combo Crouch_Spam {
+    set_val(PS4_CIRCLE, 100);
+    wait(80);
+    set_val(PS4_CIRCLE, 0);
+    wait(60);
+    set_val(PS4_CIRCLE, 0);
+}
+
+//QUICK LEAN RIGHT COMBO 
+combo LeanRight {
+    set_val(PS4_L3, 100);
+    wait(40);
+    set_val(PS4_R3, 100);
+    set_val(PS4_L3, 100);
+    wait(90);
+    set_val(PS4_R3, 100);
+    set_val(PS4_L3, 0);
+    wait(10);
+    set_val(PS4_R3, 0);
+}
+
+//QUICK LEAN LEFT COMBO
+combo LeanLeft {
+    set_val(PS4_R3, 100);
+    wait(40);
+    set_val(PS4_L3, 100);
+    set_val(PS4_R3, 100);
+    wait(90);
+    set_val(PS4_L3, 100);
+    set_val(PS4_R3, 0);
+    wait(10);
+    set_val(PS4_L3, 0);
+}
+
+//RECOIL CONTROL COMBO [Don't adjust values]
+combo Recoil_Control {
+    recoil_control = get_val(10) + RECOIL_CONTROL;
+    if(recoil_control > 100) recoil_control = 100;set_val(10, recoil_control);
+    recoil_control_left = get_val(9) -RECOIL_CONTROL_LEFT;
+    if(recoil_control_left > 100) recoil_control_left = 100;set_val(9, recoil_control_left);
+    recoil_control_right = get_val(9) +RECOIL_CONTROL_RIGHT;
+    if(recoil_control_right > 100) recoil_control_right = 100;set_val(9, recoil_control_right);
+}
+

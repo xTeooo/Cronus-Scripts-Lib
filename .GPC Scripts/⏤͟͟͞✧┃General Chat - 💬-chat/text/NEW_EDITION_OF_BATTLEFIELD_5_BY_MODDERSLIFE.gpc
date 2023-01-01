@@ -1,0 +1,881 @@
+// GPC Online Library
+// battlefield_5_
+
+// Definitions
+define R_SKILL       = 3;  // PS4 R1 / Xbox RB
+define FIRE_BTN      = 4;  // PS4 R2 / Xbox RT
+define R_Stick       = 5;  // PS4 R3 / Xbox RS
+define L_SKILL       = 6;  // PS4 L1 / Xbox LB
+define ADS_BTN       = 7;  // PS4 L2 / Xbox LT
+define L_Stick       = 8;  // PS4 L3 / Xbox LS
+define R_X           = 9;  // PS4 RX / Xbox RX
+define R_Y           = 10; // PS4 RY / Xbox RY
+define L_X           = 11; // PS4 LX / Xbox LX
+define L_Y           = 12; // PS4 LY / Xbox LY
+define D_UP          = 13; // PS4 UP / Xbox UP
+define D_DOWN        = 14; // PS4 DOWN / Xbox DOWN
+define D_LEFT        = 15; // PS4 LEFT / Xbox LEFT
+define D_RIGHT       = 16; // PS4 RIGHT / Xbox RIGHT
+define Switch_button = 17; // PS4 Triangle / Xbox Y
+define CLIMB_BTN     = 18; // PS4 Circle / Xbox B
+define COVER_BTN     = 19; // PS4 Cross / Xbox A
+define RELOAD_BTN    = 20; // PS4 Square / Xbox X
+define RAPIDFIRE_BUTTON = 4;
+define SPOT=775;              //auto-spot modifier
+define SPOT_BUTTON=3;         // PS4_R1
+define ANTI_RECOIL=0;         //change this value to compensate to the vertical recoil
+define ANTI_RECOIL_LEFT=0;    //change this value to compensate to the left
+define ANTI_RECOIL_RIGHT=0;   //change this value to compensate to the right
+define ONLY_WITH_SCOPE=TRUE;  //Use Anti-recoil only when scoping
+
+//----Color------
+define LED_OFF       = -2;                           
+define Light_Blue    =  1;                           
+define Light_Red     =  2;                           
+define Light_Green   =  3;                           
+define Light_Pink    =  4;                           
+define Light_SkyBlue =  5;                           
+define Light_Yellow  =  6;                           
+define Light_White   =  7;                           
+define Blue          =  8;                           
+define Red           =  9;                           
+define Green         = 10;                           
+define Pink          = 11;                           
+define SkyBlue       = 12;                           
+define Yellow        = 13;                           
+define White         = 14;                           
+define Dim_Blue      = 15;                           
+define Dim_Red       = 16;                           
+define Dim_Green     = 17;                           
+define Dim_Pink      = 18;                           
+define Dim_SkyBlue   = 19;                           
+define Dim_Yellow    = 20;                           
+define Dim_White     = 21;                           
+ 
+data(1,// begin of data segment--------              
+      1,0,0,0, //1. Light_Blue                           
+      0,1,0,0, //2. Light_Red                            
+      0,0,1,0, //3. Light_Green                          
+      0,0,0,1, //4. Light_Pink                           
+      1,0,1,0, //5. Light_SkyBlue                        
+      0,1,1,0, //6. Light_Yellow                         
+      1,1,1,1, //7. Light_White                          
+      2,0,0,0, //1. Blue                                 
+      0,2,0,0, //2. Red                                  
+      0,0,2,0, //3. Green                                
+      0,0,0,2, //4. Pink                                 
+      2,0,2,0, //5. SkyBlue                              
+      0,2,2,0, //6. Yellow                               
+      2,2,2,2, //7. White                                
+      3,0,0,0, //1. Dim_Blue                             
+      0,3,0,0, //2. Dim_Red                              
+      0,0,3,0, //3. Dim_Green                            
+      0,0,0,3, //4. Dim_Pink                             
+      3,0,3,0, //5. Dim_SkyBlue                          
+      0,3,3,0, //6. Dim_Yellow                           
+      3,3,3,3  //7. Dim_White                            
+); // end of data segment--------------
+ 
+// Perfect Aim
+define Sampling_Time = 32;
+define timelimit = 300;
+define RY_deadzone = 0;
+define RY_Aim_Boost = 80;
+define RY_micro_mvt_sensitivity = 100;
+define RY_Aim_Amplification_Point = 99;
+ 
+int Aim_Correction = 0; 
+int RX_micro_mvt_checker = 0;
+int RX_deadzone = 0;
+int RX_Aim_Boost = 70;
+int RX_micro_mvt_sensitivity = 20;
+int RX_Aim_Amplification_Point = 70;
+int Special_onoff; 
+int MIDPOINT = 0;
+int ADS_SENS = 0;
+int Aim_Perfection_Limit= 0;
+int Aim_Boost = 0;
+int RY_micro_mvt_checker = 0;
+int Click ;
+int Switch; 
+int Pistol_onoff = FALSE;      // For Sidearm / Pistol
+int double_tap;
+int hold_time;
+int rest_time;
+int micro_mvt_Limit = 28; //µ MVT TUNE ACTIVE WHEN micro_mvt_Limit/2
+    
+
+
+int RATE_OF_FIRE  = 20; 
+
+int AutoRun_onoff   = TRUE; 
+int Press_Sensitive = -60;
+int Alert = TRUE;
+
+int Strafe_Shot_onoff = FALSE; 
+int Strafe_Shot_Time  = 750;  
+
+int Reload_Switch_onoff = TRUE; 
+int Reload_Switch_Time  = 700; 
+
+
+int Quick_Grenade_onoff     = TRUE;
+
+int R_Stick_DZ_onoff        = TRUE;
+
+int R1L1_onoff              = FALSE;
+
+int ADS_Sensitivity_onoff   = TRUE; 
+
+int Hair_Trigger_onoff      = TRUE; 
+
+int anti_recoil_adjust = 40;
+int anti_recoil =0;
+int anti_recoil_fix =0;
+int advance_mode = FALSE;
+int auto_run = TRUE;
+int auto_run_halte = FALSE;
+int Col_ind;
+int start_finish = 0;
+ 
+init
+    {
+        anti_recoil_adjust             = get_pvar(SPVAR_1, 0, 75, 40);
+        micro_mvt_Limit             = get_pvar(SPVAR_2, 20, 50, 40);
+        RX_micro_mvt_sensitivity    = get_pvar(SPVAR_3, 0,micro_mvt_Limit, 5);
+        RX_Aim_Boost                 = get_pvar(SPVAR_4, 0,100, 80); 
+        RX_Aim_Amplification_Point     = get_pvar(SPVAR_5, 51,90, 55); 
+        auto_run                    = get_pvar(SPVAR_6, 0,1, 1);
+    }              
+main {
+ 
+
+if (!start_finish)
+    {
+    
+        combo_run(start);    
+    }  
+ 
+//debug
+        set_val(TRACE_1, anti_recoil_adjust);
+        set_val(TRACE_2, micro_mvt_Limit);
+        set_val(TRACE_3, RX_micro_mvt_sensitivity);
+        set_val(TRACE_4, RX_Aim_Boost);
+        set_val(TRACE_5, RX_Aim_Amplification_Point);
+
+if(get_val(PS4_L2) && event_press(PS4_OPTIONS))
+    {
+         advance_mode = !advance_mode;
+         combo_run(EXIT);            
+    }  
+ 
+ 
+ 
+if(advance_mode)
+    {    
+        combo_run(Alert);
+        if(get_val(PS4_CROSS) && get_val(PS4_SQUARE)) 
+            {          
+                if(event_press(PS4_DOWN)) 
+                    {
+                        RX_micro_mvt_sensitivity = RX_micro_mvt_sensitivity - 1;
+                        if (RX_micro_mvt_sensitivity < 0) 
+                            {
+                                RX_micro_mvt_sensitivity = 0;
+                                combo_run(vibrate);
+                            }    
+                       }
+                if(event_press(PS4_UP)) 
+                    {
+                        RX_micro_mvt_sensitivity = RX_micro_mvt_sensitivity + 1;
+                        if (RX_micro_mvt_sensitivity > micro_mvt_Limit) 
+                            {
+                                RX_micro_mvt_sensitivity = micro_mvt_Limit;
+                                combo_run(vibrate);
+                            }
+                    }
+ 
+                if(event_press(PS4_LEFT)) 
+                    {
+ 
+                        micro_mvt_Limit = micro_mvt_Limit - 1;
+                        if (micro_mvt_Limit < 20) 
+                            {
+                                micro_mvt_Limit = 20;
+                                combo_run(vibrate);
+                            }
+                           if (micro_mvt_Limit < RX_micro_mvt_sensitivity) 
+                            {
+                                RX_micro_mvt_sensitivity = micro_mvt_Limit; 
+                            }
+                       }
+                if(event_press(PS4_RIGHT)) 
+                    {
+                        micro_mvt_Limit = micro_mvt_Limit + 1;
+                        if (micro_mvt_Limit > 50) 
+                            {
+                                micro_mvt_Limit = 50;
+                                combo_run(vibrate);
+                            }
+                    }
+                set_val(PS4_UP,0); 
+                set_val(PS4_DOWN,0);
+                set_val(PS4_RIGHT,0); 
+                set_val(PS4_LEFT,0);
+            }
+ 
+        if(get_val(PS4_CROSS) && get_val(PS4_CIRCLE)) 
+            {          
+                if(event_press(PS4_DOWN)) 
+                    {
+                        RX_Aim_Boost = RX_Aim_Boost - 1;
+                        if (RX_Aim_Boost < 0) 
+                            {
+                                RX_Aim_Boost = 0;
+                                combo_run(vibrate);
+                            }
+                       }
+                if(event_press(PS4_UP)) 
+                    {
+                        RX_Aim_Boost = RX_Aim_Boost + 1;
+                        if (RX_Aim_Boost > 100) 
+                            {
+                                RX_Aim_Boost = 100;
+                                combo_run(vibrate);
+                            }
+                    }
+ 
+                if(event_press(PS4_LEFT)) 
+                    {
+ 
+                        RX_Aim_Amplification_Point = RX_Aim_Amplification_Point - 1;
+                        if (RX_Aim_Amplification_Point < 51) 
+                            {
+                                RX_Aim_Amplification_Point = 51;
+                                combo_run(vibrate);
+                            }
+                       }
+                if(event_press(PS4_RIGHT)) 
+                    {
+                        RX_Aim_Amplification_Point = RX_Aim_Amplification_Point + 1;
+                        if (RX_Aim_Amplification_Point > 90) 
+                            {
+                                RX_Aim_Amplification_Point = 90;
+                                combo_run(vibrate);
+                            }
+                    }
+                set_val(PS4_UP,0); 
+                set_val(PS4_DOWN,0);
+                set_val(PS4_RIGHT,0); 
+                set_val(PS4_LEFT,0);
+ 
+ 
+            }
+        if( (get_val(PS4_L3) && event_press(PS4_R3)) || (get_val(PS4_R3) && event_press(PS4_L3))   )
+            {
+                combo_run(vibrate);
+                set_pvar(SPVAR_2, micro_mvt_Limit);
+                set_pvar(SPVAR_3, RX_micro_mvt_sensitivity);
+                set_pvar(SPVAR_4, RX_Aim_Boost);
+                set_pvar(SPVAR_5, RX_Aim_Amplification_Point);
+                set_val(PS4_L3, 0);
+                set_val(PS4_R3, 0);
+                combo_run(EXIT); 
+                advance_mode = FALSE;
+            }
+         else if (get_val(PS4_L2)==100 && event_press(PS4_SHARE))
+            {
+                combo_run(vibrate);
+                set_pvar(SPVAR_2, 40);
+                set_pvar(SPVAR_3, 5);
+                set_pvar(SPVAR_4, 80);
+                set_pvar(SPVAR_5, 55);
+                micro_mvt_Limit             = get_pvar(SPVAR_2, 25, 50, 40);
+                RX_micro_mvt_sensitivity    = get_pvar(SPVAR_3, 0,50, 5);
+                RX_Aim_Boost                 = get_pvar(SPVAR_4, 0,100, 80); 
+                RX_Aim_Amplification_Point     = get_pvar(SPVAR_5, 51,90, 55); 
+ 
+                set_val(PS4_SHARE, 0);       
+                combo_run(EXIT);
+            }
+    }
+else 
+    {
+        combo_stop(Alert);
+         colourled(Dim_SkyBlue);    
+        if(get_val(PS4_SQUARE) && get_val(PS4_TRIANGLE)) 
+            {          
+                if(event_press(PS4_DOWN)) 
+                    {
+                        anti_recoil_adjust = anti_recoil_adjust + 1;
+                        if (anti_recoil_adjust > 75)
+                            {
+                                anti_recoil_adjust =75;
+                                combo_run(vibrate);
+                            }
+                        set_pvar(SPVAR_1, anti_recoil_adjust);
+                       }
+ 
+                if(event_press(PS4_UP)) 
+                    {
+                        anti_recoil_adjust = anti_recoil_adjust - 1;
+                          if (anti_recoil_adjust < 0)
+                            {
+                                anti_recoil_adjust =0;
+                                combo_run(vibrate);
+                            }
+                        set_pvar(SPVAR_1, anti_recoil_adjust);
+                    }
+                set_val(PS4_UP,0); 
+                set_val(PS4_DOWN,0);
+            }
+    }
+
+//Switch Weapons + Panic Button
+   if(event_press(Switch_button) || event_release(D_UP) && get_ptime(D_UP) > 60) {Switch=!Switch; Pistol_onoff = FALSE;
+   }
+
+   if ((event_press(PS4_TRIANGLE) && !get_val(PS4_DOWN) && !Special_onoff) || 
+       (event_press(PS4_UP) && !get_val(PS4_L2) && !get_val(PS4_CROSS)))
+    {
+        Switch=!Switch; 
+        Pistol_onoff = FALSE;
+    }   
+ 
+
+//---------------------------------------    
+/* AutoRun press sensitive (Work better when in game option "Press to Sprint" is turned OFF)
+     Push your stick to more than 60% to run automatically
+*/
+ 
+            
+ if(AutoRun_onoff)
+{
+    if(!combo_running(Strafe_v2) && !get_val(PS4_L2) && get_val(PS4_LY) <Press_Sensitive)
+    { 
+        combo_run(AutoRun);
+    }  
+}
+
+//---------------------------------------
+
+/* Strafe Shot
+     Strafe to the Right and to the Left while shooting
+     Enable or disable with TRUE / FALSE value
+     Enable or disable in game:
+     Hold CROSS/A + CIRCLE/B and tap D Pad DOWN to enable or disable this feature on the fly
+     Controller vibrate
+*/
+if(Strafe_Shot_onoff)
+{
+    if(get_val(PS4_L2) && get_val(PS4_R2))
+    {
+        combo_run(Strafe_Shot);
+    }
+    else
+        combo_stop(Strafe_Shot)
+}
+//---------------------------------------
+/* Double Tap function
+     For all double tap features
+*/
+
+    if(double_tap) 
+        double_tap -= get_rtime();
+            
+//---------------------------------------
+
+/* Hair Trigger
+     Your triggers are VERY reactive
+*/
+if(Hair_Trigger_onoff)
+{
+    deadzone(PS4_L2,PS4_R2,1,99);
+}
+
+//---------------------------------------
+
+/* Reload Switch mode
+     Double tap Reload button to start reloading your weapon and switch weapon in the middle of the animation
+     You must adjust the time value following the weapons you use - works very well with Assault Rifle and SMG
+*/
+if(Reload_Switch_onoff)
+{
+    if(event_press(PS4_SQUARE)) 
+    {
+        if(double_tap) 
+        {
+            combo_run(Reload);
+            Switch=!Switch;
+        }
+            else
+                double_tap = 300; // Double tap speed (discrease value to have to double tap faster to reload then switch) 
+    }
+}
+//---------------------------------------
+
+/* ADS Sensitivity
+     Increase or decrease your sensitivity when you aim
+*/
+if(ADS_Sensitivity_onoff)
+{
+    if(get_val(PS4_L2) ) 
+    {        
+        sensitivity(PS4_RX, MIDPOINT, ADS_SENS);        
+        sensitivity(PS4_RY, MIDPOINT, ADS_SENS); 
+    }
+}
+//---------------------------------------
+
+/* Dead Zone Correction (Right Stick)
+     Fix the DeadZone defect which is never really neutral
+*/
+if(R_Stick_DZ_onoff)
+{
+    if((!get_val(PS4_L2)) && (abs(get_val(PS4_RY)) <= 20 && abs(get_val(PS4_RX)) <= 20 ))
+    {
+        set_val(PS4_RY,0);                                                 
+        set_val(PS4_RX,0);
+    }
+}
+//---------------------------------------
+
+/* Quick Grenade
+     Hold ADS button and press D Pad LEFT or only double tap D Pad LEFT to throw a grenade
+*/
+if(Quick_Grenade_onoff)
+{ 
+if((get_val(PS4_L2) && event_press(PS4_LEFT) || get_val(PS4_LEFT) && get_ptime(PS4_LEFT) > 200) && !get_val(PS4_CIRCLE) && !get_val(PS4_CROSS) && !get_val(PS4_SQUARE))
+        combo_run(Grenade);
+ }   
+//---------------------------------------
+ //RapidFire Feature
+    hold_time = 500 / RATE_OF_FIRE;
+    rest_time = hold_time - 20;
+    if(rest_time < 0) rest_time = 0;
+    
+/* RapidFire adjustable for semi auto weapons like Pistols, Shotguns, Snipers or Rifles (Range between 0 and 25 round per second) 
+     Hold PS4_CROSS + PS4_L3 and: 
+      - tap D Pad UP to increase RapidFire value by 1
+      - tap D Pad DOWN to decrease RapidFire value by 1
+      Controller vibrate when you are at maximum or minimum value
+*/
+      
+    if(get_val(PS4_CROSS) && get_val(PS4_SQUARE))
+    {
+        if(event_press(PS4_UP))
+            RATE_OF_FIRE ++;
+        if(event_press(PS4_DOWN))
+            RATE_OF_FIRE --;
+        set_val(PS4_CROSS, 0);  set_val(PS4_SQUARE,0);
+        set_val(PS4_UP, 0);    set_val(PS4_DOWN, 0);
+    }
+    
+    if(RATE_OF_FIRE > 25)
+    {
+        RATE_OF_FIRE = 25;  
+        combo_run(vibrate);
+    }
+    if(RATE_OF_FIRE < 0)
+    {
+        RATE_OF_FIRE = 0;  
+        combo_run(vibrate);
+    }
+//---------------------------------------
+
+/* Switch to SideArm
+     Double tap TRIANGLE/Y (Led color turn SKYBLUE)
+*/
+
+      if(event_press(PS4_TRIANGLE) || (event_press(PS4_UP) && !get_val(PS4_L2))) 
+      {
+          if(double_tap) 
+          { 
+              Pistol_onoff = TRUE ; 
+              Switch = !Switch;
+          }
+              else
+                  double_tap = 300;// Double tap speed (discrease value to have to double tap faster to switch to side arm) 
+      }
+ 
+if(Pistol_onoff) 
+{  // Pistol start 
+ 
+/* Easy MedKit
+     Double tap D pad Right to change your armor piece, move Left analog to cancel
+*/
+
+    if(event_press(PS4_RIGHT) && !get_val(PS4_L2)) 
+    {
+        if(double_tap)
+        combo_run(MedKit);
+        
+            else
+                double_tap = 200;
+    }
+    if(abs(get_val(PS4_LX)) > 90 || abs(get_val(PS4_LY)) > 90)
+        combo_stop(MedKit);   
+    
+}  // Pistol end
+}
+//---------------------------------------
+
+combo start 
+    {
+        colourled(Blue);
+        wait(256);    
+        colourled(Green);
+        wait(256);
+        colourled(Red);
+        wait(256);
+        colourled(Yellow);
+        wait(256);
+        colourled(White);
+        wait(256);
+        colourled(Pink);
+        wait(256);
+        colourled(Red);
+        wait(256);
+        colourled(Green);
+        wait(256);
+        colourled(SkyBlue);
+        wait(256);
+        colourled(Blue);
+        wait(256);    
+        colourled(SkyBlue);
+        wait(256);
+        colourled(Red);
+        wait(256);
+        colourled(Pink);
+        wait(256);
+        colourled(Yellow);
+        wait(256);
+        colourled(White);
+        wait(256);
+        colourled(Pink);
+        wait(256);
+        colourled(Red);
+        wait(256);
+        colourled(Green);
+        wait(256);
+        colourled(Blue);
+        wait(256);    
+        colourled(SkyBlue);
+        wait(256);
+        colourled(Pink);
+        wait(256);
+        colourled(White);
+        wait(256);
+        start_finish = 1;                         
+    }
+ 
+combo MedKit {
+    set_val(PS4_RIGHT, 100);
+    wait(2500);
+    }
+combo Aim_Assist_Perfection 
+    {        
+        // Save the first joystick position 
+        X_Last_Value = X_Current_Value
+        Y_Last_Value = Y_Current_Value
+ 
+        // Sampling frequency 
+        wait(Sampling_Time);
+ 
+        // Save the second joystick position 
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RY_Axis_Joystick_calibrate; 
+ 
+     if (Sampling_Done == TRUE )
+        {
+            //Applying BOOST
+            //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+            Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0 ); 
+            Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1 ); 
+        }
+ 
+        X_Last_Value = X_Current_Value;
+        Y_Last_Value = Y_Current_Value;
+ 
+        // Sampling frequency 
+        wait(Sampling_Time);
+ 
+        // Save the second joystick position 
+        X_Current_Value = get_lval(PS4_RX)- RX_Axis_Joystick_calibrate;
+        Y_Current_Value = get_lval(PS4_RY)- RX_Axis_Joystick_calibrate; 
+ 
+   if (Sampling_Done == TRUE )
+        {
+            //Applying CORRECTION
+            //Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS )
+            Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0 ); 
+            Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1 ); 
+        }
+ 
+        Sampling_Done = TRUE; 
+        wait(Sampling_Time);
+    }
+ 
+ 
+ 
+combo Fine_Tune_Aim {
+ 
+    set_val(PS4_RX,(15 - fine_pulse));//right
+    set_val(PS4_LX,(-15 + fine_pulse));//move left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(15 - fine_pulse));//right+down
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse));//move left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    set_val(PS4_RY,(10 - fine_pulse));// down
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));//left+down
+    set_val(PS4_RY,(10 - fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))//move 	right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+    wait(Sampling_Time)
+ 
+    set_val(PS4_RX,(-15 + fine_pulse));// left
+    set_val(PS4_LX,(15 - fine_pulse))//move 	right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-15 + fine_pulse)); //left + up
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(5 - fine_pulse))//move 	right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RY,(-10 + fine_pulse)); //up
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(15 - fine_pulse));//right+up
+    set_val(PS4_RY,(-10 + fine_pulse));
+    set_val(PS4_LX,(-5 + fine_pulse))//move 	left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+    fine_pulse = fine_pulse + 2;
+ 
+ 
+    if ( fine_pulse >10)
+       {
+            fine_pulse = 0;   
+        }
+   }
+ 
+    combo spiroide_Aim_Assit {
+ 
+    set_val(PS4_RX,(4 + spiroide_pulse));//right
+    set_val(PS4_LX,(-15+ spiroide_pulse));//move left
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+ 
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));// down
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+    set_val(PS4_RX,(-4 - spiroide_pulse));//left
+    set_val(PS4_LX,15 - spiroide_pulse );//move right
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time)
+ 
+    set_val(PS4_RY,(5 + spiroide_pulse));// down
+    wait(Sampling_Time);
+ 
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+    wait(Sampling_Time);
+ 
+ 
+    spiroide_pulse = spiroide_pulse + 2;
+ 
+ 
+    if ( spiroide_pulse >15)
+       {
+            spiroide_pulse = 0;   
+        }
+   }
+ 
+function Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS ) 
+    { 
+ 
+ 
+
+       if(abs(Last_Value - Current_Value) < Aim_Perfection_Limit) 
+            {
+                //--moving right
+                if(Last_Value < Current_Value)
+                    {           
+                        if (Boost)
+                            { 
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value + Aim_Boost)); 
+ 
+                                if (Y_AXIS)
+                                        set_val(PS4_RY, (Current_Value + Aim_Boost));
+                            }
+ 
+ 
+                        else if(Correction)
+                            {
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value - Aim_Correction)); 
+ 
+                                if (Y_AXIS)
+                                set_val(PS4_RY, (Current_Value - Aim_Correction));            
+                            }
+                    }
+                else //--moving left
+                    {
+ 
+                        if (Boost)
+                            { 
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value - Aim_Boost)); 
+ 
+                                if (Y_AXIS)
+                                        set_val(PS4_RY, (Current_Value - Aim_Boost));
+                            }
+ 
+ 
+                        else if(Correction)
+                            {
+                                if (X_AXIS)
+                                    set_val(PS4_RX, (Current_Value + Aim_Correction)); 
+ 
+                                if (Y_AXIS)
+                                set_val(PS4_RY, (Current_Value + Aim_Correction));            
+                            }
+                    }
+              }
+         }     
+//---------------------------------------
+combo RapidFire {
+    set_val(PS4_R2,100);
+    wait(hold_time);
+    set_val(PS4_R2, 0);
+    wait(rest_time);
+    set_val(PS4_R2, 0);
+    }
+combo vibrate  
+    {
+         set_rumble(RUMBLE_A, 100);
+         wait(300);
+         reset_rumble();
+     }
+combo Alert
+    {
+        colourled(White);
+        wait(500)
+        colourled(Red);
+        wait(500)
+    }
+combo EXIT 
+    {
+    wait(1000);
+    set_val(PS4_CIRCLE, 100);
+    wait(150);
+    set_val(PS4_CIRCLE, 0);
+    auto_run_halte = FALSE;
+ 
+    } 
+
+combo AutoRun {
+    set_val(PS4_L3, 100);
+    }
+combo Strafe_v2 { // Run straight, right, straight, left 
+    set_val(PS4_LY, -100);
+    set_val(PS4_L3, 100);
+    wait(Run_Straight); // Time to run straight
+    set_val(PS4_LX, 100);
+    set_val(PS4_LY, 50);
+    wait(Run_Side); // Time to run to the right
+    set_val(PS4_LY, -100);
+    set_val(PS4_L3, 100);
+    wait(Run_Straight); // Time to run straight
+    set_val(PS4_LX, -100);
+    set_val(PS4_LY, 50);
+    wait(Run_Side); // Time to run to the left
+    }
+combo Strafe_Shot {
+    set_val(PS4_LX, 100);
+    wait(Strafe_Shot_Time); // Time to run to the right
+    wait(50);
+    set_val(PS4_LX, -100);
+    wait(Strafe_Shot_Time); // Time to run to the left
+    wait(50);
+    }
+combo Reload {
+    wait(Reload_Switch_Time); 
+    set_val(PS4_TRIANGLE,100);
+    wait(15);
+    }
+combo Grenade {
+    set_val(PS4_LEFT, 100);
+    wait(20);
+    wait(800);
+    set_val(PS4_R2, 100);
+    wait(100);
+    set_val(PS4_L2, 0);
+    wait(10);
+    }
+
+function RapidFire () {
+    if(get_val(PS4_R2))
+    { 
+        combo_run(RAPID_FIRE);
+    }
+        else if(event_release(PS4_R2)) 
+        {
+            combo_stop(RAPID_FIRE);
+        }
+}
+function AntiRecoil(anti_recoil_fix) 
+    { 
+        anti_recoil = get_val(PS4_RY) + anti_recoil_fix;
+        if(anti_recoil > 100) {anti_recoil = 100;}
+            {
+                set_val(PS4_RY, anti_recoil);
+            }
+        return;
+    }
+function colourled(Colour) 
+    {                         
+        Col_ind=(Colour*4)- 3;                              
+        set_led(LED_1,dbyte(Col_ind  ));                    
+        set_led(LED_2,dbyte(Col_ind+ 1));                   
+        set_led(LED_3,dbyte(Col_ind+ 2));                   
+        set_led(LED_4,dbyte(Col_ind+ 3));                   
+    }    

@@ -1,0 +1,426 @@
+// BINDS //
+define ADS     		= PS4_L2;		//in-game ADS BUTTON
+define FIRE     	= PS4_R2;		//in-game FIRE BUTTON
+define NEXT_WEAPON 	= PS4_R1;		//in-game NEXT_WEAPON BUTTON
+define PREV_WEAPON 	= PS4_L1;		//in-game PREV_WEAPON BUTTON
+
+//BUILD LAYOUT
+define BUILD     	= PS4_TRIANGLE;	//in-game BUILD BUTTON
+define STAIRS  		= PS4_L2;		//in-game STAIRS BUTTON
+define WALL    	 	= PS4_R2;		//in-game WALL BUTTON
+define FLOOR  		= PS4_R1;		//in-game FLOOR BUTTON
+define ROOF   		= PS4_L1;		//in-game ROOF BUTTON
+
+//EDIT LAYOUT
+define EDIT 		= PS4_CIRCLE;	//in-game EDIT BUTTON
+define SELECT 		= PS4_R2; 		//in-game SELECT BUTTON
+define CONFIRM 		= PS4_R1;	//in-game CONFIRM BUTTON
+define RESET 		= PS4_L2;	//in-game RESET BUTTON
+define On  = TRUE;
+define Off = FALSE;
+
+define PICKAXE 		= PS4_RIGHT; //in-game PICKAXE BUTTON
+define JUMP     	= PS4_CROSS;	//in-game JUMP BUTTON
+define CROUCH   	= PS4_R3;		//in-game CROUCH BUTTON
+define INTERACT 	= PS4_SQUARE;	//in-game INTERACT BUTTON
+define MAPVIEW_B	= PS4_DOWN;    //in-game MAP BUTTON
+
+define UP     = PS4_UP;    
+define DOWN   = PS4_DOWN;   
+define LEFT   = PS4_LEFT; 
+define RIGHT  = PS4_RIGHT;
+
+define OPTIONS	= PS4_OPTIONS;  
+define TOUCHPAD = PS4_TOUCH;
+define SHARE 	= PS4_SHARE;
+
+define AIM_X 	= PS4_RX;
+define AIM_Y 	= PS4_RY;
+define LX 		= PS4_LX;
+define LY 		= PS4_LY;
+define PS       = POLAR_RS;
+
+// Batts STICKY AA //
+define BattsStickyAA = TRUE;
+define BattsAAHip    = TRUE;
+define BattStickyPower = 9;
+define BattStickyWait  = 9;
+
+//ENEMY TRACKER
+int ENEMY_TRACKER = On;
+int _v 		= 8; //Aim Assist STRENGTH Value (Screen Shake)
+int Delay 	= 8; //How fast Aim Assist Run
+int Release = 9; //Must be 1 higher than STRENGTH
+int _strafe = 10;  //STRAFIN for ROTATIONAL Aim Assit
+
+// VARIABLES //
+int Edit1,Edit2,BuildTrack,Shunt,BuildCount,OneShot,BloomReducer,EditAssist,EditT;
+int TargetList[2],targetLoop,index,Dhruvski,Ares,power;
+int AresTIME = 3,deltax,deltay,hyp,Hadesx,Hadesy;
+int B = 350;
+int A = 450;
+int rnd; int RIGHTOFFSETY,RIGHTOFFSETX;int LEFTOFFSETX,LEFTOFFSETY;
+int ry;int rx; int lx; int Poisedon,Apollosum,ZUESPI;	int Artemisn;
+int ly; int RAXIS;int delta;int RIZ = 2;
+
+//Ares AA //
+int DZ = 10; // deadzone in game
+int SHAKEX = -9; // deadzone value or in game ADS value
+int STRAFEX = -9; // deadzone value or in game ADS value 
+int SHAKEY = -9; // deadzone value or in game ADS value 
+int STRAFEY = -9; // deadzone value or in game ADS value
+
+// EDIT MODS //
+define FastReset = XB1_LT
+int EditSensitivity =  FALSE;
+int InstaFastReset  =  TRUE;
+int InstaEditReset  =  TRUE;
+define EditHold     =  FALSE;
+int EditHoldTime   = 0;
+define EditAssist_BUTTON	= PS4_CIRCLE; // ingame edit button. if odnt want to use then put as off
+define EditDelay			=	  20;  
+
+// Perfect Accuracy //
+define PerfectAccuracy		= TRUE;
+
+//Bloom Reducer//
+int ast    			       = 100;
+
+// Pickup Marco //
+int PickUpMacro          = FALSE;
+
+//BUILD TRACKER
+int BuildTracker    =  TRUE;
+int BuildSyncTime = 4000;
+
+main {
+vm_tctrl(-5); // (-5) RECCOMENED FOR COMP (-9) FOR CREATIVE
+//------------------------------------------------------------------------------
+ if (BattsStickyAA) {
+if (get_ival(ADS) || (BattsAAHip && get_ival(FIRE))) {
+combo_run(BattsStickyAssist);
+} else {
+combo_stop(BattsStickyAssist); 
+}
+}
+//------------------------------------------------------------------------------
+{
+    block_rumble();
+
+	valuefinder()
+
+
+
+	combo_run(Ais)
+
+	combo_run(u);
+
+
+Dhruvskiownsu(PS4_RX,(RIZ));
+Dhruvskiownsu(PS4_RY,(RIZ));
+rnd = random(A, B);
+set_polar(POLAR_LS, DZ, (100 * rnd));	
+	}
+
+if(PerfectAccuracy) 
+		{
+			if(get_ival(NEXT_WEAPON) && get_ptime(PREV_WEAPON) <= get_ptime(ADS) && get_ival(ADS))
+				OneShot = TRUE;
+
+				if(OneShot)
+				{
+					if(get_ival(NEXT_WEAPON))
+						combo_run(cPerfectionAccuracy);
+						block(NEXT_WEAPON, get_ptime(NEXT_WEAPON) + 50);
+				}
+
+				if(OneShot && event_release(NEXT_WEAPON))
+					OneShot = FALSE;
+		}
+//------------------------------------------------------------------------------		
+if(get_val(XB1_LT)> 95 && get_val(XB1_RT)){        
+combo_run(Auto_Strafe);}
+if(abs(get_val(XB1_LX)) > 40 || abs(get_val(XB1_LY)) > 40){
+combo_stop(Auto_Strafe);}
+//------------------------------------------------------------------------------	
+if(ENEMY_TRACKER){
+		combo_run(XXXENEMY_TRACKER);
+		}
+		if(get_val(INTERACT) || get_val(ADS) || get_val(FIRE) || 
+			abs(get_val(AIM_Y)) > 30 || abs(get_val(AIM_X)) > 30){ 
+			combo_stop(XXXENEMY_TRACKER);
+			
+} 	
+//------------------------------------------------------------------------------
+if(get_val(ADS) && get_val(FIRE)) {
+combo_run(AR);
+}
+if(get_val(ADS) && get_val(FIRE)){
+combo_stop(AR);
+}			
+//------------------------------------------------------------------------------
+if (PickUpMacro && get_val(INTERACT)) { combo_run(PickupSpam); }
+//------------------------------------------------------------------------------
+ if(get_val(ADS) && get_val(FIRE)) {
+ combo_run(rapidFire);
+}
+else {
+combo_stop(rapidFire);
+}
+//------------------------------------------------------------------------------     
+ if(get_ival(PS4_L2) > 1)set_val(PS4_L2, 100);
+	if(get_ival(PS4_R2) > 1)set_val(PS4_R2, 100);
+//------------------------------------------------------------------------------
+if (InstaFastReset && !get_ival(ADS) && event_press(ADS)) { 
+Shunt = FastReset;
+combo_run(FastReset);
+}
+//------------------------------------------------------------------------------     
+    if (InstaEditReset) {
+if (EditHold && get_ival(EDIT) && get_ptime(EDIT) > EditHoldTime || !EditHold && event_press(EDIT)) {
+Edit1 = TRUE;
+Edit2 = TRUE;
+BuildTrack = TRUE;
+}
+if (Edit2) {
+if (event_release(FIRE)) {  
+Edit1 = FALSE;
+Edit2 = FALSE;
+BuildTrack = FALSE;
+}
+}
+} 
+if (Edit1 || Edit2) {
+if (EditSensitivity) {    
+}
+if (event_press(ADS)) {  
+combo_run (InstantReset);
+Edit1 = FALSE;
+Edit2 = FALSE; 
+}
+if (event_press(PICKAXE) || event_press(BUILD) || event_press(ADS)) {
+Edit1 = FALSE;
+Edit2 = FALSE;
+BuildTrack = FALSE;
+}
+}
+  //------------------------------------------------------------------------------ 
+if(EditAssist)
+		{
+			if(get_ival(EditAssist_BUTTON))
+			{
+				EditAssist();
+				Edit1 = TRUE;
+			}
+
+			if(event_release(EditAssist_BUTTON))
+			{	
+				EditT = 0;	
+				Edit1 = FALSE;
+			}
+		}
+		if(Edit1)
+		{
+			if(event_press(RESET))
+			{
+				combo_run(InstantReset);
+				Edit1	   = FALSE;
+				BuildTrack = FALSE;
+			}
+
+			if(event_press(PICKAXE) || event_press(ADS))
+			{
+				Edit1	   = FALSE;
+				BuildTrack = FALSE;
+			}
+		}
+ //------------------------------------------------------------------------------ 
+     if (BuildTracker) {
+if (event_press(BUILD)) {
+BuildTrack = !BuildTrack;
+}
+if (BuildTrack) {
+BuildCount += get_rtime();
+if (event_press(PICKAXE) || BuildCount == BuildSyncTime) {
+BuildTrack = FALSE;
+BuildCount = FALSE;
+}
+if (get_ival(ROOF) || get_ival(FLOOR) || get_ival(STAIRS) || get_ival(WALL))                     BuildCount = FALSE;
+}
+}
+//------------------------------------------------------------------------------ 
+if (Shunt) {
+if (event_release(Shunt)) {
+Shunt = FALSE;
+}
+else {
+set_val (Shunt,FALSE);
+}
+}
+}
+//end of main------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//---------------------------------combo code-----------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+combo AR {
+	   set_val(AIM_Y,36);
+	wait(10);
+	   set_val(AIM_Y,0);
+	wait(10);
+	}
+//------------------------------------------------------------------------------
+combo BattsStickyAssist {
+set_val(AIM_Y,AxisRelease(AIM_Y,BattStickyPower));
+wait(BattStickyWait);
+set_val(AIM_X,AxisRelease(AIM_X,BattStickyPower));
+set_val(XB1_LX,AxisRelease(XB1_LX,BattStickyPower));
+wait(BattStickyWait);
+set_val(AIM_Y,AxisRelease(AIM_Y,inv(BattStickyPower)));
+wait(BattStickyWait);
+set_val(AIM_X,AxisRelease(AIM_X,inv(BattStickyPower)));
+set_val(XB1_LX,AxisRelease(XB1_LX,inv(BattStickyPower)));
+wait(BattStickyWait);
+}
+//------------------------------------------------------------------------------
+combo PickupSpam {
+	   set_val(INTERACT, 100);
+	wait(80);
+	   set_val(INTERACT, 0);
+	}
+//------------------------------------------------------------------------------
+combo rapidFire {
+set_val(XB1_RT,100);
+wait(40);
+set_val(XB1_RT,0);
+wait(40);
+}
+//------------------------------------------------------------------------------
+combo Confirm {
+
+   set_val(CONFIRM,100);
+    wait(50);
+    set_val(CONFIRM,0);
+    wait(100);
+}
+//------------------------------------------------------------------------------
+combo FastReset {
+
+ 
+    wait(50)
+    set_val(RESET,100);        
+    wait(50);
+    combo_run(Confirm);
+}
+//------------------------------------------------------------------------------
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+//------------------------------------------------------------------------------
+combo cPerfectionAccuracy {
+		set_val(FIRE, 100);
+		wait(50);
+		wait(360);
+}
+//------------------------------------------------------------------------------
+combo u {
+	Dhruvskiownsu(AIM_X,rx)wait(AresTIME)Dhruvskiownsu(AIM_X,0)wait(AresTIME)Dhruvskiownsu(AIM_X,-rx)wait(AresTIME)Dhruvskiownsu(AIM_X,0)wait(AresTIME)
+}
+//------------------------------------------------------------------------------
+combo Ais {
+		Dhruvskiownsu(AIM_Y,RIZ)
+		Dhruvskiownsu(AIM_X,-RIZ)
+		wait(1)
+		Dhruvskiownsu(AIM_Y,-RIZ)
+		Dhruvskiownsu(AIM_X,RIZ)
+		wait(1)
+		} 
+//------------------------------------------------------------------------------
+combo Auto_Strafe {	
+set_val(XB1_LX,-30);
+wait(ast);
+set_val(XB1_LX, 30);
+wait(ast);
+if(ast < 160){ast = ast + 10;}
+else {ast = 100;}}
+//------------------------------------------------------------------------------
+combo XXXENEMY_TRACKER { 
+	    
+	  	set_val(AIM_Y,xy_val(AIM_Y, _v)); 
+		wait(Delay);
+		set_val(AIM_X,xy_val(AIM_X, _v)); 
+		set_val(LX,xy_val(LX, _strafe));
+		wait(Delay); 
+		set_val(AIM_Y,xy_val(AIM_Y, _v * -1)); 
+		wait(Delay);
+		set_val(AIM_X,xy_val(AIM_X, _v * -1)); 
+		set_val(LX,xy_val(LX, _strafe * -1)); 
+		wait(Delay);
+}
+//------------------------------------------------------------------------------
+function AxisRelease(AxisXY,AxisVal) {
+    
+    if (abs(get_ival(AxisXY)) <= BattStickyPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}
+//------------------------------------------------------------------------------
+function EditAssist() {
+    EditT += get_rtime();
+
+	if(get_ival(EditAssist_BUTTON))
+	{
+		if(EditT >= EditDelay)
+			EditPress(SELECT);
+	}
+}
+//------------------------------------------------------------------------------
+function EditPress(Button) {
+    if(get_ival(Button))
+        return;
+	set_val(Button, 100);
+}
+//------------------------------------------------------------------------------
+function xy_val(f_axis,f_val) { 
+	
+	if(abs(get_val(f_axis)) < Release) 
+	
+		return f_val; 
+		return get_val(f_axis); 
+}
+//------------------------------------------------------------------------------
+function valuefinder(){
+RIGHTOFFSETX = -1
+RIGHTOFFSETY = -1
+if (AIM_X > 0 ) {
+RIGHTOFFSETX = 1
+}
+if (AIM_Y > 0 ) {
+RIGHTOFFSETY = 1
+}
+rx = (AIM_X + SHAKEX) * RIGHTOFFSETX
+ry = (AIM_Y + SHAKEY) * RIGHTOFFSETY
+LEFTOFFSETX = -1
+LEFTOFFSETY = -1
+if ( LX > 0 ) {
+LEFTOFFSETX = 1
+}
+if ( LY > 0 ) {
+LEFTOFFSETY = 1
+}
+lx =  (LX + STRAFEX) * LEFTOFFSETX
+ly =  (LY + STRAFEY) * LEFTOFFSETY
+
+}
+//------------------------------------------------------------------------------
+function Dhruvskiownsu( axis,  offset_val) {
+  set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+  return;
+}
+//------------------------------------------------------------------------------
+
+ ú¹ˆ¾†·ƒ´‚´†¿‰½‹³

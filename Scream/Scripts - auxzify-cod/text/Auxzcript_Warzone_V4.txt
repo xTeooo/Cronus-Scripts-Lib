@@ -1,0 +1,154 @@
+/*==============================================================
+
+      ('-.               ) (`-.        .-') _            _  .-')             _ (`-.  .-') _    
+     ( OO ).-.            ( OO ).     (  OO) )          ( \( -O )           ( (OO  )(  OO) )   
+     / . --. / ,--. ,--. (_/.  \_)-.,(_)----.    .-----. ,------.  ,-.-')  _.`     \/     '._  
+     | \-.  \  |  | |  |  \  `.'  / |       |   '  .--./ |   /`. ' |  |OO)(__...--''|'--...__) 
+   .-'-'  |  | |  | | .-') \     /\ '--.   /    |  |('-. |  /  | | |  |  \ |  /  | |'--.  .--' 
+    \| |_.'  | |  |_|( OO ) \   \ | (_/   /    /_) |OO  )|  |_.' | |  |(_/ |  |_.' |   |  |    
+     |  .-.  | |  | | `-' /.'    \_) /   /___  ||  |`-'| |  .  '.',|  |_.' |  .___.'   |  |    
+     |  | |  |('  '-'(_.-'/  .'.  \ |        |(_'  '--'\ |  |\  \(_|  |    |  |        |  |    
+     `--' `--'  `-----'  '--'   '--'`--------'   `-----' `--' '--' `--'    `--'        `--'    
+     (`\ .-') /`  ('-.     _  .-')     .-') _                  .-') _   ('-.                   
+      `.( OO ),' ( OO ).-.( \( -O )   (  OO) )                ( OO ) )_(  OO)                  
+   ,--./  .--.   / . --. / ,------. ,(_)----. .-'),-----. ,--./ ,--,'(,------.                 
+   |      |  |   | \-.  \  |   /`. '|       |( OO'  .-.  '|   \ |  |\ |  .---'                 
+   |  |   |  |,.-'-'  |  | |  /  | |'--.   / /   |  | |  ||    \|  | )|  |                     
+   |  |.'.|  |_)\| |_.'  | |  |_.' |(_/   /  \_) |  |\|  ||  .     |/(|  '--.                  
+   |         |   |  .-.  | |  .  '.' /   /___  \ |  | |  ||  |\    |  |  .--'                  
+   |   ,'.   |   |  | |  | |  |\  \ |        |  `'  '-'  '|  | \   |  |  `---.                 
+   '--'   '--'   `--' `--' `--' '--'`--------'    `-----' `--'  `--'  `------'                 
+
+Version: 4 (BUILD 4.45)
+Version Notes: 
+
+-ADDED AIM ASSIST X - see discord for more informaation)
+-Slowed Auto-Ping rate - this is still fully customisable within the script.
+-Raised the Deadzone to reduce possible controller drifting
+
+//==============================================================*/
+
+
+    //Aim Assist
+    int AimAssistX = 11;
+    int AimAssistXNeg = -11;   
+    int AimAssist_PosX1 = 20;    //Decrease if shake
+    int AimAssist_NegX1 = -20;   //Decrease if shake
+    int AimAssist_PosX2 = 23;
+    int AimAssist_NegX2 = -23;
+    int Delay = 20;              //Do Not Touch
+    int Release = 21;            //Must be 1 higher than AimAssist_PosX1 & AimAssist_NegX1
+ 
+    //Anti Recoil
+    int AntiRecoil_Ver = 14;   //Anti Recoil
+    int AntiRecoil_Hor = 0;    //Anti Recoil Horizontal
+    int AntiRecoil_Invert = 1; //Change 1 to -1 If you play with Inverted
+    int ARS;
+    
+    //Anti Hit Mods
+    int Dropshot = FALSE;      // -> Only enable one at a time or leave both disabled!  <-
+    int Jumpshot = FALSE;      // -> Only enable one at a time or leave both disabled!  <-
+    
+    //Auto Ping
+    int AutoPing = TRUE;
+    define AutoPing_DetectionRate = 17;   //How fast Auto ping releases markers
+    
+
+//==============================================================*/
+
+    main {
+   
+    //Aim Assist
+    if(get_val(7)) combo_run(AS);
+    if(get_val(4)) combo_run(AS2);
+    combo_run(AX);
+ 
+    //Anti Recoil
+    if(get_val(7) && get_val(4))
+    combo_run(AntiRecoil_Ver);
+    if(abs(get_val(10)) > AntiRecoil_Ver + 2 || abs(get_val(9)) > AntiRecoil_Ver + 2) {
+    combo_stop(AntiRecoil_Ver);
+    }
+
+    //Anti-Hit Mods
+    if (Dropshot)
+    if(get_val(XB1_RT) > 99){
+    combo_run(DROPSHOT);
+    }
+    if (Jumpshot)  
+    if(get_val(XB1_RT) > 99){
+    combo_run(JUMPSHOT);
+    }
+    
+    //Auto Ping
+    if (AutoPing)
+    if(get_val(7) && get_val(4)){
+    combo_run(Auto_Ping);
+    }}
+    
+//==============================================================*/    
+
+    combo AS { 
+    set_val(10,a_f(10,AimAssist_PosX1));
+    wait(Delay)
+    set_val(9,a_f(9,AimAssist_PosX1));
+    wait(Delay)
+    set_val(10,a_f(10,AimAssist_NegX1));
+    wait(Delay)
+    set_val(9,a_f(9,AimAssist_NegX1));
+    wait(Delay)
+    }
+    
+    combo AS2 { 
+    set_val(10,a_f(10,AimAssist_PosX2));
+    wait(Delay)
+    set_val(9,a_f(9,AimAssist_PosX2));
+    wait(Delay)
+    set_val(10,a_f(10,AimAssist_NegX2));
+    wait(Delay)
+    set_val(9,a_f(9,AimAssist_NegX2));
+    wait(Delay)
+    }
+    
+    combo AX { 
+    set_val(10,a_f(10,AimAssistX));
+    wait(Delay)
+    set_val(9,a_f(9,AimAssistX));
+    wait(Delay)
+    set_val(10,a_f(10,AimAssistXNeg));
+    wait(Delay)
+    set_val(9,a_f(9,AimAssistXNeg));
+    wait(Delay)
+    }
+ 
+    combo AntiRecoil_Ver {
+    ARS = get_val(10) + AntiRecoil_Ver;
+    if(ARS > 100) ARS = 100;
+    set_val(10,ARS * AntiRecoil_Invert);
+    ARS = get_val(9) + AntiRecoil_Hor;
+    if(ARS > 100) ARS = 100;
+    set_val(9,ARS);
+    }
+    
+    combo DROPSHOT {
+    set_val(XB1_RS, 100);
+    wait(1200);
+    }
+    
+    combo JUMPSHOT {
+    set_val(XB1_A, 100);
+    wait(100); 
+    wait(300);   
+    }
+    
+    combo Auto_Ping {
+	set_val(XB1_UP,100);
+	wait(AutoPing_DetectionRate);
+	set_val(XB1_UP,0);
+	wait(AutoPing_DetectionRate);
+	}
+	
+    function a_f(p,m) {
+    if(abs(get_val(p)) < Release)
+    return m;
+    return get_val(p);}

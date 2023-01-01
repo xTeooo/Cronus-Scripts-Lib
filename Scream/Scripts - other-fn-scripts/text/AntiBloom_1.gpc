@@ -1,0 +1,58 @@
+define Fire = XB1_RT;
+define ADS = XB1_LT;
+define Crouch = XB1_RS;
+define Pickaxe = XB1_Y;
+define Build = XB1_B;
+define Edit = XB1_Y;
+  
+int Modswitch;
+int AntiBloom = TRUE;
+int AntiBloomHipFire = TRUE;
+int BuildTracker = TRUE;
+
+main
+{	
+	block_rumble();
+	if(BuildTracker)
+	{
+		if(event_press(Build) || event_press(Edit))
+		{
+		    BuildTracker = !BuildTracker
+		    BuildTracker = FALSE;
+		}
+		if(event_press(Pickaxe) || get_val(Build))
+		{
+			BuildTracker = TRUE;
+		}
+		
+	}
+
+	if(!BuildTracker)
+	{
+		if(AntiBloom)
+		{
+			if(get_val(ADS) || AntiBloomHipFire && get_val(Fire))
+			{
+				combo_run(AntiBloomS)
+			
+			}
+			if(event_release(ADS) || event_release(Fire))
+			{
+				combo_stop(AntiBloomS)
+			}
+		}
+	}
+}
+
+combo AntiBloomS
+{
+	set_val(Crouch, 100)
+	wait(10)
+	set_val(Crouch, 100)
+	wait(10)
+	set_val(Crouch, 100)
+	wait(10)
+	set_val(Crouch, 100)
+	wait(10)
+
+}

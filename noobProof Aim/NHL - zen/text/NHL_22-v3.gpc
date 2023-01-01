@@ -1,0 +1,580 @@
+/* * * * * * * * * * * * * * * * * * * * * * *
+// GPC Private Library "Limited to DONORS"	||
+// 		   NHL22-V3-beta.gpc				||
+// 			 NHL XX SCRIPT 					||
+// 		VERSION = 3.1 (Beta Testin			|| 
+'                          _                                            _       
+'                         / |_                                         / \      
+'   _ .--.   .--.   .---.`| |-'_   _   __  _ .--.  _ .--.    _   __   / _ \     
+'  [ `.-. |/ .'`\ \/ /'`\]| | [ \ [ \ [  ][ `/'`\][ `.-. |  [ \ [  ] / ___ \    
+'   | | | || \__. || \__. | |, \ \/\ \/ /  | |     | | | |   \ '/ /_/ /   \ \_  
+'  [___||__]'.__.' '.___.'\__/  \__/\__/  [___]   [___||__][\_:  /|____| |____| 
+'  *________________________________________________________\__.'______________*       
+'                                                                              
+/////////////////////////////////////////////////////////////////////////
+//	 	I (noctwrnyA) provide support for the Script, u can reachme at //
+//	  	Discord - noctwrnyA#5797									   //
+//	  	EPIC 	- noctwrnyA											   //
+//	  	PSN		- noctwrnyA											   //
+//	  	E-mail 	- noctwrny@gmail.com								   //
+/////////////////////////////////////////////////////////////////////////
+
+				Credits To :
+ -  jamalsandbox#9278
+ 		for donatin n makin this project possible
+ 		
+ - Me lol! noctwrnyA. 
+
+   F   E   A   T   U   R   E   S
+===============NHL=================
+	  HOW TO ACTIVATE DEKES
+___________________________________
+L3 + CROSS 		= TAP BACK
+===================================
+L3 + SQUARE 	= BETWEEN THE LEGS not workin (one touch deke)
+===================================
+L3 + TRIANGLE 	= ONE HAND TUCK
+===================================
+L3 + CIRCLE 	= ZETTERBERG
+___________________________________
+- VM RUNNING AT ( 3 ms ).
+*/
+define On = TRUE;
+define Off = FALSE;
+
+define KILLSWITCH_B = PS4_TOUCH;
+///////////////////////////////
+int JoyStick_Calibration = On; //OPTIMIZED Deadzone for RIGHT STICK
+
+int DeadZone = On; //TOTAL Deazone
+define DZ_L 	= 10;//LEFT STICK
+define invDZ_L 	= -10;//LEFT STICK
+
+define DZ_R 	= 10;//RIGHT STICK
+define invDZ_R 	= -10;//RIGHT STICK
+///////////////////////////////
+
+int Display_Black;
+int count_black;
+int ZENOLED 		= On; //Only for Cronus ZEN. turn OFF for Cronus Max, TITAN 1 ....
+int MODMENUTOGGLE 	= On; //SWITCHIN from FORTNITE/CALLofDUTY/MOD OFF.
+int ledBATTERY;	//BATTERY LED Notification.
+int SCRIPT;
+
+// Text to display
+	const string TITLE = "NHL_22";
+	const string Script = "ScriptV3"; 
+	
+	const string NHL22_OLED = "NHL_22"
+	const string KillSwitch = " OFF";
+	
+
+main {
+
+		vm_tctrl(-7);
+		
+		if(ZENOLED) { _ZENOLED(); }
+		if(MODMENUTOGGLE) {_MODMENUTOGGLE();}
+		if(SCRIPT == Off) {_ledBATTERY();} //LED BATTERY NOTIFICATION END
+     	if(JoyStick_Calibration){_JoyStick_Calibration();}
+     	if(get_console() == PIO_XB1 && get_controller() == PIO_PS4) {swap (PS4_TOUCH,PS4_SHARE);}
+     	if(get_console() == PIO_XB360 && get_controller() == PIO_PS4) {swap (PS4_TOUCH,PS4_SHARE);}
+
+////////////////////////////////////////////////////////////////////////////////
+
+ //DEAD ZONE CORECTION\\
+ if(DeadZone){
+   // DEAD ZONE CORECTION : LEFT STICK                                 
+   if(abs(get_val(PS4_LY)) < DZ_L && abs(get_val(PS4_LX)) < DZ_L || 
+   	   abs(get_val(PS4_LY)) < invDZ_L && abs(get_val(PS4_LX)) < invDZ_L ){        
+        
+        set_val(PS4_LY, 0);                                                
+        set_val(PS4_LX, 0);                                                
+}
+   // DEAD ZONE CORECTION : RIGHT STICK                                 
+   if(abs(get_val(PS4_RY)) < DZ_R && abs(get_val(PS4_RX)) < DZ_R || 
+       abs(get_val(PS4_RY)) < invDZ_R && abs(get_val(PS4_RX)) < invDZ_R){         
+        
+        set_val(PS4_RY,0);                                                 
+        set_val(PS4_RX,0);                                                
+}
+}//IF DEADZONE END	
+
+ 
+ if(SCRIPT){
+    
+    if(get_ival(PS4_L3)){
+    
+    		    		
+	    if(event_press(PS4_CROSS)) {
+        	set_val(PS4_CROSS, 0);
+	    	combo_run(cTAPBACK);
+	    	}
+	    	
+	    	else if(event_press(PS4_SQUARE)) {
+        			set_val(PS4_SQUARE, 0);
+			        combo_run(cBetweentheLegs);
+			    	}
+	    	
+	    	else if(get_val(PS4_TRIANGLE)) {
+		        	set_val(PS4_TRIANGLE, 0);
+		        	combo_run(cONEHANDTUCK);
+		        	}
+			    	
+			else if(event_press(PS4_CIRCLE)) {
+        			set_val(PS4_CIRCLE, 0);
+					combo_run(cZETTERBERG);
+			    	}
+			    	
+			
+ 
+		   
+		        
+			       
+			    	
+			
+ 	}//IF L3 END
+ 	
+  
+ }//IF SCRIPT ON END
+
+}//IF MAIN END
+
+//////////////////////////////
+//COMBOS
+
+combo cTAPBACK {
+    
+    set_val(PS4_LY, 0);
+    set_val(PS4_LX, 0);
+    wait(10);
+    set_val(PS4_RX, -65);//RIGHT_STICK to left
+    set_val(PS4_RY, 85);//down to make a 7 o'clock
+    wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -65);//RIGHT_STICK to left
+    set_val(PS4_RY, 85);//down to make a 7 o'clock
+    wait(10);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, 100);//RIGHT_STICK to right
+    set_val(PS4_LX, -100);//LEFT_STICK to left
+    wait(20);
+    set_val(PS4_L1, 0);
+    set_val(PS4_LY, 0);
+    set_val(PS4_LX, 0);
+    set_val(PS4_RX, -100);//RIGHT_STICK to left
+    wait(40);
+}
+
+combo cBetweentheLegs {
+    
+    set_val(PS4_LY, 0);
+    set_val(PS4_LX, 0);
+    wait(10);
+    set_val(PS4_RX, -100);//RIGHT_STICK to left
+    wait(8);
+    set_val(PS4_RX, -65);//RIGHT_STICK to left
+    set_val(PS4_RY, 85);//down to make a 7 o'clock
+    wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -65);//RIGHT_STICK to left
+    set_val(PS4_RY, 85);//down to make a 7 o'clock
+    wait(10);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -40);//RIGHT_STICK to left
+    set_val(PS4_RY, 100);//down to make a 6:30
+    
+    set_val(PS4_RX, 0);//RIGHT_STICK to center
+    set_val(PS4_RY, 100);//down to make a 6 o'clock
+    
+    set_val(PS4_RX, 65); //RIGHT_STICK to right
+    set_val(PS4_RY, 100);	//down to make a 5:30
+    
+    set_val(PS4_RX, 100); //RIGHT_STICK to right
+    set_val(PS4_RY, 65);	//down to make a 4 ish
+    
+    set_val(PS4_RX, 100); //RIGHT_STICK to right
+    set_val(PS4_RY, 0);	//down to make a 4 ish
+    
+    set_val(PS4_RX, 0);//RIGHT_STICK to center
+    wait(20);
+    set_val(PS4_L1, 0);
+    set_val(PS4_LY, 0);
+    set_val(PS4_LX, 0);
+    //set_val(PS4_RX, -100);//RIGHT_STICK to left
+    wait(40);
+}
+
+combo cONEHANDTUCK {
+
+	set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    wait(10);
+    set_val(PS4_RX, -100); 	//RIGHT_STICK to left makin a 9 o'clock
+	wait(20);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -100); 	//RIGHT_STICK to left makin a 9 o'clock
+	wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_R1, 100);
+    set_val(PS4_RX, 100); 	//RIGHT_STICK to left makin a 9 o'clock
+	wait(30);
+}
+
+combo cZETTERBERG {
+    
+    set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    wait(10);
+    set_val(PS4_RX, 65); //RIGHT_STICK to right
+    set_val(PS4_RY, 85);	//down to make a 5 o'clock
+    wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, 65); //RIGHT_STICK to right
+    set_val(PS4_RY, 85);	//down to make a 5 o'clock
+    wait(10);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -100);//RIGHT_STICK to left
+    set_val(PS4_LX, 100);//LEFT_STICK to right
+    wait(20);
+    set_val(PS4_L1, 0);
+    set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    set_val(PS4_RX, 100);//RIGHT_STICK to right
+    wait(40);
+}
+
+
+
+
+/////////////////////
+//NO ACTIVE
+
+combo cZETTERBERG0 {
+
+	set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    wait(10);
+    set_val(PS4_RX, 100); 	//RIGHT_STICK to right makin a 3 o'clock
+	wait(20);
+    set_val(PS4_RX, 65);//RIGHT_STICK to right
+    set_val(PS4_RY, 85);	//down to make a 5 o'clock
+    wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -100); //RIGHT_STICK to left makin a 9 o'clock
+    set_val(PS4_LX, 100);	//LEFT_STICK to right makin a 3 o'clock
+    wait(40);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RY, -85);//RIGHT_STICK up
+    set_val(PS4_RX, -65);	//left makin a 11 o'clock
+    wait(30);
+}
+
+combo cBACKHANDTUCK_LR {
+
+	set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    wait(10);
+    set_val(PS4_RX, -100); 	//RIGHT_STICK to left makin a 9 o'clock
+	wait(20);
+    set_val(PS4_RX, -65);//RIGHT_STICK to left
+    set_val(PS4_RY, 85);	//down to make a 7 o'clock
+    wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, 100);//RIGHT_STICK to right makin a 3 o'clock
+    set_val(PS4_LX, -100);//LEFT_STICK to left makin a 9 o'clock
+    wait(20);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -65); //RIGHT_STICK to left
+    set_val(PS4_RY, -85);	//UP to make a 11 o'clock
+    wait(30);
+}
+
+combo cOUTSIDE_TAP {
+    
+    set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    wait(10);
+    set_val(PS4_RX, 65); //RIGHT_STICK to right
+    set_val(PS4_RY, 85);	//down to make a 5 o'clock
+    wait(30);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, 65); //RIGHT_STICK to right
+    set_val(PS4_RY, 85);	//down to make a 5 o'clock
+    wait(10);
+    set_val(PS4_L1, 100);
+    set_val(PS4_RX, -100);//RIGHT_STICK to left
+    set_val(PS4_LX, 100);//LEFT_STICK to right
+    wait(20);
+    set_val(PS4_L1, 0);
+    set_val(PS4_LY, 0);//LEFT_STICK
+    set_val(PS4_LX, 0);//LEFT_STICK
+    set_val(PS4_RX, 100);//RIGHT_STICK to right
+    wait(40);
+}
+
+
+//RUMBLE
+combo RumbleOnce {
+    
+    set_rumble(RUMBLE_A, 100);
+    wait(250);
+    reset_rumble();
+}
+combo RumbleTwice {
+    
+    set_rumble(RUMBLE_A, 100);
+    wait(250);
+    set_rumble(RUMBLE_A, 0);
+    wait(250);
+    set_rumble(RUMBLE_A, 100);
+    wait(250);
+    reset_rumble();
+}
+combo BatteryRumble {
+    
+    set_rumble(RUMBLE_A, 5);
+    set_rumble(RUMBLE_B, 5);
+    wait(250);
+    reset_rumble();
+}
+
+//////////////////////////////
+
+function _MODMENUTOGGLE () {
+	
+	//IF NHL L2
+	if(get_ival(PS4_L2)){
+	
+		//IF OPTIONS
+		if(get_ival(PS4_OPTIONS)) {
+			
+			set_val(PS4_OPTIONS, 0);
+			set_led(LED_1, 0);
+			set_led(LED_2, 0);
+			set_led(LED_3, 0);
+			set_led(LED_4, 1);	
+			ZENOLED = On;
+			SCRIPT = On;
+			combo_run(RumbleOnce);
+			}
+			//ADS+PS4_TOUCH ((KILLSWITCH))
+			if(get_ival(PS4_TOUCH)) {
+			
+				set_val(PS4_TOUCH, 0);
+				set_led(LED_1, 0);
+				set_led(LED_2, 0);
+				set_led(LED_3, 0);
+				set_led(LED_4, 0);
+				SCRIPT = Off;
+				combo_run(RumbleTwice);
+				}
+	}//IF ADS END
+}// Function _MODMENUTOGGLE END
+
+function _ledBATTERY() {
+
+//BATTERY LEVEL START
+//1 blue	//0			//0			//0
+//0			//1 red		//0			//0
+//0			//0			//1 green	//0
+//0			//0			//0			//1 purple
+
+if( get_battery() >= 11 )  { // equal or greater than  100% battery (CHARGING)
+        // GREEN bright
+        set_led(LED_1, 0);
+        set_led(LED_2, 0);
+        set_led(LED_3, 3);
+        set_led(LED_4, 0);
+}
+else if( get_battery() >= 9 && get_battery() < 10)  { // greater than  90% battery (FULLYCHARGED)
+	        // GREEN
+	        set_led(LED_1, 0);
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 1);
+	        set_led(LED_4, 0);
+}
+else if( get_battery() >= 7 && get_battery() < 9 )  { // greater than or equal to 70|90% battery (EXCELLENT)
+	        // BLUE
+	        set_led(LED_1, 1);
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 0);
+	        set_led(LED_4, 0);
+}
+else if( get_battery() >= 4 && get_battery() < 7 ) { // between 40|70% battery (GOOD)
+	        // SKYBLUE
+	        set_led(LED_1, 1); 
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 1);  
+	        set_led(LED_4, 0);
+}
+else if( get_battery() > 2 && get_battery() < 4 ) { // between 20|40% battery (LOW)
+	        // PURPLE
+	        set_led(LED_1, 0);
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 0);
+	        set_led(LED_4, 1);
+        
+}
+if( get_battery() <= 2 ) { // less than or equal to 20% battery (DYING)
+	        // RED
+	        set_led(LED_1, 0);
+	        set_led(LED_2, 1);
+	        set_led(LED_3, 0);
+	        set_led(LED_4, 0);
+        
+        if( get_battery() <= 1 ) {
+
+            combo_run(BatteryRumble);
+} 
+} //BATTERY LEVEL END
+
+}
+
+
+function _ZENOLED (){
+
+					//NHL 22 ON
+					if(SCRIPT == On) {
+					
+						cls_oled(0);	// clear OLED screen
+    					printf(8, 25, 2, 1, NHL22_OLED[0]);
+						
+}
+					if(SCRIPT == Off) {
+	    				
+	    				cls_oled(0);	// clear OLED screen
+	    				printf(5, 5, 1, 1, TITLE[0]);
+	   					printf(70, 28, 0, 1, Script[0]);
+	    		    	printf(1, 27, 2, 1, KillSwitch[0]);
+	    		    	_ledBATTERY();
+                                                       
+						Display_Black = On;
+    		    		if(Display_Black){                            
+         					count_black += get_rtime();
+
+							if(count_black >= 9000){ 
+								ZENOLED = Off;
+								cls_oled(0);         
+								count_black = 0; 	      	      
+          		      
+}} //DISPLAY BLACK END
+} //IF SCRIPT IS OFF END (KILLSWITCH)
+
+}
+
+//////////////////////////////////
+//JOYSTICK CALIBRATION CODE
+function _JoyStick_Calibration() {
+
+/*	 This script eliminates stick drift while avoiding a deadzone.
+	 Apex Legends, for example, has a setting that allows you to alter your deadzone for smaller, more precise movements with the right stick.
+	 That isn't to say that this script is limited to Apex Legends.
+	 This script will fix your issue if you discover that you have stick drift in a game and are unable to alter your deadzone.
+	 
+	 First and foremost, some values in this script must be adjusted.
+	 Because no one else's stick drift is the same as yours.
+	 Wear on the joysticks can cause stick drift.
+	 Keep in mind that if your controller has stick drift due to wear, this script may not be able to remove all of it.
+	 
+	 If you replaced the joystick modules on your controller, this script will completely solve your stick drift.
+	 When you solder on a new joystick, you'll see that it has stick drift because the controllers are calibrated in the factory.
+	
+	 This script was written to eliminate stick drift on my Xbox Elite V1 controller, which is equipped with brand new Kailh JP1311 joysticks. 
+	 
+	 How do I get these values to put into the script?
+	 In your Cronus software you have a tool called Device Monitor
+	 With that tool you can read all values that your controller is sending to your Cronus Device
+	 
+	 For example, if you pull your right stick all the way to the right you see a value +96
+	 And if you pull your right stick all the way up you see a value -98
+	 Now we know the value of RX_Plus that is 96
+	 You need to fill in the list like this 
+	 int RX_dk_max=  96;
+	 int RX_dk_min= -98;
+	 
+	 If the controller value is +100 or -100 just fill in 100 to cancel any correction */
+/////////////////////////////////////////////////////////////////////////////////////////////////	 
+
+	
+  do { o[i] = get_val(9 + i);
+  } while (i = (i + 1) % 4);
+  
+  do {
+    ValInY[i] = get_oval(STICK_Y[i]);
+    ValInX[i] = get_oval(STICK_X[i]); 
+    if (isqrt(pow(get_val(STICK_X[i]), 2) + pow(get_val(STICK_Y[i]), 2)) <  StickDZ[i]) {
+      if (ValInY[i] != ValPrevY[i] || ValInX[i] != ValPrevX[i]) {
+        ValPrevX[i] = ValInX[i];
+        ValPrevY[i] = ValInY[i];
+        XY[i]  = 100;
+      }
+      if (XY[i]) {
+        XY[i] -= get_rtime();
+        if (XY[i] <= 0) {
+          OffsetX[i] = inv(ValInX[i]);
+          OffsetY[i] = inv(ValInY[i]);
+          offset(STICK_X[i], OffsetX[i]);
+          offset(STICK_Y[i], OffsetY[i]);
+          ValOutX[i] = inv(get_val(STICK_X[i]));
+          ValOutY[i] = inv(get_val(STICK_Y[i]));
+        }
+      }
+    }
+    offset(STICK_X[i], OffsetX[i] + ValOutX[i]);
+    offset(STICK_Y[i], OffsetY[i] + ValOutY[i]);
+  } while(i = (i + 1) % 2);
+  
+  do {
+    temp = (i / 2) + XB1_RX;
+    i_val = get_val(temp);
+    
+     if(i_val >= RX_dk_max[i]) set_val(temp, 100);
+     if(i_val <= RX_dk_max[i + 1]) set_val(temp, -100);
+  
+  }while((i + 2) % 8 == i );
+}
+int StickDZ[2],
+	STICK_X[2],
+	STICK_Y[2],
+	OffsetX[2],
+	OffsetY[2],
+	ValOutX[2], 
+	ValOutY[2],
+	ValPrevX[2],
+	ValPrevY[2],
+	XY[2],
+	ValInY[2],
+	ValInX[2],
+	o[4],
+	i;
+
+init {
+  STICK_X = 9;  STICK_X[1] = 11; 
+  STICK_Y = 10; STICK_Y[1] = 12; 
+  StickDZ = dk_max(abs(get_val(9)), abs(get_val(10))) + 5;
+  StickDZ[1]  = dk_max(abs(get_val(11)), abs(get_val(12))) + 5;
+}
+// Joystick outer edge adjustment
+int RX_dk_max=  80;
+int RX_dk_min= -80;
+int RY_dk_max=  80;
+int RY_dk_min= -80;
+int LX_dk_max=  80;
+int LX_dk_min= -80;
+int LY_dk_max=  80;
+int LY_dk_min= -80;
+
+int temp, i_val;
+
+function dk_min(a, b) { if(a<=b) return a; return b; }
+function dk_max(a, b) { if(a>=b) return a; return b; }
+function dk_clamp(v, lo, hi) { return dk_min(hi, dk_max(v, lo)); }
+function get_oval(io) { return o[io- 9]; }
+function offset(axis, offset_val) { 
+  set_val(axis, dk_clamp(offset_val * (100 - abs(get_oval(axis))) / 100 + get_oval(axis), -100, 100));
+  if(abs(get_val(axis)) < 20) set_val(axis, 0); 
+  return;
+}
+//////////////////JOYSTICK CALIBRATION END
+ 

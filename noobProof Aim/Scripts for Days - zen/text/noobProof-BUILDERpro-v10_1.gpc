@@ -1,0 +1,993 @@
+#pragma METAINFO("noobProof-BUILDERpro", 10, 0, "<noctwrnyA>")
+#include <titanone.gph>
+//CONSOLE (psn,xbox...)
+////////////////////////////////////MATCH IN-GAME///////////////////////////////////////////////
+//COMBAT LAYOUT
+define ADS     		= PS4_L2;
+define FIRE     	= PS4_R2;
+define NEXT_WEAPON 	= PS4_R1;
+define PREV_WEAPON 	= PS4_L1;
+
+//BUILD LAYOUT
+define BUILD     	= PS4_CIRCLE;
+define STAIRS  		= PS4_L2;
+define WALL    	 	= PS4_R2;
+define FLOOR  		= PS4_R1;
+define ROOF   		= PS4_L1;
+
+//EDIT LAYOUT
+define EDIT 		= PS4_CIRCLE; 
+define SELECT 		= PS4_R2; 
+define CONFIRM 		= PS4_CIRCLE;
+define RESET 		= PS4_R3;
+define INTERACT 	= PS4_SQUARE;
+define I_R_BUTTON	= PS4_LEFT;
+
+//MISCELLANEOUS
+define PICKAXE 		= PS4_TRIANGLE; 
+define JUMP     	= PS4_CROSS;
+define CROUCH   	= PS4_R3;
+define MAPVIEW_B	= PS4_TOUCH;
+//////////////////////////////////////////////////////
+///////////////////DO NOT CHANGE /////////////////////
+//Layout  
+define On  = TRUE;
+define Off = FALSE;
+
+define AIM_X 	= PS4_RX;
+define AIM_Y 	= PS4_RY;
+//////////////////////////////////////////////////////
+// aim variables
+// 1 = Circular, 2 = Tall Oval, 3 = Wide Oval, 4 = Spiral, 5 = Helix
+uint8 DNAM_Polar; 
+define ADS_DNAM_Polar = 1;
+define FIRE_DNAM_Polar = 5;
+
+
+define ADS_polar_Values = 34;
+define ADS_angle_Values = 34;
+
+define HIPFIRE_polar_Values = 38;
+define HIPFIRE_angle_Values = 38;
+
+	int Polar_Radius;
+	int Polar_Angle;
+	int Radius_Min   =  5;
+
+	int8 RX; 
+	int8 RY;
+	int angleee, 
+		CosAngle, 
+		SinAngle, 
+		OuterSpiral, 
+		ActualMagnitude, 
+		MaxMagnitude, 
+		InnerSpiral;
+		
+	bool SpiralPosition1;
+	bool SpiralPosition2;
+	int8 Position;
+	const char DNAMPolarArray[] = { 100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81, 80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7, 6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58, -60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95, -96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97, -96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61, -59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7, 9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81, 82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+
+int TRACKER = On;
+//TRACKERAIM
+define LOOKShake = 22;
+int _v=LOOKShake; 
+int _w=10;
+int _strafe = 13;
+	
+//-- FORTNITE Aim Assist --//
+int F_AimAssist;
+
+//------------------------------------------------------------------------------------------
+//Insta Edit
+int EDIT_BUTTON       = EDIT;	//Insta edit will allow you to confirm the edit quickly. Make sue the is set to your EDIT BUTTON
+int EDIT_BUTTON_HOLD =  /**/On;/**///Does your edit button has a hold delay? True means Yes -- False mean No
+int HOLD_TIME = /**/199/**/;  // Type the hold time which is shown in Fortnite settings, in hundereds because cronusmax already know its in MS. |0.10 = 100| |0.25 = 250|
+//INSTA RESET TOGGLE
+define INSTA_RESET = On;
+int RESET_EDIT_BUTTON = I_R_BUTTON;	//Insta Reset will allow you to confirm the edit reset quickly
+/////////////////////////////////////
+//BUILDIN SPEED
+define build_speed = 45; 
+define GenericBetweenButton_Wait = 40;
+
+////////////////////////////
+//ADS + R1 RapidFire
+int presses_per_sec    = 30; // 60 fps max: '30' | 30 fps max: '15' (some games limit to '10')
+
+//MODES
+int PickAxeMode;
+int PICKtap;
+
+int CombatMode;
+int COMBATtap;
+
+int BuildMode;
+int BUILDtap;
+int P_BUILD;
+int C_BUILD;
+
+int EditMode;
+int P_edit;
+int C_edit;
+int B_edit;
+int E_edit;
+
+int INVENT;
+int P_INVENT;
+int C_INVENT;
+int B_INVENT;
+int E_INVENT;
+int SIDEGRADE;
+
+int OPTION;
+int OPTIONStap;
+int OPTIONStap2;
+int P_OPTION;
+int C_OPTION;
+
+int MAPVIEW;
+int MAPtap;
+int P_MAP;
+int C_MAP;
+
+//GAMES
+int Fortnite;
+int F_MACRO1;
+//STUFF
+
+init { printf("KillSwitch - SCRIPT is OFF");}
+main {
+    
+     _ZENOLED();
+     _MODMENUTOGGLE();
+     
+//DEAD ZONE CORECTION\\
+   // DEAD ZONE CORECTION : LEFT STICK                                 
+   if(abs(get_val(PS4_LY)) < 10 && abs(get_val(PS4_LX)) < 10 || abs(get_val(PS4_LY)) < -10 && abs(get_val(PS4_LX)) < -10){        
+        set_val(PS4_LY, 0);                                                
+        set_val(PS4_LX, 0);                                                
+}
+   // DEAD ZONE CORECTION : RIGHT STICK                                 
+    if(abs(get_val(PS4_RY)) < 20 && abs(get_val(PS4_RX)) < 20 || abs(get_val(PS4_RY)) < -20 && abs(get_val(PS4_RX)) < -20){         
+        set_val(PS4_RY,0);                                                 
+        set_val(PS4_RX,0);                                                
+}
+	 
+     
+//IF FORTNITE 
+if(Fortnite) {
+	
+	_TrackinMODESv6();
+
+if(CombatMode){
+	if(TRACKER){
+ 		if(!get_val(PS4_SQUARE)){
+		if(!get_val(FIRE) || get_val(ADS) && get_val(FIRE)){
+		
+			combo_run(cSTICKY_AIM); 
+		
+	 	if(abs(get_val(AIM_Y)) > 25 || abs(get_val(AIM_X)) > 25 ){ 
+      		
+      		combo_stop(cSTICKY_AIM);
+      		}
+      		}
+		}//IF !SQUARE END
+}//IF TRACKER END
+
+	if(F_AimAssist){
+		
+		RX = (int8)get_val(PS4_RX);
+		RY = (int8)get_val(PS4_RY);
+		
+		ActualMagnitude = isqrt(pow(RX, 2) + pow(RY, 2));
+		MaxMagnitude    = (ActualMagnitude < 100);
+
+		angleee += Polar_Angle;
+		angleee = angleee % 360;
+		CosAngle = DNAMPolarArray[(angleee + 270) % 360];
+		SinAngle = DNAMPolarArray[angleee % 360];
+
+	if(!get_actual(PS4_R1) && get_actual(PS4_L2) || get_actual(PS4_L2) && get_actual(PS4_R2)) {
+		
+		DNAM_Polar = ADS_DNAM_Polar;
+		Polar_Radius = ADS_polar_Values;
+		Polar_Angle  = ADS_angle_Values;
+		if(ActualMagnitude < Polar_Radius)
+			{
+				SinAngle -= RY;
+				CosAngle -= RX;
+			}
+			else
+			{
+				SinAngle = (SinAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+			}
+		GetShapes(Polar_Radius);
+
+		}
+	//IF ADS || ADS + FIRE POLAR END
+/////////////////////////////////////////////
+	if(!get_actual(PS4_R1) && !get_actual(PS4_L2) && get_actual(PS4_R2)) {
+		
+		DNAM_Polar = FIRE_DNAM_Polar;
+		Polar_Radius = HIPFIRE_polar_Values;
+		Polar_Angle  = HIPFIRE_angle_Values;
+		if(ActualMagnitude < Polar_Radius)
+			{
+				SinAngle -= RY;
+				CosAngle -= RX;
+			}
+			else
+			{
+				SinAngle = (SinAngle * (200 - ((abs(RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+			}
+		GetShapes(Polar_Radius);
+		}
+	//IF FIRE POLAR END
+	
+}//IF F_AimAssist END
+
+if(F_MACRO1) {
+//SINGLE / RAPID FIRE * aka 100% accuracy * plus AIM Assist & AIM Abuse.
+	if(get_val(ADS)){
+		
+		if(get_val(NEXT_WEAPON)) {
+	
+			Polar_Radius = 32;
+			Polar_Angle  = 36;
+			set_val(NEXT_WEAPON, 0);
+			combo_run(cPerfectAccuracy);
+		}		
+		else if(event_press(NEXT_WEAPON) && get_ptime(NEXT_WEAPON) > 10){ 
+			
+				Polar_Radius = HIPFIRE_polar_Values;
+				Polar_Angle  = HIPFIRE_angle_Values;
+				set_val(NEXT_WEAPON, 0);
+				combo_stop(cPerfectAccuracy);
+				combo_run(cRapidFire);
+				}
+	}
+
+			//HEAVY RAMP   
+			if(get_val(PS4_L1) && event_press(INTERACT)) {	
+   		 
+   				set_val(INTERACT,0);
+   				combo_run(cHEAVYRAMP1);
+   	
+} 
+} //IF F_MACRO1 END
+
+}	//IF COMBATMODE END
+}//IF FORTNITE END
+
+} //IF MAIN END
+
+combo cSTICKY_AIM { 
+	set_val(AIM_Y,xy_val(AIM_Y, _v)); 
+	wait(_w);
+	set_val(AIM_X,xy_val(AIM_X, _v)); 
+	set_val(PS4_LX,xy_val(PS4_LX, _strafe));
+	wait(_w); 
+	set_val(AIM_Y,xy_val(AIM_Y, _v * -1)); 
+	wait(_w);
+	set_val(AIM_X,xy_val(AIM_X, _v * -1)); 
+	set_val(PS4_LX,xy_val(PS4_LX, _strafe * -1)); 
+	wait(_w);
+} 
+
+combo cRapidFire {
+    set_val(FIRE, 100);
+    wait(560 / presses_per_sec);
+    set_val(FIRE, 0);
+    wait(560 / presses_per_sec - get_rtime());
+    set_val(FIRE, 0);
+}
+
+combo cPerfectAccuracy {
+set_val(FIRE,100);
+wait(100);
+wait(50);	//was 250
+set_val(FIRE,100);
+}
+
+combo cAUTO_RESET {	
+	
+	set_val(EDIT, 100);
+   	wait(8);
+	set_val(EDIT, 0);
+   	wait(10);
+	set_val(RESET, 100);
+   	wait(20);
+    set_val(RESET, 0);
+    wait(build_speed);
+    set_val(CONFIRM, 100);
+    wait(20);
+    set_val(CONFIRM, 0);
+   	wait(build_speed);
+}
+
+combo cBUILDON {
+   	
+	set_val(PICKAXE, 100);//Pickaxe;
+	wait(40);
+	set_val(PICKAXE, 0);//Pickaxe;
+	wait(40);
+	set_val(BUILD, 100);//Buildmode;
+	wait(40);
+	set_val(BUILD, 0);//Buildmode;
+}
+combo cBUILDOFF {	
+   	
+   	set_val(PICKAXE, 100);//Pickaxe;
+	wait(40);
+	set_val(PICKAXE, 0);//Pickaxe;
+	wait(40);
+	set_val(PICKAXE, 100);//COMBAMODE;
+	wait(40);
+	set_val(PICKAXE, 0);
+	wait(40);
+}
+
+combo cHEAVYRAMP1 {
+	
+		call(cBUILDON);
+    set_val(STAIRS, 100);//Pull out STAIRS
+    wait(build_speed);
+    set_val(STAIRS, 100);//Place STAIRS
+    wait(build_speed);
+    set_val(AIM_Y, 100);
+    wait(build_speed);
+    set_val(FLOOR, 100);//Pull out FLOOR
+    wait(build_speed);
+    set_val(FLOOR, 100);//Place FLOOR
+    wait(build_speed);
+    set_val(AIM_Y, -100);
+    wait(build_speed);
+    set_val(WALL, 100);//Pull out WALLS
+    wait(build_speed);
+    set_val(WALL, 100);//Place WALLS
+    wait(build_speed);
+    set_val(ADS, 100);//Pull out STAIRS
+    wait(build_speed);
+    set_val(STAIRS, 100);//Place STAIRS
+    wait(build_speed);
+    	call(cBUILDOFF);
+}
+
+function _MODMENUTOGGLE () {
+//FORTNITE ADS+OPTIONS
+	if(get_val(ADS)) {
+		
+		if(get_val(PS4_OPTIONS)) {
+			set_val(PS4_OPTIONS, 0);
+			set_led(LED_1, 1);
+			set_led(LED_2, 0);
+			set_led(LED_3, 0);
+			set_led(LED_4, 0);	
+			Fortnite = On;
+			PickAxeMode = On;
+			PICKtap = On;
+			printf("PICKAXE-Mode");
+			}
+		//ADS+SHARE ((KILLSWITCH))
+		if(get_val(PS4_TOUCH)) {
+			set_val(PS4_TOUCH, 0);
+			Fortnite = Off;
+			PickAxeMode = Off;
+			PICKtap = Off;
+			CombatMode = Off;
+			COMBATtap = Off;
+			BuildMode = Off;
+			P_BUILD = Off;
+			C_BUILD = Off;
+			BUILDtap = Off;
+			EditMode = Off;
+			B_edit = Off;
+			C_edit = Off;
+			P_edit = Off;
+			E_edit = Off;
+			INVENT = Off;
+			P_INVENT = Off;
+			C_INVENT = Off;
+			B_INVENT = Off;
+			E_INVENT = Off;
+			OPTION = Off;
+			C_OPTION = Off;
+			P_OPTION = Off;
+			OPTIONStap = Off;
+			MAPVIEW = Off;
+			MAPtap = Off;
+			printf("KillSwitch - SCRIPT is OFF");
+			}
+}//IF ADS END
+}// Function _MODMENUTOGGLE END
+
+function _TrackinMODESv6() {
+	
+if(!MAPVIEW && !INVENT && !OPTION){
+///////////////////////////////////
+//// PICKAXE || COMBAT MENU //////////
+
+ 
+ 	if(PickAxeMode  && PICKtap && event_press(PICKAXE)){
+		
+		set_val(PICKAXE,0);
+		PickAxeMode = Off;
+		PICKtap = Off;
+		CombatMode = On;
+		COMBATtap = On;
+		printf("COMBAT-Mode");
+		}
+		else if(CombatMode && COMBATtap && event_press(PICKAXE)){
+		
+				set_val(PICKAXE,0);
+				CombatMode = Off;
+				COMBATtap = Off;
+				PickAxeMode = On;
+				PICKtap = On;
+				printf("PICKAXE-Mode");
+				}
+///////////////////////////////////////////////////////////////
+if(!BuildMode){
+if(PickAxeMode || CombatMode || EditMode) {
+ 
+	if(event_press(PREV_WEAPON) || event_press(NEXT_WEAPON)) {
+
+		PickAxeMode = Off;
+		PICKtap = Off;
+		CombatMode = On;
+		COMBATtap = On;
+		printf("COMBAT-Mode");
+		}   
+}//IF PickAxeMode || CombatMode || EditMode END
+}//IF !BuildMode END
+////////////////////////////////////////////////////////////////////
+
+//////////////////////////////
+//// BUILD MENU /////////
+if(PickAxeMode || CombatMode || BuildMode || EditMode) {
+ if(PickAxeMode && PICKtap && !P_BUILD && !BUILDtap && event_press(BUILD)){
+	
+	set_val(BUILD,0);
+	PickAxeMode = Off;
+	PICKtap = Off;
+	BuildMode = On;
+	BUILDtap = On;
+	P_BUILD = On;
+	 printf("BUILD-Mode");
+	}
+	else if(BuildMode && BUILDtap && P_BUILD && event_press(BUILD)) {
+	
+			set_val(BUILD,0);
+			BuildMode = Off;
+			BUILDtap = Off;
+			P_BUILD = Off;
+			PickAxeMode = On;
+			PICKtap = On;
+			printf("PICKAXE-Mode");
+			}
+if(CombatMode && COMBATtap && !C_BUILD && !BUILDtap && event_press(BUILD)){
+	
+	set_val(BUILD,0);
+	CombatMode = Off;
+	COMBATtap = Off;
+	BuildMode = On;
+	BUILDtap = On;
+	C_BUILD = On;
+	printf("BUILD-Mode");
+	}
+	else if(BuildMode && BUILDtap && C_BUILD && event_press(BUILD)){
+	
+			set_val(BUILD,0);
+			BuildMode = Off;
+			BUILDtap = Off;
+			C_BUILD = Off;
+			CombatMode = On;
+			COMBATtap = On;
+			printf("COMBAT-Mode");
+			}
+if(BuildMode){
+	
+	if(BUILDtap && P_BUILD && event_press(PICKAXE) || BuildMode && BUILDtap && C_BUILD && event_press(PICKAXE)){
+						
+	set_val(PICKAXE,0);
+	BuildMode = Off;
+	BUILDtap = Off;
+	C_BUILD = Off;
+	P_BUILD = Off;
+	PickAxeMode = On;
+	PICKtap = On;
+	printf("PICKAXE-Mode");
+	}
+		
+	if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME) {
+				
+	BuildMode = Off;
+	EditMode = On;
+	E_edit = On;
+	B_edit = On;
+	printf("EDIT-Mode");
+	}
+}
+}
+//BUILD MENU END
+///////////////////////////////////////////////////
+
+/////////////////////////////////
+//// EDIT MENU /////////////
+if(EDIT_BUTTON_HOLD){
+
+if(PickAxeMode && get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME) {
+	
+	EditMode = On;
+	P_edit = On;
+	PickAxeMode = Off;
+	PICKtap = Off;
+	printf("EDIT-Mode");
+	}
+	else if(CombatMode && COMBATtap && get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME) {
+			
+			EditMode = On;
+			C_edit = On;
+			CombatMode = Off;
+			COMBATtap = Off;
+			printf("EDIT-Mode");
+			}
+			else if(BuildMode && get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME) {
+					
+					EditMode = On;
+					B_edit = On;
+					BuildMode = Off;
+					BUILDtap = Off;
+					printf("EDIT-Mode");
+					}
+if(EditMode){
+		
+		if(get_val(EDIT_BUTTON) && get_ptime(EDIT_BUTTON) > HOLD_TIME) {
+					
+						EditMode = On;
+						E_edit = On;
+						printf("EDIT-Mode");
+						}
+	
+		else if(B_edit){
+
+		if(event_release(SELECT) || event_press(BUILD)) { 
+			
+			EditMode = Off;
+			E_edit = Off;
+			B_edit = Off;
+			BuildMode = On;
+			BUILDtap = On;
+			printf("BUILD-Mode");
+	
+			}
+}//IF B_EDIT ON END
+			else if(C_edit){
+
+					if (event_release(SELECT) || event_press(BUILD)) { 
+						
+						EditMode = Off;
+						E_edit = Off;
+						C_edit = Off;
+						CombatMode = On;
+						COMBATtap = On;
+						printf("COMBAT-Mode");
+						}
+}//IF C_EDIT ON END
+						else if(P_edit){
+							
+								if(event_release(SELECT) || event_press(BUILD)) { 
+									
+									EditMode = Off;
+									E_edit = Off;
+									P_edit = Off;
+									PickAxeMode = On;
+									PICKtap = On;
+									printf("PICKAXE-Mode");
+									}
+}//IF P_EDIT ON END
+if(P_edit || C_edit || B_edit){
+
+ if(event_press(PICKAXE)) { 
+	
+	EditMode = Off;
+	E_edit = Off;
+	P_edit = Off;
+	C_edit = Off;
+	B_edit = Off;
+	PickAxeMode = On;
+	PICKtap = On;
+	printf("PICKAXE-Mode");
+	}
+			//INSTA-RESET
+	else if(INSTA_RESET && event_press(RESET_EDIT_BUTTON)) {
+		
+		combo_run(cAUTO_RESET);		
+		
+		if(P_edit && combo_running(cAUTO_RESET)) {
+				
+			EditMode = Off;
+			E_edit = Off;
+			P_edit = Off;
+			PickAxeMode = On;
+			PICKtap = On;
+			printf("PICKAXE-Mode");
+			}
+			else if(C_edit && combo_running(cAUTO_RESET)){
+				
+					EditMode = Off;
+					E_edit = Off;
+					C_edit = Off;
+					CombatMode = On;
+					COMBATtap = On;
+					printf("COMBAT-Mode");
+					}
+					else if(B_edit && combo_running(cAUTO_RESET)){
+				
+							EditMode = Off;
+							E_edit = Off;
+							B_edit = Off;
+							BuildMode = On;
+							BUILDtap = On;
+							printf("BUILD-Mode");
+							}
+}//IF INSTA RESET END
+
+}//IF P_edit || C_edit || B_edit END
+}//IF EDITMODE END
+}//IF EDIT_BUTTON_HOLD END
+//EDIT MENU END 
+
+}//IF !MAPVIEW && !INVENT && !OPTION END
+
+//// MAPVIEW MENU ////////////////////
+if(PickAxeMode && !P_MAP && !MAPtap && event_press(MAPVIEW_B)){
+	
+	PickAxeMode = Off;
+	PICKtap = Off;
+	MAPVIEW = On;
+    MAPtap = On;
+    P_MAP = On;
+	printf("MAPVIEW-Mode");
+    }
+    else if(MAPVIEW && MAPtap && P_MAP && event_press(MAPVIEW_B)){
+     		
+     		MAPVIEW = Off;
+		    MAPtap = Off;
+		    P_MAP = Off;
+		    PickAxeMode = On;
+     		PICKtap = On;
+			printf("PICKAXE-Mode");
+     		}
+	     	else if(MAPVIEW && P_MAP && event_press(BUILD)){
+		     		
+		     		MAPVIEW = Off;
+				    MAPtap = Off;
+				    P_MAP = Off;
+				    BUILDtap = Off;
+					PickAxeMode = On;
+		     		PICKtap = On;
+					printf("PICKAXE-Mode");
+		     		}
+	if(CombatMode && !C_MAP && !MAPtap && event_press(MAPVIEW_B)){
+     	
+     	CombatMode = Off;
+     	COMBATtap = Off;
+     	MAPVIEW = On;
+     	MAPtap = On;
+     	C_MAP = On;
+		printf("MAPVIEW-Mode");
+     	}
+     	else if(MAPVIEW && C_MAP && MAPtap && event_press(MAPVIEW_B)){
+     			MAPVIEW = Off;
+		     	MAPtap = Off;
+		     	C_MAP = Off;
+		     	CombatMode = On;
+     			COMBATtap = On;
+				printf("COMBAT-Mode");
+     			}
+	     		else if(MAPVIEW && C_MAP && event_press(BUILD)){
+		     			MAPVIEW = Off;
+				     	MAPtap = Off;
+				     	C_MAP = Off;
+				     	CombatMode = On;
+		     			COMBATtap = On;
+						printf("COMBAT-Mode");
+		     			}
+ // MAPVIEW MENU END
+///////////////////////////
+
+//////////////////////////////////////////
+/////////////INVENTORY MENU////////////
+if(!EditMode && !BuildMode && !OPTION && !get_val(PS4_CROSS)){
+		
+	if(PickAxeMode && !P_INVENT && event_press(PS4_UP)){
+		
+		PickAxeMode = Off;
+		PICKtap = Off;
+		INVENT = On;
+     	P_INVENT = On;
+		SIDEGRADE = Off;
+		printf("INVENTORY-Mode");
+     	}
+     	else if(INVENT && P_INVENT && event_press(BUILD)){
+     			
+     			INVENT = Off;
+     			P_INVENT = Off;
+     			PickAxeMode = On;
+     			PICKtap = On;
+				printf("PICKAXE-Mode");
+     			}
+	if(CombatMode && COMBATtap && !C_INVENT && event_press(PS4_UP)){
+     	
+     	CombatMode = Off;
+     	COMBATtap = Off;
+     	INVENT = On;
+     	C_INVENT = On;
+		SIDEGRADE = Off;
+		printf("INVENTORY-Mode");
+     	}
+     	else if(INVENT && C_INVENT && event_press(BUILD)){
+     			
+     			INVENT = Off;
+     			C_INVENT = Off;
+     			CombatMode = On;
+     			COMBATtap = On;
+				printf("COMBAT-Mode");
+     			}
+		if(INVENT && event_release(PS4_R1)){
+			SIDEGRADE = On;
+			INVENT = On;
+			}
+			if(SIDEGRADE){
+				if(INVENT && C_INVENT || INVENT && P_INVENT){
+					if(event_press(PS4_SQUARE)){
+						SIDEGRADE = Off;
+						INVENT = Off;
+						P_INVENT = Off;
+						C_INVENT = Off;
+						CombatMode = On;
+						COMBATtap = On;
+						printf("COMBAT-Mode");
+						}
+					}
+				}
+	
+} //!PickAxeMode && !EditMode && !BuildMode && !OPTION && !CROSS END
+////////////////////////////////////////////////////
+
+//////////////////////////////////////////
+///////////// OPTION MENU ////////////
+if(!get_val(ADS)){
+		
+	if(PickAxeMode && PICKtap && !P_OPTION && !OPTIONStap2 && event_press(PS4_OPTIONS)){
+		
+     	PickAxeMode = Off;
+     	PICKtap = Off;
+     	P_OPTION = On;
+     	OPTION = On;
+     	OPTIONStap2 = On;
+     	OPTIONStap = Off;
+		printf("OPTIONS-Mode");
+	    }
+     	else if(OPTION && OPTIONStap2 && P_OPTION && event_press(PS4_OPTIONS) || 
+     				OPTION && OPTIONStap && P_OPTION && event_press(PS4_OPTIONS) || 
+     				OPTION && !OPTIONStap2 && P_OPTION && event_press(BUILD)) {
+     			
+     			OPTION = Off;
+	     		OPTIONStap = Off;
+	     		OPTIONStap2 = Off;
+	     		P_OPTION = Off;
+	     		PickAxeMode = On;
+	     		PICKtap = On;
+				printf("PICKAXE-Mode");
+	     		}
+	     		else if(OPTION && OPTIONStap2 && P_OPTION && event_press(BUILD) ||
+	     				OPTION && OPTIONStap2 && P_OPTION && event_press(PS4_CROSS)) {
+	
+						OPTIONStap2 = Off;
+				     	OPTION = On;
+				     	OPTIONStap = On;
+				     	P_OPTION = On;
+						printf("OPTIONS-Mode");
+				     	}
+	if(CombatMode && COMBATtap && !C_OPTION && !OPTIONStap2 && event_press(PS4_OPTIONS)){
+     	
+     	CombatMode = Off;
+     	COMBATtap = Off;
+     	C_OPTION = On;
+     	OPTION = On;
+     	OPTIONStap2 = On;
+		printf("OPTIONS-Mode");
+     	}
+     	else if(OPTION && OPTIONStap2 && C_OPTION && event_press(PS4_OPTIONS) || 
+     				OPTION && OPTIONStap && C_OPTION && event_press(PS4_OPTIONS) || 
+     				OPTION && !OPTIONStap2 && C_OPTION && event_press(BUILD)) {
+     			
+     			OPTION = Off;
+	     		OPTIONStap = Off;
+	     		OPTIONStap2 = Off;
+	     		C_OPTION = Off;
+	     		CombatMode = On;
+	     		COMBATtap = On;
+				printf("COMBAT-Mode");
+	     		}
+				else if(OPTION && OPTIONStap2 && C_OPTION && event_press(BUILD) ||
+						OPTION && OPTIONStap2 && C_OPTION && event_press(PS4_CROSS)) {
+		
+					OPTION = On;
+			     	OPTIONStap = On;
+			     	OPTIONStap2 = Off;
+			     	C_OPTION = On;
+					printf("OPTIONS-Mode");
+			     	}
+		
+} //!ADS END
+   
+}//FUNCTION TRACKINMODES END
+
+function _ZENOLED (){
+
+//PICKAXEMODE ON
+if(PickAxeMode == On) {
+PickAxeMode = On;
+PICKtap = On;
+F_AimAssist = Off;
+F_MACRO1 	= On;
+set_led(LED_1, 1);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+}
+//COMBATMODE
+else if(CombatMode == On) {
+CombatMode = On;
+COMBATtap = On;
+F_AimAssist = On;
+F_MACRO1 	= On;
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 1);
+set_led(LED_4, 0);
+}
+//BUILD ON
+else if(C_BUILD || P_BUILD) {
+BuildMode = On;
+BUILDtap = On;
+F_AimAssist = Off;
+F_MACRO1 	= Off;
+set_led(LED_1, 0);
+set_led(LED_2, 1);
+set_led(LED_3, 1);
+set_led(LED_4, 0);
+}
+//EDITMODE ON
+else if(B_edit || C_edit || P_edit || E_edit) {
+EditMode = On;
+F_AimAssist = Off;
+F_MACRO1 	= Off;
+set_led(LED_1, 0);
+set_led(LED_2, 1);
+set_led(LED_3, 1);
+set_led(LED_4, 0);
+}
+//INVENT ON
+else if(P_INVENT || C_INVENT || B_INVENT || E_INVENT) {
+INVENT = On;
+F_AimAssist = Off;
+F_MACRO1 	= Off;
+set_led(LED_1, 0);
+set_led(LED_2, 1);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+}
+//MAPVIEW ON
+else if(P_MAP || C_MAP) {
+MAPVIEW = On;
+MAPtap = On;
+F_AimAssist = Off;
+F_MACRO1 	= Off;
+set_led(LED_1, 0);
+set_led(LED_2, 1);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+}
+//OPTIONS ON
+else if(C_OPTION || P_OPTION) {
+OPTION = On;
+OPTIONStap = On;
+F_AimAssist = Off;
+F_MACRO1 	= Off;
+set_led(LED_1, 0);
+set_led(LED_2, 1);
+set_led(LED_3, 0);
+set_led(LED_4, 0);	
+}
+
+if(Fortnite == Off) {
+F_AimAssist = Off;
+F_MACRO1 	= Off;
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);	
+} //IF FORTNITE IS OFF END (KILLSWITCH)
+}
+
+function xy_val(f_axis, f_val) { 
+	
+	if(abs(get_val(f_axis)) < 25) 
+	
+		return f_val; 
+		return get_val(f_axis); 
+} 
+
+void GetShapes(int8 f_var) {
+    if(!SpiralPosition1)
+	{
+		InnerSpiral -= 1;
+		if(InnerSpiral < Radius_Min)
+			SpiralPosition1 = TRUE;
+	}
+	else
+	{
+	    InnerSpiral += 1;
+		if(InnerSpiral > f_var)
+			SpiralPosition1 = FALSE;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+		if(OuterSpiral < Radius_Min)
+			SpiralPosition2 = TRUE;
+	}
+	else
+	{
+		OuterSpiral += 1;
+		if(OuterSpiral >  f_var)
+			SpiralPosition2 = FALSE;
+	}
+	if(DNAM_Polar == 1)
+	{
+        RY = (int8)(get_val(PS4_RY))  + ( (SinAngle * f_var) ) / 100;
+        RX = (int8)(get_val(PS4_RX))  + ( (CosAngle * f_var) ) / 100;
+	}
+	if(DNAM_Polar == 2)
+	{
+        RY = (int8)(get_val(PS4_RY))  + ( (SinAngle * f_var) ) / 100;
+        RX = (int8)(get_val(PS4_RX))  + ( (CosAngle * Radius_Min) ) / 100;
+	}
+	if(DNAM_Polar == 3)
+	{
+        RX = (int8)(get_val(PS4_RX))  + ( (CosAngle * f_var) ) / 100;
+        RY = (int8)(get_val(PS4_RY))  + ( (SinAngle * Radius_Min) ) / 100;
+	}
+	if(DNAM_Polar == 4)
+	{
+        RY = (int8)(get_val(PS4_RY))  + ( (SinAngle * InnerSpiral) ) / 100;
+        RX = (int8)(get_val(PS4_RX))  + ( (CosAngle * OuterSpiral) ) / 100;
+	}
+    if(DNAM_Polar == 5)
+	{
+		if(Position == 0 || Position == 1)
+    	{
+		    RX = (int8)(get_val(PS4_RX))  + ( (CosAngle * f_var) ) / 100;
+		}
+	    if(Position == 2 || Position == 3)
+		{
+		    RY = (int8)(get_val(PS4_RY))  + ( (SinAngle * f_var) ) / 100;
+		}
+			Position++;
+
+		if(Position == 4)
+		{
+			Position = 0;
+		}
+    }
+    set_val(PS4_RX, RX);
+	set_val(PS4_RY, RY);
+}

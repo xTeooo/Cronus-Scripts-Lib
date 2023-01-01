@@ -1,0 +1,161 @@
+// GPC Online Library
+// rainbow_six_siege_gpc._fastlean,_aim_assist,_,_rapidfire,_crouchspam..gpc
+
+// GPC Online Library
+                                             
+ 
+//DEFINITIONS
+define ANTI_RECOIL = 3;       // change this value to compensate vertical recoil (0 - 100)
+define ANTI_RECOIL_LEFT = 1;  // change this value to compensate to the left (0 - 100)
+define ANTI_RECOIL_RIGHT = 1; // change this value to compensate to the right (0 - 100)
+ 
+//INITIALIZATION 
+int anti_recoil;          
+int anti_recoil_left;    
+int anti_recoil_right;                 
+int value				 =  33;
+int value2				 = -33;
+int delay				 =  11;                   
+int crouch_shot_onoff 	 =  FALSE; 
+int rf 		   	 		 =  FALSE;
+int rf2					 =  FALSE;
+int rf3					 = 	FALSE;
+int Aim_BTN;
+int Shoot_BTN;
+int RX;
+int RY;
+int Crouch_BTN;
+int LeanLeft;
+int LeanRight;
+int Switch;
+int Left;
+int Up;
+init { //-BUTTON LAYOUT-\\  
+if(get_console() == PIO_PS4){ Aim_BTN = PS4_L2; Shoot_BTN = PS4_R2; RX = PS4_RX; RY = PS4_RY; Crouch_BTN = PS4_CIRCLE; LeanLeft = PS4_L3; LeanRight = PS4_R3; Switch = PS4_TRIANGLE; Left = PS4_LEFT; Up = PS4_UP
+   }else{
+   Aim_BTN = XB1_LT; Shoot_BTN = XB1_RT; RX = XB1_RX; RY = XB1_RY; Crouch_BTN = XB1_B; LeanLeft = XB1_LS; LeanRight = XB1_RS; Switch = XB1_Y; Left = XB1_LEFT; Up = XB1_UP
+   }
+}  
+
+//MAIN SCRIPT
+main {
+ 
+//AimAssist
+	if(get_val(Shoot_BTN) && get_val(Aim_BTN)) {
+	combo_run(RT_C);
+	}
+ 
+	if(get_val(RX) < value2 || get_val(RX) > value || get_val(RY) < value2 || get_val(RY) > value 
+	|| get_val(RX) < value2 || get_val(RX) > value || get_val(RY) < value2 || get_val(RY) > value) {
+	combo_stop(RT_C);
+	}
+ 
+//FastLean        
+    if (get_val(Aim_BTN) && event_press(LeanLeft)) combo_run(LeanLeft);
+    if(combo_running(LeanLeft)) {set_val(LeanLeft, 0);}
+ 
+ 
+    if (get_val(Aim_BTN) && event_press(LeanRight)) combo_run(LeanRight);
+    if(combo_running(LeanRight)) set_val(LeanRight, 0);
+ 
+ 
+//RapidFire
+	if(event_press(Left)) {   // Rapid Fire Secondary
+  		rf  = FALSE;
+ 	 	rf2 = TRUE;
+ 	 	rf3 = FALSE;
+}
+ 	if(event_press(Up)) {   // Rapid Fire Both
+  		rf = TRUE;
+  		rf2 = FALSE;
+}
+
+	if (rf) {
+		if (get_val(Shoot_BTN))
+			combo_run(rapidfire);
+}
+	if (rf2) {
+		if (event_press(Switch))
+		rf3 = !rf3
+}	
+	if (rf3) {
+		if (get_val(Shoot_BTN))
+			combo_run(rapidfire);
+}
+  
+  		
+//CrouchShot
+ 	if (get_val(Aim_BTN) && event_press(Left)) {
+		crouch_shot_onoff = !crouch_shot_onoff
+ 		}
+ 
+ 	if (crouch_shot_onoff) {
+        if (get_val(Shoot_BTN))
+            combo_run(Crouch_Shot);
+        }  
+//AntiRecoil
+    if (get_val(Shoot_BTN)) combo_run(Anti_Recoil);
+}    
+
+//COMBOS
+ 
+ 
+combo Crouch_Shot { //CrouchShot
+    set_val(Crouch_BTN, 100);
+    wait(80);
+    wait(60); 
+}
+ 
+combo LeanRight {//FastLeanRight
+    set_val(LeanLeft, 100);
+    wait(40);
+    set_val(LeanRight, 100);
+    set_val(LeanLeft, 100);
+    wait(90);
+    set_val(LeanRight, 100);
+    set_val(LeanLeft, 0);
+    wait(10);
+    set_val(LeanRight, 0);
+}
+ 
+combo LeanLeft {//FastLeanLeft
+    set_val(LeanRight, 100);
+    wait(40);
+    set_val(LeanLeft, 100);
+    set_val(LeanRight, 100);
+    wait(90);
+    set_val(LeanLeft, 100);
+    set_val(LeanRight, 0);
+    wait(10);
+    set_val(LeanLeft, 0);
+}
+ 
+combo rapidfire {   // Rapid Fire
+ 	set_val(Shoot_BTN,100);
+	wait(17);
+ 	set_val(Shoot_BTN,0);
+ 	wait(17); 
+}
+ 
+combo RT_C {
+       set_val(RY, -32);              
+       wait(delay)
+       set_val(RX, 32);
+       set_val(RY, 22);
+       wait(delay) 
+       set_val(RY, 22);
+       wait(delay)                  
+       set_val(RX, -32);
+       set_val(RY, 22);
+       wait(delay)
+}
+
+combo Anti_Recoil { //Don't touch this combo pls
+    anti_recoil = get_val(10) + ANTI_RECOIL;
+    if(anti_recoil > 100) anti_recoil = 100;set_val(10, anti_recoil);
+    anti_recoil_left = get_val(9) -ANTI_RECOIL_LEFT;
+    if(anti_recoil_left > 100) anti_recoil_left = 100;set_val(9, anti_recoil_left);
+    anti_recoil_right = get_val(9) +ANTI_RECOIL_RIGHT;
+    if(anti_recoil_right > 100) anti_recoil_right = 100;set_val(9, anti_recoil_right);
+}
+

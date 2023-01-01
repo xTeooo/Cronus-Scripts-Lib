@@ -1,0 +1,79 @@
+// DoGz TimeZ Aim Assist
+
+define Fire = PS4_R2; // Fire In Game
+define Ads  = PS4_L2; // Ads In Game
+define AimY = PS4_RY; // Vertical Aim Axis In Game
+define AimX = PS4_RX; // Horizontal Aim Axis In Game
+
+int AAT,Axis;
+
+define AimAssist    = TRUE;  // Aim Assist [ON / OFF]
+define AimAssistHip = TRUE;  // Operate on Fire Or Ads [If FALSE It Will Only Run On ADS]
+define AATimed      = FALSE; // Aim Assist Will Cut Out After 2 seconds By Default (Change Below)
+
+define Power  = 2;    // DoGz TimeZ Aim Assist Power [1,2,3,4,5,6] ==> (>> 1 = 5 , 2 = 10 , 3 = 15  , 4 = 20 , 5 = 25 , 6 = 30 <<) 
+define AATime = 2000; // DoGz TimeZ Aim Assist Will Cut Out After Time [1000] = 1 Second, [2000] = 2 Second
+
+main {	
+	
+	if (AimAssist) {
+		
+		if (AATimed) {
+		
+			if (get_ival(Ads) && get_ptime(Ads) <= AATime || AimAssistHip && get_ival(Fire) && get_ptime(Fire) <= AATime) {
+	    	
+	    		AimAssist();
+	    	}
+	    	
+	    } else if (get_ival(Ads)|| AimAssistHip && get_ival(Fire)) {
+	    	
+	    		AimAssist();
+	    }
+	    
+	    if (!get_ival(Ads) && !get_ival(Fire)) {
+	    
+	    	AAT = 0;
+	    	Axis = 0;
+	    }
+	}
+}
+
+function AimAssist() {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+    return; 
+}

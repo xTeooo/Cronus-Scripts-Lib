@@ -1,0 +1,869 @@
+// GPC Online Library
+// star_wars_battlefront_2_-_all-in-one_script_-_xbox_one_/_ps4.gpc
+
+//              _______.___________.    ___      .______         ____    __    ____  ___      .______          _______.                
+//             /       |           |   /   \     |   _  \        \   \  /  \  /   / /   \     |   _  \        /       |                
+//            |   (----`---|  |----`  /  ^  \    |  |_)  |        \   \/    \/   / /  ^  \    |  |_)  |      |   (----`                
+//             \   \       |  |      /  /_\  \   |      /          \            / /  /_\  \   |      /        \   \                    
+//         .----)   |      |  |     /  _____  \  |  |\  \----.      \    /\    / /  _____  \  |  |\  \----.----)   |                   
+//         |_______/       |__|    /__/     \__\ | _| `._____|       \__/  \__/ /__/     \__\ | _| `._____|_______/                    
+//                                                                                                                                     
+//   .______        ___   .___________.___________. __       _______  _______ .______        ______   .__   __. .___________.    ___   
+//   |   _  \      /   \  |           |           ||  |     |   ____||   ____||   _  \      /  __  \  |  \ |  | |           |   |__ \  
+//   |  |_)  |    /  ^  \ `---|  |----`---|  |----`|  |     |  |__   |  |__   |  |_)  |    |  |  |  | |   \|  | `---|  |----`      ) | 
+//   |   _  <    /  /_\  \    |  |        |  |     |  |     |   __|  |   __|  |      /     |  |  |  | |  . `  |     |  |          / /  
+//   |  |_)  |  /  _____  \   |  |        |  |     |  `----.|  |____ |  |     |  |\  \----.|  `--'  | |  |\   |     |  |         / /_  
+//   |______/  /__/     \__\  |__|        |__|     |_______||_______||__|     | _| `._____| \______/  |__| \__|     |__|        |____| 
+//            
+//-------------------------------------------------------------------------------------------
+//  FEATURES:
+//            - ADVANCED ANTI-RECOIL (adjustable on the fly)
+//            - AIM-ABUSE (quickly scopes in and out to trigger the InGame "targeted assistance" function)
+//            - AIM-ASSIST (V1 crosshair moves in a rectangle, V2 crosshair moves left-right, V3 crosshair moves in V formation)
+//            - RAPID-FIRE (adjustable on the fly)
+//            - RAPID-BURST-FIRE (adjustable on the fly, rapid and burst fire in one mode)
+//            - BURST-FIRE (adjustable on the fly)
+//            - AUTO SPRINT
+//            - EASY MIDDLE ABILITY (use the middle ability with only 1 button)
+//            - EASY ROLL (adjustable on the fly, single press for roll or double press for roll with ability)
+//            - ABILITY AFTER ROLL (adjustable on the fly, you can decide which ability to use after roll)
+//            - HAIR TRIGGERS
+//            - R-AXIS DEADZONE
+//            - AUTO ADS (automatically activates ADS when shooting)
+//            - BLOCK MOD (adjustable on the fly)
+//            - RUMBLE-FEEDBACK (you can set which motors to use)
+//            - LOAD / CHANGE SLOT (change to other slots via simple button press)
+//            - SETTING INFORMATIONS VIA TRACE (only for fire and recoil)
+//
+//-------------------------------------------------------------------------------------------
+//  Game:       Star Wars Battlefront 2
+//  Version:    2.21
+//  Platform:   Xbox One / Playstation 4
+//  Controller: XB1 (elite) controller / DualShock 4 (both with Standard Layout)
+//  Author:     SPEGELI
+//  Support:    http://cronusmax.com/forums/showthread.php/189410-Star-Wars-Battlefront-2-All-in-One-Script-Xbox-One-PS4
+//-------------------------------------------------------------------------------------------
+//
+// LED INDICATIONS:
+//              Green   = Rapid(-Burst)-Fire or Burst-Fire Enabled / Anti-Recoil Enabled
+//              Pink    = Rapid(-Burst)-Fire or Burst-Fire Enabled / Anti-Recoil Disabled
+//              Yellow  = Rapid(-Burst)-Fire or Burst-Fire Disabled / Anti-Recoil Enabled
+//              Red     = Rapid(-Burst)-Fire or Burst-Fire Disabled / Anti-Recoil Disabled
+//
+// TRACE INFOS:
+//              TRACE_1 = _aimMode (Disabled, Auto ADS, AIM-Abuse, AIM-Assist)
+//
+//              TRACE_2 = _rapidFireRate (only when Rapid-Fire or Rapid-Burst enabled)
+//              TRACE_3 = _rapidBurstRounds (only when Rapid-Burst enabled)
+//   
+//              TRACE_2 = _burstHoldTime (only when Burst-Fire enabled)
+//              TRACE_3 = _burstRestTime (only when Burst-Fire enabled)
+//
+//              TRACE_5 = _antiRecoilVertical
+//              TRACE_6 = _antiRecoilHorizontal
+//
+//--------------------------------------------------------------------------------------------------------//
+//
+//==============================================================================
+// BUTTON DEFINITIONS
+//------------------------------------------------------------------------------
+/*   Default Layout should be fine for mouse & keyboard, Scuf or XB1 Elite controllers
+ 
+     - Do NOT rename any of the define aliases (e.g HOME, SHARE etc) or the script will break
+       All aliases work for all supported platforms
+ 
+     - Do NOT edit the red values below, unless you REALLY know what you're doing, for example
+       remapping ADS and FIRE from L2 / R2 to L1 / R1
+       
+*/
+//DEFAULT BUTTON DEFINITIONS (Change the buttons here if needed to avoid breaking anything)
+define FIRE                 = 4             // PS4_R2;       // XB1_RT;               =   4    //
+define ADS                  = 7             // PS4_L2;       // XB1_LT;               =   7    //
+define SPRINT               = 8             // PS4_L3;       // XB1_LS;               =   8    //
+define JUMP                 = 19            // PS4_CROSS;    // XB1_A;                =   19   //
+define CROUCH               = 18            // PS4_CIRCLE;   // XB1_B;                =   18   //
+define MELEE                = 5             // PS4_R3;       // XB1_RS;               =   5    //
+define DPAD_UP              = 13            // PS4_UP;       // XB1_UP;               =   13   //
+define DPAD_RIGHT           = 16            // PS4_RIGHT;    // XB1_RIGHT;            =   16   //       DO NOT UNCOMMENT THE DEFINES IN THIS SECTION
+define DPAD_DOWN            = 14            // PS4_DOWN;     // XB1_DOWN;             =   14   //     THEY HAVE BEEN REPLACED BY VARIABLES TO HAVE ONE
+define DPAD_LEFT            = 15            // PS4_LEFT;     // XB1_LEFT;             =   15   //         SCRIPT AVAILABLE FOR ALL BUTTON LAYOUTS
+define RX_AXIS              = 9             // PS4_RX;       // XB1_RX;  // RS H AXIS =   9    //
+define RY_AXIS              = 10            // PS4_RY;       // XB1_RY;  // RS V AXIS =   10   //
+define LX_AXIS              = 11            // PS4_LX;       // XB1_LX;  // LS H AXIS =   11   //
+define LY_AXIS              = 12            // PS4_LY;       // XB1_LY;  // LS V AXIS =   12   //
+define LB_L1                = 6             // PS4_L1;       // XB1_LB;               =   6    //
+define RB_R1                = 3             // PS4_R1;       // XB1_RB;               =   3    //
+
+define LOCK_SETTINGS_BTN    = 20;           // PS4_SQUARE;   // XB1_X;                =   20   //
+define TOGGLE_BTN           = 20;           // PS4_SQUARE;   // XB1_X;                =   20   //
+define ADJUST_BTN           = 17;           // PS4_TRIANGLE; // XB1_Y;                =   17   //
+
+//define CONSOLE            = 0             // PS4_PS;       // XB1_XBOX;             =   0    //
+//define START              = 2             // PS4_OPTIONS;  // XB1_MENU;             =   2    //
+//define SELECT             = 1             // PS4_SHARE;    // XB1_VIEW;             =   1    //
+//define TOUCH              = 27            // PS4_TOUCH;    // XB1_PL2;              =   27   //
+//define RELOAD_PDL         = 26            // PS4_GYROZ;    // XB1_PL1; // TOP LEFT  =   26   //
+//define CROUCH_PDL         = 27            // PS4_TOUCH;    // XB1_PL2; // BTM LEFT  =   27   //
+//define MELEE_PDL          = 24            // PS4_GYROX;    // XB1_PR1; // TOP RIGHT =   24   //
+//define OTHER_PDL          = 25            // PS4_GYROY;    // XB1_PR2; // BTM RIGHT =   25   //
+//define UNDEFINED          = 35
+
+define EASY_MIDDLE_ABILITY_BTN  = XB1_PL1;      // Default: XB1_PL1
+
+// INVERTED VIEW
+define AIM_INVERTED             = FALSE; // Set to TRUE if using INVERTED aim // Set to FALSE if using DEFAULT aim
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |F|U|N|C|T|I|O|N| |D|E|F|I|N|I|T|I|O|N|S| |/| |S|E|T|T|I|N|G|S| | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+// RUMBLE-FEEDBACK
+define USE_RUMBLE_FEEDBACK         = TRUE;      // Use Function
+define RUMBLE_POSITIVE             = RUMBLE_A;  // Rumble used when function Actived / Value Increased <- Rumbles once
+define RUMBLE_NEGATIVE             = RUMBLE_B;  // Rumble used when function Deactivated / Value Decreased <- Rumbles twice
+// AVAILABLE RUMBLES: 
+// RUMBLE_A  - Strong Rumble Motor (Usually the Left Motor)
+// RUMBLE_B  - Weak Rumble Motor (Usually the Right Motor)
+// RUMBLE_RT - Right Trigger Motor (Xbox One controllers only)
+// RUMBLE_LT - Left Trigger Motor (Xbox One controllers only)
+                                            
+//------------------------------------------------------------------------------
+// HAIR-TRIGGER
+define USE_HAIR_TRIGGER            = TRUE;  // Use Function
+
+//------------------------------------------------------------------------------
+// R-AXIS DEADZONE
+define USE_R_AXIS_DEADZONE         = TRUE;  // Use Function
+define DEADZONE_POINT              = 8;     // Ignores Input below this value
+
+//------------------------------------------------------------------------------
+// AUTO SPRINT
+// Use "Hold" on InGame Settings
+define USE_AUTO_SPRINT             = TRUE;  // Use Function
+define SPRINT_SENS                 = 25;   // Sensitiv which should trigger the sprint
+
+//------------------------------------------------------------------------------
+// LOAD / CHANGE SLOT
+define USE_LOAD_SLOT               = FALSE;  // Use Function
+define SLOT_LEFT                   = 1  // The Slot number to which should be changed - Load / Change to the settled Slot by doing Hold "JUMP" + Quick Double press "DPAD_LEFT"
+define SLOT_UP                     = 2  // The Slot number to which should be changed - Load / Change to the settled Slot by doing Hold "JUMP" + Quick Double press "DPAD_UP"
+define SLOT_RIGHT                  = 3  // The Slot number to which should be changed - Load / Change to the settled Slot by doing Hold "JUMP" + Quick Double press "DPAD_RIGHT"
+define SLOT_DOWN                   = 4  // The Slot number to which should be changed - Load / Change to the settled Slot by doing Hold "JUMP" + Quick Double press "DPAD_DOWN"
+// This allows you to use this Script in different Slots with different Settings and switch easily between them
+
+//------------------------------------------------------------------------------------------- 
+// BLOCK MOD
+int SettingsLocked                 = TRUE;  // Setting Options locked by default (when loading the Slot)
+// This can be toggled by doing a Quick Double press "LOCK_SETTINGS_BTN"  
+// Blocks the tuning mods after you find your setup to prevent messing it up while playing
+
+
+
+//------------------------------------------------------------------------------
+// EASY ROLL
+// When Block Mod disabled you can toggle the function:
+// Hold "CROUCH" + Tap "TOGGLE_BTN"  = Toggle Function
+
+// Easy roll settings are saved in Slot Variable "SPVAR_10"
+
+// WHEN THE FUNCTION IS ACTIVATED:
+// Quick Single press "CROUCH" will do a roll (double B-Press for you)
+// Quick Double press "CROUCH" will do a roll and use a ability after (when enabled, see below)
+// You can still use the Crouch function by holding "CROUCH" for longer then 300ms
+
+//------------------------------------------------------------------------------
+// EASY MIDDLE ABILITY
+// Defined button "EASY_MIDDLE_ABILITY_BTN" activates the middle ability for you, so you have only to press 1 instead of 2 Buttons.
+define USE_EASY_MIDDLE_ABILITY     = TRUE;  // Use Function
+
+//------------------------------------------------------------------------------
+// ABILITY AFTER ROLL
+// Automatic use a Ability after the roll is done (see above). The ability can be changed via:
+// Hold "CROUCH" + Hold "ADJUST_BTN" + Tap "DPAD_LEFT"   = Set Left Ability
+// Hold "CROUCH" + Hold "ADJUST_BTN" + Tap "DPAD_UP"     = Set Middle Ability
+// Hold "CROUCH" + Hold "ADJUST_BTN" + Tap "DPAD_RIGHT"  = Set Right Ability (Default)
+// Hold "CROUCH" + Hold "ADJUST_BTN" + Tap "DPAD_DOWN"   = Disable function
+
+// Ability after roll settings are saved in Slot Variable "SPVAR_11"
+
+
+
+//------------------------------------------------------------------------------
+// AIM MODES
+// When Block Mod disabled you can change the AIM Mode via:
+// Hold "ADS" + "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_DOWN"  = AIM Mods Disabled
+// Hold "ADS" + "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_LEFT"  = Auto ADS Enabled
+// Hold "ADS" + "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_UP"    = AIM-ABUSE Enabled
+// Hold "ADS" + "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_RIGHT" = AIM-ASSIST Enabled
+
+// AIM Mode value are saved in Slot Variable "SPVAR_12" and used "TRACE_1" for Debug Output.
+
+//------------------------------------------------------------------------------
+// AUTO-ADS (only when Auto ADS is enabled, see AIM MODES above)
+// Automatically activates ADS when shooting
+
+//------------------------------------------------------------------------------
+// AIM-ABUSE (only when AIM-Abuse is enabled, see AIM MODES above)
+// this function quickly use ADS zoom in/out, to trigger the ingame targeted assistance system
+// "targeted assistance" need to be enabled ingame
+define HOLDTIME_AIMABUSE           = 164;  //How long to HOLD ADS Button
+define RESTTIME_AIMABUSE           = 22;   //How long to release ADS Button 
+// When you hold the "ADS" Button Manuell, the function is suspended.
+
+//------------------------------------------------------------------------------
+// AIM-ASSIST
+// this function quickly moves the crosshair
+define AIM_ASSIST_VERSION          = 3;
+// 1 = corsshair moves in a rectangle
+// 2 = crosshair moves left - right
+// 3 = crosshair moves in a V formation
+
+define SHAKE_AIMASSIST             = 24;
+define DELAY_AIMASSIST             = 20;   // Should not be changed    
+// When you hold the "ADS" Button Manuell, the function is suspended.
+
+
+
+//------------------------------------------------------------------------------
+// FIRE MODES
+// When Block Mod disabled you can change the Fire Mode via:
+// Hold "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_DOWN"  = Fire Mods Disabled
+// Hold "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_LEFT"  = Rapid-Fire Enabled
+// Hold "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_UP"    = Rapid-Burst-Fire Enabled
+// Hold "FIRE" + Hold "TOGGLE_BTN" + Tap "DPAD_RIGHT" = Burst-Fire Enabled
+
+//------------------------------------------------------------------------------
+// RAPID-FIRE (only when Rapid-Fire is enabled, see FIRE MODES above)
+
+define RAPID_OPT                   = 0;  // When should Rapid-Fire be used
+// 0 = Rapid-Fire is always active
+// 1 = Rapid-Fire only activte with ADS
+// 2 = Rapid-Fire only activte if ADS not active
+
+// When Block Mod disabled and Rapid-Fire enabled you can adjust the Fire-Rate via:
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_UP"     = Increase Value
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_DOWN"   = Decrease Value
+
+// Hold and Rest Time are calculated automatic
+// Fire-Rate value are saved in Slot Variable "SPVAR_1" and used "TRACE_2" for Debug Output.  // Allowed Value: 1 / 25
+
+//------------------------------------------------------------------------------
+// RAPID-BURST-FIRE (only when Rapid-Burst-Fire is enabled, see FIRE MODES above)
+
+define RAPID_BURST_OPT             = 0;  // When should Rapid-Burst-Fire be used
+// 0 = Rapid-Burst-Fire is always active
+// 1 = Rapid-Burst-Fire only activte with ADS
+// 2 = Rapid-Burst-Fire only activte if ADS not active
+
+// When Block Mod disabled and Rapid-Burst-Fire enabled you can adjust the Burst Rounds via:
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_UP"     = Increase Value
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_DOWN"   = Decrease Value
+
+// For Rapid-Burst first enable Rapid-Fire Mode (see above) and set the perfect fire rate, then switch to Rapid-Burst-Fire Mode do set the Burst Rounds.
+// Burst Rounds value are saved in Slot Variable "SPVAR_2" and used "TRACE_3" for Debug Output.  // Allowed Value: 1 / 10
+
+//------------------------------------------------------------------------------
+// BURST-FIRE (only when Burst-Fire is enabled, see FIRE MODES above)
+
+define BURST_OPT                    = 0;  // When should Burst-Fire be used
+// 0 = Burst-Fire is always active
+// 1 = Burst-Fire only activte with ADS
+// 2 = Burst-Fire only activte if ADS not active
+
+// When Block Mod disabled and Burst-Fire enabled you can adjust the Hold & Rest Time via:
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_UP"     = Increase Hold Time
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_DOWN"   = Decrease Hold Time
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_LEFT"   = Increase Rest Time
+// Hold "FIRE" + Hold "ADJUST_BTN" + Tap "DPAD_RIGHT"  = Decrease Rest Time
+
+// Hold and Rest Time values are multiplied by 100(ms) to get the total Timings
+// Hold Time value are saved in Slot Variable "SPVAR_5" and used "TRACE_2" for Debug Output.  // Allowed Value: 1 / 10
+// Rest Time value are saved in Slot Variable "SPVAR_6" and used "TRACE_3" for Debug Output.  // Allowed Value: 1 / 10
+
+
+
+//------------------------------------------------------------------------------
+// ANTI-RECOIL
+
+// When Block Mod disabled you can change the Recoil Mode via:
+// Hold "ADS" + Hold "TOGGLE_BTN" + Tap "DPAD_DOWN"  = Recoil Disabled
+// Hold "ADS" + Hold "TOGGLE_BTN" + Tap "DPAD_LEFT"  = Recoil is always Enabled
+// Hold "ADS" + Hold "TOGGLE_BTN" + Tap "DPAD_UP"    = Recoil only active with ADS
+// Hold "ADS" + Hold "TOGGLE_BTN" + Tap "DPAD_RIGHT" = Recoil only active if ADS not active
+
+// Recoil Mode value are saved in Slot Variable "SPVAR_7".
+
+
+// When Block Mod disabled you can adjust the Recoil via:
+// Hold "ADS" + Hold "ADJUST_BTN" + Tap "DPAD_UP"     = Increase Vertical
+// Hold "ADS" + Hold "ADJUST_BTN" + Tap "DPAD_DOWN"   = Decrease Vertical
+// Hold "ADS" + Hold "ADJUST_BTN" + Tap "DPAD_LEFT"   = Increase Horizontal
+// Hold "ADS" + Hold "ADJUST_BTN" + Tap "DPAD_RIGHT"  = Decrease Horizontal
+
+// Recoil Vertical value are saved in Slot Variable "SPVAR_8" and used "TRACE_5" for Debug Output.   // Allowed Value: -100 / 100
+// Recoil Horizontal value are saved in Slot Variable "SPVAR_9" and used "TRACE_6" for Debug Output. // Allowed Value: -100 / 100
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |L|E|D|S| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/                     
+define OFF     = 0;
+define BLUE    = 1;
+define RED     = 2;
+define GREEN   = 3;
+define PINK    = 4;
+define SKYBLUE = 5;
+define YELLOW  = 6;
+define WHITE   = 7;
+
+define FireModeWithAntiRecoil     = GREEN;
+define FireModeWithoutAntiRecoil  = PINK;
+define OnlyRecoil                 = YELLOW;
+define AllDisabled                = RED;
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |D|A|T|A| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/ 
+data(  
+  0,0,0,0, //1. Off
+  2,0,0,0, //2. Blue
+  0,2,0,0, //3. Red
+  0,0,2,0, //4. Green
+  0,0,0,2, //5. Pink
+  2,0,2,0, //6. SkyBlue
+  0,2,2,0, //7. Yellow
+  2,2,2,2  //8. White 
+);
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |V|A|R|I|A|B|L|E|S| | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/                                                                                                                                   
+int    i = 0;
+int    double_ts[30];
+int    taphold_ts[30];
+
+int    rumbleType, rumbleRounds = 0;
+int    recoilVertical, recoilHorizontal; 
+int    rapidHoldTime = 80, rapidRestTime, burstHoldTime, burstRestTime;
+int    rapidBurstRoundCount = 0;
+
+int    _fireMode, _recoilMode, _aimMode;
+int    _rapidFireRate, _rapidBurstRounds, _burstHoldTime, _burstRestTime;
+int    _antiRecoilVertical, _antiRecoilHorizontal;
+int    _useEasyRoll, _abilityAfterRoll;
+
+// Currently not used
+int    rand;
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |I|N|I|T| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/ 
+init {
+    while(i < 30) {
+        double_ts[i] = -1;
+        taphold_ts[i] = -1;
+        i++;
+    }
+
+    _fireMode                      = get_pvar(SPVAR_1,0,+3,0);
+    _rapidFireRate                 = get_pvar(SPVAR_2,+1,+25,+5);
+    _rapidBurstRounds              = get_pvar(SPVAR_3,+1,+10,+3);
+    
+    _burstHoldTime                 = get_pvar(SPVAR_5,+1,+10,+4);
+    _burstRestTime                 = get_pvar(SPVAR_6,+1,+10,+2);
+    Calculate_HoldRestTimes();  
+     
+    _recoilMode                    = get_pvar(SPVAR_7,0,+3,0);
+    _antiRecoilVertical            = get_pvar(SPVAR_8,-100,+100,+17);  
+    _antiRecoilHorizontal          = get_pvar(SPVAR_9,-100,+100,0);
+    
+    _useEasyRoll                   = get_pvar(SPVAR_10,0,+1,+1);
+    _abilityAfterRoll              = get_pvar(SPVAR_11,0,+3,+3);
+
+    _aimMode                       = get_pvar(SPVAR_12,0,+3,0);
+
+    SetLeds();    
+    SetTraces();
+} 
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |M|A|I|N| |B|L|O|C|K| |S|T|A|R|T|S| |H|E|R|E| | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+main {
+    vmTimeoutBasedOnConsole();
+///////////////////////////////////////////////////////////////////////////
+///////////        LOAD / CHANGE SLOT              ////////////////////////
+///////////////////////////////////////////////////////////////////////////    
+    if (USE_LOAD_SLOT == TRUE && get_val(JUMP)) {
+        if (double_click(DPAD_LEFT))  LoadSlot(SLOT_LEFT); 
+        if (double_click(DPAD_UP))    LoadSlot(SLOT_UP);        
+        if (double_click(DPAD_RIGHT)) LoadSlot(SLOT_RIGHT);        
+        if (double_click(DPAD_DOWN))  LoadSlot(SLOT_DOWN);                   
+    }
+///////////////////////////////////////////////////////////////////////////
+///////////        BLOCK MOD / LOCK SETTINGS       ////////////////////////
+///////////////////////////////////////////////////////////////////////////
+    if (double_click(LOCK_SETTINGS_BTN)) { 
+        SettingsLocked =! SettingsLocked;
+        Rumble(SettingsLocked, TRUE);
+    }   
+///////////////////////////////////////////////////////////////////////////
+///////////        AUTO RUN                        ////////////////////////
+///////////////////////////////////////////////////////////////////////////	
+    Sprint(SPRINT_SENS);
+///////////////////////////////////////////////////////////////////////////
+///////////        EASY-ROLL                       ////////////////////////
+///////////////////////////////////////////////////////////////////////////	    
+    if (_useEasyRoll) {   
+        if (_abilityAfterRoll != 0 && double_click(CROUCH)) combo_run(ABILITY_AFTER_ROLL);
+        else if (event_release(CROUCH) && get_ptime(CROUCH) < 150) combo_run(EASY_ROLL);
+    }    
+///////////////////////////////////////////////////////////////////////////
+///////////        EASY-MIDDLE-ABILITY             ////////////////////////
+///////////////////////////////////////////////////////////////////////////    
+    if (USE_EASY_MIDDLE_ABILITY && event_press(EASY_MIDDLE_ABILITY_BTN))
+        combo_run(EASY_MIDDLE_ABILITY);    
+///////////////////////////////////////////////////////////////////////////
+///////////        R-AXIS DEADZONE                 ////////////////////////
+///////////////////////////////////////////////////////////////////////////
+    R_AXIS_DEADZONE();  
+///////////////////////////////////////////////////////////////////////////
+///////////        HAIR TRIGGERS                   ////////////////////////
+///////////////////////////////////////////////////////////////////////////     
+    HairTrigger(FIRE);
+    HairTrigger(ADS);  
+///////////////////////////////////////////////////////////////////////////
+///////////        AIM MODE                       ////////////////////////
+///////////////////////////////////////////////////////////////////////////
+    Aim();               
+///////////////////////////////////////////////////////////////////////////
+///////////        FIRE MODE                       ////////////////////////
+///////////////////////////////////////////////////////////////////////////
+    Fire();
+///////////////////////////////////////////////////////////////////////////
+///////////        ANTI-RECOIL                     ////////////////////////
+///////////////////////////////////////////////////////////////////////////
+    AntiRecoil(); 
+///////////////////////////////////////////////////////////////////////////
+///////////       CHANGE SETTINGS                  ////////////////////////
+///////////////////////////////////////////////////////////////////////////   
+    ChangeSettings();
+}
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+// RUMBLE NOTIFIER combo (Rumble Once = Actived / Value Increased - Rumble Twice = Deactivated / Value Decreased) 
+combo RumbleNotifier {
+    set_rumble(rumbleType, 100);
+    wait(200);
+    set_rumble(rumbleType, 0);
+    wait(DynamicReturnValue(rumbleRounds, TRUE, 2, 50, 0));
+    set_rumble(rumbleType, DynamicReturnValue(rumbleRounds, TRUE, 2, 100, 0));
+    wait(DynamicReturnValue(rumbleRounds, TRUE, 2, 200, 0));
+    reset_rumble();
+}
+// EASY-MIDDLE-ABILITY combo 
+combo EASY_MIDDLE_ABILITY {
+    set_val(LB_L1, 100);
+    set_val(RB_R1, 100); 
+    wait(15); 
+}
+// EASY-ROLL combo
+combo EASY_ROLL {
+    set_val(CROUCH, 100);
+    set_val(CROUCH, 0);
+    set_val(CROUCH, 100);
+    wait(10);      
+}
+// ABILITY AFTER EASY-ROLL combo
+combo ABILITY_AFTER_ROLL {
+    wait(DynamicReturnValue(_abilityAfterRoll, FALSE, 0, 710, 0));
+    if (_abilityAfterRoll == 1 || _abilityAfterRoll == 2) set_val(LB_L1, 100);     
+    if (_abilityAfterRoll == 2 || _abilityAfterRoll == 3) set_val(RB_R1, 100); 
+    wait(DynamicReturnValue(_abilityAfterRoll, FALSE, 0, 15, 0));  
+}
+// AIM-ABUSE combo 
+combo AIM_ABUSE { 
+    set_val(ADS, 100);
+    wait(HOLDTIME_AIMABUSE);
+    set_val(ADS, 0);
+    wait(RESTTIME_AIMABUSE);
+}
+// AIM-ASSIST V2 combo
+combo AIM_ASSIST_V2 { 
+     set_val(RX_AXIS, abs(SHAKE_AIMASSIST));  
+     wait(DELAY_AIMASSIST);
+     set_val(RX_AXIS, inv(SHAKE_AIMASSIST));  
+     wait(DELAY_AIMASSIST);
+} 
+// AIM-ASSIST V1 & V3 combo
+combo AIM_ASSIST_V1_V3 {
+    set_val(RY_AXIS, xy_val(RY_AXIS, DynamicReturnValue(AIM_ASSIST_VERSION, TRUE, 1, abs(SHAKE_AIMASSIST), (abs(SHAKE_AIMASSIST/1.5)))));
+    wait(DELAY_AIMASSIST);
+    set_val(RX_AXIS, xy_val(RX_AXIS, SHAKE_AIMASSIST));
+    wait(DELAY_AIMASSIST);
+    set_val(RY_AXIS, xy_val(RY_AXIS, DynamicReturnValue(AIM_ASSIST_VERSION, TRUE, 1, inv(SHAKE_AIMASSIST), (abs(SHAKE_AIMASSIST/1.5)))));
+    wait(DELAY_AIMASSIST);
+    set_val(RX_AXIS, xy_val(RX_AXIS, inv(SHAKE_AIMASSIST)));
+    wait(DELAY_AIMASSIST);
+}
+
+// FIRE combo
+combo FIRE {      
+    set_val(FIRE, 100);     
+    wait(DynamicReturnValue(_fireMode, TRUE, 3, burstHoldTime, rapidHoldTime));
+    set_val(FIRE, 0);  
+    wait(DynamicReturnValue(_fireMode, TRUE, 3, burstRestTime, rapidRestTime));      
+    set_val(FIRE, 0): 
+    wait(RapidBurstWaitTime());   
+    if (_fireMode == 2 && rapidBurstRoundCount + 1 >= _rapidBurstRounds) rapidBurstRoundCount = 0;
+    else if (_fireMode == 2) rapidBurstRoundCount++;     
+}
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |F|U|N|C|T|I|O|N|S| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) <= SHAKE_AIMASSIST)
+        return f_val;
+    return get_val(f_axis);
+}
+// CHANGE SETTINGS
+function ChangeSettings() {
+    if (SettingsLocked) return;
+    if (get_val(TOGGLE_BTN)) {
+        /////////////////////////////////////
+        // Change Easy Roll    	
+        if (get_val(CROUCH)) { 
+            _useEasyRoll =! _useEasyRoll;
+            Rumble(_useEasyRoll, TRUE);
+        }     
+        /////////////////////////////////////
+        // Change Aim Mode
+        else if (get_val(ADS) && get_val(FIRE))
+            _aimMode = SetModeVar(_aimMode);     
+        /////////////////////////////////////
+        // Change Fire Mode 
+        else if (get_val(FIRE) && !get_val(ADS)) 
+            _fireMode = SetModeVar(_fireMode);
+        /////////////////////////////////////
+        // Change Anti-Recoil Mode
+        else if (get_val(ADS) && !get_val(FIRE))
+            _recoilMode = SetModeVar(_recoilMode); 
+            
+        SaveVars();    
+    }
+    else if (get_val(ADJUST_BTN)) {
+        /////////////////////////////////////
+        // Change Ability after Easy Roll     
+        if (_useEasyRoll && get_val(CROUCH))     
+            _abilityAfterRoll = SetModeVar(_abilityAfterRoll);      
+        //////////////////////////////////////
+        // Adjust Rate of fire  / Burst rate
+        else if (get_val(FIRE) && !get_val(ADS)) {  
+            if (_fireMode == 1)
+                _rapidFireRate = AdjustVar(_rapidFireRate, 1, 25, DPAD_UP, DPAD_DOWN)  
+            else if (_fireMode == 2) {
+                _rapidBurstRounds = AdjustVar(_rapidBurstRounds, 1, 10, DPAD_UP, DPAD_DOWN)  
+                rapidBurstRoundCount = 0;
+            }
+            else if (_fireMode == 3) {
+                _burstHoldTime = AdjustVar(_burstHoldTime, 1, 10, DPAD_UP, DPAD_DOWN)  
+                _burstRestTime = AdjustVar(_burstRestTime, 1, 10, DPAD_LEFT, DPAD_RIGHT)
+            }
+        }
+        /////////////////////////////////////
+        // Adjust Anti-Recoil
+        else if (get_val(ADS) && !get_val(FIRE)) {
+		    _antiRecoilVertical = AdjustVar(_antiRecoilVertical, -100, 100, DPAD_UP, DPAD_DOWN)
+		    _antiRecoilHorizontal = AdjustVar(_antiRecoilHorizontal, -100, 100, DPAD_LEFT, DPAD_RIGHT) 
+        }   
+        
+        SaveVars();
+    }	          
+}
+// AIM-MODE
+function Aim() {
+    if (_aimMode == 0 || !get_val(FIRE)) return;
+    /////////////////////////////////////
+    // AUTO ADS WHEN SHOOTING 
+    if (_aimMode == 1)
+        set_val(ADS, 100);  
+    /////////////////////////////////////
+    // AIM ABUSE            
+    else if (_aimMode == 2 && !get_val(ADS))
+        combo_run(AIM_ABUSE);    
+    /////////////////////////////////////
+    // AIM ASSIST         
+    else if (_aimMode == 3 && !get_val(ADS)) {
+        if (AIM_ASSIST_VERSION == 1 || AIM_ASSIST_VERSION == 3)
+            combo_run(AIM_ASSIST_V1_V3);
+        else if (AIM_ASSIST_VERSION == 2 && abs(get_val(RX_AXIS)) < SHAKE_AIMASSIST)
+            combo_run(AIM_ASSIST_V2);    
+    } 
+}
+// FIRE-MODE
+function Fire() {
+    if (_fireMode == 0) return;      
+    if (get_val(FIRE))
+        if ((_fireMode == 1 && (RAPID_OPT == 0 || (RAPID_OPT == 1 && get_val(ADS)) || (RAPID_OPT == 2 && !get_val(ADS)))) ||
+           (_fireMode == 2 && (RAPID_BURST_OPT == 0 || (RAPID_BURST_OPT == 1 && get_val(ADS)) || (RAPID_BURST_OPT == 2 && !get_val(ADS)))) ||
+           (_fireMode == 3 && (BURST_OPT == 0 || (BURST_OPT == 1 && get_val(ADS)) || (BURST_OPT == 2 && !get_val(ADS)))))
+           combo_run(FIRE);
+    else if (event_release(FIRE)) {
+        rapidBurstRoundCount = 0;
+        combo_stop(FIRE);
+    }
+}
+// ANTI-RECOIL
+function AntiRecoil() {
+    if (!get_val(FIRE) || _recoilMode == 0 || (_recoilMode == 2 && !get_val(ADS)) || (_recoilMode == 3 && get_val(ADS))) return;
+    if (isqrt(pow(get_val(RX_AXIS), 2) + pow(get_val(RY_AXIS), 2)) <= abs(_antiRecoilVertical)) {   
+        if (abs(get_val(RY_AXIS)) <= abs(_antiRecoilVertical)) {
+            recoilHorizontal = (get_val(RX_AXIS) + (_antiRecoilHorizontal*(100-abs(get_val(RX_AXIS))))/100);
+            set_val(RX_AXIS, recoilHorizontal);
+           
+            if (AIM_INVERTED)
+                recoilVertical = (get_val(RY_AXIS) - (_antiRecoilVertical*(100-abs(get_val(RY_AXIS))))/100); // Y-axis invert
+            else
+                recoilVertical = (get_val(RY_AXIS) + (_antiRecoilVertical*(100-abs(get_val(RY_AXIS))))/100);
+            if (recoilVertical > _antiRecoilVertical) recoilVertical = _antiRecoilVertical;
+            set_val(RY_AXIS, recoilVertical);              
+        }
+    }    
+}
+// HAIR-TRIGGER
+function HairTrigger(btn) {
+    if (!USE_HAIR_TRIGGER || !get_val(btn)) return; 
+    set_val(btn, 100);
+}
+// R-AXIS DEADZONE
+function R_AXIS_DEADZONE() {
+    if (!USE_R_AXIS_DEADZONE) return;  
+    if (abs(get_val(RY_AXIS)) < DEADZONE_POINT) set_val(RY_AXIS, 0);
+    if (abs(get_val(RX_AXIS)) < DEADZONE_POINT) set_val(RX_AXIS, 0);
+}
+// SPRINT
+function Sprint(sens) {
+    if (!USE_AUTO_SPRINT || get_val(LY_AXIS) > inv(sens) || get_val(ADS)) return;
+    set_val(LY_AXIS, -100);
+    set_val(SPRINT, 100);
+}
+// CALCULATE HOLD AND REST TIMES
+function Calculate_HoldRestTimes() {
+    rapidRestTime = (1000 / _rapidFireRate) - rapidHoldTime;
+    if (rapidRestTime < rapidHoldTime) {
+        rapidRestTime = (1000 / _rapidFireRate) / 2;
+        if (rapidRestTime < 30)
+            rapidRestTime = 30;
+        rapidHoldTime = rapidRestTime;
+    } else { rapidHoldTime = 80; } 
+    burstHoldTime = _burstHoldTime * 250;
+    burstRestTime = _burstRestTime * 250;
+}
+// RAPID BURST WAIT TIME
+function RapidBurstWaitTime() {
+	if (_fireMode == 2 && rapidBurstRoundCount + 1 >= _rapidBurstRounds)
+	    return rapidHoldTime * _rapidBurstRounds;
+	return 0;
+}
+// LOAD SLOT
+function LoadSlot(Slot) {
+    Rumble(TRUE, FALSE);
+    load_slot(Slot);    
+}
+// RUMBLE   
+function Rumble(PositiveRumble, RumbleDoubleOnNegative) {
+    if (!USE_RUMBLE_FEEDBACK) return;
+    if (PositiveRumble) rumbleType = RUMBLE_POSITIVE; else rumbleType = RUMBLE_NEGATIVE;
+    if (PositiveRumble || !RumbleDoubleOnNegative) rumbleRounds = 1; else rumbleRounds = 2;
+    combo_run(RumbleNotifier);
+}     
+// DYNAMIC RETURN VALUE
+function DynamicReturnValue(var, op, val, OnSuccess, Default) {
+    if (op == TRUE && var == val) return OnSuccess;  
+    else if (op == FALSE && var != val) return OnSuccess;           
+    return Default;
+}
+// CHECK DOUBLE CLICK
+function double_click(button) {        
+    if (double_ts[button] >= 0) {                    
+        double_ts[button] += get_rtime(); 
+        if (double_ts[button] > 450)
+            double_ts[button] = -1;                                                                                       
+    }           
+    if (event_release(button) && get_ptime(button) <= 200) { 
+        if (double_ts[button] < 0) {                    
+            double_ts[button] = 0;                        
+        } else {             
+            double_ts[button] = -1;                       
+            return 1;                                   
+        }                                                     
+    }                                                  
+    return 0;                                       
+} 
+// SAVE VARIABLES
+function SaveVars() { 
+    set_pvar(SPVAR_1, _fireMode);
+    set_pvar(SPVAR_2, _rapidFireRate);
+    set_pvar(SPVAR_3, _rapidBurstRounds);
+    set_pvar(SPVAR_5, _burstHoldTime);
+    set_pvar(SPVAR_6, _burstRestTime);      
+    set_pvar(SPVAR_7, _recoilMode);    
+    set_pvar(SPVAR_8, _antiRecoilVertical);
+    set_pvar(SPVAR_9, _antiRecoilHorizontal);  
+    set_pvar(SPVAR_10, _useEasyRoll);       
+    set_pvar(SPVAR_11, _abilityAfterRoll); 
+    set_pvar(SPVAR_12, _aimMode);
+    Calculate_HoldRestTimes();
+    SetLeds();
+    SetTraces();
+}
+// SET TRACE (for Debug)
+function SetTraces() {  
+    set_val(TRACE_1, 0);
+    set_val(TRACE_2, 0);
+    set_val(TRACE_3, 0);
+    set_val(TRACE_4, 0);
+    set_val(TRACE_5, 0);
+    set_val(TRACE_6, 0); 
+
+    set_val(TRACE_1, _aimMode); 
+
+    if (_fireMode == 1 || _fireMode == 2)
+        set_val(TRACE_2, _rapidFireRate);  
+    if (_fireMode == 2)
+        set_val(TRACE_3, _rapidBurstRounds);    
+    else if (_fireMode == 3) {    
+        set_val(TRACE_2, _burstHoldTime);
+        set_val(TRACE_3, _burstRestTime);   
+    }
+    
+    if (_recoilMode != 0) {
+        set_val(TRACE_5, _antiRecoilVertical);
+        set_val(TRACE_6, _antiRecoilHorizontal);   
+    }
+} 
+// SET LEDs
+function SetLeds() {
+    if (_fireMode == 0) {                                                                                                          
+        if (_recoilMode != 0)
+            ColourLED(OnlyRecoil) 
+		else
+		    ColourLED(AllDisabled);  
+    } else if (_fireMode == 1 || _fireMode == 2 || _fireMode == 3) {                         
+        if (_recoilMode != 0)
+            ColourLED(FireModeWithAntiRecoil)
+		else
+		    ColourLED(FireModeWithoutAntiRecoil);
+    }
+}
+// ADJUST VAR
+function AdjustVar(var, min_val, max_val, btn_increase, btn_decrease) {
+    if (event_press(btn_increase) && var < max_val) {
+        var++;
+        Rumble(TRUE, FALSE);
+    } else if (event_press(btn_decrease) && var > min_val) {
+        var--;
+        Rumble(FALSE, FALSE); 
+    }
+    return var;
+}
+// SET MODE VAR
+function SetModeVar(var) {  
+    if (event_press(DPAD_LEFT)) {
+        var = 1;
+        Rumble(TRUE, FALSE);
+    } else if (event_press(DPAD_UP)) {
+        var = 2;
+        Rumble(TRUE, FALSE);
+    } else if (event_press(DPAD_RIGHT)) {
+        var = 3;
+        Rumble(TRUE, FALSE);
+    } else if (event_press(DPAD_DOWN)) {
+        var = 0;
+        Rumble(FALSE, TRUE);
+    }  
+    return var;
+}
+// Custome vm_tctrl function
+function vmTimeoutBasedOnConsole() {
+    if (get_console() == PIO_XB1)
+        vm_tctrl(-2);
+    else if (get_console() == PIO_PS4)
+        vm_tctrl(-6);
+}
+// COLOR LED                                
+function ColourLED(clr) {                         
+    for(i = 0; i <= 3; i++) {
+        set_led(i, dbyte(((clr * 4)) + i));
+    }             
+}
+
+
+/*
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| | | | | | | | |N|O|T| |U|S|E|D| | | | | | | | | | | | | | | | | | | | | | | | | | | |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+*/
+// UNMAP
+//unmap PS4_GYROX, PS4_GYROY, PS4_GYROZ, PS4_ACCX, PS4_ACCY, PS4_ACCZ, XB1_PL1, XB1_PR1, XB1_PR2; 
+
+// TAP + TAP AND HOLD CLICK
+function taphold_click(button) {
+    if (event_release(button)) {
+        if (get_ptime(button) <= 200)
+            taphold_ts[button] = 0;
+        else
+            taphold_ts[button] = -1;
+    } else if (!get_val(button)) {
+        if (taphold_ts[button] >= 0) {
+            taphold_ts[button] += get_rtime();
+            if (taphold_ts[button] > 200)
+                taphold_ts[button] = -1;
+        }
+    } else if (get_val(button)) {
+        if (get_ptime(button) >= 500) {
+            if (taphold_ts[button] != -1) {
+                taphold_ts[button] = -1;
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+// SET STICK SENSITIVITY		
+function SetStickSensitivity(axis, midpoint, sens) {		
+    sensitivity(axis, midpoint, sens); 				
+}
+// RANDOM VALUE
+function random(min, max) {
+    if (!rand)
+        rand = 32767;
+    rand = rand * 8403 % 32767;
+    return (min  - 1) + abs(rand % (max - min));
+} ˙∏å¥åπÄ∑Å∑Ç≤Ñ∞Å∑

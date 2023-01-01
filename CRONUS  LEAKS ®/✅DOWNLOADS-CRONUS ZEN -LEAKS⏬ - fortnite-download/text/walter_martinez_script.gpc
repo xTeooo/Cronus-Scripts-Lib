@@ -1,0 +1,297 @@
+// GPC Online Library
+// fortnite_-_walterhmartinez_personal_script_latest_version.gpc
+
+/*
+Author: WalterHMartinez
+***PERSONAL SCRIPT***
+***PERSONAL SCRIPT***
+***PERSONAL SCRIPT***
+ 
+UPDATED 8/15/18
+ 
+Credits:
+HH4rdCor3 : Tap script
+ 
+ 
+                                                                            CONSOLES: PS4 & XBOX 1
+                                                                            WalterHMartinez - PERSONAL SCRIPT
+                                                                            FEATURES:
+                                                                                    SWAPPED CONTROLS (L1R1 SWAPPED) (X R3 SWAPPED)
+                                                                                    Pump SMG - (ADS + LEFT)
+                                                                                    AIM ABUSE - ALWAYS ON
+                                                                                    Auto Run - ALWAYS ON
+                                                                                    Aim Assist - ALWAYS ON
+                                                                                    Ghost Peek - ALWAYS ON (ADS + R1)
+ 
+ 
+*/
+ 
+ //COLOR IDENTIFICATION              
+ define Blue = 1;
+ define Red = 2;
+ define Green = 3;
+ define Pink = 4;
+ define SkyBlue = 5;
+ define Yellow = 6;
+ define White = 7;
+ data(1,
+     2, 0, 0, 0, //1. Blue                                 
+     0, 2, 0, 0, //2. Red                                  
+     0, 0, 2, 0, //3. Green                                
+     0, 0, 0, 2, //4. Pink                                 
+     2, 0, 2, 0, //5. SkyBlue                              
+     0, 2, 2, 0, //6. Yellow                               
+     2, 2, 2, 2 //7. White 
+ );
+ int Col_ind;
+ //END
+ 
+                                                                                    //PUMP SMG
+                                                                                    int PUMP_SMG = FALSE;
+ 
+ 
+ 
+ 
+ 
+ 
+//----------------------------------------
+// BUTTON LAYOUT: COMBAT PRO
+define FIRE_BTN = 4; //XB1_RB //PS4_R2
+define ADS_BTN = 7; //XB1_LB //PS4_L2
+define CROUCH_BTN = 5; //XB1_RS //PS4_R3
+define SPRINT_BTN = 8; //XB1_LS //PS4_L3
+define JUMP_BTN = 19; //XB1_A  //PS4_CROSS
+define RELOAD_BTN = 20; //XB1_X // PS4_SQUARE
+define NEXT_PIECE = 3; //XB1_RT //PS4_R1
+define LEFT_BUMP = 6; //XB1_LT //PS4_L1
+define SWAP_BTN = 17; //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18; //XB1_B  //PS4_CIRCLE
+define WALL_BTN = 4; //XB1_RB //PS4_R2
+define STAIRS_BTN = 7; //XB1_LB //PS4_L2
+define FLOOR_BTN = 3; //XB1_RT //PS4_R1
+define ROOF_BTN = 6; //XB1_LT //PS4_L1
+define R_X = 9; //XB1_RX //PS4_RX
+define R_Y = 10; //XB1_RY //PS4_RY
+define L_X = 11; //XB1_LX //PS4_LX
+define L_Y = 12; //XB1_LY //PS4_LY
+define UP = 13; //XB1_UP //PS4_UP
+define DOWN = 14; //XB1_DOWN //PS4_DOWN
+define LEFT = 15; //XB1_LEFT //PS4_LEFT
+define RIGHT = 16; //XB1_RIGHT //PS4_RIGHT
+//-------------------------------------------------------------------------------------------
+ 
+//UNMAPPING CONTROLS
+unmap PS4_ACCX;
+unmap PS4_ACCY;
+unmap PS4_ACCZ;
+unmap PS4_GYROX;
+unmap PS4_GYROY;
+unmap PS4_GYROZ;
+unmap PS4_TOUCHX;
+unmap PS4_TOUCHY;
+//END
+ 
+//-----------------------------------------------------
+// VARIABLES
+ 
+//RUMBLE
+int rumble_type = RUMBLE_A;
+//END
+ 
+//JItter
+int tap; //ADVANCED JITTER
+int R2_block; //ADVANCED JITTER
+//END
+ 
+//AIM ASSIST HOLD & WAIT
+int aimabuse_hold;
+int aimabuse_rest;
+//END
+ 
+//AIM ASSIST V2 HOW MUCH SCREEN SHAKE
+int yshake;
+int xshake; //V2 //15 & 16 Are good for AR's and other type of weapons. 21 is Good for SG
+ 
+ 
+//Build Speed
+define build_speed = 50;
+//END
+ 
+//SWAP CONTROLS
+int R1L1_SWAP = FALSE; // SET TO TRUE TO SHOOT WITH R1 AND AIM WITH L1
+int XR3_SWAP = FALSE; // SET TO TRUE TO JUMP WITH R3 AND CROUCH WITH X
+//END
+ 
+main { //--------------------------------- 
+    /////////////////////////////////////////////////////////////////////////////////
+    //SWAP CONTROLS
+    if(R1L1_SWAP) {
+        swap(3, 4); swap(6, 7);
+    }
+    if (XR3_SWAP) {
+        swap(19, 5);
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    // DEAD ZONE CORECTION : RIGHT STICK                                 
+    if(abs(get_val(PS4_RY)) < 5 && abs(get_val(PS4_RX)) < 5 ){         
+        set_val(PS4_RY,0);                                                 
+        set_val(PS4_RX,0);                                                
+    }   
+    /////////////////////////////////////////////////////////////////////////////////
+    // ON-OFF SETTINGS:    
+    if (get_val(ADS_BTN)) {
+        if (event_press(LEFT)) {
+            PUMP_SMG = !PUMP_SMG;
+            tap = FALSE;
+            rumble_A_if_true(PUMP_SMG);
+        }
+        set_val(LEFT, 0);
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    //  Color Identification
+    if (!PUMP_SMG) colourled(Red); //EVERYTHING IS OFF
+    if (PUMP_SMG && tap) colourled(Pink);
+    if (PUMP_SMG && !tap) colourled(Blue);
+    /////////////////////////////////////////////////////////////////////////////////
+    // SENSITIVE AIM ABUSE                                           
+        if (get_val(ADS_BTN) > 95) {
+            aimabuse_hold = 700; // HOW LONG IS L2 HELD FOR
+            aimabuse_rest = 1; // HOW LONG IS L2 NOT HELD FOR
+            xshake = 30;
+            yshake = 0;
+            combo_run(AIM_ABUSE); //AIM ABUSE
+        } else {
+            combo_stop(AIM_ABUSE);
+        }
+    /////////////////////////////////////////////////////////////////////////////////
+    //PUMP SMG
+ 
+    if (PUMP_SMG) {
+        if (R2_block) {
+            set_val(ADS_BTN, 0);
+            set_val(FIRE_BTN, 0);
+        }
+        //------------------------------------------------
+        if (get_val(ADS_BTN) && event_press(FIRE_BTN)) {
+            if (!tap) {
+                tap = TRUE; //LED COLOR BLUE
+                combo_run(Double_Tact_R1); //TAP R1
+                set_val(FIRE_BTN, 0);
+        }
+        }
+        if (event_press(LEFT_BUMP)) {
+            tap = FALSE;
+        }
+        if (get_val(ADS_BTN)) {
+        if (get_val(FIRE_BTN) && get_ptime(FIRE_BTN)>= 140) {
+            if (tap) {
+            combo_run(DROP_SHOT);
+            } else { 
+            combo_stop(DROP_SHOT);
+        }
+       }
+       }
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    //AUTO RUN
+    if (!get_val(ADS_BTN) && get_val(L_Y) < -95) {
+        set_val(SPRINT_BTN, 100);
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    //HAIR TRIGGER
+    if (get_val(FIRE_BTN)) { // IF YOU PRESS AT LEAST 1% OF FIRE BTN IT'LL HAVE AN OUTPUT OF 100
+        set_val(FIRE_BTN, 100);
+    }
+    /////////////////////////////////////////////////////////////////////////////////
+    //GHOST PEEK / CROUCH ON SHOT (IF TAP)
+        if (get_val(ADS_BTN)) {
+            if (get_val(NEXT_PIECE)) {
+                combo_stop(AIM_ABUSE);
+                combo_run(AUTO_SNEAK_PEAK);
+            }
+            set_val(NEXT_PIECE, 0);
+        }
+    ///////////////////////////////////////////////////////////////////////////////// 
+    //Aim Assist V 2 
+        if (get_val(ADS_BTN) > 95) {
+            combo_run(Auto_Aimm);
+        } else {
+            combo_stop(Auto_Aimm);
+        }
+        if (get_val(ADS_BTN)) {
+            if (abs(get_val(9)) > 15 || abs(get_val(10)) > 15) {
+                combo_stop(Auto_Aimm);
+            }
+        }
+ 
+} //----------------------------------------- 
+ 
+// COMBO BLOCKS 
+ 
+combo DROP_SHOT {  
+    set_val(CROUCH_BTN, 100);    
+    wait(40);                
+    wait(60); // how long to wait until next drop 
+}
+combo Auto_Aimm { //AIM ASSIST V2
+    set_val(R_X, abs(xshake)); //1  
+    wait(20);
+    set_val(R_X, inv(xshake)); //1  
+    wait(20);
+ 
+} //end
+ 
+ 
+combo AIM_ABUSE { // RAPID AIM
+    set_val(ADS_BTN, 100);
+    wait(aimabuse_hold);
+    set_val(ADS_BTN, 0);
+    wait(aimabuse_rest);
+} //end 
+ 
+combo Double_Tact_R1 { //ADVANCED JITTER
+    R2_block = TRUE;
+    set_val(FIRE_BTN, 100);
+    wait(15);
+    wait(5);
+    set_val(ADS_BTN, 100);
+    set_val(SPRINT_BTN, 100);
+    set_val(NEXT_PIECE, 100);
+    wait(15);
+    R2_block = FALSE;
+} //end
+ 
+combo AUTO_SNEAK_PEAK {
+    set_val(CROUCH_BTN, 100);
+    wait(15);
+    wait(15);
+    set_val(FIRE_BTN, 100);
+    wait(15);
+    wait(10);//INCREASE THIS IF YOU SHOOT THE STAIRS
+    set_val(CROUCH_BTN, 100);
+    wait(15);
+    wait(95);
+} // END
+ 
+combo VIBRATE {
+    set_rumble(rumble_type, 100);
+    wait(300);
+    reset_rumble();
+} //end
+ 
+//--------------------------------------------------------------
+ 
+function rumble_A_if_true(var) {
+    if (var) rumble_type = RUMBLE_A;
+    else rumble_type = RUMBLE_B;
+    combo_run(VIBRATE);
+}
+// COLOR LED function                                
+//--------------------------------------------------------------
+function colourled(Colour) {
+    Col_ind = (Colour * 4) - 3;
+    set_led(LED_1, dbyte(Col_ind));
+    set_led(LED_2, dbyte(Col_ind + 1));
+    set_led(LED_3, dbyte(Col_ind + 2));
+    set_led(LED_4, dbyte(Col_ind + 3));
+}

@@ -1,0 +1,170 @@
+unmap XB1_XBOX;
+define Floor   = XB1_RB;     define Ramp  = XB1_LT;
+define Roof    = XB1_LB;     define Trap  = XB1_X;
+define ADS     = XB1_LT;     define Fire  = XB1_RT;
+define PY      = POLAR_RY;   define Wall  = XB1_RT;
+define AimX    = PS4_RX;     define AimY  = PS4_RY; 
+define Off     = FALSE;      define On    = TRUE;
+define PX      = POLAR_RX;   define PS    = POLAR_RS;
+define RumA    = RUMBLE_A;   define RumB  = RUMBLE_B;
+define Pickaxe = XB1_Y;      define Edit  = XB1_A;
+define Confirm = XB1_LT;      define Build = XB1_LS;
+
+int PolarADS           = TRUE;    int PolarHipFire           = TRUE;
+int YewifyStickyAA     = TRUE;    int YewifyHipFireSticky    = TRUE;
+int AA1                = TRUE;    int PolarAA                = TRUE; // If Shaking on Linear, Change to FALSE
+int PolarTimed         = FALSE;   int PolarHipFireY          = TRUE;
+int BlockRumble        = TRUE;    int HairTriggers           = TRUE;
+int YewifyBloomReducer = TRUE;   int TouchPad               = FALSE; // Turn "FALSE" if using a Xbox Controller, Turn "TRUE" if using a PlayStation Controller
+int AssistOne          = TRUE;    int YewifyConstantAAToggle = TRUE;
+int HipfireAA          = TRUE;    int YewifyBoost            = TRUE;
+int YewifyTracking     = TRUE;    int AntiRecoil             = TRUE;
+int YewifyRotation     = TRUE;    int YewifySpecialPolar     = TRUE;
+int StickyAA           = TRUE;    int StickyAAHipFire        = TRUE;
+int YewifyExpoAssist   = TRUE;    int YewifyExpoHF           = TRUE;
+int YewifyBO           = TRUE;    int ToggleRumbleBoost      = FALSE;
+int BuildTracker       = TRUE;
+
+int YewifyStickAssistTime = 1000;
+int CWait                 = 70;
+int YewifyBOPower         = 16;
+int YewifyBOWait          = 20;
+int YewifyBOCutOff        = 80;
+int Area                  = 14;
+int Velocity              = 30;
+int YEP                   = 7;
+int YED                   = 30;
+int YewAngle              = 120;
+int YewRadius             = 12;
+int YewRadiusMin          = 13;
+int YewAngleBoost         = 100;
+int YewBoost              = 4;
+int YewAssist             = Circular;
+int YRRadius              = 8;
+int Speed                 = 30;
+int Intervals             = 1;
+int AAPower               = 12;
+int Delay                 = 40;
+int Sum                   = 16;
+int S1                    = 12;
+int I1                    = 4;
+int DZ                    = 10;
+int PolarPower            = 1;
+int PolarTime             = 5000;
+int LessInputDelay        = -9;
+int Wait                  = 50;
+int AssistOnePower        = 7;
+int AssistOneWait         = 60;
+int AssistOneLimit        = 45;
+int Range                 = 8;
+int Angles                = 30;
+int HipFireStrength       = 6;
+int YAAStrength           = 7;
+int YAAStrengthOneUp      = 8;
+int YAASpeed              = 100;
+int TrackingSpeed         = 100;
+define CA                 = 6;
+define CycleAssist        = CA;
+int YewifyConstantAAWait  = 10;
+int YSPRange              = 7;
+int YRSteps               = 30;
+int YRPower               = 10;
+int Vertical              = 27;
+int Horizontal            = 0;
+int YewifyStickyVal       = 7;
+int YewifyStickyVal2      = 8;
+define BuildSyncTime      = 0;
+
+main {
+if (BuildTracker) {if (event_press(Build)) {BuildTrack = !BuildTrack; }if (BuildTrack) {BuildCount += get_rtime();if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {BuildTrack = FALSE;BuildCount = 0;}if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap))  BuildCount = 0;}}if (!BuildTrack) {
+if(get_val(Build)) {combo_run(ActivatedYewifyEditTracker);}
+if(get_val(Edit)) {combo_run(ActivatedYewifyEditTracker);}
+if(get_val(Pickaxe)) {combo_run (ActivatedYewifyEditTracker);}
+if(get_val(Confirm)) {combo_run (NonActivatedYewifyEditTracker);}stick_input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+if(YewifySpecialPolar) {if(get_ival(PS4_L2) || (get_ival(PS4_R2))) {if (stick_input <= YSPRange) {rnd = random(mn, mx);RS_Gradient = (RS_Gradient + YSPSpeed) % 360;set_polar(POLAR_RS, RS_Gradient, (YSPRange * rnd));}}}
+if(YewifyRotation) {if (get_ival(ADS) || get_ival(Fire)) {	YRAxisX  = isqrt(abs(get_ival(AimX)) * abs(get_ival(AimX)));	YRAxisY  = isqrt(abs(get_ival(AimY)) * abs(get_ival(AimY)));if (YewifyRotation) {YRAngle = YRSpeed;Radius = YRPower; YRSpeed = YRSpeed + YRSteps;if (YRSpeed < 0) YRSpeed += 360;YRSpeed = YRSpeed % 360;}else {YRAngle = Off;YRPower = Off;}
+if(AntiRecoil) {if (get_ival(ADS) && get_ival(Fire)) {if (YRAxisX <= abs(Horizontal)) {YRValueX = Horizontal;}else {YRValueX = Off; }if (YRAxisY <= abs(Vertical)) {YRValueY = Vertical;}else {YRValueY = Off; }}else {YRValueY = Off;YRValueX = Off;}}YewifyPolarity(YRAngle,Radius);}}
+if(AssistOne){ if (get_ival(ADS)){ combo_run(AssistOne);Polar();} if (abs(get_ival(AimX)) > AssistOneLimit || abs(get_ival(AimY)) > AssistOneLimit) {combo_stop(AssistOne);}}X = get_ival(RX);Y = get_ival(RY);M = isqrt(pow(X, 2) + pow(Y, 2));MaxM = (M < 100);if (!(Time++ % Intervals)) {Angle += Speed;}Angle = Angle % 360;Sin = YewifysPolarArray[Angle % 360];Cos = YewifysPolarArray[(Angle + 270) % 360];Cos = (Cos * YRRadius) / 100;Sin = (Sin * YRRadius) / 100;
+if((PolarADS && get_ival(ADS)) || (PolarHipFire && get_ival(Fire))) {if (M <= YRRadius) {Sin -= Y;Cos -= X;} else {Sin = (Sin * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MaxM;Cos = (Cos * (200 - ((abs(X) + M) / 10) * 10) / 200) * MaxM;}set_val(RX, clamp(X + Cos, -100, 100));set_val(RY, clamp(Y + Sin, -100, 100));}
+if(YewifyStickyAA) {if (get_ival(ADS) || (YewifyHipFireSticky && get_ival(Fire))) {combo_run(YewifySticky);} else {combo_stop(YewifySticky); }}
+if(AA1) {if (event_press(ADS)) { Power = On;}else if (!get_ival(ADS) && event_press(Fire)) {Power = On;}if (get_ival(ADS) || get_ival(Fire)) {AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));if (Sum == 1)AimAssist(S1,I1);} else {CountPower = 0;power = Off;}}
+if(PolarAA) { if (PolarTimed) { if (get_ival(ADS) && get_ptime(ADS) <= PolarTime || PolarHipFireY && get_ival(Fire) && get_ptime(Fire) <= PolarTime) { AimAssistY(); } } else if (get_ival(ADS)|| PolarHipFire && get_ival(Fire)) { AimAssistY(); } if (!get_ival(ADS) && !get_ival(Fire)) { AAT = 0; Axis = 0; } }
+vm_tctrl(LessInputDelay); 
+if(TouchPad) { swap(PS4_SHARE, PS4_TOUCH); } 
+if(BlockRumble) block_rumble(); 
+if(HairTriggers) { deadzone(XB1_LT,XB1_RT,100,100);}
+if(YewifyBloomReducer) { if(get_val(ADS) && (get_val(Fire))) { combo_run(YewifyBloomReducer); } if(abs(get_val(XB1_LX)) > 10 || abs(get_val(XB1_LY)) > 10){ combo_stop(YewifyBloomReducer); } }
+if(YewifyTracking){if(get_val(XB1_LT) && get_val(XB1_RT)){sensitivity(XB1_RX,43,TrackingSpeed); sensitivity(XB1_RY,43,TrackingSpeed);}}
+if(YewifyConstantAAToggle){if(!get_val(Fire) || get_val(ADS) && get_val(Fire)){combo_run(YewifyStickyTracker);if(abs(get_val(AimY)) > 36 || abs(get_val(AimX)) > 36 ){combo_stop(YewifyStickyTracker);}}}
+if(YewifyBoost){ if(get_val(ADS)> 1){ combo_run(AA1s);AA1Shake();} if(abs(get_val(9)) > 36 || abs(get_val(10)) > 36) {combo_stop(AA1s);}}
+if(HipfireAA){ if(get_val(Fire)> 1){ combo_run(HFAAs);}if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) {combo_stop(HFAAs);}}
+if(StickyAA){ if ((get_ival(ADS)) || (get_ival(Fire) && StickyAAHipFire)) { if (abs(get_ival(RX)) <= YewifyStickAssistTime && abs(get_ival(RY)) <= YewifyStickAssistTime) { combo_run(YewifySwitch); } } else { combo_stop(YewifySwitch); } }
+if(YewifyBO){ if (get_ival(ADS)){ combo_run(YewifyBO);P();} if (abs(get_ival(AimX)) > YewifyBOCutOff || abs(get_ival(AimY)) > YewifyBOCutOff) {combo_stop(YewifyBO);}}
+if(YewifyExpoAssist) { if (get_ival(ADS) || (YewifyExpoHF && get_ival(Fire))) { combo_run(YewifyExpoAssists); } else { combo_stop(YewifyExpoAssists); } } 
+if(YewAssist) { RXT = get_val(RX); RYT = get_val(RY); ActualMagnitude = isqrt(pow(RXT,2) + pow(RYT,2)); MaxMagnitude = (ActualMagnitude < 100); angle += YewAngle + Angle; angle = angle % 360; CosAngle = DamPolar[(angle + 270) % 360]; SinAngle = DamPolar[angle % 360]; if (ToggleRumbleBoost) { if (get_ival(Fire)) { SmartRumble = get_rumble(RumbleToUse()); Angle = YewAngleBoost; if (SmartRumble > 10 && SmartRumble < 90) { PolarStrength = (YewRadius + YewBoost + YewAngleBoost + SmartRumble / 4); SmartRumble   = Off; } } } if (get_ival(ADS) || get_ival(Fire)) { if (ActualMagnitude < YewRadius) { SinAngle -= RYT; CosAngle -= RXT; } else { SinAngle = (SinAngle * (200 - ((abs(RYT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; CosAngle = (CosAngle * (200 - ((abs(RXT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; } if (!get_rumble(RumbleToUse())) GetShapes(YewRadius); else GetShapes(PolarStrength); } PolarStrength = On; SmartRumble   = On; } 
+}}
+combo NonActivatedYewifyEditTracker {
+PolarADS         = TRUE;  PolarHipFire           = TRUE;
+YewifyStickyAA   = TRUE;  YewifyHipFireSticky    = TRUE;
+AA1              = TRUE;  PolarAA                = TRUE;
+PolarTimed       = FALSE; PolarHipFireY          = TRUE;
+AssistOne        = TRUE;  YewifyConstantAAToggle = TRUE;
+HipfireAA        = TRUE;  YewifyBoost            = TRUE;
+YewifyTracking   = TRUE;  AntiRecoil             = TRUE;
+YewifyRotation   = TRUE;  YewifySpecialPolar     = TRUE;
+StickyAA         = TRUE;  StickyAAHipFire        = TRUE;
+YewifyExpoAssist = TRUE;  YewifyExpoHF           = TRUE;
+YewifyBO         = TRUE;  ToggleRumbleBoost      = FALSE;
+                          YewifyBloomReducer     = FALSE;
+}
+combo ActivatedYewifyEditTracker {
+PolarADS         = FALSE;  PolarHipFire           = FALSE;
+YewifyStickyAA   = FALSE;  YewifyHipFireSticky    = FALSE;
+AA1              = FALSE;  PolarAA                = FALSE;
+PolarTimed       = FALSE;  PolarHipFireY          = FALSE;
+AssistOne        = FALSE;  YewifyConstantAAToggle = FALSE;
+HipfireAA        = FALSE;  YewifyBoost            = FALSE;
+YewifyTracking   = FALSE;  AntiRecoil             = FALSE;
+YewifyRotation   = FALSE;  YewifySpecialPolar     = FALSE;
+StickyAA         = FALSE;  StickyAAHipFire        = FALSE;
+YewifyExpoAssist = FALSE;  YewifyExpoHF           = FALSE;
+YewifyBO         = FALSE;  ToggleRumbleBoost      = FALSE;
+                           YewifyBloomReducer     = FALSE;
+wait(100);}
+function RumbleToUse() { if (get_rumble(RumA) >= get_rumble(RumB)) return RumA; if (get_rumble(RumA) < get_rumble(RumB)) return RumB; return Off; } 
+function GetShapes(f_var) {if (!SpiralPosition1) {InnerSpiral -= 1;if (InnerSpiral < YewRadiusMin)SpiralPosition1 = On;}else {InnerSpiral += 1;if (InnerSpiral > f_var)SpiralPosition1 = Off;}if (!SpiralPosition2) {OuterSpiral -= 1;if (OuterSpiral < YewRadiusMin)SpiralPosition2 = On;}else {OuterSpiral += 1;if (OuterSpiral > f_var)SpiralPosition2 = Off;}if (YewAssist == Circular) {  RYT = (get_val(RY)) + ((SinAngle * f_var))/100;       RXT = (get_val(RX)) + ((CosAngle * f_var))/100;  }if (YewAssist == TallOval) {RYT = (get_val(RY)) + ((SinAngle * f_var))/100;RXT = (get_val(RX)) + ((CosAngle * YewRadiusMin))/100; }if (YewAssist == WideOval) { RXT = (get_val(RX)) + ((CosAngle * f_var))/100;  RYT = (get_val(RY)) + ((SinAngle * YewRadiusMin))/100;}if (YewAssist == Spiral) {RYT = (get_val(RY)) + ((SinAngle * InnerSpiral))/100;RXT = (get_val(RX)) + ((CosAngle * OuterSpiral))/100;  }if (YewAssist == Helix) {if (PositionT <= 1) {  RXT = (get_val(RX)) + ((CosAngle * f_var))/100;}if (PositionT > 1) {  RYT = (get_val(RY)) + ((SinAngle * f_var))/100;}PositionT++;if (PositionT == 4) PositionT = Off;} set_val(RX,RXT);set_val(RY,RYT);} 
+const int8 DamPolar[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+function AxisRelease(AxisXY,AxisVal) { if (abs(get_ival(AxisXY)) <= YEP) return AxisVal; return get_ival(AxisXY); }
+combo YewifyExpoAssists { set_val(RY,AxisRelease(RY,YEP)); wait(YED); set_val(RX,AxisRelease(RX,YEP)); wait(YED); set_val(RY,AxisRelease(RY,inv(YEP))); wait(YED); set_val(RX,AxisRelease(RX,inv(YEP))); wait(YED); } 
+combo YewifyBO { set_val(AimY,YewifyBOPower);wait(YewifyBOWait);set_val(AimX,YewifyBOPower);wait(YewifyBOWait);set_val(AimY,YewifyBOPower * -1);wait(YewifyBOWait);set_val(AimX,YewifyBOPower * -1);wait(YewifyBOWait);}
+function P() { Speed = (Speed + Velocity) % 360;SP(Speed,Area);} 
+function SP(Velocity,Area){RX = AimX;RY = AimY;if(Velocity < 0) Velocity = 360 + (Velocity % 360);Velocity = (Velocity + 90) % 360;Area = clamp(Area, 0, 100);Sin = Polar_Array[Velocity];Cos = Polar_Array[(Velocity + 90) % 360];Set_val(RX,inv(Area * Cos / 100));Set_val(RY,inv(Area * Sin / 100));return;}
+function Set_val(Input,Output) {set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));return;}
+function Set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100)); return; }
+combo YewifySwitch { Set_Val(RY,YewifyStickyVal); wait(CWait); Set_Val(RX,YewifyStickyVal2); Set_Val(RY,YewifyStickyVal * -1); wait(CWait); Set_Val(RX,YewifyStickyVal2 * -1); wait(CWait); }
+function YewifyPolarV3 (Current,Received) { YROutput = Current / 10 + Received / 10;if(YROutput <= -3276) return -32768; if(YROutput >=  3276) return  32767; return Current + Received; } 
+function YewifyPolarity (Rotation,Radial) { set_polar(PS,Rotation,Radial * 327);set_val(PX,YewifyPolarV3(get_val(PX) + YRValueX * 327,get_ival(PX)));set_val(PY,YewifyPolarV3(get_val(PY) + YRValueY * 327,get_ival(PY)));	} 
+combo AA1s {set_val(10, (YAAStrength)); wait(10)set_val(9, (YAAStrength)); wait(10)set_val(10, YAAStrength * -1); wait(10)set_val(9, YAAStrength * -1); wait(10)}
+const int8 Polar_Array[]={100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+function AA1Shake() { Angle1 = (Angle1 + YAASpeed) % 360;Set_polar(2,Angle1, YAAStrengthOneUp);}
+combo HFAAs { set_val(10, (HipFireStrength)); wait(10)set_val(9, (HipFireStrength)); wait(10)set_val(10, HipFireStrength * -1); wait(10)set_val(9, HipFireStrength * -1); wait(10)}
+function Set_polar(stick, angle, YRRadius){x_stick = 8 + stick; y_stick = 9 + stick;if(angle < 0) angle = 360 + (angle % 360);angle = (angle + 90) % 360;YRRadius = clamp(YRRadius, 0, 100);sin_angle = Polar_Array[angle];cos_angle = Polar_Array[(angle + 90) % 360];offset(x_stick, inv(YRRadius * cos_angle / 100));offset(y_stick, inv(YRRadius * sin_angle / 100));return;}
+function offset(int axis, int offset_val) {set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));return}
+combo YewifyStickyTracker {set_val(AimY,xy_val(AimY, CycleAssist));wait(YewifyConstantAAWait);set_val(AimX,xy_val(AimX, CycleAssist));wait(YewifyConstantAAWait);set_val(AimY,xy_val(AimY, CycleAssist * -1));wait(YewifyConstantAAWait);set_val(AimX,xy_val(AimX, CycleAssist * -1));wait(YewifyConstantAAWait);}
+function xy_val(f_axis,f_val) {if(abs(get_val(f_axis)) < (CycleAssist + 1))  return f_val;return get_val(f_axis);}
+combo AssistOne { set_val(AimY,AssistOnePower);wait(AssistOneWait);set_val(AimX,AssistOnePower);wait(AssistOneWait);set_val(AimY,AssistOnePower * -1);wait(AssistOneWait);set_val(AimX,AssistOnePower * -1);wait(AssistOneWait);}
+function Polar() { Speed = (Speed + Angles) % 360;Set_polarA(Speed,Range);} 
+function Set_polarA(angle,YRRadius){RX = AimX;RY = AimY;if(angle < 0) angle = 360 + (angle % 360);angle = (angle + 90) % 360;YRRadius = clamp(YRRadius, 0, 100);Sin = Polar_ArrayA[angle];Cos = Polar_ArrayA[(angle + 90) % 360];set_Val(RX,inv(YRRadius * Cos / 100));set_Val(RY,inv(YRRadius * Sin / 100));return;}
+const int8 Polar_ArrayA[]= {100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+combo YewifyBloomReducer { set_val(XB1_LX,-35); wait(Wait); set_val(XB1_LX, 35); wait(Wait); if(Wait < 160){Wait = Wait + 10;} else {Wait = 100; } }
+combo YewifySticky { set_val(AimY,AxisR(AimY,AAPower)); wait(Delay); set_val(AimX,AxisR(AimX,AAPower)); wait(Delay); set_val(AimY,AxisR(AimY,inv(AAPower))); wait(Delay); set_val(AimX,AxisR(AimX,inv(AAPower))); wait(Delay); }
+function AimAssist (Strength,Step) {if (Power) { Ypower = Strength;Xpower = Strength * -1;Increment = Step;Power = Off;}if (!power) {Xpower += Increment;Ypower -= Increment;} else {Xpower -= Increment;Ypower += Increment;}CountPower ++;if (CountPower >= (Strength / Increment)) {power = !power;CountPower = 0;}	if (AxisXY > DZ) {if (Reducer) {set_val(RY,(Ypower - Strength / 2));set_val(RX,(Xpower - Strength / 2 * -1));} else {set_val(RY,(Ypower - Strength / 2) + get_ival(RY));set_val(RX,(Xpower - Strength / 2 * -1) + get_ival(RX));	}} else {if (Reducer) {set_val(RY,(Ypower - Strength / 2));set_val(RX,(Xpower - Strength / 2 * -1));} else {set_val(RY,(Ypower - Strength / 2));set_val(RX,(Xpower - Strength / 2 * -1));}}}
+function AimAssistY() { AAT += get_rtime(); if (!Axis) set_Val(RY,AAT * PolarPower / 10); if (Axis == 1) set_Val(RX,AAT * PolarPower / 10); if (Axis == 2) set_Val(RY,inv(AAT * PolarPower / 10)); if (Axis == 3) { set_Val(RX,inv(AAT * PolarPower / 10)); if (AAT > 50) { AAT = 0; Axis = 0; } } else if (AAT > 50) { AAT = 0; Axis += 1; } } 
+function set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100)); return; } 
+function AxisR(AxisXY,AxisVal) { if (abs(get_ival(AxisXY)) <= Power) return AxisVal;return get_ival(AxisXY); }
+const int8 YewifysPolarArray [] = {100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100}; 
+int BuildTrack,BuildCount,angle,RXT,RYT,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,x_stick,y_stick,cos_angle,sin_angle,Angle1,RX,RY,Time,Angle,Cos,Sin,X,Y,M,MaxM,AAT,Axis,power,Ypower,Xpower,Power,CountPower,AxisXY,Increment,YRSpeed,YROutput,YRValueX,YRValueY,YRAxisX,YRAxisY,YRAngle,Radius,PolarStrength,PositionT,CosAngle,SinAngle; 
+int inc = 1, dec, color[3];init{ color = 255; }main { combo_run(rgb); }combo rgb {wait(1);set_rgb(color, color[1], color[2]);color[dec] -= 1; color[inc] += 1;if(!color[dec]) { inc = (inc + 1) % 3; dec = (dec + 1) % 3; }} 
+define Reducer = On; 
+init{cls_oled(0);print(center_x(18, OLED_FONT_SMALL_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,Script_Text[0]);print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Script_Text1[0]);}const string Script_Text[] = {"Discord.GG/",""};const string Script_Text1[] = {"SnakeAim, Ultimate",""};function center_x(f_chars,f_font){return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);} 
+int YSPSpeed = 12; int RS_Gradient;int stick_input;int rnd; int mn = 326, mx = 328; define Circular= 1;define TallOval= 2;define WideOval= 3;define Spiral= 4;define Helix= 5; ú¸Œ´Œ¸¾ˆ¾Œ¾ˆ¼Š½

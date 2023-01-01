@@ -1,0 +1,165 @@
+/*
+
+ █████  ██    ██ ██   ██        ███    ███ ██     ██ ██████  
+██   ██ ██    ██  ██ ██  ██     ████  ████ ██     ██      ██ 
+███████ ██    ██   ███          ██ ████ ██ ██  █  ██  █████  
+██   ██ ██    ██  ██ ██  ██     ██  ██  ██ ██ ███ ██ ██      
+██   ██  ██████  ██   ██        ██      ██  ███ ███  ███████ 
+                                                             
+✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧
+
+~ Welcome to Aux: MW2
+~ You are currently using Version 1
+
+~ Check out the OFFICIAL AUX SCRIPTS website:
+
+    ->  https://www.auxscripts.com  <-
+
+~ CHECK OUT SCRIPT SHOWCASES: https://www.youtube.com/c/Auxzcript
+
+✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧
+*/
+
+//Aimbot Settings:
+
+int ProAim_MW2 = 15;
+int ProAim_MW2neg = -15;
+
+int ProAim_MW2aiming = 10;
+int ProAim_MW2hipfire = -10;
+
+int DynamicAim_MW2 = 19;
+int DynamicAim_MW2neg = -19;
+
+int Latency = 14;
+int Restart = 12;
+
+//Anti-Recoil X Settings:
+int AntiRecoil_Ver = 8;        //Anti Recoil Vertical Strength
+int AntiRecoil_Hor = 0;        //Anti Recoil Horizontal Strength
+int AntiRecoil_Invert = 1;     //Change 1 to -1 If you play with Inverted
+int ARS;
+
+//Rapid Fire Settings:
+int RapidFire = FALSE;
+define SPEED = 20;             //Rounds per Second
+
+//Movement Mods Settings:
+int Dropshot = FALSE;
+int AntiHit_drop = 40;         //If dropshotting performs incorrectly - raise these values by +10
+int AntiHit_stand = 55;
+int Jumpshot = FALSE
+
+/*
+✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧⋄⋆⋅⋆⋄✧
+CONFIGS (Ignore unless you are changing keybinds) */
+
+define FIRE_BTN = XB1_RT;
+define ADS_BTN = XB1_LT;
+define TACTICAL = XB1_LB;
+define LETHAL = XB1_RB;
+define RX = XB1_RX;
+define RY = XB1_RY;
+define LX = XB1_LX;
+define LY = XB1_LY;
+define CROUCH_BTN = XB1_RS;
+define SPRINT_BTN = XB1_LS;
+define RELOAD_BTN = XB1_X
+define JUMP_BTN = XB1_A;
+define MELEE_BTN = XB1_B;
+define SWAP_BTN = XB1_Y;
+define UP = XB1_UP;
+define LEFT = XB1_LEFT;
+define RIGHT = XB1_RIGHT;
+define DOWN = XB1_DOWN;
+function a_f(p,m) {
+if(abs(get_val(p)) < Restart)
+return m;
+return get_val(p);}
+
+
+main{
+
+combo_run (ProAim_ZeroBuildX);
+
+if(get_val(7)) combo_run(ProAim_ZeroBuildS);
+
+if(get_val(4)) combo_run(ProAim_ZeroBuildDynamic);
+
+if(get_val(7) && get_val(4)) combo_run(ProAim_ZeroBuildDynamic);
+
+if (RapidFire)
+if (get_val(XB1_RT)) {
+combo_run(RAPID_FIRE);
+}
+        
+if(get_val(ADS_BTN) && event_press(RIGHT)){
+Dropshot =! Dropshot;
+if(Dropshot){
+if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);
+}
+        
+if (Jumpshot)  
+if(get_val(XB1_RT) > 99){
+combo_run(JUMPSHOT);
+}
+
+if(get_val(7) && get_val(4))
+combo_run(AntiRecoil_Ver);
+if(abs(get_val(10)) > AntiRecoil_Ver + 2 || abs(get_val(9)) > AntiRecoil_Ver + 2) {
+combo_stop(AntiRecoil_Ver);}}}}
+    
+combo ProAim_ZeroBuildX { 
+    set_val(10,a_f(10,ProAim_MW2));
+    wait(Latency)
+    set_val(9,a_f(9,ProAim_MW2));
+    wait(Latency)
+    set_val(10,a_f(10,ProAim_MW2neg));
+    wait(Latency)
+    set_val(9,a_f(9,ProAim_MW2neg));
+    wait(Latency)}
+    
+combo ProAim_ZeroBuildS { 
+    set_val(10,a_f(10,ProAim_MW2aiming));
+    wait(Latency)
+    set_val(9,a_f(9,ProAim_MW2aiming));
+    wait(Latency)
+    set_val(10,a_f(10,ProAim_MW2hipfire));
+    wait(Latency)
+    set_val(9,a_f(9,ProAim_MW2hipfire));
+    wait(Latency)}
+    
+combo ProAim_ZeroBuildDynamic { 
+    set_val(10,a_f(10,DynamicAim_MW2));
+    wait(Latency)
+    set_val(9,a_f(9,DynamicAim_MW2));
+    wait(Latency)
+    set_val(10,a_f(10,DynamicAim_MW2neg));
+    wait(Latency)
+    set_val(9,a_f(9,DynamicAim_MW2neg));
+    wait(Latency)}
+    
+combo AntiRecoil_Ver {
+    ARS = get_val(10) + AntiRecoil_Ver;
+    if(ARS > 100) ARS = 100;
+    set_val(10,ARS * AntiRecoil_Invert);
+    ARS = get_val(9) + AntiRecoil_Hor;
+    if(ARS > 100) ARS = 100;
+    set_val(9,ARS);}
+
+combo RAPID_FIRE {
+	set_val(XB1_RT,100);
+	wait(SPEED);
+	set_val(XB1_RT,0);
+	wait(SPEED);}
+	
+combo Dropshot {
+    set_val(5,100);
+    wait(AntiHit_drop);
+    wait(AntiHit_stand);
+    set_val(5,100);}
+    
+combo JUMPSHOT {
+    set_val(XB1_A, 100);
+    wait(100); 
+    wait(300);}

@@ -1,0 +1,104 @@
+////////////////////////////////////////
+//                                    //
+//          INFINITE WAVEDASH         //
+//			LEFT TORNADO SPIN		  //
+//									  //
+//              BY CULAN              //
+define//////////////////////////////////
+
+// TURN SCRIPT ON/OFF
+
+// >>  OFF <<		= 	HOLD TURN_ON_OFF_BUTTON_1 + TURN_ON_OFF_BUTTON_2 >>LONGER<< THAN A SECOND		-> RED LED 				
+//  >> ON << 		= 	HOLD TURN_ON_OFF_BUTTON_1 + TURN_ON_OFF_BUTTON_2 >>SHORTER<< THAN A SECOND	 	-> BLINKS GREEN LED		
+                                                                                                            							
+TURN_ON_OFF_BUTTON_1 				= PS4_OPTIONS, // you can change this if you like
+TURN_ON_OFF_BUTTON_2              	= PS4_DOWN, // you can change this if you like
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// CONTROLLER LAYOUT // ADD YOUR CONTROLLER LAYOUT! 
+
+DRIVE_FORWARDS_BUTTON 	= PS4_R2,
+DRIVE_BACKWARDS_BUTTON 	= PS4_L2,
+JUMP_BUTTON				= PS4_CIRCLE,
+BOOST_BUTTON 			= PS4_CROSS,
+POWERDRIFT_BUTTON		= PS4_L1,
+AIRROLL_BUTTON		    = PS4_L2,
+BALLCAM_BUTTON 			= PS4_SQUARE,
+AIRROLL_RIGHT_BUTTON	= PS4_RIGHT,
+AIRROLL_LEFT_BUTTON 	= PS4_LEFT, 
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+INFINITE_WAVEDASH_MOD  	= TRUE, // MOD ON/OFF // ON = TRUE // OFF = FALSE
+LEFT_TORNADO_SPIN_MOD	= TRUE,
+
+INFINITE_WAVEDASH	 	= PS4_SQUARE, // activate INFINITE WAVEDASH    //~!~// HOLD YOUR DEFINED "INFINITE_WAVEDASH" BUTTON ON THE WALL //~!~// 
+LEFT_TORNADO_SPIN		= PS4_UP, // activate LEFT TORNADO SPIN
+INFINITE_WAVEDASH_JUMP_HEIGHT = 10;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+int TURN_SCRIPT_ON_OFF = TRUE // Dont change this!
+main {
+	if((TURN_SCRIPT_ON_OFF) && get_val(TURN_ON_OFF_BUTTON_1) && get_ptime(TURN_ON_OFF_BUTTON_1)> 500 && get_val(TURN_ON_OFF_BUTTON_2) && get_ptime(TURN_ON_OFF_BUTTON_2) > 500){
+	TURN_SCRIPT_ON_OFF = FALSE;
+	set_led(LED_2, 3);
+  } 
+    if((!TURN_SCRIPT_ON_OFF) && get_val(TURN_ON_OFF_BUTTON_1) && get_ptime(TURN_ON_OFF_BUTTON_1)< 500 && get_val(TURN_ON_OFF_BUTTON_2) && get_ptime(TURN_ON_OFF_BUTTON_2) < 500){
+    TURN_SCRIPT_ON_OFF = TRUE;
+	set_ledx(LED_3, 3);
+  }
+   if(!get_ledx() && TURN_SCRIPT_ON_OFF) {
+   reset_leds();
+  }
+	if((TURN_SCRIPT_ON_OFF) && (INFINITE_WAVEDASH_MOD) && get_val(INFINITE_WAVEDASH)){
+		combo_run(INFINITE_WAVE_DASH);
+		set_val(INFINITE_WAVEDASH, 0);
+}
+	if	((TURN_SCRIPT_ON_OFF) && (INFINITE_WAVEDASH_MOD) && get_val(INFINITE_WAVEDASH)){
+		set_val(PS4_LY, 0);
+		set_val(PS4_LX, 0);
+		set_val(INFINITE_WAVEDASH, 0);
+		set_val(BOOST_BUTTON, 100);
+		set_val(JUMP_BUTTON, 0);
+		set_val(DRIVE_FORWARDS_BUTTON, 100);
+		
+}
+	if ((TURN_SCRIPT_ON_OFF) && (LEFT_TORNADO_SPIN_MOD) && get_val(LEFT_TORNADO_SPIN)){
+		combo_run(LEFT_TORNADOSPIN);
+}
+}
+combo INFINITE_WAVE_DASH {
+	set_val(JUMP_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(PS4_LX, 0);
+	set_val(PS4_LY, -100);
+	set_val(AIRROLL_LEFT_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	wait(INFINITE_WAVEDASH_JUMP_HEIGHT);
+	set_val(JUMP_BUTTON, 0);
+	set_val(BOOST_BUTTON, 100);
+	set_val(PS4_LX, 0);
+	set_val(PS4_LY, -100);
+	set_val(AIRROLL_LEFT_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	wait(INFINITE_WAVEDASH_JUMP_HEIGHT);
+	set_val(JUMP_BUTTON, 100);
+	set_val(BOOST_BUTTON, 100);
+	set_val(PS4_LX, -100);
+	set_val(PS4_LY, 0);
+	set_val(AIRROLL_LEFT_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	wait(INFINITE_WAVEDASH_JUMP_HEIGHT);
+	set_val(JUMP_BUTTON, 0);
+	set_val(BOOST_BUTTON, 100);
+	set_val(PS4_LX, 0);
+	set_val(PS4_LY, -100);
+	set_val(AIRROLL_LEFT_BUTTON, 100);
+	set_val(POWERDRIFT_BUTTON, 100);
+	set_val(DRIVE_FORWARDS_BUTTON, 100);
+	wait(INFINITE_WAVEDASH_JUMP_HEIGHT);
+}
+combo LEFT_TORNADOSPIN {
+	set_val(AIRROLL_LEFT_BUTTON, 100);
+	set_val(PS4_LX, 100);
+	set_val(BOOST_BUTTON, 100);
+}

@@ -1,0 +1,160 @@
+// GPC Online Library
+// gl0zz3n's_old_school_rapid_fire_controller.gpc
+
+/*
+How to use:
+
+	HOLD: (LB + RB + LB + RB) or (L2 + R2 + L1 + R1) to ENTER "Menu-Mode". 
+		- Your controller will VIBRATE 2x and you can then release the buttons.
+	
+	TAP: (B) OR (CIRCLE) to EXIT "Menu-Mode".
+		- Your controller will perform 4x SHORT VIBRATIONS to indicate you have disabled "Menu-Mode".
+		
+
+
+
+
+
+		TAP: (RT) or (R2) to toggle Rapid-Fire ON and OFF.
+		
+		TAP: (DPAD-UP): 12.5 Shots Per Second Rapid-Fire (Works well in MOST games - FAST)
+		
+		TAP: (DPAD-DOWN): 14.49 Shots Per Second Rapid-Fire (GTA/COD AUTOS)
+		
+		TAP: (DPAD-LEFT): 13.88 Shots Per Second Rapid-Fire (COD FAST)
+		
+		TAP: (DPAD-RIGHT): 10 Shots Per Second Rapid-Fire (COD SLOW)
+		
+*/
+
+
+
+
+
+
+
+
+int programming; //use this to toggle mods off and on
+
+int hold_time, wait_time;
+int rapidfire = 1;
+
+
+main {
+	
+	
+	if (!programming){
+
+		if( (get_val(XB1_LT)) && (get_val(XB1_RT)) && (get_val(XB1_LB)) && (get_val(XB1_RB))) {
+			programming = 1;
+			combo_run(vibrate_mod_on);
+		}
+	}
+
+	if (programming) {
+
+		if(event_press(XB1_RT)) {
+			rapidfire = !rapidfire;
+			
+			if(!rapidfire) {
+				combo_run(vibrate_mod_on);
+			}
+	
+			if(rapidfire) {
+				combo_run(vibrate2);
+			}
+		}
+		
+
+		if(event_press(XB1_UP)) { // 12.5 sps
+			hold_time = 40; 
+			wait_time = 40;
+		} 
+
+		if(event_press(XB1_DOWN)) { // 14.49 sps
+			hold_time = 24; 
+			wait_time = 44; 
+		}
+
+		if(event_press(XB1_LEFT)) { // 13.88 sps
+			hold_time = 30; 
+			wait_time = 42;
+		} 
+
+		if(event_press(XB1_RIGHT)) { // 10 sps
+			hold_time = 50; 
+			wait_time = 50;
+		}
+
+
+
+		if(event_press(XB1_B)) { 
+			combo_run(vibrate2); programming = 0; 
+		}
+	}
+
+
+	if (rapidfire) {
+		if(get_val(XB1_RT)) combo_run(RAPIDFIRE);
+	}
+
+}
+
+
+
+
+
+combo vibrate2 {
+set_rumble(RUMBLE_A, (80));
+set_rumble(RUMBLE_B, (80));
+wait(100);
+set_rumble(RUMBLE_A, (0));
+set_rumble(RUMBLE_B, (0));
+wait(100);
+set_rumble(RUMBLE_A, (80));
+set_rumble(RUMBLE_B, (80));
+wait(100);
+set_rumble(RUMBLE_A, (0));
+set_rumble(RUMBLE_B, (0));
+wait(100);
+set_rumble(RUMBLE_A, (80));
+set_rumble(RUMBLE_B, (80));
+wait(100);
+set_rumble(RUMBLE_A, (0));
+set_rumble(RUMBLE_B, (0));
+wait(100);
+set_rumble(RUMBLE_A, (80));
+set_rumble(RUMBLE_B, (80));
+wait(100);
+set_rumble(RUMBLE_A, (0));
+set_rumble(RUMBLE_B, (0));
+wait(100);
+reset_rumble();
+}
+
+
+combo vibrate_mod_on {
+set_rumble(RUMBLE_A, (80));
+set_rumble(RUMBLE_B, (80));
+wait(400);
+set_rumble(RUMBLE_A, (0));
+set_rumble(RUMBLE_B, (0));
+wait(200);
+set_rumble(RUMBLE_A, (80));
+set_rumble(RUMBLE_B, (80));
+wait(400);
+set_rumble(RUMBLE_A, (0));
+set_rumble(RUMBLE_B, (0));
+wait(200);
+reset_rumble();
+}
+
+
+combo RAPIDFIRE {
+	set_val(XB1_RT,100);
+	set_led(LED_3, 1);
+	wait(hold_time);
+	set_val(XB1_RT,0);
+	set_led(LED_3, 0);
+	wait(wait_time);
+}

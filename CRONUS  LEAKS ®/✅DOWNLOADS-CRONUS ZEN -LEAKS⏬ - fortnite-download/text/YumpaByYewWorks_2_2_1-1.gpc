@@ -1,0 +1,726 @@
+unmap XB1_XBOX;
+define Floor = XB1_RB;
+define Ramp = XB1_LT;
+define Roof = XB1_LB;
+define Trap = XB1_X;
+define ADS = XB1_LT;
+define Fire  = XB1_RT;
+define PY = POLAR_RY;
+define Wall = XB1_RT;
+define AimX  = PS4_RX;
+define AimY  = PS4_RY;
+define Off     = FALSE;
+define On    = TRUE;
+define PX      = POLAR_RX;
+define PS = POLAR_RS;
+define RumA = RUMBLE_A;
+define RumB  = RUMBLE_B;
+define Pickaxe = PS4_TRIANGLE;
+define Edit  = PS4_L3 ;
+define Confirm = PS4_L2;
+define Build = PS4_CIRCLE ;
+int NoVibrations = TRUE;
+int DelayReducer = -9;
+int InstantTriggers = TRUE;
+int TouchPadFix = TRUE;
+int YewWorksRecoilReducer = TRUE;
+int VerticalStrength = 27;
+int HorizontalStrength = 0;
+int YewWorksBloomReducer = TRUE;
+int BloomReducerDelay = 50;
+int YewWorksAA8 = TRUE;
+int Sum = 8;
+int ThreeTimes = 6;
+int OneThird = 2;
+int DeadZone = 10;
+int YewWorksAA7 = TRUE;
+int YewWorksAA7HipFire = TRUE;
+int YewWorksAA7Time = 1000;
+int YewWorksAA7Delay = 70;
+int YewWorksAA7Power = 4;
+int YewWorksAA7Power2 = 5;
+int YewWorksPolarAA4 = TRUE;
+int YewWorksPolarAA4Speed = 30;
+int YewWorksPolarAA4Power = 5;
+int YewWorksConstantAA = TRUE;
+define YewWorksConstantAssistPower = 4;
+define YewWorksConstantAP = YewWorksConstantAssistPower;
+int YewWorksConstantAssistDelay = 10;
+int YewWorksPolarAA3 = TRUE;
+int YewWorksPolarAA3Range = 5;
+int YewWorksPolarAA3Speed = 21;
+int YewWorksTracking = TRUE;
+int YewWorksTrackingSpeed = 100;
+int YewWorksAA6 = TRUE;
+int YewWorksAA6Power = 4;
+int YewWorksAA6PowerPlusOne = 5;
+int YewWorksAA6Speed = 100;
+int YewWorksAA5 = TRUE;
+int YewWorksAA5Power = 4;
+int YewWorksAA5Delay = 20;
+int YewWorksAA5Limit = 40;
+int YewWorksAA5Range = 5;
+int YewWorksAA5Speed = 30;
+int YewWorksShapeBoosts = FALSE;
+int YewWorksShapeSpeed = 30;
+int YewWorksShapeRange = 4;
+int YewWorksShapeRangeMin = 2;
+int YewWorksShapeSpeedBoost = 0;
+int YewWorksShapeRangeBoost = 0;
+int YewWorksShape = Helix;
+int YewWorksAA4 = TRUE;
+int YewWorksAA4Power = 5;
+int YewWorksAA3 = TRUE;
+int YewWorksAA3Power = 4;
+int YewWorksAA3Delay = 10;
+int YewWorksAA3Limit = 45;
+int YewWorksPolarAA2 = TRUE;
+int YewWorksPolarAA2Range = 4;
+int YewWorksPolarAA2Range2 = 5;
+int YewWorksPolarAA2Speed = 30;
+int YewWorksPolarAA2Speed2 = 30;
+int YewWorksPolarAA = TRUE;
+int YewWorksPolarAAHipFire = TRUE;
+int YewWorksPolarAATimed = FALSE;
+int YewWorksPolarAAPower = 1;
+int YewWorksPolarAATime = 5000;
+int YewWorksAA2 = TRUE;
+int YewWorksAA2HipFire = TRUE;
+int YewWorksAA2Power = 4;
+int YewWorksAA2Delay = 10;
+int YewWorksAA = TRUE;
+int YewWorksAAHipFire = TRUE;
+int YewWorksAAPower = 5;
+int YewWorksAADelay = 10;
+int YewWorksAAIntervals = 1;
+
+int BuildTracker = TRUE;
+define BuildSyncTime = 6000;
+int BuildTrack,BuildCount;
+main {
+	if(get_val(Build)) {
+		combo_run(ActivatedYewifyEditTracker);
+			}
+	if(get_val(Edit)) {
+		combo_run(ActivatedYewifyEditTracker);
+			}
+	if(get_val(Pickaxe)) {
+		combo_run (NonActivatedYewifyEditTracker);
+			}
+	if(get_val(Confirm)) {
+		combo_run (NonActivatedYewifyEditTracker);
+			}
+			
+		if(BuildTracker) {
+  if(event_press(Build)) { BuildTrack = !BuildTrack;}
+  if(BuildTrack) { Â¡BuildCount += get_rtime();
+  if(event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0;}
+  if(get_ival(XB1_LB) || get_ival(XB1_LT) || get_ival(XB1_RT) || get_ival(XB1_RB) || get_ival(XB1_X)) BuildCount = 0;
+   }
+}
+  if(!BuildTrack) {
+	stick_input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+	if(YewWorksPolarAA3) {
+		if(get_ival(PS4_L2) || (get_ival(PS4_R2))) {
+			if (stick_input <= YewWorksPolarAA3Range) {
+				rnd = random(mn, mx);
+				RS_Gradient = (RS_Gradient + YewWorksPolarAA3Speed) % 360;
+				set_polar(POLAR_RS, RS_Gradient, (YewWorksPolarAA3Range * rnd));
+							}
+					}
+			}
+	if(YewWorksPolarAA4) {
+		if (get_ival(ADS) || get_ival(Fire)) {
+			YRAxisX  = isqrt(abs(get_ival(AimX)) * abs(get_ival(AimX)));
+			YRAxisY  = isqrt(abs(get_ival(AimY)) * abs(get_ival(AimY)));
+			if (YewWorksPolarAA4) {
+				YRAngle = YRSpeed;
+				Radius = YewWorksPolarAA4Power;
+				YRSpeed = YRSpeed + YewWorksPolarAA4Speed;
+				if (YRSpeed < 0) YRSpeed += 360;
+				YRSpeed = YRSpeed % 360;
+							}
+			else {
+				YRAngle = Off;
+				YewWorksPolarAA4Power = Off;
+							}
+			if(YewWorksRecoilReducer) {
+				if (get_ival(ADS) && get_ival(Fire)) {
+					if (YRAxisX <= abs(HorizontalStrength)) {
+						YRValueX = HorizontalStrength;
+											}
+					else {
+						YRValueX = Off;
+											}
+					if (YRAxisY <= abs(VerticalStrength)) {
+						YRValueY = VerticalStrength;
+											}
+					else {
+						YRValueY = Off;
+											}
+									}
+				else {
+					YRValueY = Off;
+					YRValueX = Off;
+									}
+							}
+			YewifyPolarity(YRAngle,Radius);
+					}
+			}
+	if(YewWorksAA3){
+		if (get_ival(ADS)){
+			combo_run(YewWorksAA3);
+			Polar();
+					}
+		if (abs(get_ival(AimX)) > YewWorksAA3Limit || abs(get_ival(AimY)) > YewWorksAA3Limit) {
+			combo_stop(YewWorksAA3);
+					}
+			}
+	X = get_ival(RX);
+	Y = get_ival(RY);
+	M = isqrt(pow(X, 2) + pow(Y, 2));
+	MaxM = (M < 100);
+	if (!(Time++ % YewWorksAAIntervals)) {
+		Angle += YewWorksPolarAA2Speed2;
+			}
+	Angle = Angle % 360;
+	Sin = YewWorksPolarArray[Angle % 360];
+	Cos = YewWorksPolarArray[(Angle + 270) % 360];
+	Cos = (Cos * YewWorksPolarAA2Range) / 100;
+	Sin = (Sin * YewWorksPolarAA2Range) / 100;
+	if((YewWorksPolarAA2 && get_ival(ADS)) || (YewWorksPolarAAHipFire && get_ival(Fire))) {
+		if (M <= YewWorksPolarAA2Range) {
+			Sin -= Y;
+			Cos -= X;
+					}
+		else {
+			Sin = (Sin * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MaxM;
+			Cos = (Cos * (200 - ((abs(X) + M) / 10) * 10) / 200) * MaxM;
+					}
+		set_val(RX, clamp(X + Cos, -100, 100));
+		set_val(RY, clamp(Y + Sin, -100, 100));
+			}
+	if(YewWorksAA2) {
+		if (get_ival(ADS) || (YewWorksAA2HipFire && get_ival(Fire))) {
+			combo_run(YewWorksAA2);
+					}
+		else {
+			combo_stop(YewWorksAA2);
+					}
+			}
+	if(YewWorksAA8) {
+		if (event_press(ADS)) {
+			Power = On;
+					}
+		else if (!get_ival(ADS) && event_press(Fire)) {
+			Power = On;
+					}
+		if (get_ival(ADS) || get_ival(Fire)) {
+			AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));
+			if (Sum == 1)AimAssist(ThreeTimes,OneThird);
+					}
+		else {
+			CountPower = 0;
+			power = Off;
+					}
+			}
+	if(YewWorksPolarAA) {
+		if (YewWorksPolarAATimed) {
+			if (get_ival(ADS) && get_ptime(ADS) <= YewWorksPolarAATime || YewWorksPolarAAHipFire && get_ival(Fire) && get_ptime(Fire) <= YewWorksPolarAATime) {
+				AimAssistY();
+							}
+					}
+		else if (get_ival(ADS)|| YewWorksPolarAAHipFire && get_ival(Fire)) {
+			AimAssistY();
+					}
+		if (!get_ival(ADS) && !get_ival(Fire)) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+	vm_tctrl(DelayReducer);
+	if(TouchPadFix) {
+		swap(PS4_SHARE, PS4_TOUCH);
+			}
+	if(NoVibrations) block_rumble();
+	if(InstantTriggers) {
+		deadzone(XB1_LT,XB1_RT,100,100);
+			}
+	if(YewWorksBloomReducer) {
+		if(get_val(ADS) && (get_val(Fire))) {
+			combo_run(YewWorksBloomReducer);
+					}
+		if(abs(get_val(XB1_LX)) > 10 || abs(get_val(XB1_LY)) > 10){
+			combo_stop(YewWorksBloomReducer);
+					}
+			}
+	if(YewWorksTracking){
+		if(get_val(XB1_LT) && get_val(XB1_RT)){
+			sensitivity(XB1_RX,43,YewWorksTrackingSpeed);
+			sensitivity(XB1_RY,43,YewWorksTrackingSpeed);
+					}
+			}
+	if(YewWorksConstantAA){
+		if(!get_val(Fire) || get_val(ADS) && get_val(Fire)){
+			combo_run(YewWorksAA4);
+			if(abs(get_val(AimY)) > 36 || abs(get_val(AimX)) > 36 ){
+				combo_stop(YewWorksAA4);
+							}
+					}
+			}
+	if(YewWorksAA6){
+		if(get_val(ADS)> 1){
+			combo_run(YewWorksAA6);
+			AA1Shake();
+					}
+		if(abs(get_val(9)) > 36 || abs(get_val(10)) > 36) {
+			combo_stop(YewWorksAA6);
+					}
+			}
+	if(YewWorksAA4){
+		if(get_val(Fire)> 1){
+			combo_run(YewWorksAA8);
+					}
+		if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) {
+			combo_stop(YewWorksAA8);
+					}
+			}
+	if(YewWorksAA7){
+		if ((get_ival(ADS)) || (get_ival(Fire) && YewWorksAA7HipFire)) {
+			if (abs(get_ival(RX)) <= YewWorksAA7Time && abs(get_ival(RY)) <= YewWorksAA7Time) {
+				combo_run(YewWorksAA7);
+							}
+					}
+		else {
+			combo_stop(YewWorksAA7);
+					}
+			}
+	if(YewWorksAA5){
+		if (get_ival(ADS)){
+			combo_run(YewWorksAA5);
+			P();
+					}
+		if (abs(get_ival(AimX)) > YewWorksAA5Limit || abs(get_ival(AimY)) > YewWorksAA5Limit) {
+			combo_stop(YewWorksAA5);
+					}
+			}
+	if(YewWorksAA) {
+		if (get_ival(ADS) || (YewWorksAAHipFire && get_ival(Fire))) {
+			combo_run(YewWorksPolarAssist3);
+					}
+		else {
+			combo_stop(YewWorksPolarAssist3);
+					}
+			}
+	if(YewWorksShape) {
+		RXT = get_val(RX);
+		RYT = get_val(RY);
+		ActualMagnitude = isqrt(pow(RXT,2) + pow(RYT,2));
+		MaxMagnitude = (ActualMagnitude < 100);
+		angle += YewWorksShapeSpeed + Angle;
+		angle = angle % 360;
+		CosAngle = YewWorksPolarArray[(angle + 270) % 360];
+		SinAngle = YewWorksPolarArray[angle % 360];
+		if (YewWorksShapeBoosts) {
+			if (get_ival(Fire)) {
+				SmartRumble = get_rumble(RumbleToUse());
+				Angle = YewWorksShapeSpeedBoost;
+				if (SmartRumble > 10 && SmartRumble < 90) {
+					PolarStrength = (YewWorksShapeRange + YewWorksShapeRangeBoost + YewWorksShapeSpeedBoost + SmartRumble / 4);
+					SmartRumble   = Off;
+									}
+							}
+					}
+		if (get_ival(ADS) || get_ival(Fire)) {
+			if (ActualMagnitude < YewWorksShapeRange) {
+				SinAngle -= RYT;
+				CosAngle -= RXT;
+							}
+			else {
+				SinAngle = (SinAngle * (200 - ((abs(RYT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(RXT) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+							}
+			if (!get_rumble(RumbleToUse())) GetShapes(YewWorksShapeRange);
+			else GetShapes(PolarStrength);
+					}
+		PolarStrength = On;
+		SmartRumble   = On;
+			}
+	} }
+combo NonActivatedYewifyEditTracker {
+	YewWorksPolarAA2     = TRUE;
+	YewWorksPolarAAHipFire = TRUE;
+	YewWorksAA2          = TRUE;
+	YewWorksAA2HipFire     = TRUE;
+	YewWorksAA8          = TRUE;
+	YewWorksPolarAA        = TRUE;
+	YewWorksPolarAATimed = FALSE;
+	YewWorksBloomReducer   = TRUE;
+	YewWorksAA3          = TRUE;
+	YewWorksConstantAA     = TRUE;
+	YewWorksAA4          = TRUE;
+	YewWorksAA6            = TRUE;
+	YewWorksTracking     = TRUE;
+	YewWorksRecoilReducer  = TRUE;
+	YewWorksPolarAA4     = TRUE;
+	YewWorksPolarAA3       = TRUE;
+	YewWorksAA7          = TRUE;
+	YewWorksAA7HipFire     = TRUE;
+	YewWorksAA           = TRUE;
+	YewWorksAAHipFire      = TRUE;
+	YewWorksAA5          = TRUE;
+	YewWorksShapeBoosts    = FALSE;
+	}
+combo ActivatedYewifyEditTracker {
+	YewWorksPolarAA2         = FALSE;
+	YewWorksPolarAAHipFire = FALSE;
+	YewWorksAA2              = FALSE;
+	YewWorksAA2HipFire     = FALSE;
+	YewWorksAA8              = FALSE;
+	YewWorksPolarAA        = FALSE;
+	YewWorksPolarAATimed     = FALSE;
+	YewWorksBloomReducer   = FALSE;
+	YewWorksAA3              = FALSE;
+	YewWorksConstantAA     = FALSE;
+	YewWorksAA4              = FALSE;
+	YewWorksAA6            = FALSE;
+	YewWorksTracking         = FALSE;
+	YewWorksRecoilReducer  = FALSE;
+	YewWorksPolarAA4         = FALSE;
+	YewWorksPolarAA3       = FALSE;
+	YewWorksAA7              = FALSE;
+	YewWorksAA7HipFire     = FALSE;
+	YewWorksAA               = FALSE;
+	YewWorksAAHipFire      = FALSE;
+	YewWorksAA5              = FALSE;
+	YewWorksShapeBoosts = FALSE;
+	wait(100);
+	}
+function RumbleToUse() {
+	if (get_rumble(RumA) >= get_rumble(RumB)) return RumA;
+	if (get_rumble(RumA) < get_rumble(RumB)) return RumB;
+	return Off;
+	}
+function GetShapes(f_var) {
+	if (!SpiralPosition1) {
+		InnerSpiral -= 1;
+		if (InnerSpiral < YewWorksShapeRangeMin)SpiralPosition1 = On;
+			}
+	else {
+		InnerSpiral += 1;
+		if (InnerSpiral > f_var)SpiralPosition1 = Off;
+			}
+	if (!SpiralPosition2) {
+		OuterSpiral -= 1;
+		if (OuterSpiral < YewWorksShapeRangeMin)SpiralPosition2 = On;
+			}
+	else {
+		OuterSpiral += 1;
+		if (OuterSpiral > f_var)SpiralPosition2 = Off;
+			}
+	if (YewWorksShape == Circular) {
+		RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+		RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+			}
+	if (YewWorksShape == TallOval) {
+		RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+		RXT = (get_val(RX)) + ((CosAngle * YewWorksShapeRangeMin))/100;
+			}
+	if (YewWorksShape == WideOval) {
+		RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+		RYT = (get_val(RY)) + ((SinAngle * YewWorksShapeRangeMin))/100;
+			}
+	if (YewWorksShape == Spiral) {
+		RYT = (get_val(RY)) + ((SinAngle * InnerSpiral))/100;
+		RXT = (get_val(RX)) + ((CosAngle * OuterSpiral))/100;
+			}
+	if (YewWorksShape == Helix) {
+		if (PositionT <= 1) {
+			RXT = (get_val(RX)) + ((CosAngle * f_var))/100;
+					}
+		if (PositionT > 1) {
+			RYT = (get_val(RY)) + ((SinAngle * f_var))/100;
+					}
+		PositionT++;
+		if (PositionT == 4) PositionT = Off;
+			}
+	set_val(RX,RXT);
+	set_val(RY,RYT);
+	}
+function AxisRelease(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= YewWorksAAPower) return AxisVal;
+	return get_ival(AxisXY);
+	}
+combo YewWorksPolarAssist3 {
+	set_val(RY,AxisRelease(RY,YewWorksAAPower));
+	wait(YewWorksAADelay);
+	set_val(RX,AxisRelease(RX,YewWorksAAPower));
+	wait(YewWorksAADelay);
+	set_val(RY,AxisRelease(RY,inv(YewWorksAAPower)));
+	wait(YewWorksAADelay);
+	set_val(RX,AxisRelease(RX,inv(YewWorksAAPower)));
+	wait(YewWorksAADelay);
+	}
+combo YewWorksAA5 {
+	set_val(AimY,YewWorksAA5Power);
+	wait(YewWorksAA5Delay);
+	set_val(AimX,YewWorksAA5Power);
+	wait(YewWorksAA5Delay);
+	set_val(AimY,YewWorksAA5Power * -1);
+	wait(YewWorksAA5Delay);
+	set_val(AimX,YewWorksAA5Power * -1);
+	wait(YewWorksAA5Delay);
+	}
+function P() {
+	YewWorksPolarAA2Speed2 = (YewWorksPolarAA2Speed2 + YewWorksAA5Speed) % 360;
+	SP(YewWorksPolarAA2Speed2,YewWorksAA5Range);
+	}
+function SP(YewWorksAA5Speed,YewWorksAA5Range){
+	RX = AimX;
+	RY = AimY;
+	if(YewWorksAA5Speed < 0) YewWorksAA5Speed = 360 + (YewWorksAA5Speed % 360);
+	YewWorksAA5Speed = (YewWorksAA5Speed + 90) % 360;
+	YewWorksAA5Range = clamp(YewWorksAA5Range, 0, 100);
+	Sin = YewWorksPolarArray[YewWorksAA5Speed];
+	Cos = YewWorksPolarArray[(YewWorksAA5Speed + 90) % 360];
+	Sv(RX,inv(YewWorksAA5Range * Cos / 100));
+	Sv(RY,inv(YewWorksAA5Range * Sin / 100));
+	return;
+	}
+function Sv(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+function SV(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+combo YewWorksAA7 {
+	SV(RY,YewWorksAA7Power);
+	wait(YewWorksAA7Delay);
+	SV(RX,YewWorksAA7Power2);
+	SV(RY,YewWorksAA7Power * -1);
+	wait(YewWorksAA7Delay);
+	SV(RX,YewWorksAA7Power2 * -1);
+	wait(YewWorksAA7Delay);
+	}
+function YewifyPolarV3 (Current,Received) {
+	YROutput = Current / 10 + Received / 10;
+	if(YROutput <= -3276) return -32768;
+	if(YROutput >=  3276) return  32767;
+	return Current + Received;
+	}
+function YewifyPolarity (Rotation,Radial) {
+	set_polar(PS,Rotation,Radial * 327);
+	set_val(PX,YewifyPolarV3(get_val(PX) + YRValueX * 327,get_ival(PX)));
+	set_val(PY,YewifyPolarV3(get_val(PY) + YRValueY * 327,get_ival(PY)));
+	}
+combo YewWorksAA6 {
+	set_val(10, (YewWorksAA6Power));
+	wait(10)set_val(9, (YewWorksAA6Power));
+	wait(10)set_val(10, YewWorksAA6Power * -1);
+	wait(10)set_val(9, YewWorksAA6Power * -1);
+	wait(10)
+}
+function AA1Shake() {
+	Angle1 = (Angle1 + YewWorksAA6Speed) % 360;
+	Set_polar(2,Angle1, YewWorksAA6PowerPlusOne);
+	}
+combo YewWorksAA8 {
+	set_val(10, (YewWorksAA4Power));
+	wait(10)set_val(9, (YewWorksAA4Power));
+	wait(10)set_val(10, YewWorksAA4Power * -1);
+	wait(10)set_val(9, YewWorksAA4Power * -1);
+	wait(10)
+}
+function Set_polar(stick, angle, YewWorksPolarAA2Range){
+	x_stick = 8 + stick;
+	y_stick = 9 + stick;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	YewWorksPolarAA2Range = clamp(YewWorksPolarAA2Range, 0, 100);
+	sin_angle = YewWorksPolarArray[angle];
+	cos_angle = YewWorksPolarArray[(angle + 90) % 360];
+	offset(x_stick, inv(YewWorksPolarAA2Range * cos_angle / 100));
+	offset(y_stick, inv(YewWorksPolarAA2Range * sin_angle / 100));
+	return;
+	}
+function offset(int axis, int offset_val) {
+	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return
+}
+combo YewWorksAA4 {
+	set_val(AimY,xy_val(AimY, YewWorksConstantAP));
+	wait(YewWorksConstantAssistDelay);
+	set_val(AimX,xy_val(AimX, YewWorksConstantAP));
+	wait(YewWorksConstantAssistDelay);
+	set_val(AimY,xy_val(AimY, YewWorksConstantAP * -1));
+	wait(YewWorksConstantAssistDelay);
+	set_val(AimX,xy_val(AimX, YewWorksConstantAP * -1));
+	wait(YewWorksConstantAssistDelay);
+	}
+function xy_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (YewWorksConstantAP + 1))  return f_val;
+	return get_val(f_axis);
+	}
+combo YewWorksAA3 {
+	set_val(AimY,YewWorksAA3Power);
+	wait(YewWorksAA3Delay);
+	set_val(AimX,YewWorksAA3Power);
+	wait(YewWorksAA3Delay);
+	set_val(AimY,YewWorksAA3Power * -1);
+	wait(YewWorksAA3Delay);
+	set_val(AimX,YewWorksAA3Power * -1);
+	wait(YewWorksAA3Delay);
+	}
+function Polar() {
+	YewWorksPolarAA2Speed2 = (YewWorksPolarAA2Speed2 + YewWorksPolarAA2Speed) % 360;
+	Set_polarA(YewWorksPolarAA2Speed2,YewWorksPolarAA2Range2);
+	}
+function Set_polarA(angle,YewWorksPolarAA2Range){
+	RX = AimX;
+	RY = AimY;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	YewWorksPolarAA2Range = clamp(YewWorksPolarAA2Range, 0, 100);
+	Sin = YewWorksPolarArray[angle];
+	Cos = YewWorksPolarArray[(angle + 90) % 360];
+	sV(RX,inv(YewWorksPolarAA2Range * Cos / 100));
+	sV(RY,inv(YewWorksPolarAA2Range * Sin / 100));
+	return;
+	}
+combo YewWorksBloomReducer {
+	set_val(XB1_LX,-35);
+	wait(BloomReducerDelay);
+	set_val(XB1_LX, 35);
+	wait(BloomReducerDelay);
+	if(BloomReducerDelay < 160){
+		BloomReducerDelay = BloomReducerDelay + 10;
+			}
+	else {
+		BloomReducerDelay = 100;
+			}
+	}
+combo YewWorksAA2 {
+	set_val(AimY,AxisR(AimY,YewWorksAA2Power));
+	wait(YewWorksAA2Delay);
+	set_val(AimX,AxisR(AimX,YewWorksAA2Power));
+	wait(YewWorksAA2Delay);
+	set_val(AimY,AxisR(AimY,inv(YewWorksAA2Power)));
+	wait(YewWorksAA2Delay);
+	set_val(AimX,AxisR(AimX,inv(YewWorksAA2Power)));
+	wait(YewWorksAA2Delay);
+	}
+function AimAssist (Strength,Step) {
+	if (Power) {
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+			}
+	if (!power) {
+		Xpower += Increment;
+		Ypower -= Increment;
+			}
+	else {
+		Xpower -= Increment;
+		Ypower += Increment;
+			}
+	CountPower ++;
+	if (CountPower >= (Strength / Increment)) {
+		power = !power;
+		CountPower = 0;
+			}
+	if (AxisXY > DeadZone) {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2) + get_ival(RY));
+			set_val(RX,(Xpower - Strength / 2 * -1) + get_ival(RX));
+					}
+			}
+	else {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+			}
+	}
+function AimAssistY() {
+	AAT += get_rtime();
+	if (!Axis) sV(RY,AAT * YewWorksPolarAAPower / 10);
+	if (Axis == 1) sV(RX,AAT * YewWorksPolarAAPower / 10);
+	if (Axis == 2) sV(RY,inv(AAT * YewWorksPolarAAPower / 10));
+	if (Axis == 3) {
+		sV(RX,inv(AAT * YewWorksPolarAAPower / 10));
+		if (AAT > 50) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+	else if (AAT > 50) {
+		AAT = 0;
+		Axis += 1;
+			}
+	}
+function sV(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+	return;
+	}
+function AxisR(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= Power) return AxisVal;
+	return get_ival(AxisXY);
+	}
+const int8 YewWorksPolarArray [] = {
+	100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}
+;
+int angle,RXT,RYT,SpiralPosition1,SpiralPosition2,InnerSpiral,OuterSpiral,ActualMagnitude,MaxMagnitude,SmartRumble,x_stick,y_stick,cos_angle,sin_angle,Angle1,RX,RY,Time,Angle,Cos,Sin,X,Y,M,MaxM,AAT,Axis,power,Ypower,Xpower,Power,CountPower,AxisXY,Increment,YRSpeed,YROutput,YRValueX,YRValueY,YRAxisX,YRAxisY,YRAngle,Radius,PolarStrength,PositionT,CosAngle,SinAngle;
+int inc = 1, dec, color[3];
+init{
+	color = 255;
+	}
+main {
+	combo_run(YewWorksRGBFlow);
+	}
+combo YewWorksRGBFlow {
+	wait(1);
+	set_rgb(color, color[1], color[2]);
+	color[dec] -= 1;
+	color[inc] += 1;
+	if(!color[dec]) {
+		inc = (inc + 1) % 3;
+		dec = (dec + 1) % 3;
+			}
+	}
+define Reducer = On;
+init{
+	cls_oled(0);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,Script_Text[0]);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Script_Text1[0]);
+	}
+const string Script_Text[] = {
+	"Discord.GG/",""
+}
+;
+const string Script_Text1[] = {
+	"YewWorks, Yumpa",""
+}
+;
+function center_x(f_chars,f_font){
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+	}
+define Circular= 1;
+define TallOval= 2;
+define WideOval= 3;
+define Spiral= 4;
+define Helix= 5;
+int RS_Gradient,stick_input,rnd;
+int mn = 326, mx = 328;
+ ú¸Œ´Œ¸¾ˆ¾Œ¾ˆ¼Š½

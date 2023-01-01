@@ -1,0 +1,70 @@
+//Auxzify's Personal ZEN Script
+
+int ZenAssist = 6;
+int ZenAssistNeg = -6;
+int ZenAssistPOLAR = 11; 
+int ZenAssistNegPOLAR = -11;
+int ZenAssistPOLAR_2 = 17;
+int ZenAssistNegPOLAR_2 = -17;
+int Delay = 15;
+int Release = 12;
+int Release2 = 18;
+int AntiRecoil_Ver = 14;   
+int AntiRecoil_Hor = 0;   
+int ARS;
+ 
+ main {
+ 
+ 
+    if(get_val(7)) combo_run(ZenS);
+    if(get_val(4)) combo_run(ZenS2);
+    
+    if(get_val(7) && get_val(4))
+    combo_run(AntiRecoil_Ver);
+    if(abs(get_val(10)) > AntiRecoil_Ver + 2 || abs(get_val(9)) > AntiRecoil_Ver + 2) {
+    combo_stop(AntiRecoil_Ver);}
+ 
+    combo_run(ZenX);}
+ 
+    combo ZenX { 
+    set_val(10,a_f(10,ZenAssist));
+    wait(Delay)
+    set_val(9,a_f(9,ZenAssist));
+    wait(Delay)
+    set_val(10,a_f(10,ZenAssistNeg));
+    wait(Delay)
+    set_val(9,a_f(9,ZenAssistNeg));
+    wait(Delay)}
+ 
+    combo ZenS { 
+    set_val(10,a_f(10,ZenAssistPOLAR));
+    wait(Delay)
+    set_val(9,a_f(9,ZenAssistPOLAR));
+    wait(Delay)
+    set_val(10,a_f(10,ZenAssistNegPOLAR));
+    wait(Delay)
+    set_val(9,a_f(9,ZenAssistNegPOLAR));
+    wait(Delay)}
+    
+    combo ZenS2 { 
+    set_val(10,a_f(10,ZenAssistPOLAR_2));
+    wait(Delay)
+    set_val(9,a_f(9,ZenAssistPOLAR_2));
+    wait(Delay)
+    set_val(10,a_f(10,ZenAssistNegPOLAR_2));
+    wait(Delay)
+    set_val(9,a_f(9,ZenAssistNegPOLAR_2));
+    wait(Delay)}
+    
+    combo AntiRecoil_Ver {
+    ARS = get_val(10) + AntiRecoil_Ver;
+    if(ARS > 100) ARS = 100;
+    ARS = get_val(9) + AntiRecoil_Hor;
+    if(ARS > 100) ARS = 100;
+    set_val(9,ARS);}
+ 
+    function a_f(p,m) {
+    if(abs(get_val(p)) < Release)
+    return m;
+    return get_val(p);}
+ 

@@ -1,0 +1,236 @@
+/*
+     __    __  __  _  _  ____  ___  ____  ____  ____  ____    ____  ____  __  __    __    ___  ____  ____  ____  ____  ____  
+    /__\  (  )(  )( \/ )(_   )/ __)(  _ \(_  _)(  _ \(_  _)  (  _ \( ___)(  \/  )  /__\  / __)(_  _)( ___)(  _ \( ___)(  _ \ 
+   /(__)\  )(__)(  )  (  / /_( (__  )   / _)(_  )___/  )(     )   / )__)  )    (  /(__)\ \__ \  )(   )__)  )   / )__)  )(_) )
+  (__)(__)(______)(_/\_)(____)\___)(_)\_)(____)(__)   (__)   (_)\_)(____)(_/\/\_)(__)(__)(___/ (__) (____)(_)\_)(____)(____/ 
+  
+  
+▛▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝▝ ▜
+▝ You are currently using [VERSION 13] of Auxzcript Remastered. 
+▙ ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▟*/
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟏 - 𝐈𝐍𝐈𝐓𝐈𝐀𝐋𝐈𝐒𝐀𝐓𝐈𝐎𝐍𝐒
+
+//Aim Assist V3 (Linear + Exponential)
+int AimAssistX = 21;
+int AimAssistXNeg = -21;
+int AimAssist_SnapStickV104 = 21; 
+int NegativeAimAssist_SnapStickV104 = -21;
+int AimAssist_Hipfire = 21; 
+int NegativeAimAssist_Hipfire = -21;
+int Delay = 19; 
+int Release = 22; // -> This should always be +1 more than Aim Assist value: AimAssist_SnapStickV104 and NegativeAimAssist_SnapStickV10
+
+//DropShot
+define Crouch_BTN = PS4_R3;
+int StandardDropShot = TRUE;
+int DropShotSpeed = 60;
+
+//Anti Recoil
+int Anti_Recoil = TRUE;
+
+//Variables (Leave Alone)
+int ANTI_RECOIL;
+int anti_recoil;
+
+//LED
+int a; int b;
+
+//Layout
+define FIRE_BTN = 4;    //XB1_RB //PS4_R2
+define ADS_BTN = 7;     //XB1_LB //ADS_BTN
+define CROUCH_BTN = 5;  //XB1_RS //PS4_R3
+define RELOAD_BTN = 20; //XB1_X //PS4_SQAURE
+define SPRINT_BTN = 8;  //XB1_LS //PS4_L3
+define JUMP_BTN = 19;   //XB1_A  //PS4_CROSS
+define NEXT_PIECE = 3;  //XB1_RT //PS4_R1
+define RIGHT_BUMP = 3;  // XB1_RB //PS4_R1
+define LEFT_BUMP = 6;   //ADS_BTN //PS4_L1
+define SWAP_BTN = 17;   //XB1_Y  //PS4_TRIANGLE
+define BUILD_BTN = 18;  //XB1_B  //PS4_CIRCLE
+define R_X = 9;         //XB1_R_X //PS4_R_X
+define R_Y = 10;        //XB1_R_Y //PS4_R_Y
+define L_X = 11;        //XB1_L_X //PS4_L_X
+define L_Y = 12;        //XB1_L_Y //PS4_L_Y
+define UP = 13;         //XB1_UP //PS4_UP
+define DOWN = 14;       //XB1_DOWN //PS4_DOWN
+define LEFT = 15;       //XB1_LEFT //PS4_LEFT
+define RIGHT = 16;      //XB1_RIGHT //PS4_RIGHT
+define FIRE       		  = PS4_R2;       // Fire In Game
+define ADS        		  = PS4_L2;       // Ads In Game
+define AimY      		  = PS4_RY;
+define AimX      		  = PS4_RX;
+
+
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟐 - 𝐌𝐀𝐈𝐍 𝐁𝐋𝐎𝐂𝐊
+
+main{
+
+//Aim Assist V3
+if(get_val(ADS_BTN)) combo_run(AS);
+if(get_val(FIRE_BTN)) combo_run(AS2);
+
+//Anti Recoil
+if(Anti_Recoil) {
+if (get_val(PS4_L2) && get_val(PS4_R2)) {
+ANTI_RECOIL = 12;
+combo_run(AntiRecoil); } 
+}
+
+if(get_ival(PS4_L2))
+	{
+		if(event_press(PS4_RIGHT))
+		{
+			StandardDropShot = !StandardDropShot;
+			combo_run(cVibrate);
+			LEDBlink(StandardDropShot);
+		}
+			set_val(PS4_RIGHT, 0);
+	}
+
+		if(StandardDropShot)
+		{
+			if(get_ival(FIRE))
+				combo_run(cDropShot);
+			else
+				combo_stop(cDropShot);
+		}
+
+
+//Deadzone Correction
+if (abs(get_val(XB1_LY)) < 0 && abs(get_val(XB1_LX)) < 0 ){ 
+set_val(XB1_LY,0); 
+set_val(XB1_LX,0); 
+} 
+if (abs(get_val(XB1_RY)) < 0 && abs(get_val(XB1_RX)) < 0 ){ 
+set_val(XB1_RY,0); 
+set_val(XB1_RX,0); 
+}
+
+combo_run(AX);}
+
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟑 - 𝐂𝐎𝐌𝐁𝐎𝐒
+
+combo AS { 
+set_val(10,a_f(10,AimAssist_SnapStickV104));
+wait(Delay)
+set_val(9,a_f(9,AimAssist_SnapStickV104));
+wait(Delay)
+set_val(10,a_f(10,NegativeAimAssist_SnapStickV104));
+wait(Delay)
+set_val(9,a_f(9,NegativeAimAssist_SnapStickV104));
+wait(Delay)}
+
+combo AS2 { 
+set_val(10,a_f(10,AimAssist_Hipfire));
+wait(Delay)
+set_val(9,a_f(9,AimAssist_Hipfire));
+wait(Delay)
+set_val(10,a_f(10,NegativeAimAssist_Hipfire));
+wait(Delay)
+set_val(9,a_f(9,NegativeAimAssist_Hipfire));
+wait(Delay)}
+
+combo AX { 
+set_val(10,a_f(10,AimAssistX));
+wait(Delay)
+set_val(9,a_f(9,AimAssistX));
+wait(Delay)
+set_val(10,a_f(10,AimAssistXNeg));
+wait(Delay)
+set_val(9,a_f(9,AimAssistXNeg));
+wait(Delay)}
+
+combo AntiRecoil {
+anti_recoil = get_val(PS4_RY) + ANTI_RECOIL;
+if (anti_recoil > 100) anti_recoil = 100;
+set_val(PS4_RY, anti_recoil);
+}
+
+combo cDropShot {
+    set_val(Crouch_BTN, 100); 
+    wait(60);
+    set_val(Crouch_BTN, 0);
+    wait(30);
+    wait(DropShotSpeed);
+}
+
+combo FlashGreen {
+	set_rgb(0, 255, 0);
+	wait(100);
+	set_rgb(0, 0, 0);
+	wait(100);
+	set_rgb(0, 255, 0);
+	wait(100);
+	set_rgb(0, 0, 0);
+	wait(100);
+	set_rgb(0, 255, 0);
+	wait(2000);
+	set_rgb(0, 0, 0);
+}
+
+combo FlashRed {
+	set_rgb(255, 0, 0);
+	wait(100);
+	set_rgb(0, 0, 0);
+	wait(100);
+	set_rgb(255, 0, 0);
+	wait(100);
+	set_rgb(0, 0, 0);
+	wait(100);
+	set_rgb(255, 0, 0);
+	wait(2000);
+	set_rgb(0, 0, 0);
+}
+
+combo cVibrate {
+	set_rumble(RUMBLE_A, 90);
+	wait(230);
+	reset_rumble();
+}
+
+combo Notify {
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(550);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, 0);
+set_led(LED_3, 0);
+set_led(LED_4, 0);
+wait(250);
+set_led(LED_1, 0);
+set_led(LED_2, a);
+set_led(LED_3, b);
+set_led(LED_4, 0);
+wait(250);
+reset_leds();
+}
+
+function LEDBlink(Toggle) {
+    if(Toggle)
+        combo_run(FlashGreen);
+    else
+        combo_run(FlashRed);
+}
+
+ 
+function a_f(p,m) {
+if(abs(get_val(p)) < Release)
+return m;
+return get_val(p);}

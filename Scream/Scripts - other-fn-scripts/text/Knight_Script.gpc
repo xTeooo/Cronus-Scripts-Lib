@@ -1,0 +1,50 @@
+																																																										define YCX  = 5;define YCY  = 6;define YCX2 = 4;define YCY2 = 4; define LXValue = 6;
+																																																										int BuildTracker = TRUE; int BuildSyncTime = 2500; 
+																																																										const string TextLineName []  = {"ANYONE",""}; const string TextLine1 []  = {"Discord.GG/",""}; const string TextLine2 [] = {"YewWorks! Join",""}; const string TextLine4 [] = {"Twitter @Yewify",""};const string TextLine3 [] = {"For Best Scripts!",""}; 
+																																																										define YWCAPX  = YCX; define YWCAPY  = YCY; define YWCAPX2 = YCX2; define YWCAPY2 = YCY2; define Off = FALSE; define On = TRUE; define YWRRHP = 0;define YWHHAP = 0;int ARV,ARH,BT,BC,T,A,CA,SA,X,Y,M,MM,input; int inc = 1, dec, color[3]; define LX = XB1_LX; define RX = XB1_RX; define RY = XB1_RY; define YWPD = 1; int YWCAD = 10; int YWCA2D = 8; 
+
+define  Build   = XB1_Y;  /**/ define  Wall = XB1_RT; define  Floor = XB1_RB; 
+define  Stair   = XB1_LT;      define  Cone = XB1_LB; define  Trap  = XB1_X;
+define  Pickaxe = XB1_B;  /**/ define  ADS  = XB1_LT; define  Fire  = XB1_RT;
+
+
+int     YewWorksTouchPadFix         = TRUE;
+int     YewWorksRecoilReducer       = TRUE;
+int     YewWorksAA                  = TRUE;
+int     YewWorksCA                  = TRUE;
+define  YewWorksRecoilReducerPower  = 23;
+define  YewWorksPolarRange          = 7;
+define  YewWorksPolarSpeed          = 28;
+
+init { 
+color = 255;
+cls_oled(1);
+print(center_x(18, OLED_FONT_SMALL_WIDTH),5, OLED_FONT_SMALL,OLED_WHITE,TextLineName [0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),15,OLED_FONT_SMALL,OLED_WHITE,TextLine1    [0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,TextLine2    [0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),35,OLED_FONT_SMALL,OLED_WHITE,TextLine3    [0]); 
+print(center_x(18, OLED_FONT_SMALL_WIDTH),45,OLED_FONT_SMALL,OLED_WHITE,TextLine4    [0]);
+}
+main {
+vm_tctrl(-9);
+block_rumble();
+deadzone(XB1_LT,XB1_RT,100,100);
+if (YewWorksTouchPadFix) { swap(PS4_SHARE, PS4_TOUCH); }
+if (BuildTracker) {if(event_press(Build)) {BT = !BT;}if(BT) {BC += get_rtime();if(event_press(Pickaxe) || BC == BuildSyncTime) {BT = Off;BC = 0;}if(get_ival(Wall) || get_ival(Stair) || get_ival(Floor) || get_ival(Cone) || get_ival(Build)) {BC = 0;}}}
+if (!BT) { 
+combo_run (YewWorksRBGFlow);  if (YewWorksRecoilReducer)  { if (get_val(ADS) && get_val(Fire))  { combo_run(YewWorksRecoilReducer); } }
+}
+combo_run (YewWorksStrafe);
+if (YewWorksCA) {combo_run(YewWorksAABooster1);combo_run(YewWorksAABooster2); } 
+if (YewWorksAA) {X = get_val(RX);Y = get_val(RY);M = isqrt(pow(X, 2) + pow(Y, 2)); MM = (M < 100);if(!(T++ % YWPD)){A += YewWorksPolarSpeed;}A = A % 360; SA = YewWorksData[A % 360]; CA = YewWorksData[(A + 270) % 360];CA = (CA * YewWorksPolarRange) / 100;SA = (SA * YewWorksPolarRange) / 100;if((get_val(ADS)) || get_val(Fire)) { if(M <= YewWorksPolarRange){SA -= Y;CA -= X;}else {SA = (SA * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MM;CA = (CA * (200 - ((abs(X) + M) / 10) * 10) / 200) * MM;} set_val(RX, clamp(X + CA, -100, 100));set_val(RY, clamp(Y + SA, -100, 100));}}
+}
+combo YewWorksRBGFlow { wait(1);set_rgb(color, color[1], color[2]);color[dec] -= 1; color[inc] += 1;if(!color[dec]) { inc = (inc + 1) % 3; dec = (dec + 1) % 3; }}
+function center_x(f_chars,f_font) {return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);} 
+combo YewWorksRecoilReducer  { ARV = get_val(PS4_RY) + YewWorksRecoilReducerPower;  if(ARV > 100) ARV = 100; if(abs(get_val(PS4_RY)) < abs(YewWorksRecoilReducerPower) + 5)  set_val(PS4_RY, (ARV)); ARH = get_val(PS4_RX) + YWRRHP; if(ARH > 100) ARH = 100; if(abs(get_val(PS4_RX)) < abs(YWRRHP) + 5) set_val(PS4_RX, ARH); }
+combo YewWorksAABooster1     { set_val(RY,y_val(RY, YWCAPY));wait(YWCAD);set_val(RX,x_val(RX, YWCAPX));wait(YWCAD);set_val(RY,y_val(RY, YWCAPY * -1));wait(YWCAD);set_val(RX,x_val(RX, YWCAPX * -1));wait(YWCAD);}
+combo YewWorksAABooster2     { set_val(RY,y_val(RY, YWCAPY2));wait(YWCA2D);set_val(RX,x_val(RX, YWCAPX2));wait(YWCA2D);set_val(RY,y_val(RY, YWCAPY2 * -1));wait(YWCA2D);set_val(RX,x_val(RX, YWCAPX2 * -1));wait(YWCA2D);}
+combo YewWorksStrafe         { set_val(LX, SetVal(LX,LXValue + 1));wait (3);set_val(LX, SetVal(LX,LXValue - 1));wait (3) ;}	
+const int16 YewWorksData[] = { 100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};
+function x_val(f_axis,f_val)    { if(abs(get_val(f_axis)) < (YWCAPX + 1))  return f_val;  return get_val(f_axis) ;}
+function y_val(f_axis,f_val)    { if(abs(get_val(f_axis)) < (YWCAPY + 1))  return f_val;  return get_val(f_axis) ;}
+function SetVal(Axis1 , Value1) { if(abs(get_val(Axis1))  < (LXValue - 1)) return Value1; return get_val(Axis1)  ;} ú¸Œ´Œ¸¾ˆ¾Œ¾ˆ¼Š½

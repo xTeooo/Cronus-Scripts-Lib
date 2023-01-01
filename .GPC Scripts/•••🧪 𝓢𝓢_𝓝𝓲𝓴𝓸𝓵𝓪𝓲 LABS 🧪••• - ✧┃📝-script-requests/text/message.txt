@@ -1,0 +1,168 @@
+    //Posted by Batts, a member of the Cronus Community - https://www.cronusmax.com/forums
+     
+    //Posted : Saturday 25th of September, 2021 22:35 UTC  
+     
+     // Vertical
+        define    antirecoil_start  = 30;
+        define    antirecoil_end    = 7;
+        define    antirecoil_time   = 2500;  //-- 10ms increments (2500 = 2,5 seconds)
+        define    invert            = 1;     // set -1 for inverted Y antirecoil, else set 1
+     
+    // Horizontal
+        define    antirecoil_H_start  = 17;
+        define    antirecoil_H_end    = -7;
+        define    antirecoil_H_time   = 3250;  //-- 10ms increments 
+     
+    // Vertical
+        int i_val;
+        int i_pnt;
+        int i_num;
+        int i_cnt;
+        int v,ar_y;
+     
+    // Horizontal
+        int i_val_h;
+        int i_pnt_h;
+        int i_num_h;
+        int i_cnt_h;
+        int v_x,ar_x;
+     
+    init {
+    // Vertical
+        //--adding or subtracting
+        if(antirecoil_start < antirecoil_end)
+            i_val = 1;
+        else
+            i_val = -1;
+        //--iteration point for progression 
+        i_pnt = (antirecoil_time / 10) / (abs(antirecoil_start - antirecoil_end));
+     
+    // Horizontal
+        //--adding or subtracting
+        if(antirecoil_H_start < antirecoil_H_end)
+            i_val_h = 1;
+        else
+            i_val_h = -1;
+        //--iteration point for progression 
+        i_pnt_h = (antirecoil_H_time / 10) / (abs(antirecoil_H_start - antirecoil_H_end));
+    }
+     
+     
+    main {
+     
+        //--device monitor
+    // Vertical
+        set_val(TRACE_1,i_cnt / 100);
+        set_val(TRACE_2,i_num)
+        set_val(TRACE_3,ar_y);
+     
+    // Horizontal
+        set_val(TRACE_4,i_cnt_h / 100);
+        set_val(TRACE_5,i_num_h)
+        set_val(TRACE_6,ar_x);
+     
+        //--reset counters/pointers
+        if(!get_lval(PS4_R2)) 
+        {
+    // Vertical
+           ar_y = antirecoil_start;
+           i_cnt = 0;
+           i_num = 0;
+     
+    // Horizontal
+           ar_x = antirecoil_H_start;
+           i_cnt_h = 0;
+           i_num_h = 0;
+        }
+     
+        //--RT
+        if(get_val(PS4_R2)) {
+    // Vertical
+            if(!p_complete())  
+                ar_y = p_val();
+            else
+                ar_y = antirecoil_end;
+     
+            if(y_val() > 100)
+            {
+                set_val(PS4_RY, 100);
+            }
+            else  //--set RY to anti recoil value
+                set_val(PS4_RY,y_val());
+     
+    // Horizontal
+            if(!p_complete_x())
+                ar_x = p_val_x();
+            else
+                ar_x = antirecoil_H_end;
+     
+            if(x_val() > 100)
+            {
+                set_val(PS4_RX, 100);
+            }
+            else //--set RX to anti recoil value
+                set_val(PS4_RX,x_val());
+        }        
+    }
+     
+    // Vertical
+    function p_complete() { 
+        i_cnt++;
+        if (i_cnt > antirecoil_time / 10) {
+            //--avoid stack overflow
+            i_cnt = antirecoil_time / 10;
+            //--progression complete
+            return 1;
+        }
+        //--progression not complete
+        return 0;
+    }        
+    function p_val() {
+        i_num++;
+        if(i_num == i_pnt) {
+            //--reset counter
+            i_num = 0;
+            //--adjust ar_y 
+            ar_y += i_val;
+        }
+        return ar_y;
+    } 
+    function y_val() {
+        v = get_val(10);
+        if(abs(v) < 10)
+            v = 0;
+        if(abs(v) > ar_y + 5)
+            return v;
+        return v + (ar_y * invert);           
+    }
+     
+    // Horizontal
+    function p_complete_x() { 
+        i_cnt_h++;
+        if (i_cnt_h > antirecoil_H_time / 10) {
+            //--avoid stack overflow
+            i_cnt_h = antirecoil_H_time / 10;
+            //--progression complete
+            return 1;
+        }
+        //--progression not complete
+        return 0;
+    }        
+    function p_val_x() {
+        i_num_h++;
+        if(i_num_h == i_pnt_h) {
+            //--reset counter
+            i_num_h = 0;
+            //--adjust ar_x 
+            ar_x += i_val_h;
+        }
+        return ar_x;
+    } 
+    function x_val() {
+        v_x = get_val(PS4_RX);
+        if(abs(v_x) < 10)
+            v_x = 0;
+        if(abs(v_x) > abs(ar_x + 5))
+            return v_x;
+        return v_x + ar_x;           
+    }

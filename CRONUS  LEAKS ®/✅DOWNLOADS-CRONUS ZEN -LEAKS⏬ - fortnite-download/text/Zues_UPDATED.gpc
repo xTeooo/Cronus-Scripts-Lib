@@ -1,0 +1,281 @@
+define RX = PS4_RX;
+define RY = PS4_RY;
+define LX = PS4_LX;
+define LY = PS4_LY;
+int ADS = PS4_L2;
+int FIRE = PS4_R2;
+int aim_assist3[2],aim_assist4[2],aim_assist5[2],aim_assist6[2],aim_assist7[2],
+aim_assist8[2]
+define LZ = 7;
+int DZ = 8;
+int cryptoace = 2;
+int RZ = 3;
+int radius;
+int StickySize;
+int opa;
+int od;
+int Rad;
+//best aa evver
+int Tracker1[2];
+int Tracker2[2];
+int sawchessnotcheckersbot[2];
+int auto[2];
+int Tracking[2];
+
+int chess_mateAngle const int16 op[][] = {
+	{
+		0    ,    0     ,    0     ,          1         ,         1          ,     0 
+	}
+	, {
+		1    ,    0     ,    0     ,          2         ,         1          ,     0 
+	}
+	, {
+		2    ,    0     ,    0     ,          1         ,         2          ,     0 
+	}
+	,{
+		3    ,    0     ,    0     ,          2         ,         1          ,     1 
+	}
+	,  {
+		4    ,    0     ,    0     ,          2         ,         1          ,     1 
+	}
+	, {
+		5    ,    0     ,    0     ,          1         ,         1          ,     2 
+	}
+	,  {
+		6    ,    0     ,    0     ,          1         ,         0          ,     0 
+	}
+	, {
+		7    ,    0     ,    0     ,          0         ,         1          ,     0 
+	}
+	, {
+		8    ,   45    ,   135     ,          1         ,         1          ,     3 
+	}
+	, {
+		9    ,  180    ,   315     ,          1         ,         1          ,     0 
+	}
+	, {
+		11    ,   45    ,   135     ,          1         ,         1          ,     0 
+	}
+	, {
+		12    ,  315    ,   180     ,          1         ,         1          ,     0 
+	}
+	}
+int tracking_size;
+int ryaus,rxaus,lyaus,lxaus,maxaus;
+int f_calib;
+int C_RY,C_RX;
+int crypto;
+main{
+	vm_tctrl(-9)deadzone(PS4_L2,PS4_R2,99,99);
+	block_rumble()
+
+	
+	combo_run(B)combo_run(BD)combo_run(ac)combo_run(CRYpToACE)combo_run(CrYpToACE)combo_run(P)combo_run(L1)if(event_press(PS4_R2)){
+		combo_run(L)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(DA)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(SA)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(ac1)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(P1)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(ac11)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(P11)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(L11)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(L111)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(DA1)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(SA1)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(ac11)
+	}
+	if(event_press(PS4_R2)){
+		combo_run(P1)
+	}
+	Tracking = (isqrt(abs(g(PS4_RX)) * abs(g(PS4_RX)) + abs(g(PS4_RY)) * abs(g(PS4_RY))))rxaus = max(rxaus, abs(get_ival(PS4_RX))+ 2);
+	ryaus = max(ryaus, abs(get_ival(PS4_RY))+ 2);
+	lxaus = max(lxaus, abs(get_ival(PS4_LX))+ 2);
+	lyaus = max(lyaus, abs(get_ival(PS4_LY))+ 2);
+	rxaus = min(rxaus, RZ);
+	ryaus = min(ryaus, RZ);
+	lxaus = min(lxaus, LZ + 5);
+	lyaus = min(lyaus, LZ + 5);
+	f_calib--;
+	rxaus = max(rxaus, ryaus);
+	lxaus = max(lxaus, lyaus);
+	sawchessnotcheckersbot  = (cos(op[opa][1] + od) * Rad/op[opa][3])/100 + Tracker1;
+	auto  = (sin(op[opa][2] + od) * Rad/op[opa][4])/100 + Tracker2;
+	Tracker1 = (tracking_size * sin(Tracking)/100);
+	Tracker2 = (tracking_size * cos(Tracking)/100);
+	//newer script is this one
+}
+int x,y;
+int Indexer;
+int i;
+int inc;
+int Position;
+int a;
+combo SA{
+	set_val(RX,RZ + 1)set_val(RX,RZ  - 2)set_val(RY,RZ + 1)set_val(RX,RZ + 1)set_val(RY,RZ - 2)set_val(RX,RZ + 1)set_val(RY,RZ + 1)
+}
+combo DA {
+	set_val(RX,RZ + 1)set_val(RX,RZ  - 2)set_val(RY,RZ + 1)set_val(RX,RZ + 1)set_val(RY,RZ - 2)set_val(RX,RZ + 1)set_val(RY,RZ + 1)
+}
+combo P {
+	s(RY,RZ);
+	s(RX,RZ);
+	s(RY,RZ * -1);
+	s(RX,RZ * -1);
+	}
+combo P1 {
+	set_val(RY,RZ);
+	set_val(RX,RZ);
+	set_val(RY,RZ * -1);
+	set_val(RX,RZ * -1);
+	}
+combo L{
+	set_val(RY,RZ * -1);
+	set_val(RX,RZ);
+	set_val(RY,RZ);
+	set_val(RX,RZ * -1);
+	}
+combo L1{
+	s(RY,RZ * -1);
+	s(RX,RZ);
+	s(RY,RZ);
+	s(RX,RZ * -1);
+	}
+combo ac1{
+	set_val(RX,RZ)set_val(RX,-RZ - 1)set_val(RY,RZ)set_val(RX,RZ)set_val(RY,-RZ - 1)set_val(RX,RZ)set_val(RY,RZ)
+}
+combo ac{
+	s(RX,RZ)s(RX,-RZ - 1)s(RY,RZ)s(RX,RZ)s(RY,-RZ - 1)s(RX,RZ)s(RY,RZ)
+}
+combo SA1{
+	set_val(RX,DZ + 1)set_val(RX,DZ  - 2)set_val(RY,DZ + 1)set_val(RX,DZ + 1)set_val(RY,DZ - 2)set_val(RX,DZ + 1)set_val(RY,DZ + 1)
+}
+combo DA1 {
+	set_val(RX,DZ + 1)set_val(RX,DZ  - 2)set_val(RY,DZ + 1)set_val(RX,DZ + 1)set_val(RY,DZ - 2)set_val(RX,DZ + 1)set_val(RY,DZ + 1)
+}
+combo P11 {
+	s(RY,DZ);
+	s(RX,DZ);
+	s(RY,DZ * -1);
+	s(RX,DZ * -1);
+	}
+combo P111 {
+	set_val(RY,DZ);
+	set_val(RX,DZ);
+	set_val(RY,DZ * -1);
+	set_val(RX,DZ * -1);
+	}
+combo L11{
+	set_val(RY,DZ * -1);
+	set_val(RX,DZ);
+	set_val(RY,DZ);
+	set_val(RX,DZ * -1);
+	}
+combo L111{
+	s(RY,DZ * -1);
+	s(RX,DZ);
+	s(RY,DZ);
+	s(RX,DZ * -1);
+	}
+combo ac111{
+	set_val(RX,DZ)set_val(RX,-DZ - 1)set_val(RY,DZ)set_val(RX,DZ)set_val(RY,-DZ - 1)set_val(RX,DZ)set_val(RY,DZ)
+}
+combo ac11{
+	s(RX,DZ)s(RX,-DZ - 1)s(RY,DZ)s(RX,DZ)s(RY,-DZ - 1)s(RX,DZ)s(RY,DZ)
+}
+combo CRYpToACE{
+	set_val(LX,CryptoacE(LX,cryptoace + 1))set_val(LX,CryptoacE(LX,cryptoace  - 2))set_val(LY,CryptoacE(LY,cryptoace + 1))set_val(LX,CryptoacE(LX,cryptoace + 1))set_val(LY,CryptoacE(LY,cryptoace - 2))set_val(LX,CryptoacE(LX,cryptoace + 1))set_val(LY,CryptoacE(LY,cryptoace + 1))
+}
+combo CrYpToACE {
+	set_val(LX,CRYptoacE(LX,cryptoace + 1))set_val(LX,CRYptoacE(LX,cryptoace  - 2))set_val(LY,CRYptoacE(LY,cryptoace + 1))set_val(LX,CRYptoacE(LX,cryptoace + 1))set_val(LY,CRYptoacE(LY,cryptoace - 2))set_val(LX,CRYptoacE(LX,cryptoace + 1))set_val(LY,CRYptoacE(LY,cryptoace + 1))
+}
+function CRYptoacE(cRYpToAce,CRYpToAce) {
+	if(abs(get_val(cRYpToAce)) < (cryptoace  - 1))  return CRYpToAce return get_val(cRYpToAce)
+}
+function CryptoacE(cRYpToAce,CRYpToAce) {
+	if(abs(get_val(cRYpToAce)) < (cryptoace + 1))  return CRYpToAce return get_val(cRYpToAce)
+}
+function Set_polar(stick, angle, radius){
+	x = 9 + stick;
+	y = 10 + stick;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	radius = clamp(radius, 0, 100);
+	sin_angle = PolarArray[angle];
+	cos_angle = PolarArray[(angle + 90) % 360];
+	s(x, inv(radius * cos_angle / 100));
+	s(y, inv(radius * sin_angle / 100))return;
+	}
+int sin_angle,cos_angle;
+int cRYPTOACE;
+int CRYPTOACE;
+function s( axis,  s_val) {
+	set_val(axis,(s_val * (100.0 - abs(get_val(axis)))) / 100.0 + get_val(axis));
+	return;
+	}
+combo B{
+	if(!(cRYPTOACE++ % 4))Set_polar(POLAR_RS, CRYPTOACE = (100 * 100) % 360, 100 * 359)cRYPTOACE = 0
+}
+combo BD{
+	if(!(cRYPTOACE++ % 4))Set_polar(POLAR_LS, CRYPTOACE = (100 * 100) % 360, 100 * 359)cRYPTOACE = 0
+}
+const int8   PolarArray   [] = {
+	-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100
+}
+;
+function cos(angle){
+	return PolarArray[(correctAngle(angle) + 90) % 360];
+	return 0;
+	}
+function correctAngle(angle){
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	return angle;
+	}
+function g(id){
+	return get_ival(id);
+	}
+int X,Y,step
+function Circle()  {
+	RZ = isqrt(pow(radius,2) - pow(X,2));
+	set_val(RX,RZ + get_val(RX));
+	set_val(RY,RZ + get_val(RY));
+	RZ += step;
+	if(RZ > radius)             RZ = radius;
+	RZ = inv(isqrt(pow(radius,2) - pow(X,2)));
+	set_val(RX,RZ + get_val(RX));
+	set_val(RY,RZ + get_val(RY));
+	RZ -= step;
+	if(RZ < inv(radius)) {
+		RZ = inv(radius)             
+	}
+	else{
+		RZ = radius;
+			}
+	}
+function sin(angle){
+	return PolarArray[correctAngle(angle)];
+	return 0;
+	}
+ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ú¸Œ½‹¿†µ…´…À÷ÂóÂ

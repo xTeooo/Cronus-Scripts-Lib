@@ -1,0 +1,1083 @@
+/*
+    KIllshot V.1.4 XBOX
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Menu Arrays                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","KillShot v1.4 ","BETA EDITION PS4","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off"};
+const string ModToggle [] = {"" , " DoGz Polar VI AA" , " Polar Boost VI"  , "Batts Sticky Aim"  , "Legacy AntiRecoil"  , "Adjust OnTheFly AR" , "    Prone Shot" , "   Crouch Shot"  , "    Jump Shot"  , "   Strafe Shot" , "   Rapid Fire" , " Slide Cancel CW" , " Slide Cancel MW"  , "    Bunny Hop"  , "    Auto Ping" , "  Hair Triggers"  , "   Block Rumble"  , "LED Rainbow Flow"  , "OLED Screen Saver" };
+const string ModValue [] = {""   , "DoGz Polar Radius"  , "DoGz Polar Angle"  , "DoGz Radius Boost"  , "DoGz Angle Boost"  , "DoGz Polar Release"  , "BattsSticky Power"  , "Batts Sticky Wait"  , "Legacy AR 1 RY"  , "Legacy AR 1 RX"  , " Prone Shot Wait"  , " Jump Shot Wait"  , "Crouch Shot Wait"  , "Strafe Shot Wait"  , " Rapid Fire Hold"  , " Rapid Fire Wait"  , "SlideCancel Delay"  , " Bunny Hop Wait"  , "AutoPing HoldTime" , " LED Brightness" };
+const int16 ModDigitMin [] = {  0  , 1 , 2 , 1 , 2 , 1 , 1 , 10 , 1 , -50 , 30 , 50 , 40 , 100 , 30 , 30 , 20 , 40 , 40 , 1};
+const int16 ModDigitMax [] = {  0  , 50 , 90 , 20 , 90 , 50 , 50 , 200 , 100 , 50 , 1500 , 2000 , 1500 , 3000 , 200 , 200 , 250 , 250 , 1500 , 50};
+const int16 ModDigitInc [] = {  0  , 1 , 1 , 1 , 1 , 1 , 1 , 10 , 1 , 1 , 10 , 10 , 10 , 10 , 10 , 10 , 10 , 10 , 100 , 1};
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = XB1_RT;
+define Ads      = XB1_LT;
+define Lethal   = XB1_RB;
+define Tactical = XB1_LB;
+define Switch   = XB1_Y;
+define Reload   = XB1_X;
+define Jump     = XB1_A;
+define Crouch   = XB1_B;
+define Melee    = XB1_RS;
+define Sprint   = XB1_LS;
+define Ping     = XB1_UP;
+define Up       = XB1_UP;
+define Down     = XB1_DOWN;
+define Left     = XB1_LEFT;
+define Right    = XB1_RIGHT;
+define AimX     = XB1_RX;
+define AimY     = XB1_RY;
+define Strafe   = XB1_LX;
+define Walk     = XB1_LY;
+define PY       = POLAR_RY;
+define PX       = POLAR_RX;
+define PS       = POLAR_RS;
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(               Recoil On The Fly Buttons            )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define RecoilHoldOnFly  = XB1_A;
+define RecoilUpPress    = XB1_UP;
+define RecoilDownPress  = XB1_DOWN;
+define RecoilRightPress = XB1_RIGHT;
+define RecoilLeftPress  = XB1_LEFT;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Menu Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define MenuEnterHold   = XB1_LT;
+define MenuEnterPress  = XB1_MENU;
+define MenuExitPress   = XB1_B;
+define ChangeMenuPress = XB1_A;
+
+//Show Current Slot Info Buttons;
+define FindSlotHold    = XB1_RS;
+define FindSlotPress   = XB1_LEFT;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define ScreenSaver   =  On;
+define TimeoutLimit  = 2;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 18;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 19;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear,Shunt,VibA,VibB;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int LedDec,Rgb,LedInc,Colour[3];
+int DoGzVIRadius,DoGzVIAngle,VISpeed;
+int Saver,Ms,Sec,Min,ScreenTime;
+int A1T,A2T,B1T,B2T,X1T,X2T,Y1T,Y2T,U1T,U2T,D1T,D2T,L1T,L2T,R1T,R2T,M1T,M2T,Symbol;
+int A1 = 4,A2 = 30,B1 = 60,B2 = 15,X1 = 36,X2 = 1,Y1 = 50,Y2 = 5,U1 = 40,U2 = 9:
+int D1 = 49,D2 = 7,L1 = 33,L2 = 63,R1 = 18,R2 = 22,M1 = 45,M2 = 55:
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Aim Assist Hip Fire                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define PolarVIAAHip   =  On;
+define BattsAAHip     =  On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(            Anti Recoil Hip Fire/Settings           )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+// Anti Recoil Hip Fire
+define LegacyARHip      =  On;
+// Anti Recoil Inverted
+define InvertedYAxis    = Off;
+define LegacyARRumble   =  On;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Fire Mods Hip Fire                  )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define RapidFireHip  = Off;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModDigit;
+int PolarRadius      = 14;
+int PolarAngle       = 21;
+int PolarRadiusBoost = 5;
+int PolarAngleBoost  = 10;
+int PolarRelease     = 20;
+int BattStickyPower  = 17;
+int BattStickyWait   = 10;
+int LegacyAR1RY      = 33;
+int LegacyAR1RX      = -1;
+int ProneShotWait    = 50;
+int JumpShotWait     = 570;
+int CrouchShotWait   = 150;
+int StrafeWait       = 1500;
+int RapidFireHold    = 30;
+int RapidFireWait    = 30;
+int SlideDelay       = 80;
+int BunnyHopWait     = 40;
+int AutoPingTime     = 1000;
+int LedBrightness    = 10;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModSwitch;
+int PolarVIAssist     = Off;
+int PolarVIBoost      =  On;
+int BattsStickyAA     =  On;
+int LegacyRecoil      =  On;
+int OnTheFlyRecoil    =  On;
+int ProneShot         = Off;
+int CrouchShot        = Off;
+int JumpShot          = Off;
+int StrafeShot        = Off;
+int RapidFire         = Off;
+int SlideCancelCW     = Off;
+int SlideCancelMW     =  On;
+int BunnyHop          = Off;
+int AutoPing          = Off;
+int HairTriggers      =  On;
+int BlockRumble       =  On;
+int LEDRainbowFlow    =  On;
+int OLEDScreenSaver   =  On;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+init {
+    combo_run(Boot);
+    LedInc = 1
+    Colour = 150;
+}
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+
+    if (BlockRumble) {
+        block_rumble();
+    }
+
+        if (HairTriggers) {
+            
+            deadzone(PS4_L2,PS4_R2,100,100);
+        
+        }      
+
+        if (PolarVIAssist) {
+        
+            if (get_ival(Ads) || (PolarVIAAHip && get_ival(Fire))) { 
+            
+                if (abs(get_ival(AimX)) <= PolarRelease && abs(get_ival(AimY)) <= PolarRelease) {
+                
+                    if (PolarVIBoost && get_ival(Fire)) {
+                        
+                        DoGzVIRadius = PolarRadius + PolarRadiusBoost;
+                        DoGzVIAngle = PolarAngle + PolarAngleBoost;
+                    
+                    } else {
+                        
+                        DoGzVIRadius = PolarRadius;
+                        DoGzVIAngle = PolarAngle;
+                    }
+                
+                    set_polar(PS,VISpeed = (VISpeed + DoGzVIAngle) % 360,(abs(get_ival(PX)) + abs(get_ival(PY))) / 4 + DoGzVIRadius * 328);
+                }
+            }
+        }
+
+        if (BattsStickyAA) {
+        
+            if (get_ival(Ads) || (BattsAAHip && get_ival(Fire))) {
+            
+                combo_run(BattsStickyAssist);
+            
+            } else {
+            
+                combo_stop(BattsStickyAssist); 
+            }
+        }
+
+        if (ProneShot) {
+            
+            if (get_ival(Fire) && get_ptime(Fire) > ProneShotWait) {
+                
+                set_val(Crouch,100);
+            
+            }
+        }
+
+        if (JumpShot) {
+        
+            if (!get_ival(Ads) && get_ival(Fire)) {
+                
+                combo_run(JumpShot);
+            
+            } else {
+                    
+                combo_stop(JumpShot);
+            }
+        }
+
+        if (CrouchShot) {
+        
+            if (get_ival(Ads)) {
+                
+                combo_run(CrouchShot);
+            
+            } else {
+                    
+                combo_stop(CrouchShot);
+            }
+        }
+
+        if (StrafeShot) {
+        
+            if (get_ival(Ads) && get_ival(Fire)) {
+            
+                if (abs(get_ival(Strafe)) <= 35 && abs(get_ival(Walk)) <= 35) {    
+                
+                    combo_run(StrafeShot);
+            
+                } else {
+                    
+                    combo_stop(StrafeShot);
+                }
+            }
+        }
+
+        if (RapidFire) {
+
+            if (RapidFireHip) {
+                
+                if (get_ival(Fire)) {
+            
+                    combo_run(RapidFire);
+            
+                } 
+            
+            } else if (get_ival(Ads) && get_ival(Fire)) {
+            
+                combo_run(RapidFire);    
+                
+            } else {
+                
+                combo_stop(RapidFire);
+            }
+        }
+
+        if (SlideCancelMW || SlideCancelCW) {
+                    
+            if (abs(get_ival(Walk)) >= 80 || abs(get_val(Strafe)) >= 80) {
+                        
+                if(event_release(Crouch)) {
+                    
+                    if (SlideCancelMW) {
+                    
+                        combo_run(SlideCancelMW);
+                    
+                        if (combo_running(SlideCancelMW) && get_ival(Ads) && event_release(Crouch)) {
+                            
+                            combo_stop(SlideCancelMW);
+                        }
+                    
+                    } else if (SlideCancelCW) {
+                            
+                        combo_run(SlideCancelCW);
+                            
+                        if (combo_running(SlideCancelCW) && get_ival(Ads) && event_release(Crouch)) {
+                            
+                            combo_stop(SlideCancelCW);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (AutoPing) {
+            
+            if (get_ival(Ads) && get_ival(Fire) && get_ptime(Fire) > AutoPingTime) {
+                
+                combo_run(AutoPing);
+            }
+        }
+        
+        if (BunnyHop) {
+        
+            if (get_ival(Jump) && get_ptime(Jump) >= 200) {
+                    
+                combo_run(BunnyHop);
+            
+            } else {
+                        
+                combo_stop(BunnyHop);
+            }
+        }
+        
+        if (LegacyRecoil) {        
+
+            if (LegacyARRumble) {
+            
+                if (LegacyARHip && get_ival(Fire) && get_rumble(RUMBLE_A)) {
+                
+                    LegacyAR();
+                
+                } else if (get_ival(Ads) && get_ival(Fire) && get_rumble(RUMBLE_A)) {
+                
+                    LegacyAR();
+                }
+            
+            } else {
+            
+                if (LegacyARHip && get_ival(Fire)) {
+                
+                    LegacyAR();
+                
+                } else if (get_ival(Ads) && get_ival(Fire)) { 
+                
+                    LegacyAR();
+                }
+            }
+            
+            if (OnTheFlyRecoil) {
+            
+                if (!MainMenu && get_ival(RecoilHoldOnFly)) {
+                
+                    if (event_press(RecoilDownPress)) {
+                    
+                        LegacyAR1RY = clamp(LegacyAR1RY++,1,100);
+                        VibA = On;
+                        combo_run(Rumble);
+                    }
+                    
+                    if (event_press(RecoilUpPress)) {
+                    
+                        LegacyAR1RY = clamp(LegacyAR1RY--,1,100);
+                        VibB = On;
+                        combo_run(Rumble);
+                    }
+                    
+                    if (event_press(RecoilRightPress)) {
+                    
+                        LegacyAR1RX = clamp(LegacyAR1RX++,-50,50);
+                        VibA = On;
+                        combo_run(Rumble);
+                    }
+                    
+                    if (event_press(RecoilLeftPress)) {
+                    
+                        LegacyAR1RX = clamp(LegacyAR1RX--,-50,50);
+                        VibB = On;
+                        combo_run(Rumble);
+                    }
+                
+                    set_val(RecoilUpPress,0); set_val(RecoilDownPress,0);
+                    set_val(RecoilRightPress,0); set_val(RecoilLeftPress,0);
+                }
+            }
+        }
+
+    if (!MainMenu && get_ival(MenuEnterHold) && event_press(MenuEnterPress)) {
+
+        Shunt = MenuEnterPress;
+        MenuToggle(On,Off,On,On,On);
+        VibB = On;
+        combo_run(Rumble);
+    }
+
+    if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        MenuTimeout += get_rtime();
+
+        if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(ChangeMenuPress)) {
+
+            MenuTimeout = Off;
+        }
+
+            if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+            
+                if (event_press(MenuExitPress))
+                
+                    Shunt = MenuExitPress;
+                
+                MenuToggle(Off,Off,Off,Off,Off);
+                VibB = On;
+                combo_run(Rumble);
+            }
+
+            if (event_press(ChangeMenuPress)) {
+
+                MenuValues = !MenuValues;
+                MenuSwitch = !MenuSwitch;
+                ModIndex = On;
+                Update = On;
+            }
+
+        if (MenuValues) {
+
+            ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModDigitInc[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+        if (MenuSwitch) {
+
+            ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}
+
+				BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+	}
+ 
+    if (!MainMenu) { 
+        
+       if (OLEDScreenSaver && Saver) {
+            
+           ScreenTime (); 
+         	Saver (); 
+	       } 
+	    
+        if (LEDRainbowFlow) { 
+            
+            LedFlow();
+        } 
+	    
+        if (get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+            
+            Shunt = FindSlotPress;
+            Saver = Off;
+            ScreenTime = Off;
+            Slot = On;
+            combo_run(Boot);
+        }
+    }
+
+    if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        
+        } else {
+                set_val(Shunt,Off);
+        }
+    }
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+combo BattsStickyAssist {
+   
+   set_val(AimY,AxisRelease(AimY,BattStickyPower));
+   wait(BattStickyWait);
+   set_val(AimX,AxisRelease(AimX,BattStickyPower));
+   set_val(Strafe,AxisRelease(Strafe,BattStickyPower));
+   wait(BattStickyWait);
+   set_val(AimY,AxisRelease(AimY,inv(BattStickyPower)));
+   wait(BattStickyWait);
+   set_val(AimX,AxisRelease(AimX,inv(BattStickyPower)));
+   set_val(Strafe,AxisRelease(Strafe,inv(BattStickyPower)));
+   wait(BattStickyWait);
+}
+
+combo JumpShot {
+
+    set_val(Jump,100);
+    wait(50);
+    set_val(Jump,0);
+    wait(20);
+    wait(JumpShotWait);
+}
+
+combo CrouchShot {
+
+    set_val(Crouch,100);
+    wait(50);
+    set_val(Crouch,0);
+    wait(20);
+    wait(CrouchShotWait);
+}
+
+combo StrafeShot {
+
+    set_val(Strafe,-100);
+    wait(StrafeWait);
+    set_val(Strafe,100);
+    wait(StrafeWait);
+}
+
+combo RapidFire {
+
+    set_val(Fire,100);
+    wait(RapidFireHold);
+    set_val(Fire,0);
+    wait(RapidFireWait);
+}
+
+combo SlideCancelMW {
+   
+    set_val(Crouch,100);
+    wait(SlideDelay); 
+    set_val(Crouch,0);
+    wait(60); 
+    set_val(Crouch,100); 
+    wait(50); 
+    set_val(Crouch,100);
+    set_val(Jump,100);
+    wait(60); 
+    set_val(Crouch,0);
+    set_val(Jump,100);
+    wait(10); 
+    set_val(Jump,0);
+}
+
+combo SlideCancelCW {
+    
+    set_val(Crouch,100);
+    wait(SlideDelay);
+    set_val(Crouch,0);
+    wait(20);
+    set_val(Sprint,0);
+    set_val(Crouch,100);
+    set_val(Sprint,100);
+    wait(20);
+    set_val(Crouch,0);
+    set_val(Sprint,0);
+    wait(20);
+}
+
+combo AutoPing {
+
+    set_val(Ping,100);
+    wait(40);
+    set_val(Ping,0);
+    wait(40);
+    set_val(Ping,100);
+    wait(40);
+    set_val(Ping,0);
+    wait(40);    
+    wait(3000); 
+}
+
+combo BunnyHop{
+    
+    set_val(Jump,100);
+    wait(50);
+    set_val(Jump,0);
+    wait(30);
+    wait(BunnyHopWait);
+}
+
+combo Rumble {
+    
+    if (VibA)
+        
+        set_rumble(RUMBLE_A,15);
+        
+    else if (VibB)
+            
+        set_rumble(RUMBLE_B,15);
+    
+        wait(250);
+        VibA = Off;
+        VibB = Off;
+        reset_rumble();
+}
+
+combo Boot {
+        
+        wait(Slot);
+    if (Slot == 20000)    
+        cls_oled(0);
+        
+        if (Slot) {
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+    return; 
+}
+
+function AxisRelease(AxisXY,AxisVal) {
+    
+    if (abs(get_ival(AxisXY)) <= BattStickyPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}
+
+function LegacyAR () {
+    
+    if (InvertedYAxis) {
+        
+        set_Val(AimY,inv(LegacyAR1RY));
+        set_Val(AimX,LegacyAR1RX);
+    }
+    
+    else {    
+            
+        set_Val(AimY,LegacyAR1RY);
+        set_Val(AimX,LegacyAR1RX);
+    }
+}
+
+function LedFlow() {
+
+    Rgb += get_rtime();
+        
+    if (Rgb == 120) {
+        set_rgb(Colour / LedBrightness,Colour[1] / LedBrightness,Colour[2] / LedBrightness);
+        Colour[LedDec] -= 2; 
+        Colour[LedInc] += 2;
+
+        if (!Colour[LedDec]) { 
+            LedInc = (LedInc + 1) % 3; 
+            LedDec = (LedDec + 1) % 3; 
+        }
+            Rgb = 0;    
+    }
+}
+
+function Saver() {
+    
+    if (Saver) { 
+
+        putc_oled(1,CROSS);
+        puts_oled(5,Symbol[1],0,1,1);
+        puts_oled(35,Symbol[5],0,1,1);
+    
+        putc_oled(1,CIRCLE);
+        puts_oled(14,Symbol[2],0,1,1);
+        puts_oled(44,Symbol[6],0,1,1);
+    
+        putc_oled(1,SQUARE);
+        puts_oled(23,Symbol[3],0,1,1);    
+        puts_oled(53,Symbol[7],0,1,1);
+    
+        putc_oled(1,TRIANGLE);
+        puts_oled(37,Symbol[4],0,1,1);
+        puts_oled(61,Symbol[8],0,1,1);
+    
+        putc_oled(1,UP);
+        puts_oled(49,Symbol[9],0,1,1);
+        puts_oled(95,Symbol[11],0,1,1);
+    
+        putc_oled(1,DOWN);
+        puts_oled(30,Symbol[10],0,1,1);
+        puts_oled(82,Symbol[12],0,1,1);
+    
+        putc_oled(1,LEFT);
+        puts_oled(67,Symbol[13],0,1,1);
+        puts_oled(101,Symbol[16],0,1,1);    
+    
+        putc_oled(1,RIGHT);
+        puts_oled(76,Symbol[14],0,1,1);
+        puts_oled(110,Symbol[17],0,1,1);
+    
+        putc_oled(1,MENU);
+        puts_oled(85,Symbol[15],0,1,1);
+        puts_oled(119,Symbol[18],0,1,1);
+    
+    if (Symbol[1] == 0) A1T = 1; if (A1T == 1) Symbol[1] +=2;
+    if (Symbol[1] == 64) A1T = 0; if (A1T == 0) Symbol[1] --;
+    if (Symbol[2] == 0) B1T = 1; if (B1T == 1) Symbol[2] ++;
+    if (Symbol[2] == 64) B1T = 0; if (B1T == 0) Symbol[2] --;
+    if (Symbol[3] == 0) X1T = 1; if (X1T == 1) Symbol[3] ++;
+    if (Symbol[3] == 64) X1T = 0; if (X1T == 0) Symbol[3] -=2;
+    if (Symbol[4] == 0) Y1T = 1; if (Y1T == 1) Symbol[4] ++;
+    if (Symbol[4] == 64) Y1T = 0; if (Y1T == 0) Symbol[4] --;
+    if (Symbol[5] == 0) A2T = 1; if (A2T == 1) Symbol[5] ++;
+    if (Symbol[5] == 64) A2T = 0; if (A2T == 0) Symbol[5] --;
+    if (Symbol[6] == 0) B2T = 1; if (B2T == 1) Symbol[6] ++;
+    if (Symbol[6] == 64) B2T = 0; if (B2T == 0) Symbol[6] --;
+    if (Symbol[7] == 0) X2T = 1; if (X2T == 1) Symbol[7] ++;
+    if (Symbol[7] == 64) X2T = 0; if (X2T == 0) Symbol[7] --;
+    if (Symbol[8] == 0) Y2T = 1; if (Y2T == 1) Symbol[8] ++;
+    if (Symbol[8] == 64) Y2T = 0; if (Y2T == 0) Symbol[8] --;
+    if (Symbol[9] == 0) U1T = 1; if (U1T == 1) Symbol[9] ++;
+    if (Symbol[9] == 64) U1T = 0; if (U1T == 0) Symbol[9] --;
+    if (Symbol[10] == 0) D1T = 1; if (D1T == 1) Symbol[10] ++;
+    if (Symbol[10] == 64) D1T = 0; if (D1T == 0) Symbol[10] --;
+    if (Symbol[11] == 0) U2T = 1; if (U2T == 1) Symbol[11] ++;
+    if (Symbol[11] == 64) U2T = 0; if (U2T == 0) Symbol[11] --;
+    if (Symbol[12] == 0) D2T = 1; if (D2T == 1) Symbol[12] ++;
+    if (Symbol[12] == 64) D2T = 0; if (D2T == 0) Symbol[12] --;
+    if (Symbol[13] == 0) L1T = 1; if (L1T == 1) Symbol[13] ++;
+    if (Symbol[13] == 64) L1T = 0; if (L1T == 0) Symbol[13] --;
+    if (Symbol[14] == 0) R1T = 1; if (R1T == 1) Symbol[14] ++;
+    if (Symbol[14] == 64) R1T = 0; if (R1T == 0) Symbol[14] --;
+    if (Symbol[15] == 0) M1T = 1; if (M1T == 1) Symbol[15] ++;
+    if (Symbol[15] == 64) M1T = 0; if (M1T == 0) Symbol[15] -=2;
+    if (Symbol[16] == 0) L2T = 1; if (L2T == 1) Symbol[16] ++;
+    if (Symbol[16] == 64) L2T = 0; if (L2T == 0) Symbol[16] -=2;
+    if (Symbol[17] == 0) R2T = 1; if (R2T == 1) Symbol[17] ++;    
+    if (Symbol[17] == 64) R2T = 0; if (R2T == 0) Symbol[17] --;
+    if (Symbol[18] == 0) M2T = 1; if (M2T == 1) Symbol[18] ++;
+    if (Symbol[18] == 64) M2T = 0; if (M2T == 0) Symbol[18] --;
+    }
+    
+    if (!Saver)
+        cls_oled(0);
+}
+
+function ScreenTime() { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+            Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+
+function BlockButton(Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+  
+function MenuToggle(Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod(ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			} 
+		Update = Off; 
+	} 
+
+    if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+        Update = On;
+        ModVal += ModValInc;
+        ModMonitor(ModValLbl);
+
+        if (ModVal >= ModValMax) return ModValMax;
+
+        if (ModVal >= ModValMax) return ModValMax;
+    } 
+ 
+    if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+        Update = On;
+        ModVal -= ModValInc;
+        ModMonitor(ModValLbl);
+
+        if (ModVal <= ModValMin) return ModValMin;
+
+        if (ModVal <= ModValMin) return ModValMin;
+    }
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+ 
+function ModMonitor (Mon) {
+    
+    if (Mon == ModToggle[1]) { 
+    
+        BattsStickyAA     = Off;
+    }
+    
+    if (Mon == ModToggle[3]) { 
+    
+        PolarVIAssist     = Off;
+    }
+    
+    if (Mon == ModToggle[10]) {
+    
+    }
+    
+    if (Mon == ModToggle[11]) {
+    
+        SlideCancelMW = Off;
+    }
+    
+    if (Mon == ModToggle[12]) {
+    
+        SlideCancelCW = Off;
+    }
+    
+}
+    
+function Grid() { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll() {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit(Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue(Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod(Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,  TRIANGLE ,   SPACE   ,     O     ,     r     ,   SPACE   ,     Y     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   }; ����������������

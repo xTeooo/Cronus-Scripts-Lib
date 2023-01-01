@@ -1,0 +1,407 @@
+		/*
+			This Script Was "Coded" (Actually Stolen Code) From Yew.
+			SS_Nikolai Decided To Unscramble It And Show That It's Nothing Different From Their Previous Stolen Work.
+		*/
+
+const string _T    [] = {"|yewTHRASH       ",""}
+const string _T_   [] = {"|Discord.GG/      ",""}
+const string _T___ [] = {"|         THRASHWORKS",""}
+const string _T__  [] = {"|WORST Scripts!    ",""}
+const string __T__ [] = {"|Twitter @YewifyTHRASH ",""}
+
+define
+AimY	= XB1_RY,
+AimX	= XB1_RX,
+Walk	= XB1_LY,
+Strafe	= XB1_LX,
+
+ADS     = XB1_LT,
+Fire    = XB1_RT,
+
+Build   = XB1_B,
+Pickaxe = XB1_Y,
+Pickup  = XB1_X,
+
+Edit    = XB1_LS,
+Reset   = XB1_RB,
+Confirm = XB1_LT,
+Select  = XB1_RT,
+
+PSController           = FALSE,
+
+AntiRecoil             = TRUE,
+AntiRecoilStrength     = 22,
+
+HeadShotAssist         = FALSE,
+HeadShotAssistStrength = 3,
+
+AntiBloom              = TRUE,
+
+PickupMacro            = TRUE,
+
+ResetMacro             = TRUE,
+
+BuildTracker           = TRUE,
+BuildSyncTime          = 2500,
+
+Roof    = XB1_LB,
+Floor   = XB1_RB,
+Ramp    = XB1_LT,
+Wall    = XB1_RT,
+Trap    = XB1_X
+
+define LZ  = 2;
+define DZ  = 8;
+define LDZ = 8;
+int RZ     = 8;
+int radius;
+int opa;
+int od;
+int Rad;
+int Tracker1;
+int Tracker2;
+int aimbot;
+int auto;
+int Tracking;
+const int16 op[][] = { { 0,    0     ,    0     ,          1         ,         1          ,     0 },		// This Is TaylorDrift21 Shapes Info Array
+						{1,    0     ,    0     ,          2         ,         1          ,     0 },
+						{2    ,    0     ,    0     ,          1         ,         2          ,     0 },
+						{3    ,    0     ,    0     ,          2         ,         1          ,     1 },
+						{4    ,    0     ,    0     ,          2         ,         1          ,     1 },
+						{5    ,    0     ,    0     ,          1         ,         1          ,     2 },
+						{6    ,    0     ,    0     ,          1         ,         0          ,     0 },
+						{7    ,    0     ,    0     ,          0         ,         1          ,     0 },
+						{8    ,   45    ,   135     ,          1         ,         1          ,     3 },
+						{9    ,  180    ,   315     ,          1         ,         1          ,     0 },
+						{11    ,   45    ,   135     ,          1         ,         1          ,     0 },
+						{12    ,  315    ,   180     ,          1         ,         1          ,     0 }
+}
+int tracking_size;
+int ryaus,rxaus,lyaus,lxaus;
+int f_calib;
+int V10,V15,V13,V14,V16,V17;
+init {
+	cls_oled(1);
+	print ( Text ( 18, OLED_FONT_SMALL_WIDTH ), 3 , OLED_FONT_SMALL, OLED_BLACK, _T    [0] )
+	print ( Text ( 18, OLED_FONT_SMALL_WIDTH ), 15, OLED_FONT_SMALL, OLED_BLACK, _T_   [0] )
+	print ( Text ( 18, OLED_FONT_SMALL_WIDTH ), 26, OLED_FONT_SMALL, OLED_BLACK, _T___ [0] )
+	print ( Text ( 18, OLED_FONT_SMALL_WIDTH ), 38, OLED_FONT_SMALL, OLED_BLACK, _T__  [0] )
+	print ( Text ( 18, OLED_FONT_SMALL_WIDTH ), 50, OLED_FONT_SMALL, OLED_BLACK, __T__ [0] )
+}
+main {
+	vm_tctrl (-9);
+	block_rumble ( );
+	deadzone ( PS4_L2, PS4_R2, 100, 100 );
+
+	if (PSController)
+	{
+		swap(PS4_SHARE, PS4_TOUCH);
+	}
+
+	Circle();
+	combo_run(B);
+	combo_run(BD);
+	combo_run(ac);
+	combo_run(ac1);
+	combo_run(P);
+
+	if(event_press(PS4_R2))
+	{
+		combo_run(L);
+	}
+
+	combo_run(gg);
+	Tracking	= (isqrt(abs(get_ival(AimX)) * abs(get_ival(AimX)) + abs(get_ival(AimY)) * abs(get_ival(AimY))))
+	rxaus		= max(rxaus, abs(get_ival(AimX))+ 2);
+	ryaus		= max(ryaus, abs(get_ival(AimY))+ 2);
+	lxaus		= max(lxaus, abs(get_ival(PS4_LX))+ 2);
+	lyaus		= max(lyaus, abs(get_ival(PS4_LY))+ 2);
+	rxaus		= min(rxaus, DZ);
+	ryaus		= min(ryaus, DZ);
+	lxaus		= min(lxaus, LZ + 5);
+	lyaus		= min(lyaus, LZ + 5);
+
+	f_calib--;		// This Is Sweet_Evils Drift Calibration Code
+
+	rxaus		= max(rxaus, ryaus);
+	lxaus		= max(lxaus, lyaus);
+	aimbot		= (cos(op[opa][1] + od) * Rad/op[opa][3])/100 + Tracker1;
+	auto		= (sin(op[opa][2] + od) * Rad/op[opa][4])/100 + Tracker2;
+	Tracker1	= (tracking_size * sin(Tracking)/100);		// This Is Part Of TaylorDrift21 Tracking Code
+	Tracker2	= (tracking_size * cos(Tracking)/100);
+
+	if (ResetMacro)
+	{
+		if (event_press(Edit))
+		{
+			V16 = TRUE;
+			V17 = TRUE;
+			V13 = FALSE;
+		}
+
+		if (V17)
+		{
+			if (event_release(Select))
+			{
+				V16 = FALSE;
+				V17 = FALSE;
+				V13 = FALSE;
+			}
+		}
+	}
+
+	if (V16 || V17)
+	{
+		if (event_press(Reset))
+		{
+			combo_run(Reset);
+			V16 = FALSE;
+			V17 = FALSE;
+			V13 = FALSE;
+		}
+
+		if (event_press(Pickaxe) || event_press(ADS))
+		{
+			V16 = FALSE;
+			V17 = FALSE;
+			V13 = FALSE;
+		}
+	}
+
+	if (BuildTracker)
+	{
+		if (event_press(Build))
+		{
+			V13 = !V13;
+		}
+
+		if (V13)
+		{
+			V14 += get_rtime();
+
+			if (event_press(Pickaxe) || V14 == BuildSyncTime)
+			{
+				V13 = FALSE;
+				V14 = 0;
+			}
+
+			if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) V14 = 0;
+		}
+	}
+
+	if (!V13)
+	{
+		if ( PickupMacro && get_val ( Pickup ) )
+		{
+			combo_run(PickUpMacro);
+		}
+
+		if ( AntiRecoil)
+		{
+			if ( get_val ( ADS ) && get_val ( Fire ) )
+			{
+				combo_run ( AntiRecoil );
+			}
+		}
+
+		if ( AntiBloom )
+		{
+			if ( get_val ( ADS ) && get_val ( Fire ) )
+			{
+				combo_run(AntiBloom);
+			} 
+
+			if ( abs ( get_val ( PS4_LX ) ) > 10 || abs ( get_val ( PS4_LY ) ) > 10 )
+			{
+				combo_stop(AntiBloom); 
+			}
+		}
+
+		if (HeadShotAssist)
+		{
+			if (get_val(Fire))
+			{
+				combo_run(HeadShotAssist);
+			}
+		}
+	} 
+
+	if (V13)
+	{
+		set_rgb(0, 0, 139);
+	}
+	else
+	{
+		set_rgb(255, 255, 255);
+	}
+}
+
+combo PickUpMacro { 
+	set_val ( Pickup, 100 ); 
+	wait    ( 1           );
+	set_val ( Pickup, 0   ); 
+	wait    ( 1           );
+}
+
+combo AntiRecoil {
+	V10 = get_val ( AimY ) + AntiRecoilStrength; 
+
+	if ( V10 > 100 ) 
+		V10 = 100; 
+
+	if ( abs ( get_val ( AimY ) ) < abs ( AntiRecoilStrength ) + 5 )
+		set_val ( AimY, ( V10 ) );
+}
+
+combo AntiBloom { 
+	set_val ( PS4_LX,-11 ); 
+	wait    ( 25         ); 
+	set_val ( PS4_LY,  9 ); 
+	wait    ( 25         ); 
+	set_val ( PS4_LX, 11 ); 
+	wait    ( 25         ); 
+	set_val ( PS4_LY,  9 ); 
+	wait    ( 25         );
+}
+
+combo HeadShotAssist {
+	V15 = get_val ( AimY ) + inv ( HeadShotAssistStrength ); 
+
+	if ( V15 > 100 )
+		V15 = 100;
+
+	if ( abs ( get_val ( AimY ) ) < abs ( inv( HeadShotAssistStrength ) ) + 5 ) 
+		set_val ( AimY, ( V15 ) );
+}
+combo Confirm {
+	set_val	( Confirm, 100 );
+	wait    ( 22           );
+	set_val ( Confirm, 0   );
+	wait    ( 10           );
+}
+
+combo Reset {
+	wait      ( 20      );
+	combo_run ( Confirm );
+}
+
+function Text (Character,Font) {
+	return (OLED_WIDTH / 2 + 1) - ((Character * Font) / 2 + 1);
+}
+int x,y;
+int a;
+combo P {
+	set_val(AimY,DZ);
+	set_val(AimX,DZ);
+	set_val(AimY,DZ * -1);
+	set_val(AimX,DZ * -1);
+}
+
+combo L {
+	set_val(AimY,RZ * -1);
+	set_val(AimX,RZ);
+	set_val(AimY,RZ);
+	set_val(AimX,RZ * -1);
+}
+
+combo gg {
+	a = random(-LDZ,LDZ);
+	set_val(AimY,  radius);
+	wait(step);
+	set_val(AimX,  radius);
+	set_val(Strafe, a);
+	wait(step);
+	set_val(AimY,  inv(radius));
+	wait(step);
+	set_val(AimX,  inv(radius));
+	set_val(Strafe, inv(a));
+}
+
+combo ac {
+	set_val(AimX,RZ);
+	set_val(AimX,-RZ - 1);
+	set_val(AimY,RZ);
+	set_val(AimX,RZ);
+	set_val(AimY,-RZ - 1);
+	set_val(AimX,RZ);
+	set_val(AimY,RZ);
+}
+
+combo ac1 {
+	set_val(Strafe,LZ);
+	set_val(Strafe,-LZ - 1);
+	set_val(Strafe,LZ);
+	set_val(Strafe,LZ);
+}
+
+function Set_polar(stick, angle, radius) {
+	x = 9 + stick; 
+	y = 10 + stick;
+
+	if(angle < 0)
+		angle		= 360 + (angle % 360);
+		angle		= (angle + 90) % 360;
+		radius		= clamp(radius, 0, 100);
+		sin_angle	= PolarArray[angle];
+		cos_angle	= PolarArray[(angle + 90) % 360];
+		set_val(x, inv(radius * cos_angle / 100));
+		set_val(y, inv(radius * sin_angle / 100))
+	return;
+}
+
+int sin_angle,cos_angle;
+int cRYPTOACE;
+int CRYPTOACE;
+
+combo B {
+	if(!(cRYPTOACE++ % 4))
+		Set_polar(POLAR_RS, CRYPTOACE = (100 * 100) % 360, 100 * 359)	cRYPTOACE = 0;
+}
+
+combo BD {
+	if(!(cRYPTOACE++ % 4))
+		Set_polar(POLAR_LS, CRYPTOACE = (100 * 100) % 360, 100 * 359)	cRYPTOACE = 0;
+}
+
+const int8   PolarArray   [] = {-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100};
+function cos(angle) {
+	return PolarArray[(correctAngle(angle) + 90) % 360];
+		return 0;
+}
+
+function sin(angle) {
+	return PolarArray[correctAngle(angle)];
+		return 0;
+}
+
+function correctAngle(angle) { 
+	if(angle < 0)
+		angle = 360 + (angle % 360);
+		angle = (angle + 90) % 360;
+	return angle;
+}
+
+int X,Y,step;
+
+function Circle() {		// This Function Was Created By Cronus Dev Batts
+	RZ = isqrt(pow(radius,2) - pow(X,2));
+
+	set_val(AimX,RZ + get_val(AimX));
+	set_val(AimY,RZ + get_val(AimY));
+
+	RZ += step;
+
+	if(RZ > radius)
+		RZ = radius;
+		RZ = inv(isqrt(pow(radius,2) - pow(X,2)));
+
+		set_val(AimX,RZ + get_val(AimX));
+		set_val(AimY,RZ + get_val(AimY));
+
+		RZ -= step;
+
+		if(RZ < inv(radius))
+		{
+			RZ = inv(radius)}else{RZ = radius;
+		}
+}

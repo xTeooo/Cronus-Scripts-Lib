@@ -1,0 +1,603 @@
+//#################################################################################################
+//######################################### Sweet_EviL_14 #########################################
+//################################################################################################# 
+//#     _________                      __    ___________     .__.____       ____   _____          #
+//#    /   _____/_  _  __ ____   _____/  |_  \_   _____/__  _|__|    |     /_   | /  |  |         #
+//#    \_____  \\ \/ \/ // __ \_/ __ \   __\  |    __)_\  \/ /  |    |      |   |/   |  |_        #
+//#    /        \\     /\  ___/\  ___/|  |    |        \\   /|  |    |___   |   /    ^   /        #
+//#   /_______  / \/\_/  \___  >\___  >__|   /_______  / \_/ |__|_______ \  |___\____   |         #
+//#           \/             \/     \/               \/                 \/           |__|         #
+//#                                                                                               #
+//#################################################################################################
+//############################## Sweet_EviL_14 SE_PRO_AIM_V2.4.0 ##################################
+//################################################################################################# 
+// 
+ 
+// don't change
+/*
+const int Lookup_Table[] =
+{
+	0, 	1,  3,  5,  6,  8,  10, 12, 13, 15,
+	17, 19, 20, 22, 24, 25, 27, 29, 30, 32,
+	34, 35, 37, 39, 40, 42, 43, 45, 46, 48,
+	50, 51, 52, 54, 55, 57, 58, 60, 61, 62,
+	64, 65, 66, 68, 69, 70, 71, 73, 74, 75,
+	76, 77, 78, 79, 80, 81, 82, 83, 84, 85,
+	86, 87, 88, 89, 89, 90, 91, 92, 92, 93,
+	93, 94, 95, 95, 96, 96, 97, 97, 98, 98,
+	98, 98, 99, 99, 99, 99, 99, 99, 99, 99,
+	100
+}
+/*/
+
+const int16 Lookup_Table[] =
+{
+	0, 	 17,  34,  52,  69,  87,  104, 121, 139, 156, 
+	173, 190, 207, 224, 241, 258, 275, 292, 309, 325,
+	342, 358, 374, 390, 406, 422, 438, 453, 469, 484,
+	500, 515, 529, 544, 559, 573, 587, 601, 615, 629,
+	642, 656, 669, 682, 694, 707, 719, 731, 743, 754,
+	766, 777, 788, 798, 809, 819, 829, 838, 848, 857,
+	866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 
+	939, 945, 951, 956, 961, 965, 970, 974, 978, 981,
+	984, 987, 990, 992, 994, 996, 997, 998, 999, 999,
+	1000
+}
+
+//################################################################################################# 
+
+//Don't change these value!!!!!!!
+
+define PROCESS_SE_AIM_PRO		= 0;
+define PROCESS_SMOOTHING		= 1;
+
+//################################################################################################# 
+
+//Don't change these value!!!!!!!
+
+define REGULAR_AIM_ASSIST		= 0;
+define DYNAMIC_AIM_ASSIST		= 1;
+define SPIROIDE_AIM_ASSIST		= 2;
+
+define CIRCULAR_SHAPES			= 0;
+define LINEAR_SHAPES			= 1;
+define ELLIPSOID_SHAPES			= 2;
+
+//################################################################################################# 
+
+define AIM_ASSIST_TYPE			= SPIROIDE_AIM_ASSIST; // select your aim assist type choose:
+													   // REGULAR_AIM_ASSIST or DYNAMIC_AIM_ASSIST or SPIROIDE_AIM_ASSIST
+define PATTERN_SHAPES 			= CIRCULAR_SHAPES;     // select your chape. choose:  
+													   // CIRCULAR_SHAPES or LINEAR_SHAPES
+define USE_STEADY_AIM 	    	= FALSE; 
+
+define VM_UPDATE				= 10; 
+
+define ANGLE_INCREMENT 			= 20;
+define ANGLE_SAMLING_RATE		= 250; 
+
+define MAX_RADUIS 				= 22;   // Warning !!!!! Max value if ELLIPSOID_SHAPES if selected 20 otherwise 30
+define MIN_RADUIS 				= 4; 
+
+define STEADY_AIM_RESOLUTION	= 4;
+
+define MAX_MAGNITUDE 			= 10;
+
+define SMOOTHING 				= 30; // smoothing time = vm update date x SMOOTHING
+
+//################################################################################################# 
+
+int Rx;
+int Ry;
+int Rx_Polar;
+int Ry_Polar;
+int Angle;
+int Polar_Process_Done;
+int Angle_Increment_State; 
+int Angle_Update_Cycle;
+int Init_Agnle_Update_Cycle
+int Raduis;
+int Raduis_Increment_State;
+int Ellipse_Raduis;
+int Smoothing;
+int SE_PRO_AIM_STATE;
+
+//#################################################################################################
+
+int ret;
+int val1; 
+int val2;
+
+//################################################################################################# 
+
+init
+{
+    Angle  = 0;
+    Polar_Process_Done = TRUE;
+    Raduis = MAX_RADUIS;
+	Raduis_Increment_State = FALSE;
+	Init_Agnle_Update_Cycle = 1;
+	Init_Agnle_Update_Cycle = ANGLE_SAMLING_RATE * (360/ANGLE_INCREMENT);
+	Ellipse_Raduis = MAX_RADUIS;
+	Smoothing = SMOOTHING;
+	SE_PRO_AIM_STATE = PROCESS_SE_AIM_PRO;
+	Polar_Process_Done = TRUE;
+}
+//################################################################################################# 
+
+main 
+{    
+    vm_tctrl(VM_UPDATE);   
+      
+	if(get_val(PS4_L2) || get_val(PS4_R2))
+	{	
+		set_val(TRACE_6,SE_PRO_AIM_STATE);
+		
+		if( SE_PRO_AIM_STATE == PROCESS_SE_AIM_PRO)
+		{
+			Rx = get_val(PS4_RX);
+			Ry = get_val(PS4_RY);
+
+			if((check_magnitude_overflow(PATTERN_SHAPES, MAX_MAGNITUDE) == TRUE))
+			{		
+				Polar_Process_Done = TRUE;			
+				Angle = 0;
+				Raduis = MAX_RADUIS;
+				Ellipse_Raduis = MAX_RADUIS;
+				Raduis_Increment_State = FALSE;
+				Angle_Update_Cycle = Init_Agnle_Update_Cycle;
+		
+				if(USE_STEADY_AIM == TRUE)
+				{
+					Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+					Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);		
+					
+					set_val(PS4_RX, Rx);
+					set_val(PS4_RY, Ry);
+				}
+				
+				Smoothing = SMOOTHING;
+				SE_PRO_AIM_STATE = PROCESS_SMOOTHING;
+			}
+			else	
+			{								
+				if(USE_STEADY_AIM == TRUE)
+				{
+					Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+					Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);
+				}
+			
+				if( Polar_Process_Done == TRUE)
+				{	
+					Polar_Process_Done = FALSE;					
+
+					Angle = get_full_quadrant_angle(atan2_16bits(inv(Ry),Rx));
+						
+					Angle_Update_Cycle = Init_Agnle_Update_Cycle;
+					
+					if(	(Angle >= 0 && Angle <= 90) || (Angle >= 270))
+					{
+						Angle_Increment_State = TRUE;
+					}
+					else
+					{
+						Angle_Increment_State = FALSE;
+					}
+				}
+				
+		
+				if(AIM_ASSIST_TYPE == DYNAMIC_AIM_ASSIST)
+				{
+					Raduis = MAX_RADUIS - ((abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY)))/1000);
+					
+					Ellipse_Raduis = Raduis;
+					
+					//set_val(TRACE_6,Raduis);
+				}
+				
+				if(PATTERN_SHAPES == ELLIPSOID_SHAPES)
+				{
+					set_val(TRACE_6,Ellipse_Raduis);
+					Raduis = calculate_ellipsoid_raduis(Ellipse_Raduis,cos(Angle));	
+				}
+				
+				
+				Rx_Polar = get_polar_coordinate(Raduis, cos(Angle));
+				Ry_Polar = get_polar_coordinate(Raduis, sin(Angle));
+				
+				Rx = process_overflow_check(Rx, Rx_Polar);
+				Ry = process_overflow_check(Ry, Ry_Polar);
+				
+				if(USE_STEADY_AIM == TRUE)
+				{
+					Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+					Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);		
+				}
+				
+				set_right_joystick(Rx, Ry, PATTERN_SHAPES);
+				
+				Angle_Update_Cycle--;
+				
+				//set_val(TRACE_2,Angle_Update_Cycle);
+		
+				if(Angle_Update_Cycle == 0)
+				{
+					Polar_Process_Done = TRUE;
+					
+					Angle_Update_Cycle = Init_Agnle_Update_Cycle;
+					
+					if(AIM_ASSIST_TYPE == SPIROIDE_AIM_ASSIST)
+					{					
+						if(Raduis_Increment_State == FALSE)
+						{					
+							if(PATTERN_SHAPES == ELLIPSOID_SHAPES)
+							{								
+								Ellipse_Raduis -= 2;
+								
+								if(Ellipse_Raduis < MIN_RADUIS)
+								{
+									Raduis_Increment_State = TRUE;
+									Ellipse_Raduis = MIN_RADUIS;
+								}	
+							}
+							else
+							{
+								Raduis -= 2;
+								
+								if(Raduis < MIN_RADUIS)
+								{
+									Raduis_Increment_State = TRUE;
+									Raduis = MIN_RADUIS;
+								}				
+							}
+						}
+						else if(Raduis_Increment_State == TRUE)
+						{
+							if(PATTERN_SHAPES == ELLIPSOID_SHAPES)
+							{								
+								Ellipse_Raduis += 2;
+								
+								if(Ellipse_Raduis < MIN_RADUIS )
+								{
+									Raduis_Increment_State = FALSE;
+									Ellipse_Raduis = MIN_RADUIS;
+								}	
+							}
+							else
+							{
+								Raduis += 2;
+								
+								if(Raduis < MIN_RADUIS)
+								{
+									Raduis_Increment_State = FALSE;
+									Raduis = MIN_RADUIS;
+								}					
+							}
+							
+						}
+					}							
+				}
+				else
+				{
+					Angle = update_angle(Angle, Angle_Increment_State, ANGLE_INCREMENT);
+				}
+			}
+		}
+		else if( SE_PRO_AIM_STATE == PROCESS_SMOOTHING)
+		{
+			if(USE_STEADY_AIM == TRUE)
+			{
+				Rx = get_steady_aim(Rx, STEADY_AIM_RESOLUTION);
+				Ry = get_steady_aim(Ry, STEADY_AIM_RESOLUTION);		
+					
+				set_val(PS4_RX, Rx);
+				set_val(PS4_RY, Ry);
+			}
+			
+			if(Smoothing == 0)
+			{
+				SE_PRO_AIM_STATE = PROCESS_SE_AIM_PRO;
+			}
+			
+			Smoothing--;				
+		}
+	}
+	else
+	{
+		Angle = 0;
+		Polar_Process_Done = TRUE;
+		Raduis = MAX_RADUIS;
+		Ellipse_Raduis = MAX_RADUIS;	
+		Raduis_Increment_State = FALSE;
+		Angle_Update_Cycle = Init_Agnle_Update_Cycle;
+		
+		Smoothing = SMOOTHING;
+		SE_PRO_AIM_STATE = PROCESS_SE_AIM_PRO;
+	}
+}
+
+//#################################################################################################
+/*
+function calculate_eccentricity_coef(max_ellipsoid_raduis, min_ellipsoid_raduis)
+{
+	val1 = pow(min_ellipsoid_raduis, 2);
+	val2 = pow(max_ellipsoid_raduis, 2);
+	val1 *= 10;
+	ret = val1/val2;
+	ret = 10 - ret;
+	
+	return ret;
+}
+*/
+//#################################################################################################
+
+function calculate_ellipsoid_raduis(raduis, cosinus)
+{		
+	// factor 50%
+	ret = (cosinus * (raduis/2));	
+	ret = (1000 * raduis )- ret;
+	ret /= 100;
+	
+	return (ret);
+}
+
+//#################################################################################################
+
+function update_angle(angle, increment_state, val)
+{
+	if(increment_state == TRUE)
+	{
+		angle += val;
+	
+		if(angle >= 360)
+		{
+			angle -= 360;
+		}
+	}
+	else
+	{
+		angle -= val;
+	
+		if(angle <= 0)
+		{
+			angle = 360 + angle;
+		}
+	}
+	
+	return angle;
+}
+ 
+//#################################################################################################
+
+function set_right_joystick(x , y, pattern)
+{	
+	set_val(PS4_RX, x);
+	
+	if(pattern != LINEAR_SHAPES)
+	{
+		set_val(PS4_RY, y);	
+	}
+}
+
+//#################################################################################################
+
+function check_magnitude_overflow(pattern, max_val)
+{
+	ret = TRUE;
+	val2 = 0;
+	
+	val1 = isqrt(pow((get_lval(PS4_RX) - get_val(PS4_RX)), 2));
+		
+	if( pattern != LINEAR_SHAPES)
+	{
+		val2 = isqrt(pow((get_lval(PS4_RY) - get_val(PS4_RY)), 2));		
+	}
+	
+	if( (val1 <=  max_val) && (val2 <=  max_val))
+	{
+		ret = FALSE;
+	}
+	
+	set_val(TRACE_1,val1);
+	set_val(TRACE_2,val2);
+	
+	return ret;
+}
+
+//#################################################################################################
+
+function get_steady_aim(axis, resolution)
+{
+	if(axis >= 0)
+	{
+		ret = (axis % resolution);
+	
+		if(ret >= (resolution / 2))
+		{
+			axis = axis + (resolution - ret);
+		}
+		else
+		{
+			axis -= ret;
+		}
+	}
+	else
+	{
+		ret = (axis % resolution);
+	
+		if( abs(ret) >= (resolution / 2))
+		{
+			axis = axis - (resolution + ret);
+		}
+		else
+		{
+			axis += abs(ret);
+		}
+	}
+	
+	if(axis > 100)
+	{
+		axis = 100;
+	}
+	else if(axis < -100)
+	{
+		axis = -100;
+	}
+	
+	return axis;
+}
+
+//#################################################################################################
+
+function get_polar_coordinate(raduis, coef)
+{
+	if(raduis > 32)
+	{
+		raduis = 32;
+	}
+		
+	return((raduis * coef) / 1000);		
+}
+
+//#################################################################################################
+
+function process_overflow_check(x, y)
+{
+	ret = x + y;
+	
+	if( ret > 100)
+	{
+		ret = 100;
+	}
+	else if (ret < -100)
+	{
+		ret = -100;
+	}
+	
+	return ret;
+}
+
+//################################################################################################# 
+
+function sin(angle)
+{   
+    if(angle <= 90)
+    {             
+        ret = (Lookup_Table[angle]);
+    }
+    else if (angle <= 180)
+    {      
+        ret = (Lookup_Table[180 - angle]);
+    }
+    else if (angle <= 270)
+    {
+        ret = inv(Lookup_Table[angle - 180]);     
+    }
+    else 
+    {
+       	ret = inv(Lookup_Table[360 - angle]);      
+    }
+    
+    return ret;
+}
+
+//################################################################################################# 
+
+function cos(angle)
+{   
+    if(angle <= 90)
+    {             
+        ret = (Lookup_Table[90 - angle]);
+    }
+    else if (angle <= 180)
+    {      
+        ret = inv(Lookup_Table[angle - 90]);
+    }
+    else if (angle <= 270)
+    {
+        ret = inv(Lookup_Table[270 - angle]);       
+    }
+    else 
+    {
+        ret = (Lookup_Table[angle - 270]);       
+    }
+    
+    return ret;
+}
+
+//################################################################################################# 
+
+function atan2_16bits(y, x) 
+{	
+	// determine Angle
+	if (y >= 0)
+	{ // oct 0,1,2,3
+		if (x >= 0) { // oct 0,1
+			if (x > y)
+			{
+				ret = ( (y * 300) / x );
+			}
+			else
+			{
+				if (y == 0)
+				ret = 0; // (x=0,y=0)
+				else
+				ret = 540 - ( (x * 300) / y );
+
+			}
+		}
+		else
+		{ // oct 2,3
+		  // if (inv(x) <= y) {
+			if (x >= inv(y))
+			{
+				ret = 540 - ( (x * 300) / y );
+			}
+			else
+			{
+				ret = 1080 + ( (y * 300) / x );
+			}
+		}
+	}
+	else
+	{ // oct 4,5,6,7
+		if (x < 0)
+		{ // oct 4,5
+		  // if (inv(x) > inv(y)) {
+			if (x < y)
+			{
+				ret = ( (y * 300) / x ) - 1080;
+			}
+			else
+			{
+				ret = ( (inv(x) * 300) / y ) - 540;
+			}
+		} else
+		{ // oct 6,7
+		  // if (x <= inv(y)) {
+			if (inv(x) >= y)
+			{
+				ret = ( (inv(x) * 300) / y ) - 540;
+			}
+			else
+			{
+				ret = ( (y * 300) / x );
+			}
+		}
+	}
+	
+	return (ret/6);
+}
+
+//#################################################################################################
+
+function get_full_quadrant_angle(angle)
+{
+
+	if(angle < 0)
+	{
+		angle += 360;
+	}
+	
+	return angle
+}

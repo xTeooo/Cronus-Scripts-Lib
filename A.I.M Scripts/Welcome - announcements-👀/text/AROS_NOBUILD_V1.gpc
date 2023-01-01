@@ -1,0 +1,326 @@
+// made by Aros (EDITED BY DHRUVSKI)
+
+// 🅼🅰🆃🅲🅷 🅸🅽 🅶🅰🅼🅴 🅱🆄🆃🆃🅾🅽🆂
+// 🅲🅾🅼🅱🅰🆃 🅼🅾🅳🅴
+define ADS     		= PS4_L2;		//in-game ADS BUTTON
+define FIRE     	= PS4_R2;		//in-game FIRE BUTTON
+define NEXT_WEAPON 	= PS4_R1;		//in-game NEXT_WEAPON BUTTON
+define PREV_WEAPON 	= PS4_L1;		//in-game PREV_WEAPON BUTTON
+define PICKAXE 		= PS4_RIGHT; //in-game PICKAXE BUTTON
+define JUMP     	= PS4_CROSS;	//in-game JUMP BUTTON
+define CROUCH   	= PS4_R3;		//in-game CROUCH BUTTON
+define INTERACT 	= PS4_SQUARE;	//in-game INTERACT BUTTON
+define MAPVIEW_B	= PS4_DOWN;    //in-game MAP BUTTON
+
+// 🅼🅾🆅🅴🅼🅴🅽🆃 & 🅰🅸🅼 🆂🆃🅸🅲🅺🆂
+
+define AimY     = XB1_RY;  // Vertical Aim Axis In Game
+define AimX     = XB1_RX;  // Horizontal Aim Axis In Game
+define Strafe   = XB1_LX;  // Horizontal Walk Axis In Game
+define Walk     = XB1_LY;  // Vertical Walk Axis In Game
+define PS       = POLAR_RS;// Polar Stick In Use [LS/RS]
+
+// Batts STICKY AA //
+define BattsStickyAA = TRUE; 
+define BattsAAHip    = TRUE;
+define BattStickyPower = 9; // ingame ads or deadzone
+define BattStickyWait  = 9; // ingame ads or deadzone
+
+// NIKO AIM // (ONLY CAN 1 ON BATTS OR THIS)
+define SS_Nikolai_Aim = TRUE;
+define AimAssistWaitTime = 10;// ingame ads or deadzone
+define AimAssistStrength = 10;// ingame ads or deadzone
+
+// IPWNU4KICKS AA //
+int DynamicPolarAim = TRUE; // expo only
+define PolarProgHip = TRUE; // expo only
+int DynamicRadRX  	= 6; //Right Stick Deadzone
+int DynamicRadRY  	= 12; // Right Stick Deadzone
+int DynamicAngle  	= 30;
+int PolarProgRel  	= 20;
+
+//REWONDZ[PRO] Values/Times
+int AimAssistExploit       = TRUE; // expo only          
+int AimAssistExploit2      = TRUE; // expo only
+int TargetTrackerExploit   = TRUE; // expo only
+int AimAssist_Strength  = 30; 
+int tt_aim_speed        = 95;
+
+// Athena's AntiRecoil
+int AntiRecoil          = 20; // reccomended values 15,20,25,26
+
+// Pickup Marco //
+int PickUpMacro          = FALSE;
+
+//HairTriggers
+int HAIR_TRIGGERS = TRUE;
+
+// Dhruvski's AntiPegasusBloom Reducer
+int AntiPegasusBloom = TRUE;
+int AntiPegasusBloomHipFire = TRUE;
+
+/*
+██████╗░░█████╗░  ███╗░░██╗░█████╗░████████╗  ████████╗░█████╗░██╗░░░██╗░█████╗░██╗░░██╗   ██████╗░███████╗██╗░░░░░░█████╗░░██╗░░░░░░░██╗
+██╔══██╗██╔══██╗  ████╗░██║██╔══██╗╚══██╔══╝  ╚══██╔══╝██╔══██╗██║░░░██║██╔══██╗██║░░██║   ██╔══██╗██╔════╝██║░░░░░██╔══██╗░██║░░██╗░░██║
+██║░░██║██║░░██║  ██╔██╗██║██║░░██║░░░██║░░░  ░░░██║░░░██║░░██║██║░░░██║██║░░╚═╝███████║   ██████╦╝█████╗░░██║░░░░░██║░░██║░╚██╗████╗██╔╝
+██║░░██║██║░░██║  ██║╚████║██║░░██║░░░██║░░░  ░░░██║░░░██║░░██║██║░░░██║██║░░██╗██╔══██║   ██╔══██╗██╔══╝░░██║░░░░░██║░░██║░░████╔═████║░
+██████╔╝╚█████╔╝  ██║░╚███║╚█████╔╝░░░██║░░░  ░░░██║░░░╚█████╔╝╚██████╔╝╚█████╔╝██║░░██║   ██████╦╝███████╗███████╗╚█████╔╝░░╚██╔╝░╚██╔╝░
+╚═════╝░░╚════╝░  ╚═╝░░╚══╝░╚════╝░░░░╚═╝░░░  ░░░╚═╝░░░░╚════╝░░╚═════╝░░╚════╝░╚═╝░░╚═╝   ╚═════╝░╚══════╝╚══════╝░╚════╝░░░░╚═╝░░░╚═╝░░
+*/
+int PX_Out,PY_Out,PAngle_Out,PolAngle,PX[2],PY[2],SnapShot_hold,SnapShot_rest;
+int Anti_Recoil;int WaitStrength, AimStrength;
+
+main {
+vm_tctrl(-5);
+
+if (BattsStickyAA) {
+if (get_ival(ADS) || (BattsAAHip && get_ival(FIRE))) {
+combo_run(BattsStickyAssist);
+} else {
+combo_stop(BattsStickyAssist); 
+}
+}
+
+if (SS_Nikolai_Aim)
+		{
+			if(get_ival(ADS) || get_ival(FIRE))
+			{
+				combo_run(cNikoAim);
+			}
+
+			if(event_release(ADS) || event_release(FIRE))
+			{
+				combo_stop(cNikoAim)
+			}
+		}
+		
+		if (DynamicPolarAim) {
+            
+        if ((get_ival(ADS)) || (get_ival(FIRE) && PolarProgHip)) {
+            
+            if (abs(get_ival(AimX)) <= PolarProgRel && abs(get_ival(AimY)) <= PolarProgRel) {
+                
+                PolAngle = (PolAngle + DynamicAngle) % 360;
+                  SetPolar(POLAR_RS,PolAngle,DynamicRadRX,DynamicRadRY);
+             }
+          }
+      }
+      if(TargetTrackerExploit){
+if(get_val(ADS) && get_val(FIRE)){
+sensitivity(AimX,0,tt_aim_speed); 
+sensitivity(AimY,0,tt_aim_speed);
+}}
+if(AimAssistExploit){   
+if(get_val(ADS)> 95){ combo_run(Auto_Aim);}
+if(abs(get_val(9)) > 9 || abs(get_val(9)) > 9) 
+combo_stop(Auto_Aim);
+}
+if(AntiPegasusBloom)
+		{
+			if(get_val(ADS) || AntiPegasusBloomHipFire && get_val(FIRE))
+			{
+				combo_run(DhruvskiBloomS)
+			
+			}
+			if(event_release(ADS) || event_release(FIRE))
+			{
+				combo_stop(DhruvskiBloomS)
+			}
+		}
+if (PickUpMacro && get_val(INTERACT)) { combo_run(PickupSpam); }
+if(AntiRecoil){                               
+if( get_val(ADS) && get_val(FIRE)){      
+combo_run(AntiRecoil); }               
+if( abs(get_val(AimY)) > 36 || abs(get_val(AimX)) > 36) { 
+combo_stop (AntiRecoil); }               
+}
+if(HAIR_TRIGGERS){
+	if(abs(get_ival(ADS)) > 10){
+		set_val(ADS, 40);}
+		if(abs(get_ival(ADS)) > 60){
+			set_val(ADS, 100);
+}
+	if(abs(get_ival(FIRE)) > 10){
+		set_val(FIRE, 40);}
+		if(abs(get_ival(FIRE)) > 60){
+			set_val(FIRE, 100);
+}
+}
+
+}
+
+//Combos
+combo DhruvskiBloomS {
+	set_val(CROUCH, 100)
+	wait(10)
+	set_val(CROUCH, 100)
+	wait(10)
+	set_val(CROUCH, 100)
+	wait(10)
+	set_val(CROUCH, 100)
+	wait(10)
+
+}
+//------------------------------------------------------------------------------
+combo Auto_Aim {          
+set_val(10, (AimAssist_Strength)); wait(10)
+set_val(9, (AimAssist_Strength)); wait(10)
+set_val(10, AimAssist_Strength * -1); wait(10)
+set_val(9, AimAssist_Strength * -1); wait(10)}
+//------------------------------------------------------------------------------
+combo BattsStickyAssist {
+set_val(AimY,AxisRelease(AimY,BattStickyPower));
+wait(BattStickyWait);
+set_val(AimX,AxisRelease(AimX,BattStickyPower));
+set_val(XB1_LX,AxisRelease(XB1_LX,BattStickyPower));
+wait(BattStickyWait);
+set_val(AimY,AxisRelease(AimY,inv(BattStickyPower)));
+wait(BattStickyWait);
+set_val(AimX,AxisRelease(AimX,inv(BattStickyPower)));
+set_val(XB1_LX,AxisRelease(XB1_LX,inv(BattStickyPower)));
+wait(BattStickyWait);
+}
+//------------------------------------------------------------------------------
+combo SnapShot { 
+set_val(ADS, 100);    
+wait(SnapShot_hold);                
+set_val(ADS, 0);      
+wait(SnapShot_rest);}
+//------------------------------------------------------------------------------
+combo AimAbuse{
+set_val(ADS, 100);
+wait(AimAbuse_HOLD);
+set_val(ADS, 0);
+wait(AimAbuse_RELEASE);}
+//------------------------------------------------------------------------------
+combo PickupSpam {
+	   set_val(INTERACT, 100);
+	wait(80);
+	   set_val(INTERACT, 0);
+	}
+//------------------------------------------------------------------------------
+combo rapidFire {
+set_val(XB1_RT,100);
+wait(40);
+set_val(XB1_RT,0);
+wait(40);
+}
+//------------------------------------------------------------------------------
+
+combo AntiRecoil { 
+if(get_val(FIRE)) {
+Anti_Recoil = get_val(10) + AntiRecoil;
+if(Anti_Recoil > 100) Anti_Recoil = 100;
+set_val(10, Anti_Recoil);
+}}
+//------------------------------------------------------------------------------
+combo cNikoAim {
+	WaitStrength	= random(AimAssistWaitTime / 2 , AimAssistWaitTime);
+	AimStrength		= random(inv(AimAssistStrength), AimAssistStrength);
+
+	Set_Val(AimY,	AimStrength);
+	wait(WaitStrength);
+	Set_Val(AimX,	AimStrength);
+	wait(WaitStrength);
+	Set_Val(AimY,	inv(AimStrength));
+	wait(WaitStrength);
+	Set_Val(AimX,	inv(AimStrength));
+	wait(WaitStrength);
+}
+//------------------------------------------------------------------------------
+function AxisRelease(AxisXY,AxisVal) {
+    
+    if (abs(get_ival(AxisXY)) <= BattStickyPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}
+//------------------------------------------------------------------------------
+
+function Set_Val(Input, OutPut) {
+	set_val(Input, clamp(OutPut * (100 - abs(get_val(Input))) / 100 + get_val(Input), -100, 100));
+		return;
+}
+//------------------------------------------------------------------------------
+function Set_Ival(Input, Output) {
+	set_val(Input, clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input), -100, 100));
+		return;
+}
+function SetPolarVal(Axis,Offset_Val) { 
+		
+	return clamp(Offset_Val * (100 - abs(get_ival(Axis))) / 100 + get_ival(Axis),-100,100); 
+}
+//------------------------------------------------------------------------------
+function Sin(AngleO) { 
+		
+	return (Cos(AngleO - 90)); 
+}
+//------------------------------------------------------------------------------
+function Cos(AngleO) {
+  	
+  	if (AngleO < 0) 
+  		AngleO = (AngleO % 360) + 360;
+  		
+  		AngleO = (AngleO % 360);
+		PX_Out = 100;
+  		PY_Out = 100;
+  		PAngle_Out = AngleO % 45;
+	
+		if (AngleO < 45) { 
+  			PY_Out = (100 * PAngle_Out) / 45; 
+  		}
+  		else if (AngleO < 90)  { 
+  			PX_Out = (100 * (45 - PAngle_Out)) / 45; 
+  		}
+  		else if (AngleO < 135) { 
+  			PX_Out = (-100 * PAngle_Out) / 45; 
+  		}
+  		else if (AngleO < 180) { 
+  			PY_Out = (100 * (45 - PAngle_Out)) / 45; PX_Out = -100; 
+  		}
+  		else if (AngleO < 225) {
+  			PY_Out = (100 * PAngle_Out) / 45; PX_Out = -100; 
+  		}
+  		else if (AngleO < 270) { 
+  			PX_Out = (-100 * (45 - PAngle_Out)) / 45; PY_Out = -100; 
+  		}
+  		else if (AngleO < 315) { 
+  			PX_Out = (100 * PAngle_Out) / 45; PY_Out = -100; 
+  		}
+  			else { 
+  				PY_Out = ( 100 * (45 - PAngle_Out)) / 45; 
+  			}
+		
+			PAngle_Out = abs(PY_Out);
+	
+			if (abs(PX_Out) > PAngle_Out) PAngle_Out = abs(PX_Out);
+				return (PX_Out * PAngle_Out / isqrt((pow(PX_Out, 2) + pow(PY_Out, 2))));
+}
+//------------------------------------------------------------------------------
+function SetPolarValue (Stick,AngleO,RadiusO) {
+  		
+  	set_val(7 + Stick,(Cos(AngleO) * RadiusO) / 100);
+  	set_val(8 + Stick,(Sin(AngleO) * RadiusO) / 100);
+ 		return;
+}
+//------------------------------------------------------------------------------
+function SetPolar (Stick,AngleO,Width,Height) {
+  		
+  	SetPolarValue(Stick,AngleO,Width);
+  	PX[Stick/4] = get_val(Stick + 7);
+  	SetPolarValue(Stick, AngleO,Height);
+  	PY[Stick/4] = get_val(Stick + 8);
+  	set_val(Stick + 7,SetPolarVal(Stick + 7,PX[Stick/4]));
+  	set_val(Stick + 8,SetPolarVal(Stick + 8,PY[Stick/4]));
+}
+//------------------------------------------------------------------------------
+function xy_val(f_axis,f_val) { 
+	
+	if(abs(get_val(f_axis)) < Release) 
+	
+		return f_val; 
+		return get_val(f_axis); 
+} 
+	
+ ����������������

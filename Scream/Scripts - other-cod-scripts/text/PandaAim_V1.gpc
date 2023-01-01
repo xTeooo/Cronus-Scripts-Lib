@@ -1,0 +1,938 @@
+/*
+     _______            ______           ________ __                ________ __  ______  __       ________          _______  __          
+    |       \          /      \         |        \  \              |        \  \/      \|  \     |        \        |       \|  \         
+    | ¦¦¦¦¦¦¦\ ______ |  ¦¦¦¦¦¦\________ \¦¦¦¦¦¦¦¦ ¦¦____   ______ | ¦¦¦¦¦¦¦¦\¦¦  ¦¦¦¦¦¦\ ¦¦____  \¦¦¦¦¦¦¦¦ ______ | ¦¦¦¦¦¦¦\ ¦¦ _______ 
+    | ¦¦  | ¦¦/      \| ¦¦ __\¦¦        \  | ¦¦  | ¦¦    \ /      \| ¦¦__   |  \ ¦¦ __\¦¦ ¦¦    \   | ¦¦   /      \| ¦¦__| ¦¦\¦ /       \
+    | ¦¦  | ¦¦  ¦¦¦¦¦¦\ ¦¦|    \\¦¦¦¦¦¦¦¦  | ¦¦  | ¦¦¦¦¦¦¦\  ¦¦¦¦¦¦\ ¦¦  \  | ¦¦ ¦¦|    \ ¦¦¦¦¦¦¦\  | ¦¦  |  ¦¦¦¦¦¦\ ¦¦    ¦¦  |  ¦¦¦¦¦¦¦
+    | ¦¦  | ¦¦ ¦¦  | ¦¦ ¦¦ \¦¦¦¦ /    ¦¦   | ¦¦  | ¦¦  | ¦¦ ¦¦    ¦¦ ¦¦¦¦¦  | ¦¦ ¦¦ \¦¦¦¦ ¦¦  | ¦¦  | ¦¦  | ¦¦    ¦¦ ¦¦¦¦¦¦¦\   \¦¦    \ 
+    | ¦¦__/ ¦¦ ¦¦__/ ¦¦ ¦¦__| ¦¦/  ¦¦¦¦_   | ¦¦  | ¦¦  | ¦¦ ¦¦¦¦¦¦¦¦ ¦¦     | ¦¦ ¦¦__| ¦¦ ¦¦  | ¦¦  | ¦¦  | ¦¦¦¦¦¦¦¦ ¦¦  | ¦¦   _\¦¦¦¦¦¦\
+    | ¦¦    ¦¦\¦¦    ¦¦\¦¦    ¦¦  ¦¦    \  | ¦¦  | ¦¦  | ¦¦\¦¦     \ ¦¦     | ¦¦\¦¦    ¦¦ ¦¦  | ¦¦  | ¦¦   \¦¦     \ ¦¦  | ¦¦  |       ¦¦
+     \¦¦¦¦¦¦¦  \¦¦¦¦¦¦  \¦¦¦¦¦¦ \¦¦¦¦¦¦¦¦   \¦¦   \¦¦   \¦¦ \¦¦¦¦¦¦¦\¦¦      \¦¦ \¦¦¦¦¦¦ \¦¦   \¦¦   \¦¦    \¦¦¦¦¦¦¦\¦¦   \¦¦   \¦¦¦¦¦¦¦ 
+                                           ________          __      __ __                _______  __          
+                                          |        \        |  \    /  \  \              |       \|  \         
+                             _______       \¦¦¦¦¦¦¦¦ ______  \¦¦\  /  ¦¦ ¦¦       ______ | ¦¦¦¦¦¦¦\ ¦¦ _______ 
+                            |       \        | ¦¦   |      \  \¦¦\/  ¦¦| ¦¦      /      \| ¦¦__| ¦¦\¦ /       \
+                            | ¦¦¦¦¦¦¦\       | ¦¦    \¦¦¦¦¦¦\  \¦¦  ¦¦ | ¦¦     |  ¦¦¦¦¦¦\ ¦¦    ¦¦  |  ¦¦¦¦¦¦¦
+                            | ¦¦  | ¦¦       | ¦¦   /      ¦¦   \¦¦¦¦  | ¦¦     | ¦¦  | ¦¦ ¦¦¦¦¦¦¦\   \¦¦    \ 
+                            | ¦¦  | ¦¦       | ¦¦  |  ¦¦¦¦¦¦¦   | ¦¦   | ¦¦_____| ¦¦__/ ¦¦ ¦¦  | ¦¦   _\¦¦¦¦¦¦\
+                            | ¦¦  | ¦¦       | ¦¦   \¦¦    ¦¦   | ¦¦   | ¦¦     \\¦¦    ¦¦ ¦¦  | ¦¦  |       ¦¦
+                             \¦¦   \¦¦        \¦¦    \¦¦¦¦¦¦¦    \¦¦    \¦¦¦¦¦¦¦¦ \¦¦¦¦¦¦ \¦¦   \¦¦   \¦¦¦¦¦¦¦                                                         
+                     ______   ______  __       __             ______  ________      _______  __    __ ________ __      __ 
+                    /      \ /      \|  \     |  \           /      \|        \    |       \|  \  |  \        \  \    /  \
+                   |  ¦¦¦¦¦¦\  ¦¦¦¦¦¦\ ¦¦     | ¦¦          |  ¦¦¦¦¦¦\ ¦¦¦¦¦¦¦¦    | ¦¦¦¦¦¦¦\ ¦¦  | ¦¦\¦¦¦¦¦¦¦¦\¦¦\  /  ¦¦
+                   | ¦¦   \¦¦ ¦¦__| ¦¦ ¦¦     | ¦¦          | ¦¦  | ¦¦ ¦¦__        | ¦¦  | ¦¦ ¦¦  | ¦¦  | ¦¦    \¦¦\/  ¦¦ 
+                   | ¦¦     | ¦¦    ¦¦ ¦¦     | ¦¦          | ¦¦  | ¦¦ ¦¦  \       | ¦¦  | ¦¦ ¦¦  | ¦¦  | ¦¦     \¦¦  ¦¦  
+                   | ¦¦   __| ¦¦¦¦¦¦¦¦ ¦¦     | ¦¦          | ¦¦  | ¦¦ ¦¦¦¦¦       | ¦¦  | ¦¦ ¦¦  | ¦¦  | ¦¦      \¦¦¦¦   
+                   | ¦¦__/  \ ¦¦  | ¦¦ ¦¦_____| ¦¦_____     | ¦¦__/ ¦¦ ¦¦          | ¦¦__/ ¦¦ ¦¦__/ ¦¦  | ¦¦      | ¦¦    
+                    \¦¦    ¦¦ ¦¦  | ¦¦ ¦¦     \ ¦¦     \     \¦¦    ¦¦ ¦¦          | ¦¦    ¦¦\¦¦    ¦¦  | ¦¦      | ¦¦    
+                     \¦¦¦¦¦¦ \¦¦   \¦¦\¦¦¦¦¦¦¦¦\¦¦¦¦¦¦¦¦      \¦¦¦¦¦¦ \¦¦           \¦¦¦¦¦¦¦  \¦¦¦¦¦¦    \¦¦       \¦¦    
+                    ________ ________ __    __      _______  ________  ______  ______  ______  __    __ ________ _______  
+                   |        \        \  \  |  \    |       \|        \/      \|      \/      \|  \  |  \        \       \ 
+                    \¦¦¦¦¦¦¦¦ ¦¦¦¦¦¦¦¦ ¦¦\ | ¦¦    | ¦¦¦¦¦¦¦\ ¦¦¦¦¦¦¦¦  ¦¦¦¦¦¦\\¦¦¦¦¦¦  ¦¦¦¦¦¦\ ¦¦\ | ¦¦ ¦¦¦¦¦¦¦¦ ¦¦¦¦¦¦¦\
+                       /  ¦¦| ¦¦__   | ¦¦¦\| ¦¦    | ¦¦  | ¦¦ ¦¦__   | ¦¦___\¦¦ | ¦¦ | ¦¦ __\¦¦ ¦¦¦\| ¦¦ ¦¦__   | ¦¦__| ¦¦
+                      /  ¦¦ | ¦¦  \  | ¦¦¦¦\ ¦¦    | ¦¦  | ¦¦ ¦¦  \   \¦¦    \  | ¦¦ | ¦¦|    \ ¦¦¦¦\ ¦¦ ¦¦  \  | ¦¦    ¦¦
+                     /  ¦¦  | ¦¦¦¦¦  | ¦¦\¦¦ ¦¦    | ¦¦  | ¦¦ ¦¦¦¦¦   _\¦¦¦¦¦¦\ | ¦¦ | ¦¦ \¦¦¦¦ ¦¦\¦¦ ¦¦ ¦¦¦¦¦  | ¦¦¦¦¦¦¦\
+                    /  ¦¦___| ¦¦_____| ¦¦ \¦¦¦¦    | ¦¦__/ ¦¦ ¦¦_____|  \__| ¦¦_| ¦¦_| ¦¦__| ¦¦ ¦¦ \¦¦¦¦ ¦¦_____| ¦¦  | ¦¦
+                   |  ¦¦    \ ¦¦     \ ¦¦  \¦¦¦    | ¦¦    ¦¦ ¦¦     \\¦¦    ¦¦   ¦¦ \\¦¦    ¦¦ ¦¦  \¦¦¦ ¦¦     \ ¦¦  | ¦¦
+                    \¦¦¦¦¦¦¦¦\¦¦¦¦¦¦¦¦\¦¦   \¦¦     \¦¦¦¦¦¦¦ \¦¦¦¦¦¦¦¦ \¦¦¦¦¦¦ \¦¦¦¦¦¦ \¦¦¦¦¦¦ \¦¦   \¦¦\¦¦¦¦¦¦¦¦\¦¦   \¦¦
+
+
+************* You Created This Script At 2:32:38 PM On 8/21/2021 Using DoGzTheFiGhTeRs n Taylors Call Of Duty Zen Designer 8 ) *************
+
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Menu Arrays                      )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const uint8 FontSize [][] = {{ 7, 10, 18 },{ 11, 18, 11 },{ 16, 26, 7 }};
+const uint8 FontDigits [] = {48,49,50,51,52,53,54,55,56,57};
+const string MiscString [] = {"MOD","ON","OFF","PandaAim V1","PandaAim V1","GPC Slot:","Enabled","Disabled","Mod Toggle On/Off"};
+const string ModToggle [] = {"" , " DoGz Polar VI AA" , " Polar Boost VI"  , "Batts Sticky Aim" , " Slide Cancel CW" , " Slide Cancel MW"  , "    Bunny Hop"  , "    Auto Ping"  , "   Block Rumble"  , "OLED Screen Saver" };
+const string ModValue [] = {""   , "DoGz Polar Radius"  , "DoGz Polar Angle"  , "DoGz Radius Boost"  , "DoGz Angle Boost"  , "DoGz Polar Release"  , "BattsSticky Power"  , "Batts Sticky Wait"  , "SlideCancel Delay" , " Bunny Hop Wait" };
+const int16 ModDigitMin [] = {  0  , 1 , 2 , 1 , 2 , 1 , 1 , 10 , 20 , 40};
+const int16 ModDigitMax [] = {  0  , 50 , 90 , 20 , 90 , 50 , 50 , 200 , 250 , 250};
+const int16 ModDigitInc [] = {  0  , 1 , 1 , 1 , 1 , 1 , 1 , 10 , 10 , 10};
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                   Toggle Strings                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+const string DrivingModL  = "   Driving Mode";
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    In Game Buttons                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define Fire     = PS4_R2;
+define Ads      = PS4_L2;
+define Lethal   = PS4_R1;
+define Tactical = PS4_L1;
+define Switch   = PS4_TRIANGLE;
+define Reload   = PS4_SQUARE;
+define Jump     = PS4_CROSS;
+define Crouch   = PS4_R3;
+define Melee    = PS4_CIRCLE;
+define Sprint   = PS4_L3;
+define Ping     = PS4_UP;
+define Up       = PS4_UP;
+define Down     = PS4_DOWN;
+define Left     = PS4_LEFT;
+define Right    = PS4_RIGHT;
+define AimX     = PS4_RX;
+define AimY     = PS4_RY;
+define Strafe   = PS4_LX;
+define Walk     = PS4_LY;
+define PY       = POLAR_RY;
+define PX       = POLAR_RX;
+define PS       = POLAR_RS;
+define On       = TRUE;
+define Off      = FALSE;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Mod Toggles                     )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define DrivingModHold   = PS4_L2;
+define DrivingModPress  = PS4_LEFT;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                    Menu Buttons                    )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define MenuEnterHold   = PS4_L2;
+define MenuEnterPress  = PS4_OPTIONS;
+define MenuExitPress   = PS4_CIRCLE;
+define ChangeMenuPress = PS4_CROSS;
+
+//Show Current Slot Info Buttons;
+define FindSlotHold    = PS4_R3;
+define FindSlotPress   = PS4_LEFT;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                 Script Variables                   )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define ScreenSaver   =  On;
+define TimeoutLimit  = 1;
+define TimeoutLimitM = 20000;
+define IndexMinSwitches = 1;
+define IndexMaxSwitches = 9;
+define IndexMinValues   = 1;
+define IndexMaxValues   = 9;
+
+int Position,Update,MenuTimeout,Count,MainMenu,ModIndex,MenuValues,MenuSwitch,NumX,NumY,NumS,Clear,Shunt,VibA,VibB;
+int Number = 1,Slot = 20000;
+
+int ScrollTime,ScrollWait,ScrollLine,ScrollIndex,ScrollChar;
+int ScrollSpeed =  70;
+int ScrollDelay = 950;
+int ScrollX     =   8;
+int ScrollY     =  50;
+
+int ToggleT,ToggleTime,ToggleName,Modled,DrivingMod;
+int DoGzVIRadius,DoGzVIAngle,VISpeed;
+int Saver,Ms,Sec,Min,ScreenTime;
+int LineA,LineB,LineC,ii,jj,ll,oo,xx,TimeS;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(                Aim Assist Hip Fire                 )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+define PolarVIAAHip   =  On;
+define BattsAAHip     = Off;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times                    ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModDigit;
+int PolarRadius      = 15;
+int PolarAngle       = 20;
+int PolarRadiusBoost = 5;
+int PolarAngleBoost  = 10;
+int PolarRelease     = 20;
+int BattStickyPower  = 20;
+int BattStickyWait   = 20;
+int SlideDelay       = 80;
+int BunnyHopWait     = 40;
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Mod Toggles                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+int ModSwitch;
+int PolarVIAssist     =  On;
+int PolarVIBoost      =  On;
+int BattsStickyAA     = Off;
+int SlideCancelCW     = Off;
+int SlideCancelMW     =  On;
+int BunnyHop          =  On;
+int AutoPing          =  On;
+int BlockRumble       =  On;
+int OLEDScreenSaver   =  On;
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.
+(           Quick Toggles Default State              )
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-*
+*/
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Init                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+init {
+    combo_run(Boot);
+}
+
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                       Main                         ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+main {
+
+    if (BlockRumble) {
+        block_rumble();
+    }
+
+    if (!DrivingMod) {
+
+        if (PolarVIAssist) {
+        
+            if (get_ival(Ads) || (PolarVIAAHip && get_ival(Fire))) { 
+            
+                if (abs(get_ival(AimX)) <= PolarRelease && abs(get_ival(AimY)) <= PolarRelease) {
+                
+                    if (PolarVIBoost && get_ival(Fire)) {
+                        
+                        DoGzVIRadius = PolarRadius + PolarRadiusBoost;
+                        DoGzVIAngle = PolarAngle + PolarAngleBoost;
+                    
+                    } else {
+                        
+                        DoGzVIRadius = PolarRadius;
+                        DoGzVIAngle = PolarAngle;
+                    }
+                
+                    set_polar(PS,VISpeed = (VISpeed + DoGzVIAngle) % 360,(abs(get_ival(PX)) + abs(get_ival(PY))) / 4 + DoGzVIRadius * 328);
+                }
+            }
+        }
+
+        if (BattsStickyAA) {
+        
+            if (get_ival(Ads) || (BattsAAHip && get_ival(Fire))) {
+            
+                combo_run(BattsStickyAssist);
+            
+            } else {
+            
+                combo_stop(BattsStickyAssist); 
+            }
+        }
+
+        if (SlideCancelMW || SlideCancelCW) {
+                    
+            if (abs(get_ival(Walk)) >= 80 || abs(get_val(Strafe)) >= 80) {
+                        
+                if(event_release(Crouch)) {
+                    
+                    if (SlideCancelMW) {
+                    
+                        combo_run(SlideCancelMW);
+                    
+                        if (combo_running(SlideCancelMW) && get_ival(Ads) && event_release(Crouch)) {
+                            
+                            combo_stop(SlideCancelMW);
+                        }
+                    
+                    } else if (SlideCancelCW) {
+                            
+                        combo_run(SlideCancelCW);
+                            
+                        if (combo_running(SlideCancelCW) && get_ival(Ads) && event_release(Crouch)) {
+                            
+                            combo_stop(SlideCancelCW);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (AutoPing) {
+            
+            if (get_ival(Ads) && event_press(Fire)) {           
+                
+                combo_run(AutoPing);
+            }
+        }
+        
+        if (BunnyHop) {
+        
+            if (get_ival(Jump) && get_ptime(Jump) >= 200) {
+                    
+                combo_run(BunnyHop);
+            
+            } else {
+                        
+                combo_stop(BunnyHop);
+            }
+        }
+        
+    }
+
+        if (get_ival(DrivingModHold) && event_press(DrivingModPress) && get_brtime(DrivingModPress) <= 200) { 
+
+            Shunt = DrivingModPress;
+            DrivingMod = On;
+            ToggleName = On;
+            Toggle(DrivingMod,DrivingModL[0]);
+        }
+
+        if (DrivingMod && event_press(PS4_SQUARE)) {
+
+            DrivingMod = Off;
+            ToggleName = On;
+            Toggle(DrivingMod,DrivingModL[0]);
+        }
+
+    if (!MainMenu && get_ival(MenuEnterHold) && event_press(MenuEnterPress)) {
+
+        Shunt = MenuEnterPress;
+        MenuToggle(On,Off,On,On,On);
+        VibB = On;
+        combo_run(Rumble);
+    }
+
+    if (MainMenu) {
+
+        Scroll();
+        combo_stop(Boot);
+        MenuTimeout += get_rtime();
+
+        if (get_ival(Up) || get_ival(Down) || get_ival(Left) || get_ival(Right) || event_press(ChangeMenuPress)) {
+
+            MenuTimeout = Off;
+        }
+
+            if (MenuTimeout >= TimeoutLimitM || event_press(MenuExitPress)) {
+            
+                if (event_press(MenuExitPress))
+                
+                    Shunt = MenuExitPress;
+                
+                MenuToggle(Off,Off,Off,Off,Off);
+                VibB = On;
+                combo_run(Rumble);
+            }
+
+            if (event_press(ChangeMenuPress)) {
+
+                MenuValues = !MenuValues;
+                MenuSwitch = !MenuSwitch;
+                ModIndex = On;
+                Update = On;
+            }
+
+        if (MenuValues) {
+
+            ModDigit[ModIndex] = PrintMod(ModDigit[ModIndex],ModDigitMin[ModIndex],ModDigitMax[ModIndex],ModDigitInc[ModIndex],IndexMinValues,IndexMaxValues,ModValue[ModIndex]);
+		}
+
+        if (MenuSwitch) {
+
+            ModSwitch[ModIndex] = PrintMod(ModSwitch[ModIndex],Off,On,1,IndexMinSwitches,IndexMaxSwitches,ModToggle[ModIndex]);
+		}
+
+				BlockButton(Down); BlockButton(Up); BlockButton(Left); BlockButton(Right); BlockButton(ChangeMenuPress);
+	}
+ 
+    if (!MainMenu) { 
+        
+       if (OLEDScreenSaver && Saver) {
+            
+           ScreenTime (); 
+         	Saver (); 
+	       } 
+	    
+        if (get_ival(FindSlotHold) && event_press(FindSlotPress)) {
+            
+            Shunt = FindSlotPress;
+            Saver = Off;
+            ScreenTime = Off;
+            Slot = On;
+            combo_run(Boot);
+        }
+    }
+
+    if (ToggleTime) {
+        TimeToggle();
+    }
+
+    if (Shunt) {
+        
+        if (event_release(Shunt)) {
+            
+            Shunt = Off;
+        
+        } else {
+                set_val(Shunt,Off);
+        }
+    }
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Combos                           ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+combo BattsStickyAssist {
+   
+   set_val(AimY,AxisRelease(AimY,BattStickyPower));
+   wait(BattStickyWait);
+   set_val(AimX,AxisRelease(AimX,BattStickyPower));
+   set_val(Strafe,AxisRelease(Strafe,BattStickyPower));
+   wait(BattStickyWait);
+   set_val(AimY,AxisRelease(AimY,inv(BattStickyPower)));
+   wait(BattStickyWait);
+   set_val(AimX,AxisRelease(AimX,inv(BattStickyPower)));
+   set_val(Strafe,AxisRelease(Strafe,inv(BattStickyPower)));
+   wait(BattStickyWait);
+}
+
+combo SlideCancelMW {
+   
+    set_val(Crouch,100);
+    wait(SlideDelay); 
+    set_val(Crouch,0);
+    wait(60); 
+    set_val(Crouch,100); 
+    wait(50); 
+    set_val(Crouch,100);
+    set_val(Jump,100);
+    wait(60); 
+    set_val(Crouch,0);
+    set_val(Jump,100);
+    wait(10); 
+    set_val(Jump,0);
+}
+
+combo SlideCancelCW {
+    
+    set_val(Crouch,100);
+    wait(SlideDelay);
+    set_val(Crouch,0);
+    wait(20);
+    set_val(Sprint,0);
+    set_val(Crouch,100);
+    set_val(Sprint,100);
+    wait(20);
+    set_val(Crouch,0);
+    set_val(Sprint,0);
+    wait(20);
+}
+
+combo AutoPing {
+
+    set_val(Ping,100);
+    wait(40);
+    set_val(Ping,0);
+    wait(40);
+    set_val(Ping,100);
+    wait(40);
+    set_val(Ping,0);
+    wait(40);    
+    wait(3000); 
+}
+
+combo BunnyHop{
+    
+    set_val(Jump,100);
+    wait(50);
+    set_val(Jump,0);
+    wait(30);
+    wait(BunnyHopWait);
+}
+
+combo Rumble {
+    
+    if (VibA)
+        
+        set_rumble(RUMBLE_A,15);
+        
+    else if (VibB)
+            
+        set_rumble(RUMBLE_B,15);
+    
+        wait(250);
+        VibA = Off;
+        VibB = Off;
+        reset_rumble();
+}
+
+combo Boot {
+        
+        wait(Slot);
+    if (Slot == 20000)    
+        cls_oled(0);
+        
+        if (Slot) {
+            cls_oled(0);
+            printf(5,10,0,1,MiscString[3]);
+            printf(5,25,0,1,MiscString[4]);
+            printf(18,45,0,1,MiscString[5]);
+            NumX = 32; NumY = 15; NumS = 0;
+            FindDigit(get_slot(),DigitValue(get_slot()));
+            Slot = Off;
+        }    
+        
+        wait(20000);
+        cls_oled(0);
+        Clear = On;
+        Saver = On;
+        ScreenTime = On;
+}
+
+combo VibrateBlink {
+    
+    if (Modled) {
+        
+        set_rgb(0,255,0);
+        set_rumble(RUMBLE_A,15);
+    
+    } else {
+        
+        set_rgb(255,0,0);
+        set_rumble(RUMBLE_B,15);
+    }
+    
+    wait(150);
+    set_rgb(0,0,0);
+    wait(250);
+    
+    if (Modled)
+        
+        set_rgb(0,255,0);
+    
+        else
+            
+        set_rgb(255,0,0);
+
+    reset_rumble();
+    reset_leds();
+}
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Functions                        ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+
+function AxisRelease(AxisXY,AxisVal) {
+    
+    if (abs(get_ival(AxisXY)) <= BattStickyPower) 
+        
+        return AxisVal;
+    
+    return get_ival(AxisXY); 
+}
+
+function Toggle(ModT,ModP) {
+    
+    if (combo_running(Boot))    
+        
+        combo_stop(Boot);
+    
+        Modled = ModT;
+        ToggleT = 0;
+        ToggleTime = On;
+        combo_run(VibrateBlink);
+    
+    if (ToggleName) {
+        
+        Saver = 0;
+        cls_oled(0);
+        printf(5,2,0,1,MiscString[8]);
+        rect_oled(0,11,128,20,0,1);    
+        rect_oled(2,13,124,16,0,1);
+        rect_oled(0,32,128,20,0,1);
+        rect_oled(2,34,124,16,0,1);
+        printf(5,17,0,1,ModP);
+
+        if (ModT) {
+            
+            printf(41,38,0,1,MiscString[6]);    
+        
+        } else {
+                
+            printf(36,38,0,1,MiscString[7]);
+        }
+        
+        ToggleName = Off;
+    }
+}
+
+function TimeToggle() {
+        
+    ToggleT += get_rtime();
+    
+    if (!MainMenu && ToggleT >= 5000) {
+        cls_oled(0);
+        ToggleTime = Off;
+        ToggleT = 0;
+    }
+}
+
+function Saver() {
+        if (Saver) { 
+
+        TimeS += get_rtime();
+
+    for(ii = 0; ii <= 10; ii++) { 
+        putc_oled(1,Saver_Scroll[0][ii]);
+        puts_oled(LineA + -30 + ii * 7, 2, 0,1,1);
+    }
+
+    for(jj = 0; jj <= 10; jj++) { 
+        putc_oled(1,Saver_Scroll[1][jj]);
+        puts_oled(LineA + 100 + jj * 7, 15, 0,1,1);
+    }
+    
+    for(ll = 0; ll <= 10; ll++) { 
+        putc_oled(1,Saver_Scroll[2][ll]);
+        puts_oled(LineB + -50 + ll * 7, 28, 0,1,1);
+    }
+    
+    for(oo = 0; oo <= 10; oo++) { 
+        putc_oled(1,Saver_Scroll[3][oo]);
+        puts_oled(LineC + 10 + oo * 7, 41, 0,1,1);
+    }
+    
+    for(xx = 0; xx <= 10; xx++) { 
+        putc_oled(1,Saver_Scroll[4][xx]);
+        puts_oled(LineC + 127 + xx * 7, 53, 0,1,1);
+    }
+    
+        if (TimeS == 50) {
+            LineA +=2;
+            LineB -=2;
+            LineC +=1;
+            TimeS = 0;
+        }
+    }
+    
+    if (!Saver)
+        cls_oled(0);
+}
+
+function ScreenTime() { 
+
+     if (Clear) {
+         Ms = 0;    Sec = 0; Min = 0;
+         Clear = Off;
+     }
+
+    if (ScreenTime) { 
+        Ms += get_rtime(); 
+         
+        if(Ms >= 1000) { 
+            Ms = 0; 
+            Sec +=1 
+        }     
+            if(Sec == 60) { 
+                Sec = 0; 
+                Min += 1; 
+            } 
+                if(Min == TimeoutLimit) { 
+                    Saver = 0; 
+                    Ms = 0; 
+                    Sec = 0; 
+                    Min = 0; 
+                    ScreenTime = 0; 
+                    cls_oled(0); 
+                } 
+    } 
+} 
+
+function BlockButton(Button) { 
+
+	if (!get_ival(Button))
+		return; 
+		set_val(Button,Off);
+} 
+  
+function MenuToggle(Main,Vals,Indx,Print,Toggle) { 
+
+	cls_oled(0); 
+	MainMenu    = Main; 
+	MenuValues  = Vals;
+	ModIndex    = Indx;
+	Update      = Print;
+	MenuSwitch  = Toggle;
+	MenuTimeout = Off;
+
+        if (!MainMenu) { 
+            ScreenTime = 1; 
+            Saver = 1; 
+            Clear = On;
+        } 
+}
+  
+function PrintMod(ModVal,ModValMin,ModValMax,ModValInc,IndexMin,IndexMax,ModValLbl) { 
+
+	if (Update) { 
+ 
+		rect_oled(2,2,127,46,1,0); 
+		Grid  (); 
+		printf(6,25,0,1,MiscString[0]);
+		NumX = -43; NumY = 10; NumS = -1; 
+		FindDigit(ModIndex,DigitValue(ModIndex));
+		printf(5,8,0,1,ModValLbl); 
+
+		if (MenuValues) {
+
+			NumX = 0; NumY = 0; NumS = 0;
+			FindDigit(ModVal,DigitValue(ModVal));
+		} 
+			if (MenuSwitch) { 
+ 
+				if (ModVal) {
+ 
+					printf(51,24,1,1,MiscString[1]); 
+				}  
+    			else { 
+					printf(46,24,1,1,MiscString[2]); 
+				} 
+			} 
+		Update = Off; 
+	} 
+
+    if (event_press(Up) || get_ival (Up) && get_ptime (Up) >= 450) {
+ 
+        Update = On;
+        ModVal += ModValInc;
+        ModMonitor(ModValLbl);
+
+        if (ModVal >= ModValMax) return ModValMax;
+
+        if (ModVal >= ModValMax) return ModValMax;
+    } 
+ 
+    if (event_press(Down) || get_ival (Down) && get_ptime (Down) >= 450) { 
+
+        Update = On;
+        ModVal -= ModValInc;
+        ModMonitor(ModValLbl);
+
+        if (ModVal <= ModValMin) return ModValMin;
+
+        if (ModVal <= ModValMin) return ModValMin;
+    }
+
+	if (event_press(Right)) {
+
+		Update = On;
+		ModIndex += 1;
+ 
+			if (ModIndex > IndexMax) ModIndex = IndexMin;
+	}
+  
+		if (event_press(Left)) {
+			Update = On;
+			ModIndex -= 1; 
+ 
+				if (ModIndex < IndexMin) ModIndex = IndexMax;
+		} 
+	return ModVal;
+} 
+ 
+function ModMonitor (Mon) {
+    
+    if (Mon == ModToggle[1]) { 
+    
+        BattsStickyAA     = Off;
+    }
+    
+    if (Mon == ModToggle[3]) { 
+    
+        PolarVIAssist     = Off;
+    }
+    
+    if (Mon == ModToggle[4]) {
+    
+        SlideCancelMW = Off;
+    }
+    
+    if (Mon == ModToggle[5]) {
+    
+        SlideCancelCW = Off;
+    }
+    
+}
+    
+function Grid() { 
+  
+	line_oled(126,20,2,20,2,1);
+	rect_oled(1,1,127,63,0,1); 
+	line_oled(126,46,2,46,2,1);
+	line_oled(28,20,28,46,2,1);
+}
+ 
+function Scroll() {
+
+		ScrollTime += get_rtime();
+
+	if (ScrollTime >= ScrollWait) {
+		ScrollWait = ScrollSpeed;
+ 
+		for(ScrollIndex = 1; ScrollIndex <= 17; ScrollIndex++) { 
+ 
+			if(ScrollIndex + ScrollLine >= sizeof(Scroll)) {
+				putc_oled(ScrollIndex,Scroll[ScrollIndex + (ScrollLine - sizeof(Scroll))]); 
+			} 
+				else {  
+					putc_oled(ScrollIndex,Scroll[ScrollIndex + ScrollLine]);
+				} 
+		} 
+			puts_oled(ScrollX,ScrollY,0,ScrollIndex,1);
+			ScrollLine++; 
+ 
+	if(ScrollLine >= sizeof(Scroll)) {
+		ScrollLine = 0;
+	} 
+		ScrollChar--; 
+ 
+		if(ScrollChar < 1) {
+			ScrollChar = 17; 
+			ScrollWait = ScrollDelay;
+		}
+		ScrollTime = 0; 
+	} 
+}  
+    
+function FindDigit(Digit,Digits) { 
+ 
+	if (Digit < 0) {  
+		putc_oled(Number,45);
+		Number += 1;
+		Digit = abs(Digit);
+		Count = 1;
+	} 
+	else  
+		Count = 0;
+    
+	if (Digits == 5) {  
+		putc_oled(Number,FontDigits[Digit / 10000]);
+		Digit = Digit % 10000;
+		Number +=  1;
+	} 
+	if (Digits >= 4) {
+		putc_oled(Number,FontDigits[Digit / 1000]);
+		Digit = Digit % 1000; 
+		Number += 1;
+	}  
+	if (Digits >= 3) { 
+		putc_oled(Number,FontDigits[Digit / 100]); 
+		Digit = Digit % 100; 
+		Number +=  1; 
+	}  
+	if (Digits >= 2) { 
+		putc_oled(Number,FontDigits[Digit / 10]); 
+		Digit = Digit % 10;
+		Number += 1; 
+	} 
+		putc_oled(Number,FontDigits[Digit]); 
+		puts_oled(CenterMod(Digits + Count,1) + NumX,25 + NumY,1 + NumS,Number,1);
+		Number = 1; 
+}   
+    
+function DigitValue(Number) { 
+   
+    	Number = abs(Number);
+	if (Number / 10000 > 0) return 5;
+	if (Number /  1000 > 0) return 4; 
+	if (Number /   100 > 0) return 3; 
+	if (Number /    10 > 0) return 2; 
+		return 1;
+} 
+   
+function CenterMod(Character,Font) { 
+    Position = Character * FontSize[Font][0];
+    Position = (127 - Position) / 2;
+		return Position;
+} 
+   
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   ASCII Table                      ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+define SPACE       =  32; /*¦¦       ¦¦*/	define  _0 = 48,  A = 65, K = 75, U =  85, e = 101, o = 111, y = 121; 
+define EXCLAMATION =  33; /*¦¦   !   ¦¦*/	define  _1 = 49,  B = 66, L = 76, V =  86, f = 102, p = 112, z = 122; 
+define QUOTE       =  34; /*¦¦   "   ¦¦*/	define  _2 = 50,  C = 67, M = 77, W =  87, g = 103, q = 113; 
+define HASH        =  35; /*¦¦   #   ¦¦*/	define  _3 = 51,  D = 68, N = 78, X =  88, h = 104, r = 114; 
+define DOLLAR      =  36; /*¦¦   $   ¦¦*/	define  _4 = 52,  E = 69, O = 79, Y =  89, i = 105, s = 115; 
+define PERCENT     =  37; /*¦¦   %   ¦¦*/	define  _5 = 53,  F = 70, P = 80, Z =  90, j = 106, t = 116; 
+define AND         =  38; /*¦¦   &   ¦¦*/	define  _6 = 54,  G = 71, Q = 81, a =  97, k = 107, u = 117; 
+define APOSTROPHE  =  39; /*¦¦       ¦¦*/	define  _7 = 55,  H = 72, R = 82, b =  98, l = 108, v = 118; 
+define O_BRACKET   =  40; /*¦¦   (   ¦¦*/	define  _8 = 56,  I = 73, S = 83, c =  99, m = 109, w = 119; 
+define C_BRACKET   =  41; /*¦¦   )   ¦¦*/	define  _9 = 57,  J = 74, T = 84, d = 100, n = 110, x = 120; 
+define ASTERISK    =  42; /*¦¦   *   ¦¦*/ 
+define PLUS        =  43; /*¦¦   +   ¦¦*/ 
+define COMMA       =  44; /*¦¦   ,   ¦¦*/ 
+define MINUS       =  45; /*¦¦   -   ¦¦*/ 
+define FULLSTOP    =  46; /*¦¦   .   ¦¦*/ 
+define F_SLASH     =  47; /*¦¦   /   ¦¦*/ 
+define COLON       =  58; /*¦¦   :   ¦¦*/ 
+define SEMICOLON   =  59; /*¦¦   ;   ¦¦*/ 
+define B_ARROW     =  60; /*¦¦   <   ¦¦*/ 
+define EQUAL       =  61; /*¦¦   =   ¦¦*/ 
+define F_ARROW     =  62; /*¦¦   >   ¦¦*/ 
+define QUESTION    =  63; /*¦¦   ?   ¦¦*/ 
+define AT          =  64; /*¦¦   @   ¦¦*/ 
+define O_SQUARE    =  91; /*¦¦   [   ¦¦*/ 
+define b_SLASH     =  92; /*¦¦   \   ¦¦*/ 
+define C_SQUARE    =  93; /*¦¦   ]   ¦¦*/ 
+define U_ARROW     =  94; /*¦¦   ^   ¦¦*/ 
+define UNDERSCORE  =  95; /*¦¦   _   ¦¦*/ 
+define TICK        =  96; /*¦¦   `   ¦¦*/ 
+define O_CURLY     = 123; /*¦¦   {   ¦¦*/ 
+define BAR         = 124; /*¦¦   |   ¦¦*/ 
+define C_CURLY     = 125; /*¦¦   }   ¦¦*/ 
+define WAVE        = 126; /*¦¦   ~   ¦¦*/ 
+define CROSS       = 127; /*¦¦   PS  ¦¦*/ 
+define CIRCLE      = 128; /*¦¦   PS  ¦¦*/ 
+define SQUARE      = 129; /*¦¦   PS  ¦¦*/ 
+define TRIANGLE    = 130; /*¦¦   PS  ¦¦*/ 
+define UP          = 131; /*¦¦ PS+XB ¦¦*/ 
+define DOWN        = 132; /*¦¦ PS+XB ¦¦*/ 
+define LEFT        = 133; /*¦¦ PS+XB ¦¦*/ 
+define RIGHT       = 134; /*¦¦ PS+XB ¦¦*/ 
+define VIEW        = 135; /*¦¦   XB  ¦¦*/ 
+define MENU        = 136; /*¦¦   XB  ¦¦*/ 
+
+/* 
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                   Scroll Array                     ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/ 
+const uint8 Scroll[] = {/* 
+ ¦¦> 0 < ¦¦  ¦¦> 1 < ¦¦  ¦¦> 2 < ¦¦  ¦¦> 3 < ¦¦  ¦¦> 4 < ¦¦  ¦¦> 5 < ¦¦  ¦¦> 6 < ¦¦  ¦¦> 7 < ¦¦  ¦¦> 8 < ¦¦  ¦¦> 9 < ¦¦ ¦¦> 10 < ¦¦ ¦¦> 11 < ¦¦ ¦¦> 12 < ¦¦ ¦¦> 13 < ¦¦ ¦¦> 14 < ¦¦ ¦¦> 15 < ¦¦ ¦¦> 16 < ¦¦*/
+    SPACE   ,  SPACE   ,  TRIANGLE ,   SPACE   ,     O     ,     r     ,   SPACE   ,     Y     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     E     ,     x     ,     i     ,     t     ,   SPACE   , 
+    SPACE   ,  CROSS   ,   SPACE   ,     O     ,     r     ,   SPACE   ,     A     ,   SPACE   ,     T     ,     o     ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,    MENU   , 
+    SPACE   ,   UP     ,   SPACE   ,     O     ,     r     ,   SPACE   ,   DOWN    ,   SPACE   ,     T     ,     o     ,   SPACE   ,     A     ,     d     ,     j     ,     u     ,     s     ,     t     , 
+    SPACE   ,  LEFT    ,   SPACE   ,     O     ,     r     ,   SPACE   ,   RIGHT   ,   SPACE   ,     N     ,     e     ,     x     ,     t     ,   SPACE   ,     M     ,     o     ,     d     ,   SPACE   };
+
+const uint8 Saver_Scroll[][] = {/*
+    ¦¦ 0 ¦¦  1 ¦¦  2 ¦¦  3 ¦¦  4 ¦¦  5 ¦¦  6 ¦¦  7 ¦¦  8  ¦¦  9  ¦¦  10 ¦¦ */
+    {SPACE,  P  ,  S  ,SPACE,  v  ,SPACE,  X  ,  B  ,  O   ,  X   ,SPACE},
+    {SPACE,  Z  ,  E  ,  N  ,SPACE,  v  ,SPACE,  M  ,  A   ,  X   ,SPACE},
+    {  F  ,  O  ,  R  ,  T  ,  N  ,  I  ,  T  ,  E  , HASH , _1   ,SPACE},
+    {  C  ,  O  ,  D  ,SPACE,  v  ,SPACE,  A  ,  P  ,  E   ,  X   ,SPACE},
+    {  A  ,  B  ,  X  ,  Y  ,SPACE,  v  ,SPACE,CROSS,CIRCLE,SQUARE,TRIANGLE}};

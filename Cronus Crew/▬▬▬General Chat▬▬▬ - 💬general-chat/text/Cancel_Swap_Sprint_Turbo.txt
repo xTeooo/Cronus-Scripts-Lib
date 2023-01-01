@@ -1,0 +1,48 @@
+//Cancel_Swap_Sprint_Turbo
+
+define
+
+Cancel_Swap_Toggle = TRUE,
+Sprint_Min_Radius_Point = 95,//95
+Sprint_Min_Y_Point = -67,//-67
+Cancel_Swap_Cancel_Delay = 100,//100
+Cancel_Swap_Wait_Delay = 300;//300  // Should be longer than the "Cancel Delay"
+
+
+
+int is_sprinting;
+
+
+
+main {
+
+
+  if(Cancel_Swap_Toggle) {
+
+    if(!get_val(XB1_LT) && !get_val(XB1_RT) && get_ival(XB1_LY) <= Sprint_Min_Y_Point && (isqrt(pow(abs(get_ival(XB1_LX)),2) + pow(abs(get_ival(XB1_LY)),2)) >= Sprint_Min_Radius_Point) && event_press(XB1_LS))
+      is_sprinting = TRUE;
+
+    if(is_sprinting) {
+      if(!(get_ival(XB1_LY) <= Sprint_Min_Y_Point && (isqrt(pow(abs(get_ival(XB1_LX)),2) + pow(abs(get_ival(XB1_LY)),2)) >= Sprint_Min_Radius_Point)) || event_press(XB1_A) || event_press(XB1_B) || event_press(XB1_X) || event_press(XB1_Y) || event_press(XB1_LT) || event_press(XB1_RT) || event_press(XB1_RS) || event_press(XB1_LB) || event_press(XB1_RB))
+        is_sprinting = FALSE;
+      else combo_run(Cancel_Swap);
+    }
+
+    if(is_sprinting || combo_running(Cancel_Swap))
+      set_val(XB1_LT,0);
+
+  }
+
+
+}
+
+
+
+combo Cancel_Swap {
+  wait(Cancel_Swap_Wait_Delay);
+  set_val(XB1_Y,100);
+  wait(20);
+  wait(Cancel_Swap_Cancel_Delay);
+  set_val(XB1_Y,100);
+  wait(20);
+}

@@ -1,0 +1,449 @@
+define AimY   = PS4_RY;
+define AimX   = PS4_RX; 
+define Strafe = PS4_LX; 
+define Fire     = PS4_R2;      
+define Ads      = PS4_L2;    
+define Pickaxe  = PS4_L3;
+define N_Weapon = PS4_R1;      
+define P_Weapon = PS4_L1; 
+define Build    = PS4_CIRCLE;	
+define Switch   = PS4_TRIANGLE;    
+define Wall     = PS4_R2;
+define Floor    = PS4_R1;	
+define Ramp     = PS4_L2;	
+define Trap     = PS4_SQUARE;
+define Roof     = PS4_L1;	
+define Edit     = PS4_TOUCH;  
+define Select   = PS4_R2;
+define Confirm  = PS4_R1;	
+define Reset    = PS4_R3;
+
+int DamAngle,DamCos,DamSin,DamX,DamY,ActualMagnitude,MaxMagnitude,RadiusDam,AngleDam,AAT,Axis,Head,BuildTrack,BuildCount,Edit1,Edit2,EditT,Axe,BuildPro;
+
+// Instant Pickaxe
+define InstantPickaxe = FALSE; 
+// HFEJA
+
+// Instant Edit + Reset 
+define InstaEditReset = FALSE;
+define EditHold       = FALSE;
+define EditHoldTime   = 130;
+
+// Scroll wheel with one button
+define InstaFastReset = FALSE;      // Toggle on or off
+define FastReset      = PS4_TOUCH; // button to use (use a button you dont use much)
+
+// Quick Edit Assist
+define QuickEditAssist = FALSE;   // i recommend not using 
+define EditDelay       = 20;    
+define EditAssist      = PS4_L3;
+
+// Button Press Time [20- 50ms]
+define ButtonTime = 20;      // (IGNORE)
+
+// Aim assist
+define AimAssist    = TRUE; 
+define AimAssistHip = TRUE;  
+define AATimed      = FALSE; 
+
+define Power  = 1;   
+define AATime = 2000;
+
+// polar aa (timed=better so leave disabled)
+define PolarAssist     = FALSE; 
+define PolarBoost      = TRUE; 
+define PolarHipFire    = TRUE;  
+define StrafeShake     = TRUE; 
+
+define Radius          = 9;    
+define Angle           = 5;   
+define RadiusBoost     = 7;    
+define AngleBoost      = 9;     
+
+define StrafePower      = 12;  
+define StrafeAssistWait = 10; 
+define HeadAssist    = FALSE; 
+define HeadHipAssist = FALSE;
+
+define HeadStep = 2; 
+define HeadMax  = 30;
+
+// build tracker leave on = no shake when build
+define BuildTracker  = TRUE;
+define BuildSyncTime = 2000; 
+
+define BuilderPro = FALSE;
+
+define PlayStationOnXbox = TRUE;
+
+define HairTriggers = TRUE; // Instant Triggers [100%]
+
+main {	
+	
+	if (PlayStationOnXbox && get_console() == PIO_XB360 && get_controller() == PIO_PS4) { 
+	
+		swap(PS4_TOUCH,PS4_SHARE);
+	}
+	
+	if (HairTriggers) { 
+   		
+   		deadzone(PS4_L2,PS4_R2,9,9);
+   	}
+
+	if (QuickEditAssist) {
+	 	
+	 	if (get_ival(EditAssist)) {
+			
+			EditAssist();
+			Edit1 = TRUE;
+		}
+
+		if (event_release(EditAssist)) {
+			
+			EditT = 0;	
+			Edit1 = FALSE;
+		}
+	}
+
+    if (InstaFastReset) {
+    	
+    	if (event_press(FastReset)) { 
+       	
+    		combo_run(FastReset);
+    	}
+    }	
+
+	if (InstaEditReset) {
+        
+        if (EditHold) {
+        	
+        	if (get_ival(Edit) && get_ptime(Edit) > EditHoldTime) {
+        
+            	Edit1 = TRUE;
+            	Edit2 = TRUE;
+			}
+        }
+        	
+        else if (event_press(Edit)) {
+        			
+        		Edit1 = TRUE;
+            	Edit2 = TRUE;
+		}
+		
+		if (Edit2) {
+            
+            if (event_release(Select)) {  
+                
+                Edit1 = FALSE;
+                Edit2 = FALSE;
+                BuildTrack = FALSE;
+            }
+		}
+    }
+
+    if (Edit1 || Edit2) {
+        
+        if (event_press(Reset)) {  
+            
+            combo_run(InstantReset);
+            Edit1 = FALSE;
+            Edit2 = FALSE;
+            BuildTrack = FALSE;
+        }
+
+        if (event_press(Pickaxe)) {
+            
+            Edit1 = FALSE;
+            Edit2 = FALSE;
+            BuildTrack = FALSE;
+		}
+    }
+	
+	if (BuilderPro) {
+            
+		if (get_ival(Switch)) {    
+			
+			BuildPro = TRUE;
+			
+			if (BuildTracker) 
+				
+				BuildTrack = TRUE;
+        } 
+            
+        if (BuildPro && event_release(Switch)) {
+        
+        	combo_run(BuildPro);
+        	BuildPro = FALSE;
+        	
+        	if (BuildTracker) 
+				
+				BuildTrack = FALSE;
+        }        
+    }
+    
+	if (BuildTracker) {
+        
+        if (event_press(Build)) {
+            
+            BuildTrack = !BuildTrack;
+        }
+    
+        if (BuildTrack && !BuildPro) {
+            
+            BuildCount += get_rtime();
+            
+            if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+                
+                BuildTrack = FALSE;
+                BuildCount = 0;
+            }
+            
+            if (get_ival(Roof) || get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) 
+                
+                BuildCount = 0;
+        }
+    }
+	
+	if (!BuildTrack && !Edit1 && !Edit2) {
+	
+	    if (InstantPickaxe) {
+                    
+        	if (event_press(Pickaxe)) {
+                        
+            	Axe = TRUE;
+            }
+                	
+            if (Axe) {
+                        
+            	if (event_press(Build) || event_press(Switch) || event_press(Ads) || event_press(N_Weapon) || event_press(P_Weapon)) { 
+                            
+                 	Axe = FALSE;
+                }
+                        
+                if (event_release(Fire)) {
+                            
+                	combo_run(Pickaxe);
+                }
+            }
+        }
+	    
+	    if (AimAssist) {
+	    	
+	    	if (AATimed) {
+	    	
+	    		if (get_ival(Ads) && get_ptime(Ads) <= AATime || AimAssistHip && get_ival(Fire) && get_ptime(Fire) <= AATime) {
+	        	
+	        		AimAssist();
+	        	}
+	        	
+	        } else if (get_ival(Ads)|| AimAssistHip && get_ival(Fire)) {
+	        	
+	        		AimAssist();
+	        }
+	        
+	        if (!get_ival(Ads) && !get_ival(Fire)) {
+	        
+	        	AAT = 0;
+	        	Axis = 0;
+	        }
+	    }
+	    
+	    if (HeadAssist) {
+	        
+	        if (get_ival(Ads) && get_ival(Fire) || HeadHipAssist && get_ival(Fire)) {
+	        
+	        	if (abs(get_ival(AimY)) < HeadMax) { 
+	        		
+	        		Head += HeadStep;
+	        		combo_run(HeadAssist);
+	        	}	
+	        }
+	        
+	        if (!get_ival(Fire)) Head = 0;
+	        	
+	        if (Head >= HeadMax) combo_stop(HeadAssist);
+	    }
+	
+		if (PolarAssist) {
+            
+            if (get_ival(Ads) || (PolarHipFire && get_ival(Fire))) {
+            
+                DamX = get_ival(AimX);   
+                DamY = get_ival(AimY);           
+                ActualMagnitude = isqrt(pow(DamX,2) + pow(DamY,2));  
+                MaxMagnitude = (ActualMagnitude < 100);                      
+            
+                if (PolarBoost && get_ival(Fire)) {
+                        
+                    RadiusDam = Radius + RadiusBoost;
+                    AngleDam = AngleBoost;
+                    
+                } else {
+                        
+                    RadiusDam = Radius;
+                    AngleDam = 0;
+                }
+                
+                DamAngle += Angle + AngleDam;                                                 
+                DamAngle = DamAngle % 360;                                            
+                DamSin = DamPolar[DamAngle % 360];                           
+                DamCos = DamPolar[(DamAngle + 270) % 360];                  
+                DamCos = (DamCos * RadiusDam) / 100;                         
+                DamSin = (DamSin * RadiusDam) / 100;                          
+            
+                if (ActualMagnitude <= 10) {                                                      
+                    
+                    DamSin -= DamY;                                                              
+                    DamCos -= DamX;                                                                 
+                
+                } else {                                                                                       
+                        
+                    DamSin = (DamSin * (200 - ((abs(DamY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; 
+                    DamCos = (DamCos * (200 - ((abs(DamX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude; 
+                }                                                  
+                
+                set_val(AimX,clamp(DamX + DamCos, -100,100));
+                set_val(AimY,clamp(DamY + DamSin, -100,100)); 
+            	
+            	if (StrafeShake) combo_run(StrafeAxis);
+            }
+        }
+    }
+}
+
+combo HeadAssist{
+
+	set_val(AimY,inv(Head) + get_val(AimY));
+}
+
+combo StrafeAxis {
+   
+	set_Val(Strafe,inv(StrafePower));
+    wait(StrafeAssistWait);
+    set_Val(Strafe,StrafePower);
+    wait(StrafeAssistWait);
+}
+
+combo Pickaxe {
+    
+    set_val(Pickaxe,100);
+    wait(ButtonTime);
+    Axe = FALSE;
+}
+
+combo BuildPro {   
+    
+    set_val(Switch,0);
+    wait(50);      
+    set_val(Switch,100);
+    wait(50);
+}
+
+combo Confirm {
+
+    set_val(Confirm,100);
+    wait(ButtonTime);
+    set_val(Confirm,0);
+    wait(ButtonTime);
+}
+
+combo FastReset {
+
+    set_val(EditAssist,100);
+    wait(ButtonTime)
+    set_val(Reset,100);        
+    wait(ButtonTime);
+    combo_run(Confirm);
+}
+
+combo InstantReset {
+
+    wait(20)
+    combo_run(Confirm);
+}
+
+function AimAssist() {
+
+	AAT += get_rtime();
+	
+	if (!Axis) 
+		
+		set_Val(AimY,AAT * Power / 10);
+		
+	if (Axis == 1)  
+		
+		set_Val(AimX,AAT * Power / 10);
+	
+	if (Axis == 2)  
+		
+		set_Val(AimY,inv(AAT * Power / 10));
+
+	if (Axis == 3) {
+		
+		set_Val(AimX,inv(AAT * Power / 10));
+	
+		if (AAT > 50) {
+		
+			AAT = 0;
+			Axis = 0;
+		}
+	
+	} else if (AAT > 50) {
+		
+		AAT = 0;
+		Axis += 1;
+	}
+}
+
+function set_Val(Input,Output) {
+
+    set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+        
+    return; 
+}
+
+function EditAssist () {
+
+    EditT += get_rtime();
+        
+        if (get_ival(EditAssist)) {
+            
+            if (EditT >= EditDelay)
+                  
+           		Press(Select);
+        }
+}
+
+function Press (Button) {
+
+    if (get_ival(Button))
+        
+   		return;
+            
+            set_val(Button,100);
+}
+
+int inc = 1, dec, color[3];
+
+init{ color = 255; }
+
+main { combo_run(rgb); }
+
+combo rgb {
+  wait(1);
+  set_rgb(color, color[1], color[2]);
+  color[dec] -= 1; color[inc] += 1;
+  if(!color[dec]) { inc = (inc + 1) % 3; dec = (dec + 1) % 3; }
+}
+
+const int8 DamPolar[]= {
+    100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,
+    71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,
+    -8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,
+    -65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,
+    -97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,
+    -94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,
+    -56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,
+    11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,
+    81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}; ˙ªàºà±âæèªâ∞Ü±Ä∂

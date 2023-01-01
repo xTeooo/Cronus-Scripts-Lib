@@ -1,0 +1,3086 @@
+//            _____ _________________________  ___                    
+//           /  _  \\______   \_   _____/\   \/  /                    
+//          /  /_\  \|     ___/|    __)_  \     /                     
+//         /    |    \    |    |        \ /     \                     
+//         \____|__  /____|   /_______  //___/\  \                    
+//                 \/                 \/       \_/                    
+//  ___________________ _______  ___________ _________.___  _________ 
+// /  _____/\_   _____/ \      \ \_   _____//   _____/|   |/   _____/ 
+///   \  ___ |    __)_  /   |   \ |    __)_ \_____  \ |   |\_____  \  
+//\    \_\  \|        \/    |    \|        \/        \|   |/        \ 
+// \______  /_______  /\____|__  /_______  /_______  /|___/_______  / 
+//        \/        \/         \/        \/        \/             \/  
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//                           ███    ███                                                                                       								+
+//   ▄██████▄     ▄████████ ███▄▄▄▄      ▄████████    ▄████████  ▄█     ▄████████     																		+
+//  ███    ███   ███    ███ ███▀▀▀██▄   ███    ███   ███    ███ ███    ███    ███     																		+
+//  ███    █▀    ███    █▀  ███   ███   ███    █▀    ███    █▀  ███▌   ███    █▀      																		+
+// ▄███         ▄███▄▄▄     ███   ███  ▄███▄▄▄       ███        ███▌   ███            																		+
+//▀▀███ ████▄  ▀▀███▀▀▀     ███   ███ ▀▀███▀▀▀     ▀███████████ ███▌ ▀███████████     																		+
+//  ███    ███   ███    █▄  ███   ███   ███    █▄           ███ ███           ███     																		+
+//  ███    ███   ███    ███ ███   ███   ███    ███    ▄█    ███ ███     ▄█    ███     																		+
+//  ████████▀    ██████████  ▀█   █▀    ██████████  ▄████████▀  █▀    ▄████████▀  																			+
+// 																																	+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄ 										+
+//▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌										+
+//▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀▀▀▀▀▀█░▌										+
+//▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌          ▐░▌          ▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌          ▐░▌										+
+//▐░▌       ▐░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌          ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌ ▄▄▄▄▄▄▄▄▄█░▌										+
+//▐░▌       ▐░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌										+
+//▐░▌       ▐░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ 										+
+//▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          										+
+//▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ 										+
+//▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌										+
+// ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀ 										+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//																																							+
+//██╗    ██╗ █████╗ ██████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗ 																								+
+//██║    ██║██╔══██╗██╔══██╗████╗  ██║██║████╗  ██║██╔════╝ 																								+
+//██║ █╗ ██║███████║██████╔╝██╔██╗ ██║██║██╔██╗ ██║██║  ███╗																								+
+//██║███╗██║██╔══██║██╔══██╗██║╚██╗██║██║██║╚██╗██║██║   ██║																								+
+//╚███╔███╔╝██║  ██║██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝																								+
+// ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝																									+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//     If we find that this script has been leaked, We will take immediate and severe actions to remedy the situation. 										+
+//     Future Updates prices will be raised significantly as well if we find a leak.																		+
+//	   By purchasing our script, and using it you have agreed to our T.O.S.
+//     Link to TOS: https://omegalabzscript.com/tosx
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++         	+
+//																																													+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//																																													+
+//															"The Best scripts available on the market" - Customers																	+
+//																																													+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//
+//
+// LED INFO - DO NOT EDIT ++++++++++++++++++++++++++++++++++++++
+const string GEN_OLED_DISPLAY   = "       APEX     ";			 //+
+const string GEN_OLED_DISPLAY_X = "     GENESIS    ";		 //+
+const string GEN_OLED_DISPLAY_2 = "    OmegaLabz   ";
+const string GEN_OLED_DISPLAY_3 = "The Best Scripts";
+const string GEN_OLED_DISPLAY_4 = " On the Market! ";
+const string GEN_OLED_DISPLAY_5 = " omegalabzscript";
+const string GEN_OLED_DISPLAY_6 = "      .com      ";		 //+
+int LED_IND_MAIN = 1;										 //+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+define AIM_DOWN_SIGHT_BUTTON 					= PS4_L2;
+define TRIGGER_FIRE_BUTTON 					= PS4_R2;
+define SQUAT_BUTTON 				= PS4_R3;  
+define JUMP_BUTTON  				= PS4_CROSS;
+define WEAPON_SWAP_BUTTON					= PS4_TRIANGLE;
+define MELEE_BUTTON					= PS4_CIRCLE;
+define STICK_SPRINT_BUTTON				= PS4_L3;
+define GENESIS_AUTO_PING_BUTTON				= PS4_UP; // Kind of slef-explanitory, Place your ping button here.
+define GENESIS_DROPSHOT_JUMP_DROPSHOT_TOGGLE_BTN             = PS4_LEFT; // DROP JUMP / JUMP SHOT
+define DROPSHOT_THEN_STAND_TOGGLE_ADSplus             = PS4_DOWN; // Dropshot-Stand Toggle
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+int ENABLE_FMS_FOR_LS	= FALSE; // Applied on left stck
+define QUICK_MOVE_INDICATOR	= 35;
+int GYROID_NS_INDICATOR				= 100;
+int DEVIANCE_MVT_SENS					= 125;
+int USE_VIBRATIONS_RECOIL_INDICATOR						= TRUE;
+int USE_SENSI_GENESIS_TRIGGER				= TRUE;
+int USE_GENESIS_SLIDE_ATUOCANCEL 				= TRUE;
+int USE_GENESIS_NULL_AUTOPLATE					= FALSE; // <-- Kind of outdated in Warzone, since they added Auto-Plate as an in-game setting.
+int USE_GENESIS_INFINITY_MELEE					= FALSE;
+int USE_JUMP_SPAM					= FALSE;  //  <--- Now you can be "that" guy.
+int USE_100_ACCURACY_SNIPER_BREATH				= FALSE;    // Faze Bro.
+int USE_DOUBLE_ADS_QUICK_SCOPE					= FALSE; // Fucking FaZier.
+//int USE_GENESIS_AUTO_PING                   	= TRUE;
+define DEFINE_GENESIS_SLIDE_DELAY_MS = 80; // How long you wanna be surfin on your knee.
+define quickscope_press_time 		= 150; // Faze bruh, time it here.
+define quickscopedelay				= 350; // Refer to above, Faze, it is connected. :0
+define GENESIS_RF_TOGGLE_BUTTON 	= PS4_RIGHT; // LT+ <--That Button to toggle your Rapid fire.
+define GENxxxBASICxRF       		= 0x00; 
+define GEN_POLY_RF					= 0x01;
+define LADDER_LOGIC_RF 				= 0x02; 				// RF Type
+define GENESIS_WRATH_OF_GOD_RF     	= 0x03;  
+define ARTHRITIS_RF	 				= 0x04; 
+define SCHIZOPHRENIC	 					= 0x05; 
+int RAPIDFIREMODE							= GENESIS_WRATH_OF_GOD_RF;
+int HOLD_TRIGGER_TIME						= 16; //8 BIT INTEGERS
+int WAIT_TRIGGER_TIME						= 16; 
+int TRIGGER_PRESS_LENGTH						= 50;				//Numbers, just leave them as is.
+int LADDER_TRIGGER_LENGTH							= 8; 
+int MORPHOGENICTRIG
+int SCHIZOPHRENICMIN						= 6;
+int SCHIZOPHRENICMAX						= 31;
+int TOG_DROP_STAND_OMEGA_SPECIAL;
+//################################################################################################# 
+define GENESIS_CYCLE_LIMIT_TIME					= 8;			//******
+//################################################################################################# 
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int USE_GENESIS_AI_POWERED_ANTI_RECOIL							= TRUE;  // Either AR works well. The choice, I leave up to you.
+define USE_GENESIS_INTELLIGENT_AR					= 0xFF;
+define USE_MULTI_GEN_BASIC_AR					= 0xFE;
+int CHOOSE_ANTI_RECOIL_TYPE									= USE_GENESIS_INTELLIGENT_AR;
+define VIBRATE_INDICATOR_GENESIS_AntiRecoil_STRENGTH   			= 45;
+define ENIGMA_AR_CYCLE_UPDATE_TIME			= 65;
+define ENIGMA__AntiRecoil_STRENGTH 				= 32;
+define ENIGMA_AR_GENESIS_MIN_RECOIL_PERCENT	= 50;
+define ENIGMA_AR_MATRIX_BITS			= 32;
+define ENIGMA_ARRAY_LENGTH_IDENTIFIER 			= ENIGMA_AR_MATRIX_BITS - 1; 
+//++++++++++++++++++++++++++++++++++++++++++++++
+define GEN_BASE_AA_DEF						= 0xFF;
+define RANDOM_ANGLE_APPROACH_VECTOR					= 0xFE;
+define ENIGMA_RADIAL_MEASUREMENT				= 0xFD;
+define ENIGMA_AA					= 0xFC; 
+//++++++++++++++++++++++++++++++++++++++++++++++
+int	 DEFINE_AIM_ASSIST_SELECTION 					= ENIGMA_AA;
+//++++++++++++++++++++++++++++++++++++++++++++++
+define MAXIMUM_LIMIT_ANGLE_APPROACH 					= 25; 
+define MINIMUM_LIMIT_ANGLE_APPROACH 					= 25;
+define MAXIMUM_LIMIT_RADIAL_APPROACH 					= 14;
+define MINIMUM_LIMIT_RADIAL_APPROACH 					= 6;	
+//++++++++++++++++++++++++++++++++++++++++++++++
+//#################################################################################################
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int USE_ENIGMA_WAVE_GEN				= TRUE;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define GEN_BASE_WAVE					= 0xFF;
+define ENIGMA_VELOCITY					= 0xFE;
+define BUNKER_VELOCITY					= 0xFD;
+define ENIGMA_MORPH_STRENGTH				= 0xFC;
+define BUNKER_INTENSITY				= 0xFB;
+define ENIGMA_WAVE				= 0xFA;
+define BUNKER_WAVE					= 0xF9;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int DEFINE_ENIGMA_WAVE_TYPE				= ENIGMA_VELOCITY;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define MORNINGSTAR_ENIGMA_WAVE				= 0xFF;
+define MOTHER_MARY_BOX_WAVE					= 0xFE;
+define LADDER_LOGIC_SCRAMBLE_WAVE			= 0xFD;
+int ARTIFICIAL_CARRIER_WAVE_EDIT_TYPE		= MORNINGSTAR_ENIGMA_WAVE;		
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int ENIGMA_WAVE_UPDATE_PARAMETERS	= GENESIS_CYCLE_LIMIT_TIME;
+int MAXIMUM_ENIGMA_WAVE_INTENSITY		= 4;
+int MINIMUM_ENIGMA_WAVE_INTENSITY		= 2;
+int MAXIMUM_ENIGMA_WAVE_SPEED			= 5;  //5
+int MINIMUM_ENIGMA_WAVE_SPEED			= 1;  //1
+//++++++++++++++++++++++++++++++++++++++++++++++++
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define HORIZON_AZIMUTH_DETECTION				= 0xFF;
+define CARTESIAN_VERT_WAVE_DETECTION			= 0xFE;
+define COMPLETE_ENCOMPASSING_DETECTION_WAVE		= 0xFD;
+int USE_GENESIS_AI_WAVE_MODULATION				= COMPLETE_ENCOMPASSING_DETECTION_WAVE;	
+//++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int USE_GENESIS_SITUATIONAL_AI_ASSISTED_AIM			= TRUE;
+int AI_SAM_ENGAGE_LIMIT_DEFINITION					= 30;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+//ADS ONLY
+int GENESIS_AIMDOWNSIGHT_ENIGMA_WAVE_TYPE				= ENIGMA_VELOCITY;
+int GENESIS_AIMDOWNSIGHT_ENIGMA_WAVE_CARRIER			= ENIGMA_VELOCITY;
+int GENESIS_AIMDOWNSIGHT_ENIGMA_WAVE_MODULATION			= COMPLETE_ENCOMPASSING_DETECTION_WAVE;
+int GENESIS_AIMDOWNSIGHT_ENIGMA_AA_DEF				    = ENIGMA_AA;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_TYPE					    = ENIGMA_VELOCITY;
+int DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_CARRIER				    = MORNINGSTAR_ENIGMA_WAVE;
+int DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_MODULATION			        = COMPLETE_ENCOMPASSING_DETECTION_WAVE
+int DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_AIMASSIST_TYPE				= ENIGMA_AA;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+//ADS + FIRE
+int GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_TYPE			= ENIGMA_VELOCITY;
+int GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_CARRIER		    = MORNINGSTAR_ENIGMA_WAVE;
+int GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_MODULATION    	= COMPLETE_ENCOMPASSING_DETECTION_WAVE;
+int GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_AIMASSIST_TYPE  = ENIGMA_AA;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int DRIFT_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_TYPE			            = ENIGMA_VELOCITY;
+int DRIFT_AIM_DOWN_SIGHT__FIRE_ENIGMA_WAVE_CARRIER			       = MORNINGSTAR_ENIGMA_WAVE;
+int DRIFT_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_MODULATION		       = COMPLETE_ENCOMPASSING_DETECTION_WAVE;
+int DRIFT_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_AIM_ASSIST_TYPE			= ENIGMA_AA;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+//HIP FIRE
+int GENESIS_HIP_FIRE_ENIGMA_WAVE_TYPE			   = ENIGMA_VELOCITY;
+int GENESIS_HIP_FIRE_ENIGMA_WAVE_CARRIER		    = MORNINGSTAR_ENIGMA_WAVE;
+int GENESIS_HIP_FIRE_ENIGMA_WAVE_MODULATION	          = COMPLETE_ENCOMPASSING_DETECTION_WAVE
+int GENESIS_HIP_FIRE_ENIGMA_WAVE_AIM_ASSIST_TYPE	    = ENIGMA_AA;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int DRIFT_HIP_FIRE_ENIGMA_WAVE_TYPE			          = ENIGMA_VELOCITY;
+int DRIFT_HIP_FIRE_ENIGMA_WAVE_CARRIER			      = MORNINGSTAR_ENIGMA_WAVE;
+int DRIFT_HIP_FIRE_ENIGMA_WAVE_MODULATION		     = COMPLETE_ENCOMPASSING_DETECTION_WAVE;
+int DRIFT_HIP_FIRE_ENIGMA_WAVE_AIM_ASSIST_TYPE			= ENIGMA_AA;
+//################################################################################################# 
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+
+define GENESIS_CYCLE_DEF_IND_BASE		= 8;  //dont change!
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define GEN_OUTER_MODEL_PERIMETER_SCAN			= 0xFF;
+define GENESIS_REACH_FAR_SCAN_HOLD				= 0xFE;
+define AIM_LOCK_SCAN					        = 0xFD;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int ENABLE_AIM_LOCK_DEEP_SCAN				= TRUE;
+int AIM_LOCK_DEEP_SCAN_TYPE				    = GENESIS_REACH_FAR_SCAN_HOLD;
+int AIM_LOCK_SCAN_CYCLE_TIME_DEFINITION		= GENESIS_CYCLE_LIMIT_TIME; 
+int AIM_LOCK_HOLD_TIME			= 2 * GENESIS_CYCLE_DEF_IND_BASE;
+int AIM_LOCK_SCAN_INTENSITY	    = 10;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int USE_AIM_BALANCING					= TRUE;
+define USER_DEFINED_RESOLUTION			= 0xFF;	
+define ENIGMA_RESOLUTION			    = 0xFE;	
+define BOX_SPREAD_RESOLUTION			= 0xFD;	
+//++++++++++++++++++++++++++++++++++++++++++++++++
+int AIM_BALANCING_TYPE		= BOX_SPREAD_RESOLUTION;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define AIM_BALANCING_STRENGTH					= 8;
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define GENESIS_AIM_CYCLE_INTENSITY				= 45;
+define GENESIS_AI_ASSISTED_MOVEMENT_PREDICTOR 	= 10;  	
+define GENESIS_AI_ASSISTED_SMOOTHING_AA_REDUCER	= 5;  	
+define DEADZONE_LIMIT_DEFINITION_2				= 10; 
+//++++++++++++++++++++++++++++++++++++++++++++++++
+define  GEN_W_IND_32 = 6;
+int GEN_LX_LY_IND;
+int LADY__TICKLER_IND;
+int DMT_MODE;
+int ANGLE_VECTOR_IND;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int GEN_POLAR_RAD_CARTESIAN;
+int DEF_ACTUAL_RX_LOCATION;
+int DEF_LAST_RX_LOCATION;
+int DEF_ACTUAL_RY_LOCATION;
+int DEF_LAST_RY_LOCATION;
+int GEN_MOV_PREDICTOR_CYCLE_TICK;
+int mvt_direction;
+int GEN_AIM_SMOOTHING;
+int GEN_POLAR_AR_RY_IND;
+int GEN_ANGLE_VECTOR_APPROACH_IND;
+int PARSE_FUNCTION_VEC_DOC_2;
+int INTENSITY_AMOUNT_DEF;
+int INTENSITY_INCRMENT_DEC_CONVERT;
+int DEF_IND_22_AREA_12;
+int RX_DEF_ACTUAL_IND;
+int RY_DEF_ACTUAL_IND;
+int INTENSITY_OVERLOAD_CHECK;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int LS_TACTILE_FEEDBACK_SENS;
+int GENESIS_POLAR_SCAN_INTENSITY;
+int GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR;
+int GEN_ENIGMA_UPDATE_CYCLE;
+int ANTI_RECOIL_CYCLE_DEF_TIME;
+int ANTI_RECOIL_INDEX_DEF;
+int ANTI_RECOIL_STRENGTH_DEF;
+int ANTI_RECOIL_BUFFER_DEF;
+int ANTI_RECOIL_STRENGTH_CALC_DEF;
+int integerdef11;
+int GEN_ENIGMA_DEEP_SCAN_12;
+int GEN_AI_ASSIST_RX_CARRIER_WAVE;
+int GEN_AI_ASSIST_RY_CARRIER_WAVE;
+int GEN_WAVE_APPROACH_ANGLE;
+int GEN_WAVE_APPROACH_ANGLE_TYPE;
+int GEN_WAVE_CARRIER_6;
+int GEN_ENIGMA_UPDATE_DEF_PAR;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int GEN_ENIGMA_STRENGTH_DEF_PAR_1;
+int GEN_ENIGMA_SPEED_DEF_PAR_1;
+int GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1;
+int GEN_BUNKER_SPEED_IND;
+int BUNKER_STRENGTH_IND;
+int GEN_MAX_WAV_STRENGTH_IND;
+int GEN_MIN_WAV_STRENGTH_IND;
+int GEN_MIN_WAV_SPEED_IND;
+int GEN_MIN_WAV;
+int GEN_MAX_WAV;
+int ENIGMA_WAVE_UPDATE;
+int AIM_LOCK_ASSISTED_AA;
+int AI_LS_LY_RX_RY_MOD;
+int TOG_RAPID_FIRE_ENABLE;
+int TOG_DROP_JUMP_DROP_OMEGA_SPECIAL;
+//################################################################################################# 
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+init
+{
+	mvt_direction = 1;
+	GEN_MOV_PREDICTOR_CYCLE_TICK = 0;
+	DMT_MODE = 1;
+	GEN_POLAR_RAD_CARTESIAN = get_polar_radius(MAXIMUM_LIMIT_RADIAL_APPROACH);
+	GEN_ANGLE_VECTOR_APPROACH_IND = MAXIMUM_LIMIT_ANGLE_APPROACH;
+
+	GEN_LX_LY_IND = inv(VIBRATE_INDICATOR_GENESIS_AntiRecoil_STRENGTH) * DMT_MODE;
+	
+	GENESIS_POLAR_SCAN_INTENSITY = get_polar_val(AIM_LOCK_SCAN_INTENSITY);
+	
+	
+	
+	
+	if (LED_IND_MAIN == 1) combo_run(OMEGALABZ_OLED_DISPLAY);
+	
+	
+	
+	
+	
+	
+	if(USE_AIM_BALANCING == TRUE)
+	{
+		if(AIM_BALANCING_TYPE == ENIGMA_RESOLUTION)
+		INTENSITY_AMOUNT_DEF = random(4,8);
+		else
+		INTENSITY_AMOUNT_DEF = AIM_BALANCING_STRENGTH;
+
+		INTENSITY_INCRMENT_DEC_CONVERT = -1;
+	}
+	
+	INTENSITY_OVERLOAD_CHECK = TRUE;
+	
+	ANTI_RECOIL_STRENGTH_DEF = ENIGMA__AntiRecoil_STRENGTH ;
+	
+	set_led(-1,0);
+	set_led(0,0);
+	set_led(1,0);
+	set_led(2,0);
+	set_led(3,0);
+	set_led(4,0);
+	set_led(5,1);
+	set_led(6,0);
+	
+	GEN_MAX_WAV_STRENGTH_IND = get_polar_val(MAXIMUM_ENIGMA_WAVE_INTENSITY);
+	
+	GEN_MIN_WAV_STRENGTH_IND = get_polar_val(MINIMUM_ENIGMA_WAVE_INTENSITY);
+	GEN_MIN_WAV_SPEED_IND  = MINIMUM_ENIGMA_WAVE_SPEED;
+	
+	if(USE_GENESIS_SITUATIONAL_AI_ASSISTED_AIM == TRUE)
+	{
+		GEN_WAVE_APPROACH_ANGLE_TYPE  = GENESIS_HIP_FIRE_ENIGMA_WAVE_TYPE;
+		GEN_WAVE_CARRIER_6 = GENESIS_HIP_FIRE_ENIGMA_WAVE_CARRIER;
+	}
+	else
+	{
+		GEN_WAVE_APPROACH_ANGLE_TYPE  = DEFINE_ENIGMA_WAVE_TYPE;
+		GEN_WAVE_CARRIER_6 = ARTIFICIAL_CARRIER_WAVE_EDIT_TYPE;
+	}
+	
+
+	if(GEN_WAVE_APPROACH_ANGLE_TYPE == GEN_BASE_WAVE)
+	{
+		GEN_ENIGMA_STRENGTH_DEF_PAR_1 = GEN_MAX_WAV_STRENGTH_IND;
+		GEN_ENIGMA_SPEED_DEF_PAR_1 = GEN_MIN_WAV_SPEED_IND;
+	} 
+	else
+	{
+		GEN_ENIGMA_STRENGTH_DEF_PAR_1 = GEN_MIN_WAV_STRENGTH_IND;
+		GEN_ENIGMA_SPEED_DEF_PAR_1 = GEN_MIN_WAV_SPEED_IND;
+				
+		BUNKER_STRENGTH_IND = 1;
+		GEN_BUNKER_SPEED_IND = 1;
+	}
+	
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = MINIMUM_ENIGMA_WAVE_INTENSITY;
+	
+	GEN_MIN_WAV = MINIMUM_ENIGMA_WAVE_INTENSITY;
+	GEN_MAX_WAV = MAXIMUM_ENIGMA_WAVE_INTENSITY;
+	
+	AIM_LOCK_ASSISTED_AA = DEFINE_AIM_ASSIST_SELECTION;
+	AI_LS_LY_RX_RY_MOD = USE_GENESIS_AI_WAVE_MODULATION;
+}
+
+main
+{
+	vm_tctrl(-4);
+
+	if(USE_VIBRATIONS_RECOIL_INDICATOR == FALSE)
+	{
+		block_rumble();
+	}
+    //if((get_val(AIM_DOWN_SIGHT_BUTTON) > 50) || (get_val(TRIGGER_FIRE_BUTTON)> 50))
+		//{				
+		//	
+		//if(USE_GENESIS_AUTO_PING && (get_val(TRIGGER_FIRE_BUTTON)> 50))
+				//combo_run(REV_AUTO_PING)
+
+//}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+if(get_ival(AIM_DOWN_SIGHT_BUTTON) && event_release(GENESIS_DROPSHOT_JUMP_DROPSHOT_TOGGLE_BTN))
+	{
+            TOG_DROP_JUMP_DROP_OMEGA_SPECIAL = !TOG_DROP_JUMP_DROP_OMEGA_SPECIAL;
+			combo_run(vibrate);
+			if(!TOG_DROP_JUMP_DROP_OMEGA_SPECIAL)
+			{		
+				combo_stop(OMEGA_BLOOD_RED_IND);
+				set_ledx(2, 0);
+				set_led(1, 3);
+			}
+			if (TOG_DROP_JUMP_DROP_OMEGA_SPECIAL && get_ival(TRIGGER_FIRE_BUTTON) > 10) 
+			{  combo_run(DROP_JMUP_DROP);
+				set_led(2,2);
+			}
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+if(TOG_DROP_JUMP_DROP_OMEGA_SPECIAL && get_ival(TRIGGER_FIRE_BUTTON) > 25)
+	{
+		combo_run(OMEGA_BLOOD_RED_IND);
+		combo_run(DROP_JMUP_DROP);
+	}	
+	if(get_ival(AIM_DOWN_SIGHT_BUTTON) && event_release(DROPSHOT_THEN_STAND_TOGGLE_ADSplus))
+	{
+            TOG_DROP_STAND_OMEGA_SPECIAL = !TOG_DROP_STAND_OMEGA_SPECIAL;
+			combo_run(vibrate);
+			if(!TOG_DROP_STAND_OMEGA_SPECIAL)
+			{		
+				combo_stop(OMEGA_DROP_TOGGLE_IND);
+				set_ledx(2, 3);
+				set_led(2, 1);
+			}
+			if (TOG_DROP_STAND_OMEGA_SPECIAL && get_ival(TRIGGER_FIRE_BUTTON) > 10) 
+			{  combo_run(DROP_STAND_COMBO_OMEGALABZ);
+				set_led(1,2);
+			}
+}
+
+
+
+
+if(TOG_DROP_STAND_OMEGA_SPECIAL && get_ival(TRIGGER_FIRE_BUTTON) > 5)
+	{
+		combo_run(OMEGA_DROP_TOGGLE_IND);
+		combo_run(DROP_STAND_COMBO_OMEGALABZ);
+	}	
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	if(USE_SENSI_GENESIS_TRIGGER)
+	{
+		if(get_ival(PS4_R2) > 10)
+		set_val(PS4_R2, 100);
+
+		if(get_ival(PS4_L2)> 10)
+		set_val(PS4_L2, 100);
+	}
+
+	DEF_ACTUAL_RX_LOCATION = get_ival(PS4_RX);
+	DEF_ACTUAL_RY_LOCATION = get_ival(PS4_RY);
+	
+	
+	if(get_ival(AIM_DOWN_SIGHT_BUTTON) && event_release(GENESIS_RF_TOGGLE_BUTTON))
+	{
+			TOG_RAPID_FIRE_ENABLE = !TOG_RAPID_FIRE_ENABLE;
+			combo_run(vibrate);
+			
+			if(!TOG_RAPID_FIRE_ENABLE)
+			{		
+				combo_stop(RF_LED_IND_666);
+				set_ledx(2, 1);
+				set_led(0, 3);
+			}
+			else
+			{
+				set_led(0,0);
+			}
+	}
+		
+	if (TOG_RAPID_FIRE_ENABLE && get_ival(TRIGGER_FIRE_BUTTON) > 10) 
+	{   
+	   	if (RAPIDFIREMODE == ARTHRITIS_RF && get_ival(TRIGGER_FIRE_BUTTON)>=TRIGGER_PRESS_LENGTH) 
+	    	combo_run(GEN_RAPID_FIRE_4L);
+	    else if (RAPIDFIREMODE == GENESIS_WRATH_OF_GOD_RF && get_ival(TRIGGER_FIRE_BUTTON)< TRIGGER_PRESS_LENGTH) 
+	    	combo_run(GEN_RAPID_FIRE_4L);
+		else 
+			combo_run(GEN_RAPID_FIRE_4L);
+	}
+	else if (event_release(TRIGGER_FIRE_BUTTON) && combo_running(GEN_RAPID_FIRE_4L))
+	{
+	  	combo_stop(GEN_RAPID_FIRE_4L); 
+	 }
+
+		
+	if(ENABLE_FMS_FOR_LS == TRUE)
+	{
+		PARSE_FUNCTION_VEC_DOC_2 = isqrt(pow(get_ival(PS4_LX), 2) + pow(PS4_LY, 2));
+		
+		if(PARSE_FUNCTION_VEC_DOC_2 <= ENABLE_FMS_FOR_LS)
+		{
+		
+			LS_TACTILE_FEEDBACK_SENS = GYROID_NS_INDICATOR;
+		}
+		else
+		{
+			LS_TACTILE_FEEDBACK_SENS = DEVIANCE_MVT_SENS;
+		}
+		
+		sensitivity(PS4_LX, NOT_USE, LS_TACTILE_FEEDBACK_SENS);
+		sensitivity(PS4_LY, NOT_USE, LS_TACTILE_FEEDBACK_SENS);
+	}
+	
+	if((get_val(AIM_DOWN_SIGHT_BUTTON) > 50) || (get_val(TRIGGER_FIRE_BUTTON)> 50))
+	{				
+		
+		
+		INTENSITY_OVERLOAD_CHECK = check_magnitude(GENESIS_AIM_CYCLE_INTENSITY, DEF_ACTUAL_RX_LOCATION, DEF_LAST_RX_LOCATION, DEF_ACTUAL_RY_LOCATION, DEF_LAST_RY_LOCATION);
+
+		if(GEN_MOV_PREDICTOR_CYCLE_TICK > GENESIS_AI_ASSISTED_MOVEMENT_PREDICTOR)
+		{
+			PARSE_FUNCTION_VEC_DOC_2 = GEN_MOVEMENT_PREDICTOR_ACTUAL(DEF_ACTUAL_RX_LOCATION, DEF_LAST_RX_LOCATION);
+
+			if(PARSE_FUNCTION_VEC_DOC_2 != 0)
+			{
+				mvt_direction = PARSE_FUNCTION_VEC_DOC_2;
+				GEN_MOV_PREDICTOR_CYCLE_TICK = 0;
+
+				if(mvt_direction == -1 && INTENSITY_OVERLOAD_CHECK == FALSE)
+				{
+					ANGLE_VECTOR_IND = 180;
+				}
+			}
+		}
+
+		GEN_MOV_PREDICTOR_CYCLE_TICK++;
+
+		if( INTENSITY_OVERLOAD_CHECK == TRUE)
+		{
+			GEN_POLAR_AR_RY_IND = 0;
+			GEN_AI_ASSIST_RX_CARRIER_WAVE = 0;
+			GEN_AI_ASSIST_RY_CARRIER_WAVE = 0;
+
+			if((USE_GENESIS_AI_POWERED_ANTI_RECOIL == TRUE) && (((get_val(AIM_DOWN_SIGHT_BUTTON) > 50) && (get_val(TRIGGER_FIRE_BUTTON)> 50)) || combo_running(GEN_RAPID_FIRE_4L)))
+			{
+				if(CHOOSE_ANTI_RECOIL_TYPE == USE_GENESIS_INTELLIGENT_AR)
+				{
+					GEN_POLAR_AR_RY_IND = get_polar_val(READ_RUMBLE_GEN_STRENGTH_IND());
+				}
+				else
+				{
+					GEN_POLAR_AR_RY_IND = get_polar_val(GEN_ANTI_REC_FUNC(DEF_ACTUAL_RX_LOCATION, DEF_ACTUAL_RY_LOCATION, ANTI_RECOIL_STRENGTH_DEF));
+					
+					ANTI_RECOIL_CYCLE_DEF_TIME++;
+		
+					if(ANTI_RECOIL_CYCLE_DEF_TIME == ENIGMA_AR_CYCLE_UPDATE_TIME)
+					{ 
+						ANTI_RECOIL_INDEX_DEF = (ANTI_RECOIL_INDEX_DEF + 1) & (ENIGMA_ARRAY_LENGTH_IDENTIFIER);
+									
+						if(abs(get_ival(PS4_RY)) >= DEADZONE_LIMIT_DEFINITION_2) 
+						{
+							ANTI_RECOIL_BUFFER_DEF[ANTI_RECOIL_INDEX_DEF] = get_ival(PS4_RY);
+						}
+						else
+						{
+							ANTI_RECOIL_BUFFER_DEF[ANTI_RECOIL_INDEX_DEF] = 0;
+						}
+			
+						ANTI_RECOIL_CYCLE_DEF_TIME = 0;
+					}
+					
+					if(event_release(PS4_RY) && abs(get_val(PS4_RY)) < DEADZONE_LIMIT_DEFINITION_2)
+					{		
+						ANTI_RECOIL_STRENGTH_CALC_DEF = 0;
+						
+						for(integerdef11 = 0; integerdef11 <= ANTI_RECOIL_INDEX_DEF; integerdef11++)
+						{
+							ANTI_RECOIL_STRENGTH_CALC_DEF += ANTI_RECOIL_BUFFER_DEF[integerdef11];
+						}
+						ANTI_RECOIL_STRENGTH_DEF += (ANTI_RECOIL_STRENGTH_CALC_DEF/(ANTI_RECOIL_INDEX_DEF + 1));		
+						ANTI_RECOIL_INDEX_DEF = 0;
+					}
+				}
+			}
+			else
+			{
+				ANTI_RECOIL_STRENGTH_DEF = ENIGMA__AntiRecoil_STRENGTH ;
+				ANTI_RECOIL_INDEX_DEF =0;
+				ANTI_RECOIL_STRENGTH_CALC_DEF = 0;
+			}
+			
+			if(!(GEN_ENIGMA_UPDATE_CYCLE % AIM_LOCK_SCAN_CYCLE_TIME_DEFINITION) && ENABLE_AIM_LOCK_DEEP_SCAN == TRUE)
+			{
+				GEN_ENIGMA_DEEP_SCAN_12 = TRUE;
+			}
+			else
+			{
+				GEN_ENIGMA_DEEP_SCAN_12 = FALSE;
+			}
+			
+			if(ENABLE_AIM_LOCK_DEEP_SCAN == TRUE)			
+			{
+				GEN_ENIGMA_UPDATE_CYCLE += 1;
+			}
+			
+			if((!(GEN_AIM_SMOOTHING % GENESIS_AI_ASSISTED_SMOOTHING_AA_REDUCER)) && GEN_ENIGMA_DEEP_SCAN_12 == FALSE)
+			{			
+				if(USE_ENIGMA_WAVE_GEN == TRUE)
+				{				
+					if(USE_GENESIS_SITUATIONAL_AI_ASSISTED_AIM == TRUE)
+					{
+						PARSE_FUNCTION_VEC_DOC_2 = isqrt(pow(DEF_ACTUAL_RX_LOCATION, 2) + pow(DEF_ACTUAL_RY_LOCATION, 2));		
+				
+						if(get_ival(AIM_DOWN_SIGHT_BUTTON) && !get_ival(TRIGGER_FIRE_BUTTON) && PARSE_FUNCTION_VEC_DOC_2 <= AI_SAM_ENGAGE_LIMIT_DEFINITION)
+						{
+							GEN_WAVE_APPROACH_ANGLE_TYPE  = GENESIS_AIMDOWNSIGHT_ENIGMA_WAVE_TYPE;
+							GEN_WAVE_CARRIER_6 = GENESIS_AIMDOWNSIGHT_ENIGMA_WAVE_CARRIER;
+							AI_LS_LY_RX_RY_MOD = GENESIS_AIMDOWNSIGHT_ENIGMA_WAVE_MODULATION;
+							AIM_LOCK_ASSISTED_AA = GENESIS_AIMDOWNSIGHT_ENIGMA_AA_DEF;
+						}				
+						else if(get_ival(AIM_DOWN_SIGHT_BUTTON) && !get_ival(TRIGGER_FIRE_BUTTON) && PARSE_FUNCTION_VEC_DOC_2 > AI_SAM_ENGAGE_LIMIT_DEFINITION)
+						{
+							GEN_WAVE_APPROACH_ANGLE_TYPE  = DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_TYPE;
+							GEN_WAVE_CARRIER_6 = DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_CARRIER;
+							AI_LS_LY_RX_RY_MOD = DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_MODULATION;
+							AIM_LOCK_ASSISTED_AA = DRIFT_AIM_DOWN_SIGHT_ENIGMA_WAVE_AIMASSIST_TYPE;
+						}			
+						else if(get_ival(AIM_DOWN_SIGHT_BUTTON) && get_ival(TRIGGER_FIRE_BUTTON) && PARSE_FUNCTION_VEC_DOC_2 <= AI_SAM_ENGAGE_LIMIT_DEFINITION)
+						{
+							GEN_WAVE_APPROACH_ANGLE_TYPE  = GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_TYPE;
+							GEN_WAVE_CARRIER_6 = GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_CARRIER;
+							AI_LS_LY_RX_RY_MOD = GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_MODULATION;
+							AIM_LOCK_ASSISTED_AA = GENESIS_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_AIMASSIST_TYPE;
+						}			
+						else if(get_ival(AIM_DOWN_SIGHT_BUTTON) && get_ival(TRIGGER_FIRE_BUTTON) && PARSE_FUNCTION_VEC_DOC_2 > AI_SAM_ENGAGE_LIMIT_DEFINITION)
+						{
+							GEN_WAVE_APPROACH_ANGLE_TYPE  = DRIFT_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_TYPE;
+							GEN_WAVE_CARRIER_6 = DRIFT_AIM_DOWN_SIGHT__FIRE_ENIGMA_WAVE_CARRIER;	
+							AI_LS_LY_RX_RY_MOD = DRIFT_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_MODULATION;
+							AIM_LOCK_ASSISTED_AA = DRIFT_AIM_DOWN_SIGHT_FIRE_ENIGMA_WAVE_AIM_ASSIST_TYPE;
+						}				
+						else if(!get_ival(AIM_DOWN_SIGHT_BUTTON) && get_ival(TRIGGER_FIRE_BUTTON) && PARSE_FUNCTION_VEC_DOC_2 <= AI_SAM_ENGAGE_LIMIT_DEFINITION)
+						{
+							GEN_WAVE_APPROACH_ANGLE_TYPE  = GENESIS_HIP_FIRE_ENIGMA_WAVE_TYPE;
+							GEN_WAVE_CARRIER_6 = GENESIS_HIP_FIRE_ENIGMA_WAVE_CARRIER;
+							AI_LS_LY_RX_RY_MOD = GENESIS_HIP_FIRE_ENIGMA_WAVE_MODULATION;
+							AIM_LOCK_ASSISTED_AA = GENESIS_HIP_FIRE_ENIGMA_WAVE_AIM_ASSIST_TYPE;
+						}				
+						else if(!get_ival(AIM_DOWN_SIGHT_BUTTON) && get_ival(TRIGGER_FIRE_BUTTON) && PARSE_FUNCTION_VEC_DOC_2 > AI_SAM_ENGAGE_LIMIT_DEFINITION)
+						{
+							GEN_WAVE_APPROACH_ANGLE_TYPE  = DRIFT_HIP_FIRE_ENIGMA_WAVE_TYPE;
+							GEN_WAVE_CARRIER_6 = DRIFT_HIP_FIRE_ENIGMA_WAVE_CARRIER;	
+							AI_LS_LY_RX_RY_MOD = DRIFT_HIP_FIRE_ENIGMA_WAVE_MODULATION;
+							AIM_LOCK_ASSISTED_AA = DRIFT_HIP_FIRE_ENIGMA_WAVE_AIM_ASSIST_TYPE;
+						}
+						
+						if(GEN_WAVE_CARRIER_6 == MORNINGSTAR_ENIGMA_WAVE)
+						{
+							GEN_MIN_WAV = MINIMUM_ENIGMA_WAVE_INTENSITY;
+							GEN_MAX_WAV = MAXIMUM_ENIGMA_WAVE_INTENSITY;
+						}
+					}
+					
+					
+					if(GEN_WAVE_CARRIER_6 == MORNINGSTAR_ENIGMA_WAVE)
+					{
+						set_polar(POLAR_RS, GEN_WAVE_APPROACH_ANGLE, GEN_ENIGMA_STRENGTH_DEF_PAR_1);
+						GEN_AI_ASSIST_RX_CARRIER_WAVE = get_val(POLAR_RX);
+						GEN_AI_ASSIST_RY_CARRIER_WAVE = get_val(POLAR_RY);
+						
+						GEN_WAVE_APPROACH_ANGLE = ((GEN_WAVE_APPROACH_ANGLE + (mvt_direction * GEN_ENIGMA_SPEED_DEF_PAR_1))%360);
+					}
+					else if(GEN_WAVE_CARRIER_6 == MOTHER_MARY_BOX_WAVE)
+					{
+						combo_run(COMBO_SQUARE_DEF_WAVE_23);
+					}
+					else if(GEN_WAVE_CARRIER_6 == LADDER_LOGIC_SCRAMBLE_WAVE)
+					{
+						combo_run(combo_stairs_wave);
+					}
+
+					if(GEN_WAVE_APPROACH_ANGLE_TYPE == GEN_BASE_WAVE)
+					{						
+						if(GEN_WAVE_CARRIER_6 == MORNINGSTAR_ENIGMA_WAVE)
+						{				
+							GEN_ENIGMA_STRENGTH_DEF_PAR_1 = GEN_MAX_WAV_STRENGTH_IND;
+						}
+						else
+						{
+							GEN_AI_ASSIST_RX_CARRIER_WAVE = GEN_ENIGMA_STRENGTH_DEF_PAR_1;
+							GEN_AI_ASSIST_RY_CARRIER_WAVE = GEN_AI_ASSIST_RX_CARRIER_WAVE;
+						}
+						
+						GEN_ENIGMA_SPEED_DEF_PAR_1 = GEN_MIN_WAV_SPEED_IND;
+					}
+					else
+					{						
+						GEN_ENIGMA_UPDATE_DEF_PAR++;
+						
+						if(GEN_ENIGMA_UPDATE_DEF_PAR >= ENIGMA_WAVE_UPDATE_PARAMETERS)
+						{
+							GEN_ENIGMA_UPDATE_DEF_PAR = 0;
+							ENIGMA_WAVE_UPDATE = 1;
+							
+							if(GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_VELOCITY)
+							{
+								GEN_ENIGMA_SPEED_DEF_PAR_1 = random(MINIMUM_ENIGMA_WAVE_SPEED, MAXIMUM_ENIGMA_WAVE_SPEED);
+							}
+							else if(GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_VELOCITY)
+							{
+								GEN_ENIGMA_SPEED_DEF_PAR_1 = GEN_ENIGMA_SPEED_DEF_PAR_1 + (1 * GEN_BUNKER_SPEED_IND);
+								
+								if(GEN_ENIGMA_SPEED_DEF_PAR_1 >= MAXIMUM_ENIGMA_WAVE_SPEED)
+								{
+									GEN_BUNKER_SPEED_IND = -1;
+								}
+								else if(GEN_ENIGMA_SPEED_DEF_PAR_1 <= MINIMUM_ENIGMA_WAVE_SPEED)
+								{
+									GEN_BUNKER_SPEED_IND = 1;
+								}
+							}
+							else if(GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_MORPH_STRENGTH)
+							{
+								GEN_ENIGMA_STRENGTH_DEF_PAR_1 = random(GEN_MIN_WAV, GEN_MAX_WAV);
+								GEN_ENIGMA_STRENGTH_DEF_PAR_1 = get_polar_val(GEN_ENIGMA_STRENGTH_DEF_PAR_1);
+							}
+							else if(GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_INTENSITY)
+							{
+								if(GEN_WAVE_CARRIER_6 == MORNINGSTAR_ENIGMA_WAVE)
+								{
+									GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 + (1 * BUNKER_STRENGTH_IND);
+															
+									if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 >= MAXIMUM_ENIGMA_WAVE_INTENSITY)
+									{
+										BUNKER_STRENGTH_IND = -1;
+									}
+									else if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 <= MINIMUM_ENIGMA_WAVE_INTENSITY)
+									{
+										BUNKER_STRENGTH_IND = 1;
+									}
+								}
+							
+								GEN_ENIGMA_STRENGTH_DEF_PAR_1 = get_polar_val(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1);
+							}
+							else if(GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_WAVE)
+							{
+								GEN_ENIGMA_SPEED_DEF_PAR_1 = random(MINIMUM_ENIGMA_WAVE_SPEED, MAXIMUM_ENIGMA_WAVE_SPEED);
+								
+								GEN_ENIGMA_STRENGTH_DEF_PAR_1 = random(GEN_MIN_WAV, GEN_MAX_WAV);
+								GEN_ENIGMA_STRENGTH_DEF_PAR_1 = get_polar_val(GEN_ENIGMA_STRENGTH_DEF_PAR_1);							
+							}
+							else if(GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_WAVE)
+							{
+								if(GEN_WAVE_CARRIER_6 == MORNINGSTAR_ENIGMA_WAVE)
+								{
+									GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 + (1 * BUNKER_STRENGTH_IND);
+															
+									if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 >= MAXIMUM_ENIGMA_WAVE_INTENSITY)
+									{
+										BUNKER_STRENGTH_IND = -1;
+									}
+									else if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 <= MINIMUM_ENIGMA_WAVE_INTENSITY)
+									{
+										BUNKER_STRENGTH_IND = 1;
+									}
+								}
+								
+								GEN_ENIGMA_STRENGTH_DEF_PAR_1 = get_polar_val(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1);
+															
+								GEN_ENIGMA_SPEED_DEF_PAR_1 = GEN_ENIGMA_SPEED_DEF_PAR_1 + (1 * GEN_BUNKER_SPEED_IND);
+								
+								if(GEN_ENIGMA_SPEED_DEF_PAR_1 >= MAXIMUM_ENIGMA_WAVE_SPEED)
+								{
+									GEN_BUNKER_SPEED_IND = -1;
+								}
+								else if(GEN_ENIGMA_SPEED_DEF_PAR_1 <= MINIMUM_ENIGMA_WAVE_SPEED)
+								{
+									GEN_BUNKER_SPEED_IND = 1;
+								}						
+							}							
+						}
+						
+						if(GEN_WAVE_CARRIER_6 != MORNINGSTAR_ENIGMA_WAVE)
+						{
+							GEN_AI_ASSIST_RX_CARRIER_WAVE = GEN_ENIGMA_STRENGTH_DEF_PAR_1;
+							GEN_AI_ASSIST_RY_CARRIER_WAVE = GEN_ENIGMA_STRENGTH_DEF_PAR_1;
+							
+						
+						}
+					}
+				}
+				
+				set_polar(POLAR_RS,ANGLE_VECTOR_IND, GEN_POLAR_RAD_CARTESIAN);
+								
+				if(AIM_LOCK_ASSISTED_AA == ENIGMA_AA)
+				{
+					GEN_POLAR_RAD_CARTESIAN = get_polar_radius(random(MINIMUM_LIMIT_RADIAL_APPROACH,MAXIMUM_LIMIT_RADIAL_APPROACH));
+					GEN_ANGLE_VECTOR_APPROACH_IND = random(MINIMUM_LIMIT_ANGLE_APPROACH,MAXIMUM_LIMIT_ANGLE_APPROACH);
+				}
+				else if(AIM_LOCK_ASSISTED_AA == RANDOM_ANGLE_APPROACH_VECTOR)
+				{
+					GEN_ANGLE_VECTOR_APPROACH_IND = random(MINIMUM_LIMIT_ANGLE_APPROACH,MAXIMUM_LIMIT_ANGLE_APPROACH);
+				}
+				else if(AIM_LOCK_ASSISTED_AA == ENIGMA_RADIAL_MEASUREMENT)
+				{
+					GEN_POLAR_RAD_CARTESIAN = get_polar_radius(random(MINIMUM_LIMIT_RADIAL_APPROACH,MAXIMUM_LIMIT_RADIAL_APPROACH));
+				}
+	
+				ANGLE_VECTOR_IND = update_angle(ANGLE_VECTOR_IND, GEN_ANGLE_VECTOR_APPROACH_IND, mvt_direction);		
+			}
+			
+			if(GEN_ENIGMA_DEEP_SCAN_12 == TRUE)
+			{					
+				combo_run(COMBO_GEN_DEEP_SCAN_AI);			
+			}
+			
+			if(AI_LS_LY_RX_RY_MOD == CARTESIAN_VERT_WAVE_DETECTION)
+			{
+				GEN_AI_ASSIST_RX_CARRIER_WAVE = 0;	
+			}
+			else if(AI_LS_LY_RX_RY_MOD == HORIZON_AZIMUTH_DETECTION)
+			{
+				GEN_AI_ASSIST_RY_CARRIER_WAVE = 0;	
+				
+				if(GEN_WAVE_CARRIER_6 != MORNINGSTAR_ENIGMA_WAVE)
+				{
+					GEN_AI_ASSIST_RX_CARRIER_WAVE *= mvt_direction;
+				}
+			}
+			else
+			{
+				if(GEN_WAVE_CARRIER_6 != MORNINGSTAR_ENIGMA_WAVE)
+				{
+					GEN_AI_ASSIST_RX_CARRIER_WAVE *= mvt_direction;
+				}
+			}
+			
+			if(USE_AIM_BALANCING == TRUE)
+			{
+				PARSE_FUNCTION_VEC_DOC_2 = GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_val(POLAR_RY)  , GEN_AI_ASSIST_RX_CARRIER_WAVE);
+				PARSE_FUNCTION_VEC_DOC_2 = GEN_POLAR_CARTESIAN_CLAMP_METHOD(PARSE_FUNCTION_VEC_DOC_2 , GEN_POLAR_AR_RY_IND);
+				RY_DEF_ACTUAL_IND = GEN_POLAR_CARTESIAN_CLAMP_METHOD(PARSE_FUNCTION_VEC_DOC_2, get_ival(POLAR_RY));
+				PARSE_FUNCTION_VEC_DOC_2 = get_polar_val(INTENSITY_AMOUNT_DEF);
+				DEF_IND_22_AREA_12 = PARSE_FUNCTION_VEC_DOC_2/2;
+
+				if((RY_DEF_ACTUAL_IND > (-32768 + DEF_IND_22_AREA_12)) && (RY_DEF_ACTUAL_IND < (32767 - DEF_IND_22_AREA_12)))
+				{
+					RY_DEF_ACTUAL_IND = AIM_BALANCING_CALL(RY_DEF_ACTUAL_IND, PARSE_FUNCTION_VEC_DOC_2);
+				}
+
+				RX_DEF_ACTUAL_IND = GEN_POLAR_CARTESIAN_CLAMP_METHOD(GEN_AI_ASSIST_RX_CARRIER_WAVE , get_val(POLAR_RX));
+				RX_DEF_ACTUAL_IND = GEN_POLAR_CARTESIAN_CLAMP_METHOD(RX_DEF_ACTUAL_IND, get_ival(POLAR_RX));
+
+				if((RX_DEF_ACTUAL_IND > (-32768 + DEF_IND_22_AREA_12)) && (RX_DEF_ACTUAL_IND < (32767 - DEF_IND_22_AREA_12)))
+				{
+					RX_DEF_ACTUAL_IND = AIM_BALANCING_CALL(RX_DEF_ACTUAL_IND, PARSE_FUNCTION_VEC_DOC_2);
+				}
+
+				set_val(POLAR_RX, RX_DEF_ACTUAL_IND);
+				set_val(POLAR_RY, RY_DEF_ACTUAL_IND);
+				
+				if(AIM_BALANCING_TYPE == ENIGMA_RESOLUTION)
+				{
+					INTENSITY_AMOUNT_DEF = random(4,8);
+				}
+				else if(AIM_BALANCING_TYPE == BOX_SPREAD_RESOLUTION)
+				{
+					if(INTENSITY_AMOUNT_DEF == 4)
+					INTENSITY_INCRMENT_DEC_CONVERT = 1;
+					else if(INTENSITY_AMOUNT_DEF == 8)
+					INTENSITY_INCRMENT_DEC_CONVERT = -1;
+	
+					INTENSITY_AMOUNT_DEF = INTENSITY_AMOUNT_DEF + (INTENSITY_INCRMENT_DEC_CONVERT * 1);
+				}
+			}
+			else			{
+				PARSE_FUNCTION_VEC_DOC_2 = GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_val(POLAR_RX) ,GEN_AI_ASSIST_RX_CARRIER_WAVE);	
+				set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD( PARSE_FUNCTION_VEC_DOC_2, (get_ival(POLAR_RX))));
+				
+				PARSE_FUNCTION_VEC_DOC_2 = GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_val(POLAR_RY) ,GEN_POLAR_AR_RY_IND);	
+				PARSE_FUNCTION_VEC_DOC_2 = GEN_POLAR_CARTESIAN_CLAMP_METHOD(PARSE_FUNCTION_VEC_DOC_2, GEN_AI_ASSIST_RY_CARRIER_WAVE);	
+				set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(PARSE_FUNCTION_VEC_DOC_2, get_ival(POLAR_RY)));
+			}
+			
+			GEN_AIM_SMOOTHING++;
+		}
+	}
+	else
+	{
+		ANGLE_VECTOR_IND = 0;
+		GEN_AIM_SMOOTHING = 0;
+		GEN_ENIGMA_UPDATE_CYCLE = 0;
+		GEN_MOV_PREDICTOR_CYCLE_TICK = GENESIS_AI_ASSISTED_MOVEMENT_PREDICTOR + 1;
+		INTENSITY_OVERLOAD_CHECK = TRUE;
+	}	
+
+	DEF_LAST_RX_LOCATION = DEF_ACTUAL_RX_LOCATION;
+	DEF_LAST_RY_LOCATION = DEF_ACTUAL_RY_LOCATION;
+
+	if(USE_GENESIS_SLIDE_ATUOCANCEL)
+	{
+		if((get_val(PS4_LY) < -60) || (get_val(PS4_LY) > 60) || (get_val(PS4_LX) < -60) || (get_val(PS4_LX) > 60))
+		{
+			if(event_release(SQUAT_BUTTON))
+			{
+				combo_run(GEN_SMART_SLIDE_CANCEL);
+			}
+		}
+	}
+
+	if(USE_GENESIS_NULL_AUTOPLATE)
+	{
+		if(get_val(WEAPON_SWAP_BUTTON)&& get_ptime(WEAPON_SWAP_BUTTON)>350)
+		combo_run(GEN_V2_AUTOPLATE_NULL);
+
+		if(combo_running(GEN_V2_AUTOPLATE_NULL) && (get_ival(AIM_DOWN_SIGHT_BUTTON)>10 || get_ival(TRIGGER_FIRE_BUTTON)>10 || get_val(PS4_SQUARE)))
+		{
+			combo_stop(GEN_V2_AUTOPLATE_NULL);
+			set_val(MELEE_BUTTON, 100);
+		}
+	}
+
+	if(USE_GENESIS_INFINITY_MELEE)
+	{
+		if(get_val(MELEE_BUTTON))
+		{
+			combo_run(INFINITE_MELLEEEEE);
+		}
+		else
+		{
+			if(combo_running(INFINITE_MELLEEEEE))
+			combo_stop(INFINITE_MELLEEEEE);
+		}
+	}
+
+	if(USE_JUMP_SPAM)
+	{
+		if (get_ival(JUMP_BUTTON) && get_ptime(JUMP_BUTTON) > 200)
+		{
+			combo_run(JUMP_SPAM_GENESIS);
+		}
+		else
+		{
+			if(combo_running(JUMP_SPAM_GENESIS))
+			combo_stop(JUMP_SPAM_GENESIS);
+		}
+	}
+
+	if(USE_100_ACCURACY_SNIPER_BREATH)
+	{
+		if(get_val(AIM_DOWN_SIGHT_BUTTON))
+		set_val(STICK_SPRINT_BUTTON,100);
+
+		if(get_val(PS4_LY) <-90 && get_val(AIM_DOWN_SIGHT_BUTTON) && get_ptime(AIM_DOWN_SIGHT_BUTTON) > 200 && combo_running(HOLD_BREATH))
+		combo_stop(HOLD_BREATH);
+
+		if(event_press(AIM_DOWN_SIGHT_BUTTON))
+		combo_run(HOLD_BREATH);
+
+		if(get_val(AIM_DOWN_SIGHT_BUTTON) && get_lval(STICK_SPRINT_BUTTON))
+		set_val(STICK_SPRINT_BUTTON,0);
+	}
+
+	if(USE_DOUBLE_ADS_QUICK_SCOPE)
+	{
+		if(event_release(AIM_DOWN_SIGHT_BUTTON) && get_ptime(AIM_DOWN_SIGHT_BUTTON) < quickscope_press_time)
+		combo_run(Quick_Scope);
+	}
+	
+	
+	if(INTENSITY_OVERLOAD_CHECK == FALSE)
+	{
+		combo_run(Alert);
+	}	
+	
+	if(TOG_RAPID_FIRE_ENABLE)
+	{
+		combo_run(RF_LED_IND_666);
+	}
+}
+function GEN_MOVEMENT_PREDICTOR_ACTUAL( _val, _lval)
+{
+	if (abs(_val - _lval) <= 2)
+		return 0;
+
+	if (_val < _lval) 
+		return -1;
+
+	if (_val > _lval)
+		return 1;
+
+	return 0;
+}
+function GEN_POLAR_CARTESIAN_CLAMP_METHOD( _val, _ival)
+{
+	PARSE_FUNCTION_VEC_DOC_2 = (_val / 10) + (_ival / 10);
+
+	if (PARSE_FUNCTION_VEC_DOC_2 < -3276)
+		return -32768;
+
+	if (PARSE_FUNCTION_VEC_DOC_2 > 3276)
+		return 32767;
+
+	return _val + _ival;
+}
+
+function get_polar_radius( _radius)
+{
+	if (_radius > 100)
+		_radius = 100;
+
+	_radius = (_radius * 327) + ((_radius * 67) / 100);
+
+	return _radius;
+}
+function get_polar_val( _val)
+{
+	if (_val > 100)
+		_val = 100;
+
+	if (_val < -100)
+		_val = -100;
+
+	if (_val >= 0)
+		PARSE_FUNCTION_VEC_DOC_2 = (_val * 327) + ((_val * 67) / 100);
+	else
+		PARSE_FUNCTION_VEC_DOC_2 = (_val * 327) + ((_val * 68) / 100);
+
+	return PARSE_FUNCTION_VEC_DOC_2;
+}
+function update_angle( _angle, _angle_increment, _mvt_direction)
+{
+
+	_angle = _angle + (_mvt_direction * _angle_increment);
+
+	if (_angle < 0)
+	{
+		_angle += 360;
+	}
+
+	return (_angle % 360);
+}
+function check_magnitude( _mag, _x_val, _x_lval, _y_val, _y_lval)
+{
+
+
+	if (isqrt(pow((_x_val - _x_lval), 2) + pow((_y_val - _y_lval), 2)) <= _mag)
+	{
+		return TRUE;
+	}
+
+	return FALSE;
+}
+function READ_RUMBLE_GEN_STRENGTH_IND()
+{
+	LADY__TICKLER_IND = get_rumble(GEN_VIBRATION_VAL_ACTIVE());
+
+	if (LADY__TICKLER_IND > 10 && LADY__TICKLER_IND < 90)
+	{
+		return (LADY__TICKLER_IND + GEN_LX_LY_IND);
+	}
+
+	return 0;
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+int GEN_MIN_RECOIL_APP_V1;
+int GEN_MIN_RECOIL_APP_APPLY_1;
+function GEN_ANTI_REC_FUNC(ACTUAL_X_DES, ACTUAL_Y_DES, GEN_RECOIL_APP_AMOUNT)
+{
+    GEN_MIN_RECOIL_APP_V1 = (ENIGMA_AR_GENESIS_MIN_RECOIL_PERCENT * GEN_RECOIL_APP_AMOUNT)/100;
+    GEN_MIN_RECOIL_APP_APPLY_1 = ((100 - ENIGMA_AR_GENESIS_MIN_RECOIL_PERCENT) * ((GEN_RECOIL_APP_AMOUNT * (100 - isqrt(pow(ACTUAL_X_DES, 2) + pow(ACTUAL_Y_DES,2)))) / (100 + abs(ACTUAL_X_DES) + (pow(ACTUAL_Y_DES,2)/2))))/100;
+   
+   return clamp((GEN_MIN_RECOIL_APP_V1 + GEN_MIN_RECOIL_APP_APPLY_1),-100,(100 - GEN_MIN_RECOIL_APP_V1));
+}
+
+combo GEN_SMART_SLIDE_CANCEL
+{
+	set_val(SQUAT_BUTTON, 100);
+
+	wait(DEFINE_GENESIS_SLIDE_DELAY_MS);
+
+	set_val(SQUAT_BUTTON, 0);
+
+	wait(60);
+
+	set_val(SQUAT_BUTTON, 100);
+
+	wait(50);
+
+	set_val(SQUAT_BUTTON, 100);
+	set_val(JUMP_BUTTON, 100);
+	wait(60);
+
+	set_val(SQUAT_BUTTON, 0);
+	set_val(JUMP_BUTTON, 100);
+
+	wait(10);
+
+	set_val(JUMP_BUTTON, 0);
+}
+combo GEN_V2_AUTOPLATE_NULL
+{
+	set_val(WEAPON_SWAP_BUTTON,100);
+	wait(6000); 
+}
+combo REV_AUTO_PING { 
+	set_val(GENESIS_AUTO_PING_BUTTON,100)
+	wait(24)
+	set_val(GENESIS_AUTO_PING_BUTTON,0)
+	wait(24)
+	set_val(GENESIS_AUTO_PING_BUTTON,100)
+	wait(24)
+	set_val(GENESIS_AUTO_PING_BUTTON,0)
+	wait(1700)
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+combo DROP_STAND_COMBO_OMEGALABZ
+{
+	set_val(SQUAT_BUTTON,100);
+	wait(2500);
+	set_val(SQUAT_BUTTON,0);
+	wait(10);
+	set_val(JUMP_BUTTON,100);
+	wait(75);
+}
+combo OMEGA_DROP_TOGGLE_IND
+ {
+	set_led(3, 2);
+ 	wait(500);
+ 	set_led(3,0);
+ 	wait(500);
+ }
+combo INFINITE_MELLEEEEE
+{
+	set_val(MELEE_BUTTON, 100);
+	wait(40);
+	set_val(MELEE_BUTTON, 0);
+	wait(30);
+}
+combo JUMP_SPAM_GENESIS
+{
+	set_val(JUMP_BUTTON, 100);
+	wait(30);
+	set_val(JUMP_BUTTON, 0);
+	wait(30);
+	set_val(JUMP_BUTTON, 100);
+	wait(30);
+	set_val(JUMP_BUTTON, 0);
+	wait(30);
+}
+combo DROP_JMUP_DROP
+{
+	set_val(SQUAT_BUTTON,100);
+	wait(415);
+	set_val(SQUAT_BUTTON,0);
+	wait(15);
+	set_val(JUMP_BUTTON,100);
+	wait(180);
+	set_val(JUMP_BUTTON,0);
+	wait(15);
+	set_val(SQUAT_BUTTON,100);
+	wait(115);
+	set_val(SQUAT_BUTTON,0);
+	wait(45);
+}
+combo HOLD_BREATH
+{
+	set_val(STICK_SPRINT_BUTTON,0);
+	wait(60);
+	set_val(STICK_SPRINT_BUTTON,100);
+	wait(110);
+	set_val(STICK_SPRINT_BUTTON,0);
+	wait(110);
+}
+combo OMEGALABZ_OLED_DISPLAY {
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(2500);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(2500);
+cls_oled(0);
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(2500);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(2500);
+cls_oled(0);
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(2500);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(2500);
+cls_oled(0);
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(500);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(500);
+cls_oled(0);
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(500);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(500);
+cls_oled(0);
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(500);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(500);
+cls_oled(0);
+printf(2, 32, 0, 0, GEN_OLED_DISPLAY_2[0]);
+wait(10000);
+cls_oled(0);	// clear OLED screen
+printf(2, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(10000);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(2500);
+printf(2, 32, 0, 0, GEN_OLED_DISPLAY_2[0]);
+wait(10000);
+cls_oled(0);
+printf(2, 20, 0, 1, GEN_OLED_DISPLAY_3[0]);
+printf(2, 40, 0, 1, GEN_OLED_DISPLAY_4[0]);
+wait(10000);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(10000);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(10000);
+cls_oled(0);
+cls_oled(0);	// clear OLED screen
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(20000);
+cls_oled(0);
+printf(0, 32, 0, 1, GEN_OLED_DISPLAY_X[0]);
+wait(500);
+cls_oled(0);
+printf(2, 32, 0, 0, GEN_OLED_DISPLAY_2[0]);
+wait(20000);
+cls_oled(0);	// clear OLED screen
+printf(2, 32, 0, 1, GEN_OLED_DISPLAY[0]);
+wait(20000);
+cls_oled(0);
+printf(2, 32, 0, 0, GEN_OLED_DISPLAY_2[0]);
+wait(20000);
+cls_oled(0);
+printf(2, 20, 0, 1, GEN_OLED_DISPLAY_3[0]);
+printf(2, 40, 0, 1, GEN_OLED_DISPLAY_4[0]);
+wait(20000);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+printf(0, 20, 0, 0, GEN_OLED_DISPLAY_5[0]);
+printf(0, 40, 0, 0, GEN_OLED_DISPLAY_6[0]);
+wait(400);
+cls_oled(0);
+
+}
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+combo Quick_Scope
+{
+	set_val(AIM_DOWN_SIGHT_BUTTON,100);
+	wait(quickscopedelay);
+	set_val(AIM_DOWN_SIGHT_BUTTON,100);
+	set_val(TRIGGER_FIRE_BUTTON,100);
+	wait(40);
+	set_val(AIM_DOWN_SIGHT_BUTTON,100);
+	wait(40);
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ combo Alert
+ {
+	set_led(1, 2);
+ 	wait(250);
+ 	set_led(1,0);
+ 	wait(250);
+ 	set_led(1, 2);
+ 	wait(250);
+ 	set_led(1,0);
+
+ }
+
+ combo COMBO_GEN_DEEP_SCAN_AI
+ {
+	PARSE_FUNCTION_VEC_DOC_2 = mvt_direction * GENESIS_POLAR_SCAN_INTENSITY;
+	
+	if(AIM_LOCK_DEEP_SCAN_TYPE == GEN_OUTER_MODEL_PERIMETER_SCAN)
+	{		
+		if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 0)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 1)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 2)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+		}
+		else
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) , inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+	}
+	else if(AIM_LOCK_DEEP_SCAN_TYPE == GENESIS_REACH_FAR_SCAN_HOLD)
+	{
+		if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 0)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 1)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+			
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 2)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+		}
+		else
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) , inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+	}
+	else
+	{
+		if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 0)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 1)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 2)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 3)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) , inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 4)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 5)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+			
+		}
+		else if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 6)
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) ,PARSE_FUNCTION_VEC_DOC_2));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , GENESIS_POLAR_SCAN_INTENSITY));
+		}
+		else
+		{
+			set_val(POLAR_RX, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RX) , inv(PARSE_FUNCTION_VEC_DOC_2)));
+			set_val(POLAR_RY, GEN_POLAR_CARTESIAN_CLAMP_METHOD(get_ival(POLAR_RY) , inv(GENESIS_POLAR_SCAN_INTENSITY)));
+		}
+	}
+
+
+	wait(AIM_LOCK_HOLD_TIME);
+	
+	GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR += 1;
+
+	if(AIM_LOCK_DEEP_SCAN_TYPE == AIM_LOCK_SCAN)
+	{
+		if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 8)
+		GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR = 0;
+	}
+	else
+	{
+		if(GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR == 4)
+		GENESIS_DEEP_SCAN_ANGLE_APPROACH_VECTOR = 0;
+	}
+ }
+ 
+ 
+ 
+combo COMBO_SQUARE_DEF_WAVE_23
+{	
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = MINIMUM_ENIGMA_WAVE_INTENSITY - 1;
+	BUNKER_STRENGTH_IND = 1;
+	
+	GEN_MIN_WAV = MINIMUM_ENIGMA_WAVE_INTENSITY;
+	GEN_MAX_WAV = MAXIMUM_ENIGMA_WAVE_INTENSITY;
+	
+	if(GEN_WAVE_APPROACH_ANGLE_TYPE == GEN_BASE_WAVE || GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_VELOCITY || GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_VELOCITY )
+	{											
+		GEN_ENIGMA_STRENGTH_DEF_PAR_1 = GEN_MAX_WAV_STRENGTH_IND;						
+	}	
+	
+	wait(8);
+	
+	if(((GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_INTENSITY) || (GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_WAVE)) && ENIGMA_WAVE_UPDATE == 1 )
+	{
+		ENIGMA_WAVE_UPDATE = 0;
+		
+		GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 + (1 * BUNKER_STRENGTH_IND);
+								
+		if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 >= MAXIMUM_ENIGMA_WAVE_INTENSITY)
+		{
+			BUNKER_STRENGTH_IND = -1;
+		}
+		else if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 <= MINIMUM_ENIGMA_WAVE_INTENSITY)
+		{
+			BUNKER_STRENGTH_IND = 1;
+		}
+	}
+	
+	wait(272 + ((GEN_W_IND_32 - GEN_ENIGMA_SPEED_DEF_PAR_1) * 136));
+	
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = (inv(MINIMUM_ENIGMA_WAVE_INTENSITY)) + 1;
+	BUNKER_STRENGTH_IND = -1;
+	
+	if(GEN_WAVE_APPROACH_ANGLE_TYPE == GEN_BASE_WAVE || GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_VELOCITY || GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_VELOCITY )
+	{											
+		GEN_ENIGMA_STRENGTH_DEF_PAR_1 = inv(GEN_MAX_WAV_STRENGTH_IND);					
+	}
+	
+	GEN_MIN_WAV = inv(MAXIMUM_ENIGMA_WAVE_INTENSITY);
+	GEN_MAX_WAV = inv(MINIMUM_ENIGMA_WAVE_INTENSITY);
+	
+	wait(8);
+	
+	if(((GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_INTENSITY) || (GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_WAVE)) && ENIGMA_WAVE_UPDATE == 1 )
+	{
+		ENIGMA_WAVE_UPDATE = 0;
+		
+		GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 + (1 * BUNKER_STRENGTH_IND);
+								
+		if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 >= inv(MINIMUM_ENIGMA_WAVE_INTENSITY))
+		{
+			BUNKER_STRENGTH_IND = -1;
+		}
+		else if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 <= inv(MAXIMUM_ENIGMA_WAVE_INTENSITY))
+		{
+			BUNKER_STRENGTH_IND = 1;
+		}
+	}
+	
+	wait(272 + ((GEN_W_IND_32 - GEN_ENIGMA_SPEED_DEF_PAR_1) * 136));	
+}
+ 
+ 
+combo combo_stairs_wave
+{
+	GEN_MIN_WAV = MINIMUM_ENIGMA_WAVE_INTENSITY;
+	GEN_MAX_WAV = MAXIMUM_ENIGMA_WAVE_INTENSITY;
+	
+	if(GEN_WAVE_APPROACH_ANGLE_TYPE == GEN_BASE_WAVE || GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_VELOCITY || GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_VELOCITY )
+	{											
+		GEN_ENIGMA_STRENGTH_DEF_PAR_1 = GEN_MAX_WAV_STRENGTH_IND;						
+	}
+	
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = MINIMUM_ENIGMA_WAVE_INTENSITY - 1;
+	BUNKER_STRENGTH_IND = 1;
+	
+	wait(8);
+	
+	if(((GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_INTENSITY) || (GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_WAVE)) && ENIGMA_WAVE_UPDATE == 1 )
+	{
+		ENIGMA_WAVE_UPDATE = 0;
+		
+		GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 + (1 * BUNKER_STRENGTH_IND);
+								
+		if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 >= MAXIMUM_ENIGMA_WAVE_INTENSITY)
+		{
+			BUNKER_STRENGTH_IND = -1;
+		}
+		else if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 <= MINIMUM_ENIGMA_WAVE_INTENSITY)
+		{
+			BUNKER_STRENGTH_IND = 1;
+		}
+	}
+	
+	wait(272 + ((GEN_W_IND_32 - GEN_ENIGMA_SPEED_DEF_PAR_1) * 136));
+	
+	GEN_MIN_WAV = -1;
+	GEN_MAX_WAV = 1;
+	
+	GEN_ENIGMA_STRENGTH_DEF_PAR_1 = 0;
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = 0;
+	
+	wait(272 + (GEN_ENIGMA_SPEED_DEF_PAR_1 * 136));
+	
+	GEN_MIN_WAV = inv(MAXIMUM_ENIGMA_WAVE_INTENSITY);
+	GEN_MAX_WAV = inv(MINIMUM_ENIGMA_WAVE_INTENSITY);
+	
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = (inv(MINIMUM_ENIGMA_WAVE_INTENSITY)) + 1;
+	BUNKER_STRENGTH_IND = -1;
+	
+	if(GEN_WAVE_APPROACH_ANGLE_TYPE == GEN_BASE_WAVE || GEN_WAVE_APPROACH_ANGLE_TYPE == ENIGMA_VELOCITY || GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_VELOCITY )
+	{											
+		GEN_ENIGMA_STRENGTH_DEF_PAR_1 = inv(GEN_MAX_WAV_STRENGTH_IND);						
+	}
+	
+	wait(8);
+	
+	if(((GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_INTENSITY) || (GEN_WAVE_APPROACH_ANGLE_TYPE == BUNKER_WAVE)) && ENIGMA_WAVE_UPDATE == 1 )
+	{
+		ENIGMA_WAVE_UPDATE = 0;
+		
+		GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 + (1 * BUNKER_STRENGTH_IND);
+								
+		if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 >= inv(MINIMUM_ENIGMA_WAVE_INTENSITY))
+		{
+			BUNKER_STRENGTH_IND = -1;
+		}
+		else if(GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 <= inv(MAXIMUM_ENIGMA_WAVE_INTENSITY))
+		{
+			BUNKER_STRENGTH_IND = 1;
+		}
+	}
+	
+	wait(272 + ((GEN_W_IND_32 - GEN_ENIGMA_SPEED_DEF_PAR_1) * 136));
+	
+	GEN_MIN_WAV = -1;
+	GEN_MAX_WAV = 1;
+	
+	GEN_ENIGMA_STRENGTH_DEF_PAR_1 = 0;
+	GEN_ENIGMA_BUNKER_STRENGTH_DEF_PAR_1 = 0;
+	
+	wait(272 + ((GEN_W_IND_32 - GEN_ENIGMA_SPEED_DEF_PAR_1) * 136));
+}
+
+ //#################################################################################################
+ 
+ combo RF_LED_IND_666
+ {
+	set_led(1, 2);
+ 	wait(500);
+ 	set_led(2,0);
+ 	wait(500);
+ }
+ 
+  //#################################################################################################
+
+int OMEGARULESTIME;
+combo GEN_RAPID_FIRE_4L 
+{ 
+  set_val(TRIGGER_FIRE_BUTTON,100);
+  
+  if(RAPIDFIREMODE == SCHIZOPHRENIC)
+ 	 OMEGARULESTIME = random(SCHIZOPHRENICMIN,SCHIZOPHRENICMAX);
+  else 
+  	OMEGARULESTIME = HOLD_TRIGGER_TIME;
+  
+  wait(OMEGARULESTIME);
+  
+  set_val(TRIGGER_FIRE_BUTTON,0);
+  
+  if(RAPIDFIREMODE == SCHIZOPHRENIC)
+ 	 OMEGARULESTIME = random(SCHIZOPHRENICMIN,SCHIZOPHRENICMAX);
+  else 
+  	OMEGARULESTIME = WAIT_TRIGGER_TIME;
+  
+  wait(OMEGARULESTIME);
+
+  set_val(TRIGGER_FIRE_BUTTON,0);
+  OMEGARULESTIME = 0;
+  
+ if (RAPIDFIREMODE == LADDER_LOGIC_RF) 
+ { 
+	if (get_ival(TRIGGER_FIRE_BUTTON) < TRIGGER_PRESS_LENGTH) 
+	{	
+		OMEGARULESTIME = LADDER_TRIGGER_LENGTH ;
+	}
+ }
+ else if (RAPIDFIREMODE == GEN_POLY_RF) 
+ { 	
+	OMEGARULESTIME = (get_ival(TRIGGER_FIRE_BUTTON) * MORPHOGENICTRIG)/100 ;
+ }
+ 
+ wait(OMEGARULESTIME);
+}
+//#################################################################################################
+combo OMEGA_BLOOD_RED_IND
+ {
+	set_led(2, 1);
+ 	wait(500);
+ 	set_led(1,0);
+ 	wait(500);
+ }
+combo vibrate  
+    {
+    	 set_val(GENESIS_DROPSHOT_JUMP_DROPSHOT_TOGGLE_BTN, 0)
+         set_val(GENESIS_RF_TOGGLE_BUTTON, 0);
+         set_rumble(RUMBLE_A, 100);
+         wait(385);
+         reset_rumble();
+     }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ▄█     █▄     ▄████████    ▄████████  ▄███████▄   ▄██████▄  ███▄▄▄▄      ▄████████                                         
+//███     ███   ███    ███   ███    ███ ██▀     ▄██ ███    ███ ███▀▀▀██▄   ███    ███                                         
+//███     ███   ███    ███   ███    ███       ▄███▀ ███    ███ ███   ███   ███    █▀                                          
+//███     ███   ███    ███  ▄███▄▄▄▄██▀  ▀█▀▄███▀▄▄ ███    ███ ███   ███  ▄███▄▄▄                                             
+//███     ███ ▀███████████ ▀▀███▀▀▀▀▀     ▄███▀   ▀ ███    ███ ███   ███ ▀▀███▀▀▀                                             
+//███     ███   ███    ███ ▀███████████ ▄███▀       ███    ███ ███   ███   ███    █▄                                          
+//███ ▄█▄ ███   ███    ███   ███    ███ ███▄     ▄█ ███    ███ ███   ███   ███    ███                                         
+// ▀███▀███▀    ███    █▀    ███    ███  ▀████████▀  ▀██████▀   ▀█   █▀    ██████████   
+//
+//
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//                           ███    ███                                                                                       
+//   ▄██████▄     ▄████████ ███▄▄▄▄      ▄████████    ▄████████  ▄█     ▄████████     
+//  ███    ███   ███    ███ ███▀▀▀██▄   ███    ███   ███    ███ ███    ███    ███     
+//  ███    █▀    ███    █▀  ███   ███   ███    █▀    ███    █▀  ███▌   ███    █▀      
+// ▄███         ▄███▄▄▄     ███   ███  ▄███▄▄▄       ███        ███▌   ███            
+//▀▀███ ████▄  ▀▀███▀▀▀     ███   ███ ▀▀███▀▀▀     ▀███████████ ███▌ ▀███████████     
+//  ███    ███   ███    █▄  ███   ███   ███    █▄           ███ ███           ███     
+//  ███    ███   ███    ███ ███   ███   ███    ███    ▄█    ███ ███     ▄█    ███     
+//  ████████▀    ██████████  ▀█   █▀    ██████████  ▄████████▀  █▀    ▄████████▀  
+// 							VERSION :  1.00   31.3.2021
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ▄▄▄▄▄▄▄▄▄▄▄  ▄▄       ▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄   ▄▄▄▄▄▄▄▄▄▄▄ 
+//▐░░░░░░░░░░░▌▐░░▌     ▐░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌
+//▐░█▀▀▀▀▀▀▀█░▌▐░▌░▌   ▐░▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀▀▀▀▀▀█░▌
+//▐░▌       ▐░▌▐░▌▐░▌ ▐░▌▐░▌▐░▌          ▐░▌          ▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌          ▐░▌
+//▐░▌       ▐░▌▐░▌ ▐░▐░▌ ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌ ▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌          ▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄█░▌ ▄▄▄▄▄▄▄▄▄█░▌
+//▐░▌       ▐░▌▐░▌  ▐░▌  ▐░▌▐░░░░░░░░░░░▌▐░▌▐░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌          ▐░░░░░░░░░░░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌
+//▐░▌       ▐░▌▐░▌   ▀   ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░▌ ▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░▌          ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ 
+//▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌▐░▌          
+//▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌▐░█▄▄▄▄▄▄▄▄▄ 
+//▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░▌ ▐░░░░░░░░░░░▌
+// ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀         ▀  ▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀ 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+//██╗    ██╗ █████╗ ██████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗ 
+//██║    ██║██╔══██╗██╔══██╗████╗  ██║██║████╗  ██║██╔════╝ 
+//██║ █╗ ██║███████║██████╔╝██╔██╗ ██║██║██╔██╗ ██║██║  ███╗
+//██║███╗██║██╔══██║██╔══██╗██║╚██╗██║██║██║╚██╗██║██║   ██║
+//╚███╔███╔╝██║  ██║██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝
+// ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//     If we find that this script has been leaked, All user will be banned from our Discord, and future Updates prices will be raised significantly.
+//	   By purchasing our script, you have agreed to our T.O.S
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+
+
+const int Searchable_Matrix[] =
+{
+	0, 	 17,  34,  52,  69,  87,  104, 121, 139, 156, 
+	173, 190, 207, 224, 241, 258, 275, 292, 309, 325,
+	342, 358, 374, 390, 406, 422, 438, 453, 469, 484,
+	500, 515, 529, 544, 559, 573, 587, 601, 615, 629,
+	642, 656, 669, 682, 694, 707, 719, 731, 743, 754,
+	766, 777, 788, 798, 809, 819, 829, 838, 848, 857,
+	866, 874, 882, 891, 898, 906, 913, 920, 927, 933, 
+	939, 945, 951, 956, 961, 965, 970, 974, 978, 981,
+	984, 987, 990, 992, 994, 996, 997, 998, 999, 999,
+	1000
+}
+//################################################################################################# 
+define GENESIS_SAP		= 0xFF;
+define AIMSMOOTH2		= 0xFE;
+define AI_INTIATE				= 0xFD;
+define ADS_BUTTON 					= PS4_L2;
+define FIRE_BUTTON 					= PS4_R2;
+//################################################################################################# 
+define COREGENAA		= 0xFF;
+define MORPHOGENICAA		= 0xFE;
+define SWIRLY_AIM_ASSIST		= 0xFD;
+define DYSWIRLY_AIM_ASSIST	    = 0xFC; 
+define GENESIS_AA_V2		= 0xFB;  
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+//Choose Type
+int AIM_ASSIST_TYPE				= GENESIS_AA_V2; // select AA type here
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+define ADS_TYPE					= GENESIS_AA_V2;		//BELOW DEADZONE
+define ADS_FIRE_TYPE			= GENESIS_AA_V2;		//ADSing AND FIRING
+define ADS_FIRE_TYPE_OVER_DZ	= GENESIS_AA_V2;		//ADSing AND FIRING
+define HIP_FIRE_TYPE			= GENESIS_AA_V2;		//HIP FIRING
+define HIP_FIRE_TYPE_OVER_DZ	= GENESIS_AA_V2;	    //HIP FIRING
+define DRIFT_TYPE				= GENESIS_AA_V2; 	    //PAST DEADZONE
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+define SWORDSMAN_PATTERN				    = 0xFB;
+define LINE_PATTERN			= 0xFA;
+define TETRAHEDRON_PATTERN			= 0xF9;
+define TRIANGULAR_SHAPES		= 0xF8;
+define GENESIS_PATTERN			    = 0xF7;
+define ORBITAL_PATTERN			= 0xF6;
+define NULL_PATTERN			= 0xF5;
+define PLANET_PATTERN				= 0xF4;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int	 PATTERN_SHAPE 			= GENESIS_PATTERN; 
+define ADS_PATTERN					= GENESIS_PATTERN;
+define DRIFT_SPREAD_ANALYZER				= GENESIS_PATTERN;
+define ADS_FIRE_PATTERN_ANALYZER				= GENESIS_PATTERN;		//ADSing AND FIRING
+define ADS_FIRE_PATTERN_OVER_DEADZONE_CORRECTOR		= GENESIS_PATTERN;
+define HIP_FIRE_TARGET_DESIGNATION				= GENESIS_PATTERN;	    //HIP FIRING
+define HIP_FIRE_DRAWING_PATTERN_OVERDZ_DESIGNATION		= GENESIS_PATTERN;
+define AI_CONTROL_MOVEMENT_PREDICTOR		= 0xF5; 
+define HORIZONTAL_AXIS_BOOST			= 0xF4; 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++												   
+int AI_MOVEMENT_PREDICTOR 	    	= AI_CONTROL_MOVEMENT_PREDICTOR; 
+int AI_MOVEMENT_PREDICTOR_UPDATE_RATE		= 10; 
+define GENESIS_PATTERN_CYCLE_UPDATE_RATE				= 10;
+define ANGLE_INCREMENT_GENESIS 			= 25;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+define GENESIS_AA_BUBBLE_NUM2_MAX 				= 14;
+define GENESIS_AA_BUBBLE_NUM2_MIN 				= 6; 
+define MAX_PYRAMID_HEIGHT 		= 12;  
+define MIN_PYRAMID_HEIGHT 		= 6;		
+define PYRAMID_SHAPE_SPEED	    = 12;   
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++													  
+int GENESIS_STEADY_AIM_MAIN	    		= TRUE; 
+define GENESIS_STEADY_AIM_MAIN_STRENGTH	= 5;
+define SPIN_SPEED2				= 14;	// Increase value decrease spinning speed Only for SWIRLY_AIM_ASSIST or DYSWIRLY_AIM_ASSIST
+define OUTSIDE_SENS2			= 0xF2;
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//Configure movement smoothness
+define MAX_limit_Genesis_AA_1_MAGNITUDE 			= 25;
+define MAX_limit_Genesis_AA_1_SMOOTHING_MAIN				=3; // GEN_AIM_SMOOTHING time = vm update date GEN_X MAX_limit_Genesis_AA_1_SMOOTHING_MAIN
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+define GENESIS_AA_1_MACHINEUPDATE_SPEED				= 0; 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+define GENESIS_AI_ANTIRECOIL				= 0xE4;
+int ENABLE_GENESIS_AI_ANTIRECOIL 					= TRUE; 
+define STRENGTH_GENESIS_AI_ANTIRECOIL        		= 25; 	// range 50..200  if weapon shot up increase that value, if the weapon shot down decrease it
+define VERTICAL_STRENGTH_GENESIS_AI_ANTIRECOIL   			= 22; 	// not recommended to change max value 100
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+define GENESIS_DZ_LIMIT_BACKUP			= 10;
+define GENESIS_THRESHOLD_LIMIT_BACKUP 						= 30;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//   BAREBONES AR													+ ++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+define RX         = PS4_RX;
+define RY         = PS4_RY;
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++                                   
+define RECOIL_CONTROL       = 25;       // Adjust the value from 0 - 100 to tune vertical recoil control
+define RECOIL_CONTROL_LEFT  =  4;   // Adjust the value from 0 - 100 to tune recoil control from the left
+define RECOIL_CONTROL_RIGHT =  4; // Adjust the value from 0 - 100 to tune recoul control from the right
+define AR_Release = 35;	 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+int Recoil             = TRUE; //Change to False to Disable Barebones AR.
+int Vibration_Indicator_Def;                                                                          
+int recoil_control;          
+int recoil_control_left;    
+int recoil_control_right; 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+int Rx2;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int GEN_RY_IND_66;
+int RX_2_POL_IND_VECTOR;
+int RY_2_POL_IND_VECTOR;
+int VECTOR_APPROACH_ANGLE;
+int POLAR_CALC_COMPLETED_IND;
+int DEF_ANGLE_INC_STATEMENT_IND; 
+int GEN_APPROACH_ANGLE_CYCLE_TIME;
+int INITIATE_APROACH_VECTOR_CYCLE;
+int VECTOR_RADIAL_APPROACH;
+int PIZZA_SIGN_INC_STATE_IND;
+int ELIP_RADIAL_IND;
+int AIM_BALANCE_REDUNDANCY;
+int GENESIS_ARTIFICAL_AIM_STATE;
+int POWER_STRUCTURE_INCREMENT_IND_v2; 
+int RX_POWER_STRUCTURE_IND;
+int RY_POWER_STRUCTURE_IND;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int MAXIMUM_POWER_STRUCTURE_HEIGHT;
+int MOVEMENT_PREDICTOR_IND_45;
+int DZ_ACTUAL_R2_DESIGNATION_ROMEO;
+int DZ_LAST_R2_DESIGNATION_ROMEO;
+int GENESIS_PATTERN_Flag;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int GENESIS_PATTERN_Update;
+int SHAPE_DRAW_STPE_GEN_22;
+int GENESIS_AA_V2_FLAG_MOV_IND;
+int DMT_MODE_REDUNDANCY;
+int INTELLIGENT_RECOIL_FOUNDATION;
+int INTELLIGENT_RECOIL_PLUS,INTELLIGENT_RECOIL_NEGATIVE_Y;
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+int INTELLIGENT_RECOIL_VIBRATE_IND;
+int OMEGALABZISGODOFALLTHINGS;
+int OMEGADAGOAT; 
+int OMEGADAGOAT2;
+
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+init
+{
+	GENESIS_ARTIFICAL_AIM_STATE = AI_INTIATE;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+main 
+{    
+    vm_tctrl(GENESIS_AA_1_MACHINEUPDATE_SPEED); 
+  
+    
+    set_val(TRACE_1,get_rtime());
+	
+	if( GENESIS_ARTIFICAL_AIM_STATE == AI_INTIATE)
+	{
+		VECTOR_APPROACH_ANGLE  = 0;
+		AIM_BALANCE_REDUNDANCY = MAX_limit_Genesis_AA_1_SMOOTHING_MAIN;
+		POLAR_CALC_COMPLETED_IND = TRUE;
+		GENESIS_ARTIFICAL_AIM_STATE = GENESIS_SAP;
+		
+		INITIATE_APROACH_VECTOR_CYCLE = AI_MOVEMENT_PREDICTOR_UPDATE_RATE * (360/ANGLE_INCREMENT_GENESIS);
+		
+		
+		if((AIM_ASSIST_TYPE == SWIRLY_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST))
+	
+		{
+			ELIP_RADIAL_IND = GENESIS_AA_BUBBLE_NUM2_MAX;
+				VECTOR_RADIAL_APPROACH = GENESIS_AA_BUBBLE_NUM2_MAX;
+				PIZZA_SIGN_INC_STATE_IND = FALSE;	
+				MAXIMUM_POWER_STRUCTURE_HEIGHT = MAX_PYRAMID_HEIGHT;
+		    		
+		}
+		
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+	else
+	{
+		ELIP_RADIAL_IND = GENESIS_AA_BUBBLE_NUM2_MAX;
+	    VECTOR_RADIAL_APPROACH = GENESIS_AA_BUBBLE_NUM2_MAX;
+		PIZZA_SIGN_INC_STATE_IND = FALSE;
+		MAXIMUM_POWER_STRUCTURE_HEIGHT = MAX_PYRAMID_HEIGHT;	
+	}
+		
+		MOVEMENT_PREDICTOR_IND_45 = 1;
+		POWER_STRUCTURE_INCREMENT_IND_v2 = TRUE;	
+		RX_POWER_STRUCTURE_IND = 0;
+		DZ_ACTUAL_R2_DESIGNATION_ROMEO = 0;
+		
+		if(PATTERN_SHAPE == GENESIS_PATTERN)
+		{
+			GENESIS_PATTERN_Flag = 1;
+			PATTERN_SHAPE = (LINE_PATTERN + 1);
+		}
+		else
+		{
+			GENESIS_PATTERN_Flag = 0;
+		}
+		
+		SHAPE_DRAW_STPE_GEN_22 = 0;
+		GENESIS_PATTERN_Update = GENESIS_PATTERN_CYCLE_UPDATE_RATE;
+		
+		if(PATTERN_SHAPE == PLANET_PATTERN)
+		{
+			AI_MOVEMENT_PREDICTOR	= AI_CONTROL_MOVEMENT_PREDICTOR; 
+			
+			
+			INITIATE_APROACH_VECTOR_CYCLE = ((180/ANGLE_INCREMENT_GENESIS) + 1) * AI_MOVEMENT_PREDICTOR_UPDATE_RATE;
+		}
+		
+		if(AIM_ASSIST_TYPE == GENESIS_AA_V2)
+		{
+			GENESIS_AA_V2_FLAG_MOV_IND = TRUE;
+		}
+
+		INTELLIGENT_RECOIL_FOUNDATION = 100;
+		DMT_MODE_REDUNDANCY = 1;
+		INTELLIGENT_RECOIL_NEGATIVE_Y = VERTICAL_STRENGTH_GENESIS_AI_ANTIRECOIL * DMT_MODE_REDUNDANCY * -1;
+		INTELLIGENT_RECOIL_PLUS = STRENGTH_GENESIS_AI_ANTIRECOIL - INTELLIGENT_RECOIL_FOUNDATION;		
+	}
+    
+    	
+      
+	if(GENESIS_AA_V2_FLAG_MOV_IND == TRUE)
+    { 
+		OMEGALABZISGODOFALLTHINGS = isqrt(pow(get_val(PS4_RX), 2) + pow(get_val(PS4_RY), 2));
+				if(get_val(AIM_DOWN_SIGHT_BUTTON) && !get_val(TRIGGER_FIRE_BUTTON) && OMEGALABZISGODOFALLTHINGS <= GENESIS_THRESHOLD_LIMIT_BACKUP)
+				{
+					AIM_ASSIST_TYPE = ADS_TYPE;
+					PATTERN_SHAPE = ADS_PATTERN;						
+				}				
+				else if(get_val(AIM_DOWN_SIGHT_BUTTON) && !get_val(TRIGGER_FIRE_BUTTON) && OMEGALABZISGODOFALLTHINGS > GENESIS_THRESHOLD_LIMIT_BACKUP)
+				{
+					AIM_ASSIST_TYPE = DRIFT_TYPE;
+					PATTERN_SHAPE = DRIFT_SPREAD_ANALYZER;					
+				}			
+				else if(get_val(AIM_DOWN_SIGHT_BUTTON) && get_val(TRIGGER_FIRE_BUTTON) && OMEGALABZISGODOFALLTHINGS <= GENESIS_THRESHOLD_LIMIT_BACKUP)
+				{
+					AIM_ASSIST_TYPE = ADS_FIRE_TYPE;
+					PATTERN_SHAPE = ADS_FIRE_PATTERN_ANALYZER;
+				}			
+				else if(get_val(AIM_DOWN_SIGHT_BUTTON) && get_val(TRIGGER_FIRE_BUTTON) && OMEGALABZISGODOFALLTHINGS > GENESIS_THRESHOLD_LIMIT_BACKUP)
+				{
+					AIM_ASSIST_TYPE = ADS_FIRE_TYPE_OVER_DZ;
+					PATTERN_SHAPE = ADS_FIRE_PATTERN_OVER_DEADZONE_CORRECTOR;
+				}				
+				else if(!get_val(AIM_DOWN_SIGHT_BUTTON) && get_val(TRIGGER_FIRE_BUTTON) && OMEGALABZISGODOFALLTHINGS <= GENESIS_THRESHOLD_LIMIT_BACKUP)
+				{
+					AIM_ASSIST_TYPE = HIP_FIRE_TYPE;
+					PATTERN_SHAPE = HIP_FIRE_TARGET_DESIGNATION;
+				}				
+				else if(!get_val(AIM_DOWN_SIGHT_BUTTON) && get_val(TRIGGER_FIRE_BUTTON) && OMEGALABZISGODOFALLTHINGS > GENESIS_THRESHOLD_LIMIT_BACKUP)
+				{
+					AIM_ASSIST_TYPE = HIP_FIRE_TYPE_OVER_DZ;
+					PATTERN_SHAPE = HIP_FIRE_DRAWING_PATTERN_OVERDZ_DESIGNATION;
+				}    
+	}
+				//RUN RECOIL_CONTROL -- BAREBONES AR ++++++++++++++++++++++++++++++++++++++++++++++++
+
+			if (get_val(ADS_BUTTON) && get_val(FIRE_BUTTON)){
+			combo_run(Recoil_Control);
+}
+				//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+      
+	if((get_val(AIM_DOWN_SIGHT_BUTTON) > 50) || (get_val(TRIGGER_FIRE_BUTTON)> 50))
+	{	
+			
+		
+		if( GENESIS_ARTIFICAL_AIM_STATE == GENESIS_SAP)
+		{		
+			Rx2 = get_val(PS4_RX);
+			GEN_RY_IND_66 = get_val(PS4_RY);
+			DZ_ACTUAL_R2_DESIGNATION_ROMEO = Rx2;
+
+			if((INTENSITY_CHECK_OVERFLOW_FLOAT(PATTERN_SHAPE, MAX_limit_Genesis_AA_1_MAGNITUDE) == TRUE))
+			{		
+				POLAR_CALC_COMPLETED_IND = TRUE;
+				AIM_BALANCE_REDUNDANCY = MAX_limit_Genesis_AA_1_SMOOTHING_MAIN;							
+				GENESIS_PATTERN_Update = GENESIS_PATTERN_CYCLE_UPDATE_RATE;
+				SHAPE_DRAW_STPE_GEN_22 = 0;								
+				GENESIS_ARTIFICAL_AIM_STATE = AIMSMOOTH2;
+			}
+			else	
+			{								
+				if(GENESIS_PATTERN_Flag == 1)
+				{
+					if( GENESIS_PATTERN_Update == 0)
+					{
+						GENESIS_PATTERN_Update = GENESIS_PATTERN_CYCLE_UPDATE_RATE;
+						
+						PATTERN_SHAPE--;
+						
+						if(PATTERN_SHAPE == GENESIS_PATTERN)
+						{
+							PATTERN_SHAPE = LINE_PATTERN;
+						}
+					}
+					
+					GENESIS_PATTERN_Update--:
+				}
+				
+				
+				if(GENESIS_STEADY_AIM_MAIN== TRUE)
+				{
+					Rx2 = AIM_BALANCING_CALL(Rx2, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+					GEN_RY_IND_66 = AIM_BALANCING_CALL(GEN_RY_IND_66, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+				}
+			
+				if( POLAR_CALC_COMPLETED_IND == TRUE)
+				{	
+					POLAR_CALC_COMPLETED_IND = FALSE;	
+
+					if( (abs(GEN_RY_IND_66) > GENESIS_DZ_LIMIT_BACKUP) && (abs(Rx2) > GENESIS_DZ_LIMIT_BACKUP))
+					{	
+						
+						VECTOR_APPROACH_ANGLE = GEN_HEAVY_FUCKING_MATH_BRO(atan2_16bits(inv(GEN_RY_IND_66),Rx2));
+						GEN_APPROACH_ANGLE_CYCLE_TIME = INITIATE_APROACH_VECTOR_CYCLE;
+
+						if(AI_MOVEMENT_PREDICTOR 	== HORIZONTAL_AXIS_BOOST)
+						{
+							if(DZ_ACTUAL_R2_DESIGNATION_ROMEO < DZ_LAST_R2_DESIGNATION_ROMEO) //move left
+							{
+								VECTOR_APPROACH_ANGLE = 180;
+								DEF_ANGLE_INC_STATEMENT_IND = TRUE;
+								MOVEMENT_PREDICTOR_IND_45 = -1;
+							}
+							else if(DZ_ACTUAL_R2_DESIGNATION_ROMEO > DZ_LAST_R2_DESIGNATION_ROMEO)
+							{
+								VECTOR_APPROACH_ANGLE = 360;
+								DEF_ANGLE_INC_STATEMENT_IND = FALSE;
+								MOVEMENT_PREDICTOR_IND_45 = 1;
+							}
+						}		
+						else
+						{
+							if(	(VECTOR_APPROACH_ANGLE >= 0 && VECTOR_APPROACH_ANGLE <= 90) || (VECTOR_APPROACH_ANGLE >= 270))
+							{
+								DEF_ANGLE_INC_STATEMENT_IND = TRUE;
+								MOVEMENT_PREDICTOR_IND_45 = 1;
+							}
+							else
+							{
+								DEF_ANGLE_INC_STATEMENT_IND = FALSE;
+								MOVEMENT_PREDICTOR_IND_45 = -1;
+							}					
+						}
+					}
+					else
+					{
+						VECTOR_APPROACH_ANGLE = 0;
+						
+						DEF_ANGLE_INC_STATEMENT_IND = TRUE;
+					}
+					DZ_LAST_R2_DESIGNATION_ROMEO = DZ_ACTUAL_R2_DESIGNATION_ROMEO;
+				}
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝	
+				if(AIM_ASSIST_TYPE == MORPHOGENICAA || AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST)
+				{
+					if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+					{
+						OMEGADAGOAT = MAX_PYRAMID_HEIGHT;
+					}
+					else
+					{
+						OMEGADAGOAT = GENESIS_AA_BUBBLE_NUM2_MAX;
+					}
+					
+					OMEGALABZISGODOFALLTHINGS = OMEGADAGOAT - ((abs(get_val(PS4_RX)) * abs(get_val(PS4_RX)) + abs(get_val(PS4_RY)) * abs(get_val(PS4_RY)))/1000);
+						
+									
+					if(AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST)
+					{				
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{					
+							
+							
+							
+							if( abs(RX_POWER_STRUCTURE_IND) > OMEGALABZISGODOFALLTHINGS)
+							{
+								
+								PIZZA_SIGN_INC_STATE_IND = FALSE;
+								
+								if(RX_POWER_STRUCTURE_IND>= 0)
+									POWER_STRUCTURE_INCREMENT_IND_v2 = FALSE;
+								else
+									POWER_STRUCTURE_INCREMENT_IND_v2 = TRUE;	
+							}
+							
+							
+						}
+						else  
+						{
+							if(OMEGALABZISGODOFALLTHINGS < VECTOR_RADIAL_APPROACH) 
+							{						
+								VECTOR_RADIAL_APPROACH = OMEGALABZISGODOFALLTHINGS;
+								PIZZA_SIGN_INC_STATE_IND = FALSE;
+							}
+						}				
+					}
+					else
+					{
+						VECTOR_RADIAL_APPROACH = OMEGALABZISGODOFALLTHINGS;			
+						ELIP_RADIAL_IND = OMEGALABZISGODOFALLTHINGS;
+						
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{					
+							MAXIMUM_POWER_STRUCTURE_HEIGHT = OMEGALABZISGODOFALLTHINGS;
+							
+							if(OMEGALABZISGODOFALLTHINGS < abs(RX_POWER_STRUCTURE_IND))
+							{						
+								if(RX_POWER_STRUCTURE_IND>= 0)
+									POWER_STRUCTURE_INCREMENT_IND_v2 = FALSE;
+								else
+									POWER_STRUCTURE_INCREMENT_IND_v2 = TRUE;									
+							}
+						}
+						
+						
+					}
+				}
+// ██████╗██████╗ ███████╗ █████╗ ████████╗███████╗██████╗     ██████╗ ██╗   ██╗
+//██╔════╝██╔══██╗██╔════╝██╔══██╗╚══██╔══╝██╔════╝██╔══██╗    ██╔══██╗╚██╗ ██╔╝
+//██║     ██████╔╝█████╗  ███████║   ██║   █████╗  ██║  ██║    ██████╔╝ ╚████╔╝ 
+//██║     ██╔══██╗██╔══╝  ██╔══██║   ██║   ██╔══╝  ██║  ██║    ██╔══██╗  ╚██╔╝  
+//╚██████╗██║  ██║███████╗██║  ██║   ██║   ███████╗██████╔╝    ██████╔╝   ██║   
+// ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝     ╚═════╝    ╚═╝   
+//                                                                              
+// ██████╗ ███╗   ███╗███████╗ ██████╗  █████╗ ██╗      █████╗ ██████╗ ███████╗ 
+//██╔═══██╗████╗ ████║██╔════╝██╔════╝ ██╔══██╗██║     ██╔══██╗██╔══██╗╚══███╔╝ 
+//██║   ██║██╔████╔██║█████╗  ██║  ███╗███████║██║     ███████║██████╔╝  ███╔╝  
+//██║   ██║██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║██║     ██╔══██║██╔══██╗ ███╔╝   
+//╚██████╔╝██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║███████╗██║  ██║██████╔╝███████╗ 
+// ╚═════╝ ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═════╝ ╚══════╝
+				if(PATTERN_SHAPE == NULL_PATTERN)
+				{
+					
+					VECTOR_RADIAL_APPROACH = CALC_FUNC_ELLIP_RADIAL_VECTOR(ELIP_RADIAL_IND,WhatistheCOSforthis(VECTOR_APPROACH_ANGLE));	
+				}
+				
+				if(PATTERN_SHAPE != TRIANGULAR_SHAPES)
+				{
+					if(PATTERN_SHAPE != TETRAHEDRON_PATTERN)
+					{
+						RX_2_POL_IND_VECTOR = RETREIVE_POLAR_COORDS(VECTOR_RADIAL_APPROACH, WhatistheCOSforthis(VECTOR_APPROACH_ANGLE));
+						RY_2_POL_IND_VECTOR = RETREIVE_POLAR_COORDS(VECTOR_RADIAL_APPROACH, WithoutsinJesusdiedfornothing(VECTOR_APPROACH_ANGLE));
+					}
+					else
+					{
+						if(PATTERN_SHAPE == SWORDSMAN_PATTERN)
+						{
+							if(SHAPE_DRAW_STPE_GEN_22 == 0)
+							{
+								RY_2_POL_IND_VECTOR = VECTOR_RADIAL_APPROACH;
+							}
+							else if(SHAPE_DRAW_STPE_GEN_22 == 1)
+							{
+								RX_2_POL_IND_VECTOR = MOVEMENT_PREDICTOR_IND_45 * VECTOR_RADIAL_APPROACH;
+								RY_2_POL_IND_VECTOR = VECTOR_RADIAL_APPROACH;
+							} 
+							else if(SHAPE_DRAW_STPE_GEN_22 == 2)
+							{
+								RX_2_POL_IND_VECTOR = inv(MOVEMENT_PREDICTOR_IND_45 * VECTOR_RADIAL_APPROACH);
+								RY_2_POL_IND_VECTOR = inv(VECTOR_RADIAL_APPROACH);
+							}
+							else if(SHAPE_DRAW_STPE_GEN_22 == 3)
+							{
+								RY_2_POL_IND_VECTOR = inv(VECTOR_RADIAL_APPROACH);
+							}
+						}
+						else
+						{					
+							if(SHAPE_DRAW_STPE_GEN_22 == 0)
+							{
+								RY_2_POL_IND_VECTOR = VECTOR_RADIAL_APPROACH;
+							}
+							else if(SHAPE_DRAW_STPE_GEN_22 == 1)
+							{
+								RX_2_POL_IND_VECTOR = MOVEMENT_PREDICTOR_IND_45 * VECTOR_RADIAL_APPROACH;
+								RY_2_POL_IND_VECTOR = VECTOR_RADIAL_APPROACH;
+							} 
+							else if(SHAPE_DRAW_STPE_GEN_22 == 2)
+							{
+								RY_2_POL_IND_VECTOR = inv(VECTOR_RADIAL_APPROACH);
+							}
+							else if(SHAPE_DRAW_STPE_GEN_22 == 3)
+							{
+								RX_2_POL_IND_VECTOR = inv(MOVEMENT_PREDICTOR_IND_45 * VECTOR_RADIAL_APPROACH);
+								RY_2_POL_IND_VECTOR = inv(VECTOR_RADIAL_APPROACH);
+							}
+						}
+					}
+					
+					Rx2 = REDUNDANT_PROCESS_OVERFLOW_CHECK(Rx2, RX_2_POL_IND_VECTOR);
+					GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, RY_2_POL_IND_VECTOR);
+				}
+				else
+				{
+				   if(POWER_STRUCTURE_INCREMENT_IND_v2 == TRUE)
+				   {
+					   	RY_POWER_STRUCTURE_IND = RX_POWER_STRUCTURE_IND + MOVEMENT_PREDICTOR_IND_45;				   	
+					   	RX_POWER_STRUCTURE_IND += PYRAMID_SHAPE_SPEED;
+				   }
+				   else
+				   { 
+				  		RY_POWER_STRUCTURE_IND =  RX_POWER_STRUCTURE_IND - MOVEMENT_PREDICTOR_IND_45 ;				   	
+						RX_POWER_STRUCTURE_IND -= PYRAMID_SHAPE_SPEED;
+				   }
+				 
+				   
+				   if((abs(RX_POWER_STRUCTURE_IND)) > MAXIMUM_POWER_STRUCTURE_HEIGHT )
+				   {
+				   		if(RX_POWER_STRUCTURE_IND > 0)
+				   		{
+				   			POWER_STRUCTURE_INCREMENT_IND_v2 = FALSE;
+				   		}
+				   		else
+				   		{
+				   			POWER_STRUCTURE_INCREMENT_IND_v2 = TRUE;
+				   		}			   		
+				   }	   	
+				   	
+				   Rx2 += RX_POWER_STRUCTURE_IND;		   				   
+				   RY_POWER_STRUCTURE_IND = inv(RY_POWER_STRUCTURE_IND);
+				   GEN_RY_IND_66 += RY_POWER_STRUCTURE_IND;
+				   
+				   Rx2 = REDUNDANT_PROCESS_OVERFLOW_CHECK(Rx2, 0);
+				   GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);
+				}
+				
+				
+				if((ENABLE_GENESIS_AI_ANTIRECOIL == TRUE) && (get_val(AIM_DOWN_SIGHT_BUTTON) > 50)&& (get_val(TRIGGER_FIRE_BUTTON) > 50))
+							
+					
+					
+						{
+							GEN_RY_IND_66 += GEN_RET_INTELLIGENT_REC_VAL();
+							GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);
+					}
+				
+				
+				if(GENESIS_STEADY_AIM_MAIN== TRUE)
+				{
+					Rx2 = AIM_BALANCING_CALL(Rx2, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+					GEN_RY_IND_66 = AIM_BALANCING_CALL(GEN_RY_IND_66, GENESIS_STEADY_AIM_MAIN_STRENGTH);	
+					
+					Rx2 = REDUNDANT_PROCESS_OVERFLOW_CHECK(Rx2, 0);
+					GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);
+				}
+								
+				if(PATTERN_SHAPE != TETRAHEDRON_PATTERN && PATTERN_SHAPE != SWORDSMAN_PATTERN)
+				{
+					OVERRIDE_RS_VAL(Rx2, GEN_RY_IND_66, PATTERN_SHAPE);
+				}
+				else
+				{
+					if(PATTERN_SHAPE == TETRAHEDRON_PATTERN)
+					{					
+						if(SHAPE_DRAW_STPE_GEN_22 == 0 || SHAPE_DRAW_STPE_GEN_22 == 2)
+						{
+							set_val(PS4_RY, GEN_RY_IND_66);	
+						}
+						else
+						{
+							set_val(PS4_RX, Rx2);
+							set_val(PS4_RY, GEN_RY_IND_66);	
+						}
+					}
+					else
+					{
+						if(SHAPE_DRAW_STPE_GEN_22 == 0 || SHAPE_DRAW_STPE_GEN_22 == 3)
+						{
+							set_val(PS4_RY, GEN_RY_IND_66);	
+						}
+						else
+						{
+							set_val(PS4_RX, Rx2);
+							set_val(PS4_RY, GEN_RY_IND_66);	
+						}
+					}
+					
+					SHAPE_DRAW_STPE_GEN_22++;
+					
+					if(SHAPE_DRAW_STPE_GEN_22 == 4)
+					{
+						SHAPE_DRAW_STPE_GEN_22 = 0;
+					}
+				}
+								
+				if(((AIM_ASSIST_TYPE == SWIRLY_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST)) && ((GEN_APPROACH_ANGLE_CYCLE_TIME % SPIN_SPEED2) == 0))
+				{			
+					if(PIZZA_SIGN_INC_STATE_IND == FALSE)
+					{
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{
+							MAXIMUM_POWER_STRUCTURE_HEIGHT -= 1;
+				
+							if(MAXIMUM_POWER_STRUCTURE_HEIGHT < MIN_PYRAMID_HEIGHT)
+							{
+								PIZZA_SIGN_INC_STATE_IND = TRUE;
+								
+							}
+						}
+						else
+						{
+							VECTOR_RADIAL_APPROACH -= 1;		
+				
+							if(VECTOR_RADIAL_APPROACH < GENESIS_AA_BUBBLE_NUM2_MIN)
+							{
+								PIZZA_SIGN_INC_STATE_IND = TRUE;
+								VECTOR_RADIAL_APPROACH = GENESIS_AA_BUBBLE_NUM2_MIN;
+							}
+						}
+					}
+					else if(PIZZA_SIGN_INC_STATE_IND == TRUE)
+					{
+						if(PATTERN_SHAPE == TRIANGULAR_SHAPES)
+						{
+							MAXIMUM_POWER_STRUCTURE_HEIGHT += 1;
+				
+							if(MAXIMUM_POWER_STRUCTURE_HEIGHT > MAX_PYRAMID_HEIGHT)
+							{
+								PIZZA_SIGN_INC_STATE_IND = FALSE;	
+							}
+						}
+						else
+						{
+							VECTOR_RADIAL_APPROACH += 1;
+				
+							if(VECTOR_RADIAL_APPROACH > GENESIS_AA_BUBBLE_NUM2_MAX)
+							{
+								PIZZA_SIGN_INC_STATE_IND = FALSE;
+								VECTOR_RADIAL_APPROACH = GENESIS_AA_BUBBLE_NUM2_MAX;
+							}
+						}
+					}
+					
+					
+				}
+				
+				GEN_APPROACH_ANGLE_CYCLE_TIME--;
+				
+				
+		
+				if(GEN_APPROACH_ANGLE_CYCLE_TIME == 0)
+				{
+					POLAR_CALC_COMPLETED_IND = TRUE;
+					
+					GEN_APPROACH_ANGLE_CYCLE_TIME = INITIATE_APROACH_VECTOR_CYCLE;												
+				}
+				else
+				{
+					if((PATTERN_SHAPE == PLANET_PATTERN) && (GEN_APPROACH_ANGLE_CYCLE_TIME == (INITIATE_APROACH_VECTOR_CYCLE  - 1)))
+					{
+						VECTOR_APPROACH_ANGLE = VECTOR_APPROACH_ANGLE + (ANGLE_INCREMENT_GENESIS * (GEN_APPROACH_ANGLE_CYCLE_TIME/2));
+					}
+					else
+					{
+						VECTOR_APPROACH_ANGLE = APPROACH_ANGLE_VECTOR_REDUNDANCY(VECTOR_APPROACH_ANGLE, DEF_ANGLE_INC_STATEMENT_IND, ANGLE_INCREMENT_GENESIS);
+					}											
+				}
+			}
+		}
+		else if( GENESIS_ARTIFICAL_AIM_STATE == AIMSMOOTH2)
+		{			
+			if(GENESIS_STEADY_AIM_MAIN== TRUE) 
+			{			
+				Rx2 = get_val(PS4_RX);
+				GEN_RY_IND_66 = get_val(PS4_RY);
+				
+				if((ENABLE_GENESIS_AI_ANTIRECOIL == TRUE) && (get_val(AIM_DOWN_SIGHT_BUTTON) > 50) && (get_val(TRIGGER_FIRE_BUTTON) > 50) && (AIM_BALANCE_REDUNDANCY == (MAX_limit_Genesis_AA_1_SMOOTHING_MAIN/2)))
+				{														
+					
+					
+					Rx2 = AIM_BALANCING_CALL(Rx2, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+					GEN_RY_IND_66 = AIM_BALANCING_CALL(GEN_RY_IND_66, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+					
+					Rx2 = REDUNDANT_PROCESS_OVERFLOW_CHECK(Rx2, 0);
+					GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);
+						
+					set_val(PS4_RX, Rx2);
+					set_val(PS4_RY, GEN_RY_IND_66);
+				}
+				else 
+				{
+					
+					if((ENABLE_GENESIS_AI_ANTIRECOIL == TRUE) && (get_val(AIM_DOWN_SIGHT_BUTTON) > 50) && (get_val(TRIGGER_FIRE_BUTTON) > 50) )
+					{
+						GEN_RY_IND_66 += GEN_RET_INTELLIGENT_REC_VAL();
+						GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);	
+					}
+											
+					Rx2 = AIM_BALANCING_CALL(Rx2, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+					GEN_RY_IND_66 = AIM_BALANCING_CALL(GEN_RY_IND_66, GENESIS_STEADY_AIM_MAIN_STRENGTH);
+					
+					Rx2 = REDUNDANT_PROCESS_OVERFLOW_CHECK(Rx2, 0);
+					GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);
+						
+					set_val(PS4_RX, Rx2);
+					set_val(PS4_RY, GEN_RY_IND_66);
+				}
+			}
+			else if((ENABLE_GENESIS_AI_ANTIRECOIL == TRUE) && (get_val(AIM_DOWN_SIGHT_BUTTON) > 50) && (get_val(TRIGGER_FIRE_BUTTON) > 50))
+			{			
+				GEN_RY_IND_66 = get_val(PS4_RY);
+
+				if(ENABLE_GENESIS_AI_ANTIRECOIL == TRUE)
+					{
+						GEN_RY_IND_66 += GEN_RET_INTELLIGENT_REC_VAL();
+						GEN_RY_IND_66 = REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_RY_IND_66, 0);
+						set_val(PS4_RY, GEN_RY_IND_66);
+					}
+					}
+				
+			
+			if(AIM_BALANCE_REDUNDANCY == 0)
+			{		
+				GENESIS_ARTIFICAL_AIM_STATE = GENESIS_SAP;
+			}
+			
+			AIM_BALANCE_REDUNDANCY--;				
+		}
+	}
+	else
+	{
+		VECTOR_APPROACH_ANGLE = 0;
+		DZ_ACTUAL_R2_DESIGNATION_ROMEO = 0;
+		POLAR_CALC_COMPLETED_IND = TRUE;
+		GEN_APPROACH_ANGLE_CYCLE_TIME = INITIATE_APROACH_VECTOR_CYCLE;
+		SHAPE_DRAW_STPE_GEN_22 = 0;
+		GENESIS_PATTERN_Update = GENESIS_PATTERN_CYCLE_UPDATE_RATE;
+		
+		
+		AIM_BALANCE_REDUNDANCY = MAX_limit_Genesis_AA_1_SMOOTHING_MAIN;
+		GENESIS_ARTIFICAL_AIM_STATE = GENESIS_SAP;
+		
+		RX_POWER_STRUCTURE_IND = 0;
+		POWER_STRUCTURE_INCREMENT_IND_v2 = TRUE;
+		
+		if((AIM_ASSIST_TYPE == SWIRLY_AIM_ASSIST) || (AIM_ASSIST_TYPE == DYSWIRLY_AIM_ASSIST))
+		{
+			
+				ELIP_RADIAL_IND = GENESIS_AA_BUBBLE_NUM2_MAX;
+			    VECTOR_RADIAL_APPROACH = GENESIS_AA_BUBBLE_NUM2_MAX;
+				PIZZA_SIGN_INC_STATE_IND = FALSE;	
+				MAXIMUM_POWER_STRUCTURE_HEIGHT = MIN_PYRAMID_HEIGHT;
+			
+		}
+		else
+		{
+			ELIP_RADIAL_IND = GENESIS_AA_BUBBLE_NUM2_MAX;
+		    VECTOR_RADIAL_APPROACH = GENESIS_AA_BUBBLE_NUM2_MAX;
+			PIZZA_SIGN_INC_STATE_IND = FALSE;
+			MAXIMUM_POWER_STRUCTURE_HEIGHT = MAX_PYRAMID_HEIGHT;
+		}
+		
+		if(PATTERN_SHAPE == GENESIS_PATTERN)
+		{
+			PATTERN_SHAPE = (LINE_PATTERN + 1);
+		}
+	}
+
+
+
+} 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+function CALC_FUNC_ELLIP_RADIAL_VECTOR(VECTOR_RADIAL_APPROACH, COSINE_GEN_CALC_FUNC)
+{		
+	// factor 50%
+	OMEGALABZISGODOFALLTHINGS = (COSINE_GEN_CALC_FUNC * (VECTOR_RADIAL_APPROACH/2));	
+	OMEGALABZISGODOFALLTHINGS = (1000 * VECTOR_RADIAL_APPROACH )- OMEGALABZISGODOFALLTHINGS;
+	OMEGALABZISGODOFALLTHINGS /= 100;
+	
+	return (OMEGALABZISGODOFALLTHINGS);
+}
+function APPROACH_ANGLE_VECTOR_REDUNDANCY(ANGLE_VECTOR_IND, INC_STATE_IND_2, VALUE_IND_GEN)
+{
+	if(INC_STATE_IND_2 == TRUE)
+	{
+		ANGLE_VECTOR_IND += VALUE_IND_GEN;
+	
+		if(ANGLE_VECTOR_IND >= 360)
+		{
+			ANGLE_VECTOR_IND -= 360;
+		}
+	}
+	else
+	{
+		ANGLE_VECTOR_IND -= VALUE_IND_GEN;
+	
+		if(ANGLE_VECTOR_IND <= 0)
+		{
+			ANGLE_VECTOR_IND = 360 + ANGLE_VECTOR_IND;
+		}
+	}
+	
+	return ANGLE_VECTOR_IND;
+}
+function OVERRIDE_RS_VAL(GEN_X , GEN_Y, CARTESIAN_PAT_CORD_DRAW)
+{	
+	set_val(PS4_RX, GEN_X);
+	
+	if(CARTESIAN_PAT_CORD_DRAW != LINE_PATTERN)
+	{
+		set_val(PS4_RY, GEN_Y);	
+	}
+}
+function INTENSITY_CHECK_OVERFLOW_FLOAT(CARTESIAN_PAT_CORD_DRAW, MAXIMUM_OVERFLOW_VAL_REF)
+{
+	OMEGALABZISGODOFALLTHINGS = TRUE;
+	OMEGADAGOAT2 = 0;
+	
+	OMEGADAGOAT = isqrt(pow((get_lval(PS4_RX) - get_val(PS4_RX)), 2));
+		
+	if( CARTESIAN_PAT_CORD_DRAW != LINE_PATTERN)
+	{
+		OMEGADAGOAT2 = isqrt(pow((get_lval(PS4_RY) - get_val(PS4_RY)), 2));		
+	}
+	
+	if( (OMEGADAGOAT <=  MAXIMUM_OVERFLOW_VAL_REF) && (OMEGADAGOAT2 <=  MAXIMUM_OVERFLOW_VAL_REF))
+	{
+		OMEGALABZISGODOFALLTHINGS = FALSE;
+	}
+
+	
+	return OMEGALABZISGODOFALLTHINGS;
+}
+function AIM_BALANCING_CALL(axis, INTENSITY_AMOUNT_DEF)
+{
+	if(axis >= 0)
+	{
+		OMEGALABZISGODOFALLTHINGS = (axis % INTENSITY_AMOUNT_DEF);
+	
+		if(OMEGALABZISGODOFALLTHINGS >= (INTENSITY_AMOUNT_DEF / 2))
+		{
+			axis = axis + (INTENSITY_AMOUNT_DEF - OMEGALABZISGODOFALLTHINGS);
+		}
+		else
+		{
+			axis -= OMEGALABZISGODOFALLTHINGS;
+		}
+	}
+	else
+	{
+		OMEGALABZISGODOFALLTHINGS = (axis % INTENSITY_AMOUNT_DEF);
+	
+		if( abs(OMEGALABZISGODOFALLTHINGS) >= (INTENSITY_AMOUNT_DEF / 2))
+		{
+			axis = axis - (INTENSITY_AMOUNT_DEF + OMEGALABZISGODOFALLTHINGS);
+		}
+		else
+		{
+			axis += abs(OMEGALABZISGODOFALLTHINGS);
+		}
+	}
+	
+	if(axis > 100)
+	{
+		axis = 100;
+	}
+	else if(axis < -100)
+	{
+		axis = -100;
+	}
+	
+	return axis;
+}
+function RETREIVE_POLAR_COORDS(VECTOR_RADIAL_APPROACH, coef)
+{
+	
+	 if(VECTOR_RADIAL_APPROACH > 32) 
+	{
+		VECTOR_RADIAL_APPROACH = 32;
+	}
+	
+		
+	return((VECTOR_RADIAL_APPROACH * coef) / 1000);		
+}
+function REDUNDANT_PROCESS_OVERFLOW_CHECK(GEN_X, GEN_Y)
+{
+	OMEGALABZISGODOFALLTHINGS = GEN_X + GEN_Y;
+	
+	if( OMEGALABZISGODOFALLTHINGS > 100)
+	{
+		OMEGALABZISGODOFALLTHINGS = 100;
+	}
+	else if (OMEGALABZISGODOFALLTHINGS < -100)
+	{
+		OMEGALABZISGODOFALLTHINGS = -100;
+	}
+	
+	return OMEGALABZISGODOFALLTHINGS;
+}
+function WithoutsinJesusdiedfornothing(ANGLE_VECTOR_IND)
+{   
+    if(ANGLE_VECTOR_IND <= 90)
+    {             
+        OMEGALABZISGODOFALLTHINGS = (Searchable_Matrix[ANGLE_VECTOR_IND]);
+    }
+    else if (ANGLE_VECTOR_IND <= 180)
+    {      
+        OMEGALABZISGODOFALLTHINGS = (Searchable_Matrix[180 - ANGLE_VECTOR_IND]);
+    }
+    else if (ANGLE_VECTOR_IND <= 270)
+    {
+        OMEGALABZISGODOFALLTHINGS = inv(Searchable_Matrix[ANGLE_VECTOR_IND - 180]);     
+    }
+    else 
+    {
+       	OMEGALABZISGODOFALLTHINGS = inv(Searchable_Matrix[360 - ANGLE_VECTOR_IND]);      
+    }
+    
+    return OMEGALABZISGODOFALLTHINGS;
+}
+function WhatistheCOSforthis(ANGLE_VECTOR_IND)
+{   
+    if(ANGLE_VECTOR_IND <= 90)
+    {             
+        OMEGALABZISGODOFALLTHINGS = (Searchable_Matrix[90 - ANGLE_VECTOR_IND]);
+    }
+    else if (ANGLE_VECTOR_IND <= 180)
+    {      
+        OMEGALABZISGODOFALLTHINGS = inv(Searchable_Matrix[ANGLE_VECTOR_IND - 90]);
+    }
+    else if (ANGLE_VECTOR_IND <= 270)
+    {
+        OMEGALABZISGODOFALLTHINGS = inv(Searchable_Matrix[270 - ANGLE_VECTOR_IND]);       
+    }
+    else 
+    {
+        OMEGALABZISGODOFALLTHINGS = (Searchable_Matrix[ANGLE_VECTOR_IND - 270]);       
+    }
+    
+    return OMEGALABZISGODOFALLTHINGS;
+}
+function atan2_16bits(GEN_Y, GEN_X) 
+{	
+	
+	if (GEN_Y >= 0)
+	{ 
+		if (GEN_X >= 0) { 
+			if (GEN_X > GEN_Y)
+			{
+				OMEGALABZISGODOFALLTHINGS = ( (GEN_Y * 300) / GEN_X );
+			}
+			else
+			{
+				if (GEN_Y == 0)
+				OMEGALABZISGODOFALLTHINGS = 0; 
+				else
+				OMEGALABZISGODOFALLTHINGS = 540 - ( (GEN_X * 300) / GEN_Y );
+
+			}
+		}
+		else
+		{ 
+		  
+			if (GEN_X >= inv(GEN_Y))
+			{
+				OMEGALABZISGODOFALLTHINGS = 540 - ( (GEN_X * 300) / GEN_Y );
+			}
+			else
+			{
+				OMEGALABZISGODOFALLTHINGS = 1080 + ( (GEN_Y * 300) / GEN_X );
+			}
+		}
+	}
+	else
+	{ 
+		if (GEN_X < 0)
+		{ 
+		  
+			if (GEN_X < GEN_Y)
+			{
+				OMEGALABZISGODOFALLTHINGS = ( (GEN_Y * 300) / GEN_X ) - 1080;
+			}
+			else
+			{
+				OMEGALABZISGODOFALLTHINGS = ( (inv(GEN_X) * 300) / GEN_Y ) - 540;
+			}
+		} else
+		{ 
+		  
+			if (inv(GEN_X) >= GEN_Y)
+			{
+				OMEGALABZISGODOFALLTHINGS = ( (inv(GEN_X) * 300) / GEN_Y ) - 540;
+			}
+			else
+			{
+				OMEGALABZISGODOFALLTHINGS = ( (GEN_Y * 300) / GEN_X );
+			}
+		}
+	}
+	
+	return (OMEGALABZISGODOFALLTHINGS/6);
+}
+function GEN_HEAVY_FUCKING_MATH_BRO(ANGLE_VECTOR_IND)
+{
+
+	if(ANGLE_VECTOR_IND < 0)
+	{
+		ANGLE_VECTOR_IND += 360;
+	}
+	
+	return ANGLE_VECTOR_IND
+}
+function GEN_RET_INTELLIGENT_REC_VAL()
+{	
+	if(get_rumble(GEN_VIBRATION_VAL_ACTIVE())) 
+	{
+	    INTELLIGENT_RECOIL_VIBRATE_IND = get_rumble(GEN_VIBRATION_VAL_ACTIVE());
+		
+	    if (INTELLIGENT_RECOIL_VIBRATE_IND > 10 && INTELLIGENT_RECOIL_VIBRATE_IND < 90)
+	    {
+		    if(abs(get_val(PS4_RY)) < (INTELLIGENT_RECOIL_VIBRATE_IND + INTELLIGENT_RECOIL_PLUS + INTELLIGENT_RECOIL_NEGATIVE_Y) && 
+		       abs(get_val(PS4_RX)) < (INTELLIGENT_RECOIL_VIBRATE_IND + INTELLIGENT_RECOIL_PLUS)) 
+			{
+		    
+				return (INTELLIGENT_RECOIL_VIBRATE_IND + INTELLIGENT_RECOIL_PLUS + INTELLIGENT_RECOIL_NEGATIVE_Y);
+	        }			
+    	}
+    }
+	
+	return 0;
+}
+function GEN_VIBRATION_VAL_ACTIVE()
+{
+    if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_A;
+    }
+	
+    if(get_rumble(RUMBLE_A) == 100)
+	{
+    	return RUMBLE_B;
+	}
+	
+	if(get_rumble(RUMBLE_B) == 100)
+	{
+    	return RUMBLE_A;
+	}
+	
+    if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_A;
+    }
+	
+    if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B))
+	{
+        return RUMBLE_B;
+    }
+	
+    return 0;
+    
+    
+}
+//RECOIL CONTROL COMBO [Don't adjust values] +++++++++++++++++++++++++++++++++++++++++++++++++++++
+combo Recoil_Control 
+{
+recoil_control = get_val(PS4_RY) + RECOIL_CONTROL;
+if(recoil_control > 100) recoil_control = 100;set_val(PS4_RY, recoil_control);
+recoil_control_left = get_val(PS4_RX) -RECOIL_CONTROL_LEFT;
+if(recoil_control_left > 100) recoil_control_left = 100;set_val(PS4_RX, recoil_control_left);
+recoil_control_right = get_val(PS4_RX) +RECOIL_CONTROL_RIGHT;
+if(recoil_control_right > 100) recoil_control_right = 100;set_val(PS4_RX, recoil_control_right); 
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// __  ____    _  _   ___   __ __     ____ __  __    __   ___   _  _      ___   __ __ ____      __    ___ ____  __ ____  ______  __           
+// || ||       \\//  // \\  || ||    ||    ||\ ||    ||  // \\  \\//     // \\  || || || \\    (( \  //   || \\ || || \\ | || | (( \          
+// || ||==      )/  ((   )) || ||    ||==  ||\\||    || ((   ))  )/     ((   )) || || ||_//     \\  ((    ||_// || ||_//   ||    \\           
+// || ||       //    \\_//  \\_//    ||___ || \|| |__||  \\_//  //       \\_//  \\_// || \\    \_))  \\__ || \\ || ||      ||   \_))          
+//                                                                                                                                            
+// ____  __     ____  ___   __   ____    ____     ___   __  __ ______    __     ____  ___  __ __    ______ __  __  ____ ___  ___              
+// || \\ ||    ||    // \\ (( \ ||       || \\   // \\  ||\ || | || |    ||    ||    // \\ || //    | || | ||  || ||    ||\\//||              
+// ||_// ||    ||==  ||=||  \\  ||==     ||  )) ((   )) ||\\||   ||      ||    ||==  ||=|| ||<<       ||   ||==|| ||==  || \/ ||              
+// ||    ||__| ||___ || || \_)) ||___    ||_//   \\_//  || \||   ||      ||__| ||___ || || || \\      ||   ||  || ||___ ||    ||              
+//                                                                                                                                            
+//  __  __ __ ____  ____    ___   ____  ______    ______ __  __  ____      ___ ____   ____  ___  ______   ___   ____   __  __ __ __           
+// (( \ || || || \\ || \\  // \\  || \\ | || |    | || | ||  || ||        //   || \\ ||    // \\ | || |  // \\  || \\ (( \ || || ||           
+//  \\  || || ||_// ||_// ((   )) ||_//   ||        ||   ||==|| ||==     ((    ||_// ||==  ||=||   ||   ((   )) ||_//  \\  || || ||           
+// \_)) \\_// ||    ||     \\_//  || \\   ||        ||   ||  || ||___     \\__ || \\ ||___ || ||   ||    \\_//  || \\ \_)) .. .. ..           
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+// __    __  ____      ___  ___  __  __    __    __   ___   ____  __ __      ___   __ __ ______     ___       ___   ___   ___  ___ ___  ___ __
+// ||    || ||        //   // \\ ||\ ||    ||    ||  // \\  || \\ || //     // \\  || || | || |    // \\     //    // \\  ||\\//|| ||\\//|| ||
+// \\ /\ // ||==     ((    ||=|| ||\\||    \\ /\ // ((   )) ||_// ||<<     ((   )) || ||   ||      ||=||    ((    ((   )) || \/ || || \/ || ||
+//  \V/\V/  ||___     \\__ || || || \||     \V/\V/   \\_//  || \\ || \\     \\_//  \\_//   ||      || ||     \\__  \\_//  ||    || ||    || ||
+//                                                                                                                                            
+//  __   __  __   ___   __  __     ____   ___   ____     _  _   ___   __ __ ____     ____   ____  ____  ____ ____  ____   ___  __             
+// (( \ (( \ ||  // \\  ||\ ||    ||     // \\  || \\    \\//  // \\  || || || \\    || \\ ||    ||    ||    || \\ || \\ // \\ ||             
+//  \\   \\  || ((   )) ||\\||    ||==  ((   )) ||_//     )/  ((   )) || || ||_//    ||_// ||==  ||==  ||==  ||_// ||_// ||=|| ||             
+// \_)) \_)) ||  \\_//  || \||    ||     \\_//  || \\    //    \\_//  \\_// || \\    || \\ ||___ ||    ||___ || \\ || \\ || || ||__|          
+//                                                                                                                                            
+// ______   ___        ___   __ __ ____      __   ____ ____  __ __ __   ___  ____  __                                                         
+// | || |  // \\      // \\  || || || \\    (( \ ||    || \\ || || ||  //   ||    (( \                                                        
+//   ||   ((   ))    ((   )) || || ||_//     \\  ||==  ||_// \\ // || ((    ||==   \\                                                         
+//   ||    \\_//      \\_//  \\_// || \\    \_)) ||___ || \\  \V/  ||  \\__ ||___ \_)) ||                                                     
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+//                                                                                                                                            
+// __    __  ____      ___  ___  __  __     ___  __    __       ____   ____ __  __ __  ____ __ ______    __    __ __  __ __ __     ____       
+// ||    || ||        //   // \\ ||\ ||    // \\ ||    ||       || )) ||    ||\ || || ||    || | || |    ||    || ||  || || ||    ||          
+// \\ /\ // ||==     ((    ||=|| ||\\||    ||=|| ||    ||       ||=)  ||==  ||\\|| || ||==  ||   ||      \\ /\ // ||==|| || ||    ||==        
+//  \V/\V/  ||___     \\__ || || || \||    || || ||__| ||__|    ||_)) ||___ || \|| || ||    ||   ||       \V/\V/  ||  || || ||__| ||___       
+//                                                                                                                                            
+//  ____ __  __    __   ___   _  _ __ __  __   ___      ___       ___   ___  ___  ___  ____    __    __  ____                                 
+// ||    ||\ ||    ||  // \\  \\// || ||\ ||  // \\    // \\     // \\ // \\ ||\\//|| ||       ||    || ||                                    
+// ||==  ||\\||    || ((   ))  )/  || ||\\|| (( ___    ||=||    (( ___ ||=|| || \/ || ||==     \\ /\ // ||==                                  
+// ||___ || \|| |__||  \\_//  //   || || \||  \\_||    || ||     \\_|| || || ||    || ||___     \V/\V/  ||___                                 
+//                                                                                                                                            
+// __      ___   __ __  ____                                                                                                                  
+// ||     // \\  || || ||                                                                                                                     
+// ||    ((   )) \\ // ||==                                                                                                                   
+// ||__|  \\_//   \V/  ||___ ||      
+
+
+// If you enjoy our scripts, please consider purchasing some of our scripts for other games at omegalabzscript.com     This helps us grow our business, and also produce even better scripts. Thanks.

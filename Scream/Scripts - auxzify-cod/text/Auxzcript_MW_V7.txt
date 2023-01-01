@@ -1,0 +1,188 @@
+
+//|------------------------------------------------------------------------------------------------------|
+//| Please Read:                                                                                         |
+//|              Current Version: V7                                                                     |
+//|------------------------------------------------------------------------------------------------------|
+//|     _      _   _  __  __  _____   ____   ____    ___   ____    _____                                 |
+//|    / \    | | | | \ \/ / |__  /  / ___| |  _ \  |_ _| |  _ \  |_   _|                                |
+//|   / _ \   | | | |  \  /    / /  | |     | |_) |  | |  | |_) |   | |                                  |
+//|  / ___ \  | |_| |  /  \   / /_  | |___  |  _ <   | |  |  __/    | |                                  |
+//| /_/   \_\  \___/  /_/\_\ /____|  \____| |_| \_\ |___| |_|       |_|                                  |
+//|                                                                                                      |
+//|                                                                                                      |
+//| __  __          _                  __          __         __                                         |
+//|  \/  |         | |                 \ \        / /        / _|                                        |
+//| \  / | ___   __| | ___ _ __ _ __    \ \  /\  / /_ _ _ __| |_ __ _ _ __ ___                           |
+//| |\/| |/ _ \ / _` |/ _ \ '__| '_ \    \ \/  \/ / _` | '__|  _/ _` | '__/ _ \                          |
+//| |  | | (_) | (_| |  __/ |  | | | |    \  /\  / (_| | |  | || (_| | | |  __/                          |
+//|_|  |_|\___/ \__,_|\___|_|  |_| |_|     \/  \/ \__,_|_|  |_| \__,_|_|  \___|                          |
+//|                                                                                                      |
+//|------------------------------------------------------------------------------------------------------|                                                                               
+
+
+//LAYOUT\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+    define FIRE_BTN = XB1_RT;
+    define ADS_BTN = XB1_LT;
+    define TACTICAL = XB1_LB;
+    define LETHAL = XB1_RB;
+    define RX = XB1_RX;
+    define RY = XB1_RY;
+    define LX = XB1_LX;
+    define LY = XB1_LY;
+    define CROUCH_BTN = XB1_RS;
+    define SPRINT_BTN = XB1_LS;
+    define RELOAD_BTN = XB1_X
+    define JUMP_BTN = XB1_A;
+    define MELEE_BTN = XB1_B;
+    define SWAP_BTN = XB1_Y;
+    define UP = XB1_UP;
+    define LEFT = XB1_LEFT;
+    define RIGHT = XB1_RIGHT;
+    define DOWN = XB1_DOWN;
+    function a_f(p,m) {
+    if(abs(get_val(p)) < Release)
+    return m;
+    return get_val(p);}
+    
+//SETTINGS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ 
+//Aim Assist:
+
+    int AimAssist = TRUE;
+    int AimAssistX = 10;
+    int AimAssistXNeg = 10;
+    int AimAssist_Strength = 17; 
+    int AimAssist_Strength2 = -17;
+    int AimAssist_hipStrength = 23;
+    int AimAssist_hipStrength2 = -23;
+    int Delay = 25;
+    int Release = 18;
+
+//Rapid Fire:
+
+    int RapidFire = TRUE;
+    define SPEED = 20;   //Rounds per Second
+
+//Dropshot:
+
+    int Dropshot = FALSE;
+    int AntiHit_drop = 40; //If dropshotting performs incorrectly - raise these values by +10
+    int AntiHit_stand = 55;
+    
+//Jumpshot:
+
+    int Jumpshot = FALSE
+    
+//Hold Breath (Snipers):
+   
+    int HoldBreath = TRUE;
+    
+//AutoRun:
+
+    int AutoRun = TRUE;
+
+//Anti Recoil:
+
+    int Anti_Recoil;
+    define ONLY_WITH_SCOPE = TRUE;  // Use Anti-recoil only when aiming
+    define ANTI_RECOIL = 19;        // Change value to adjust recoil
+
+//MAIN\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+main {
+ 
+       if (AimAssist)
+        if(get_val(ADS_BTN)) combo_run(AS);
+        if(get_val(FIRE_BTN)) combo_run(AS2);
+        combo_run(AX);
+        
+       if (RapidFire)
+        if (get_val(XB1_RT)) {
+    	combo_run(RAPID_FIRE);
+        }
+        
+       if(get_val(ADS_BTN) && event_press(RIGHT)){
+        Dropshot =! Dropshot;
+        if(Dropshot){
+        if(get_val(ADS_BTN)&&get_val(FIRE_BTN)){combo_run(Dropshot);
+        }
+        
+       if (Jumpshot)  
+        if(get_val(XB1_RT) > 99){
+        combo_run(JUMPSHOT);
+        } 
+      
+       if (HoldBreath)
+        if(get_val(XB1_LT)> 90) { set_val(XB1_LS, 100)
+        }}
+  
+       if(AutoRun)
+        if(get_val(LY) <= -20){set_val(XB1_LS, 100);
+        }}
+
+       if(!ONLY_WITH_SCOPE || get_val(ADS_BTN)) {
+         combo_run(AntiRecoil);
+        }}
+        
+        
+
+//COMBOS\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+   combo AS { 
+       set_val(10,a_f(10,AimAssist_Strength));
+       wait(Delay)
+       set_val(9,a_f(9,AimAssist_Strength));
+       wait(Delay)
+       set_val(10,a_f(10,AimAssist_Strength2));
+       wait(Delay)
+       set_val(9,a_f(9,AimAssist_Strength2));
+       wait(Delay)}
+    
+    combo AS2 { 
+       set_val(10,a_f(10,AimAssist_hipStrength));
+       wait(Delay)
+       set_val(9,a_f(9,AimAssist_hipStrength));
+       wait(Delay)
+       set_val(10,a_f(10,AimAssist_hipStrength2));
+       wait(Delay)
+       set_val(9,a_f(9,AimAssist_hipStrength2));
+       wait(Delay)}
+    
+    combo AX { 
+       set_val(10,a_f(10,AimAssistX));
+       wait(Delay)
+       set_val(9,a_f(9,AimAssistX));
+       wait(Delay)
+       set_val(10,a_f(10,AimAssistXNeg));
+       wait(Delay)
+       set_val(9,a_f(9,AimAssistXNeg));
+       wait(Delay)}
+    
+    combo RAPID_FIRE {
+	   set_val(XB1_RT,100);
+	   wait(SPEED);
+	   set_val(XB1_RT,0);
+	   wait(SPEED);
+	}
+	
+     combo Dropshot {
+       set_val(5,100);
+       wait(AntiHit_drop);
+       wait(AntiHit_stand);
+       set_val(5,100);
+    }
+
+    
+    combo JUMPSHOT {
+       set_val(XB1_A, 100);
+       wait(100); 
+       wait(300);   
+    }
+
+    combo AntiRecoil { 
+       if(get_val(FIRE_BTN)) {
+       Anti_Recoil = get_val(10) + ANTI_RECOIL;
+       if(Anti_Recoil > 100) Anti_Recoil = 100;
+       set_val(10, Anti_Recoil);
+    }}

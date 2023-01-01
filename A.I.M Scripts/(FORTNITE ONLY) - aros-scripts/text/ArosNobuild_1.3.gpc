@@ -1,0 +1,1167 @@
+//unmap XB1_XBOX;
+define Build   = XB1_B;
+define Wall    = XB1_RT;
+define Floor   = XB1_RB;
+define Ramp    = XB1_LT;
+define Cone    = XB1_LB;
+define Trap    = XB1_X;
+define ADS     = XB1_LT;
+define Fire    = XB1_RT;
+define Pickaxe = XB1_Y;
+define Edit    = XB1_LS
+define Reset   = XB1_RS;
+define Confirm = XB1_RB;
+define Pickup = XB1_X;
+define ArosResetMacroButton = XB1_RS;
+int ArosAimBooster1            = TRUE;
+int ArosAimBooster1HipFire     = TRUE;
+int ArosAimBooster2            = TRUE;
+int ArosAimBooster3            = TRUE;
+int ArosAimBooster4            = TRUE;
+int ArosAimBooster5            = TRUE;
+int ArosAimBooster5HipFire     = TRUE;
+int ArosAimBooster6            = TRUE;
+int ArosAimBooster6HipFire     = TRUE;
+int ArosAimBooster7            = TRUE;
+int ArosAimBooster8            = TRUE;
+int ArosPolarAssist1ADS        = TRUE;
+int ArosPolarAssist1HipFire    = TRUE;
+int ArosPolarAssist2           = TRUE;
+int ArosPolarAssist3           = TRUE;
+int ArosPolarAssist3Timed      = FALSE;
+int ArosPolarAssist3HipFire    = TRUE;
+int ArosPolarAssist4           = TRUE;
+int ArosPolarAssist4ADS        = TRUE;
+int ArosPolarAssist4HipFire    = TRUE;
+int ArosAssistedTracking       = TRUE;
+int ArosShapeAssistBoostToggle = TRUE;
+int ArosBloomReducer           = TRUE;
+int ArosRecoilReducer          = FALSE;
+int ArosRecoilReducerHipFire   = FALSE;
+int BuildTracker                   = FALSE;
+int ArosResetMacro             = FALSE;
+int ArosPickUpMacroToggle      = FALSE;
+int ArosTouchPadFix            = TRUE;
+int ArosAA1Power              = 4;
+int ArosAA2Power              = 5;
+int ArosAA2CutOut             = 45;
+int ArosAA2Range              = 3;
+int ArosAA2Speed              = 100;
+int ArosAA3Power              = 5;
+int ArosAA4Power              = 4;
+int ArosAA4PowerPlus1         = 5;
+int ArosAA4Speed              = 100;
+int ArosAimBooster5PowerX     = 4;
+int ArosAimBooster5PowerY     = 5;
+int ArosAA5Time               = 900;
+int ArosAA6Power              = 5;
+int ArosAA7Power              = 4;
+int ArosAA7CutOut             = 10;
+int ArosAA7Range              = 5;
+int ArosAA7Speed              = 100;
+int ArosAA8Sum                = 12;
+int ArosAA8X3                 = 9;
+int ArosAA8OneThird           = 3;
+define ArosConstantAAPowerX   = 5;
+define FLIP1111CAPX                     = ArosConstantAAPowerX;
+define ArosConstantAAPowerY   = 2;
+define FLIP1111CAPY                     = ArosConstantAAPowerY;
+define ArosConstantAAPowerX2  = 4;
+define FLIP1111CAPX2                    = ArosConstantAAPowerX2;
+define ArosConstantAAPowerY2  = 3;
+define FLIP1111CAPY2                    = ArosConstantAAPowerY2;
+define ArosConstantAAPowerX3  = 2;
+define FLIP1111CAPX3                    = ArosConstantAAPowerX3;
+define ArosConstantAAPowerY3  = 5;
+define FLIP1111CAPY3                    = ArosConstantAAPowerY3;
+int ArosConstantAADelay4      = 20;
+define ArosConstantAAPowerX4  = 4;
+define FLIP1111CAPX4                    = ArosConstantAAPowerX4;
+define ArosConstantAAPowerY4  = 3;
+define FLIP1111CAPY4                    = ArosConstantAAPowerY4;
+int ArosPolarAssist1Range     = 4;
+int ArosPolarAssist1Speed     = 100;
+int ArosPolarAssist2Range     = 4;
+int ArosPolarAssist2Speed     = 40;
+int ArosPolarAssist3Power     = 1;
+int ArosPolarAssist3Time      = 5000;
+int ArosPolarAssist4Range     = 5;
+int ArosPolarAssist4Speed     = 100;
+int ArosPolarAssist4Delay     = 100;
+int ArosAssistedTrackingPower = 100;
+int ArosShapeAssistSpeed      = 25;
+int ArosShapeAssistRange      = 4;
+int ArosShapeAssistRangeMin   = 2;
+int ArosShapeAssistSpeedBoost = 5;
+int ArosShapeAssistRangeBoost = 1;
+int ArosShapeAssist           = Helix;
+int ArosBloomReducerDelay               = 22;
+define ArosRecoilReducerVerticalPower   = 17;
+define ArosRecoilReducerHorizontalPower = 0;
+int BuildSyncTime               = 1000;
+int InstantResetDelay           = 10;
+define ArosResetMacroDelay  = 1;
+int DeadZone                    = 10;
+//100% Perfect Accuracy [ALWAYS ON] (L2 + R1)
+	int PerfectAccuracy = TRUE;
+main {
+	vm_tctrl(-9);
+	block_rumble();
+	deadzone(XB1_LT,XB1_RT,100,100);
+	if(get_val(Edit))    {
+		combo_run(NonActivated);
+			}
+	if(get_val(Pickaxe)) {
+		combo_run (Activated);
+			}
+	if(get_val(Confirm)) {
+		combo_run (Activated);
+			}
+	if (ArosTouchPadFix) {
+		swap(PS4_SHARE, PS4_TOUCH);
+			}
+	if (ArosResetMacro) {
+		if (event_press(ArosResetMacroButton)) {
+			combo_run(ArosFastReset);
+					}
+			}
+	if (BuildTracker) {
+		if (event_press(Build)) {
+			BuildTrack = !BuildTrack;
+					}
+		if (BuildTrack)   {
+			BuildCount += get_rtime();
+			if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+				BuildTrack = Off;
+				BuildCount = Off;
+							}
+			if (get_ival(Floor) || get_ival(Cone) || get_ival(Ramp) || get_ival(Wall) || get_ival(Build)) BuildCount = Off;
+					}
+			}
+	if (!BuildTrack)  {
+		FLIP1111AASI = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+		X = get_ival(RX);
+		Y = get_ival(RY);
+		M = isqrt(pow(X, 2) + pow(Y, 2));
+		MaxM = (M < 100);
+		if (!(Time++ % ArosPolarAssist1Delay)) {
+			Angle += ArosPolarAssist1Speed;
+					}
+		Angle = Angle % 360;
+		Sin = ArosPolarArray[Angle % 360];
+		Cos = ArosPolarArray[(Angle + 270) % 360];
+		Cos = (Cos * ArosPolarAssist1Range) / 100;
+		Sin = (Sin * ArosPolarAssist1Range) / 100;
+		if ((ArosPolarAssist1ADS && get_ival(ADS)) || (ArosPolarAssist1HipFire && get_ival(Fire))) {
+			if (M <= ArosPolarAssist1Range) {
+				Sin -= Y;
+				Cos -= X;
+							}
+			else {
+				Sin = (Sin * (200 - ((abs(Y) + M) / 10) * 10) / 200) * MaxM;
+				Cos = (Cos * (200 - ((abs(X) + M) / 10) * 10) / 200) * MaxM;
+							}
+			set_val(RX, clamp(X + Cos, -100, 100));
+			set_val(RY, clamp(Y + Sin, -100, 100));
+					}
+					if (get_val(PS4_L2) && get_val(PS4_R1)) {
+PerfectAccuracy = !PerfectAccuracy;
+combo_run(PerfectionAccuracy);
+set_val(PS4_R1, 0);
+} else {
+combo_stop(PerfectionAccuracy);
+}
+		if(ArosAimBooster1)      {
+			if (get_ival(ADS) || (ArosAimBooster1HipFire && get_ival(Fire))) {
+				combo_run(ArosAA1);
+							}
+			else {
+				combo_stop(ArosAA1);
+							}
+					}
+		if(ArosAimBooster2)      {
+			if (get_ival(ADS)){
+				combo_run(ArosAA2);
+				ArosAA2PF();
+							}
+			if (abs(get_ival(AimX)) > ArosAA2CutOut || abs(get_ival(AimY)) > ArosAA2CutOut) {
+				combo_stop(ArosAA2);
+							}
+					}
+		if(ArosAimBooster3)      {
+			if (get_val(Fire)> 1){
+				combo_run(ArosAA3);
+							}
+			if(abs(get_val(9)) > 19 || abs(get_val(10)) > 19) {
+				combo_stop(ArosAA3);
+							}
+					}
+		if(ArosAimBooster4)      {
+			if (get_val(ADS)> 1){
+				combo_run(ArosAA4);
+				ArosAA1PF();
+							}
+			if(abs(get_val(9)) > 36 || abs(get_val(10)) > 36) {
+				combo_stop(ArosAA4);
+							}
+					}
+		if(ArosAimBooster5)      {
+			if ((get_ival(ADS)) || (get_ival(Fire) && ArosAimBooster5HipFire)) {
+				if (abs(get_ival(RX)) <= ArosAA5Time && abs(get_ival(RY)) <= ArosAA5Time) {
+					combo_run(ArosAA5);
+									}
+							}
+			else {
+				combo_stop(ArosAA5);
+							}
+					}
+		if(ArosAimBooster6)      {
+			if (get_ival(ADS) || (ArosAimBooster6HipFire && get_ival(Fire))) {
+				combo_run(ArosAA6);
+							}
+			else {
+				combo_stop(ArosAA6);
+							}
+					}
+		if(ArosAimBooster7)      {
+			if (get_ival(ADS)){
+				combo_run(ArosAA7);
+				ArosAA3PF();
+							}
+			if (abs(get_ival(AimX)) > ArosAA7CutOut || abs(get_ival(AimY)) > ArosAA7CutOut) {
+				combo_stop(ArosAA7);
+							}
+					}
+		if(ArosAimBooster8)      {
+			if (event_press(ADS)) {
+				Power = On;
+							}
+			else if (!get_ival(ADS) && event_press(Fire)) {
+				Power = On;
+							}
+			if (get_ival(ADS) || get_ival(Fire)) {
+				AxisXY = isqrt(abs(get_ival(RX)) * abs(get_ival(RX)) + abs(get_ival(RY)) * abs(get_ival(RY)));
+				if (ArosAA8Sum == 1)FLIP1111AAF(ArosAA8X3,ArosAA8OneThird);
+							}
+			else {
+				CountPower = 0;
+				power = Off;
+							}
+					}
+		if(ArosPolarAssist2)     {
+			if (get_ival(PS4_L2) || (get_ival(PS4_R2))) {
+				if (FLIP1111AASI <= ArosPolarAssist2Range) {
+					rnd = random(mn, mx);
+					RS_Gradient = (RS_Gradient + ArosPolarAssist2Speed) % 360;
+					set_polar(POLAR_RS, RS_Gradient, (ArosPolarAssist2Range * rnd));
+									}
+							}
+					}
+		if(ArosPolarAssist3)     {
+			if (ArosPolarAssist3Timed) {
+				if (get_ival(ADS) && get_ptime(ADS) <= ArosPolarAssist3Time || ArosPolarAssist3HipFire && get_ival(Fire) && get_ptime(Fire) <= ArosPolarAssist3Time) {
+					FLIP1111AAF2();
+									}
+							}
+			else if (get_ival(ADS)|| ArosPolarAssist3HipFire && get_ival(Fire)) {
+				FLIP1111AAF2();
+							}
+			if (!get_ival(ADS) && !get_ival(Fire)) {
+				AAT = 0;
+				Axis = 0;
+							}
+					}
+		if(ArosPolarAssist4)     {
+			ArosPolarAssist4AX = get_val(RX);
+			ArosPolarAssist4AY = get_val(RY);
+			ArosPolarAssist4AM = isqrt(pow(ArosPolarAssist4AX, 2) + pow(ArosPolarAssist4AY, 2));
+			ArosPolarAssist4MM = (ArosPolarAssist4AM < 100);
+			if(!(ArosPolarAssist4T++ % ArosPolarAssist4Delay)){
+				ArosPolarAssist4A += ArosPolarAssist4Speed;
+							}
+			ArosPolarAssist4A = ArosPolarAssist4A % 360;
+			ArosPolarAssist4SA = ArosPolarArray[ArosPolarAssist4A % 360];
+			ArosPolarAssist4CA = ArosPolarArray[(ArosPolarAssist4A + 270) % 360];
+			ArosPolarAssist4CA = (ArosPolarAssist4CA * ArosPolarAssist4Range) / 100;
+			ArosPolarAssist4SA = (ArosPolarAssist4SA * ArosPolarAssist4Range) / 100;
+			if((ArosPolarAssist4ADS && get_val(ADS)) || (ArosPolarAssist4HipFire && get_val(Fire))){
+				if(ArosPolarAssist4AM <= ArosPolarAssist4Range){
+					ArosPolarAssist4SA -= ArosPolarAssist4AY;
+					ArosPolarAssist4CA -= ArosPolarAssist4AX;
+									}
+				else {
+					ArosPolarAssist4SA = (ArosPolarAssist4SA * (200 - ((abs(ArosPolarAssist4AY) + ArosPolarAssist4AM) / 10) * 10) / 200) * ArosPolarAssist4MM;
+					ArosPolarAssist4CA = (ArosPolarAssist4CA * (200 - ((abs(ArosPolarAssist4AX) + ArosPolarAssist4AM) / 10) * 10) / 200) * ArosPolarAssist4MM;
+									}
+				set_val(RX, clamp(ArosPolarAssist4AX + ArosPolarAssist4CA, -100, 100));
+				set_val(RY, clamp(ArosPolarAssist4AY + ArosPolarAssist4SA, -100, 100));
+							}
+					}
+		if(ArosAssistedTracking) {
+			if(get_val(XB1_LT) && get_val(XB1_RT)){
+				sensitivity(XB1_RX,43,ArosAssistedTrackingPower);
+				sensitivity(XB1_RY,43,ArosAssistedTrackingPower);
+							}
+					}
+		if(ArosBloomReducer)     {
+			if (get_val(ADS) && (get_val(Fire))) {
+				combo_run(ArosBloomReducer);
+							}
+			if(abs(get_val(XB1_LX)) > 10 || abs(get_val(XB1_LY)) > 10){
+				combo_stop(ArosBloomReducer);
+							}
+					}
+		if(ArosRecoilReducer)    {
+			if(get_ival(ADS) && get_ival(Fire) || ArosRecoilReducerHipFire && get_ival(Fire)) {
+				combo_run(ArosRecoilReducer);
+							}
+					}
+		if(ArosShapeAssist)      {
+			FLIP1111SARX = get_val(RX);
+			FLIP1111SARY = get_val(RY);
+			FLIP1111SAAM = isqrt(pow(FLIP1111SARX,2) + pow(FLIP1111SARY,2));
+			FLIP1111SAMM = (FLIP1111SAAM < 100);
+			FLIP1111SAA += ArosShapeAssistSpeed + FLIP1111SAA2;
+			FLIP1111SAA = FLIP1111SAA % 360;
+			FLIP1111SACA = ArosPolarArray[(FLIP1111SAA + 270) % 360];
+			FLIP1111SASA = ArosPolarArray[FLIP1111SAA % 360];
+			if (ArosShapeAssistBoostToggle) {
+				if (get_ival(Fire)) {
+					FLIP1111SASR = get_rumble(ArosRTUFunction());
+					FLIP1111SAA2 = ArosShapeAssistSpeedBoost;
+					if (FLIP1111SASR > 10 && FLIP1111SASR < 90) {
+						FLIP1111SAPS = (ArosShapeAssistRange + ArosShapeAssistRangeBoost + ArosShapeAssistSpeedBoost + FLIP1111SASR / 4);
+						FLIP1111SASR   = Off;
+											}
+									}
+							}
+			if (get_ival(ADS) || get_ival(Fire)) {
+				if (FLIP1111SAAM < ArosShapeAssistRange) {
+					FLIP1111SASA -= FLIP1111SARY;
+					FLIP1111SACA -= FLIP1111SARX;
+									}
+				else {
+					FLIP1111SASA = (FLIP1111SASA * (200 - ((abs(FLIP1111SARY) + FLIP1111SAAM) / 10) * 10) / 200) * FLIP1111SAMM;
+					FLIP1111SACA = (FLIP1111SACA * (200 - ((abs(FLIP1111SARX) + FLIP1111SAAM) / 10) * 10) / 200) * FLIP1111SAMM;
+									}
+				if (!get_rumble(ArosRTUFunction())) ArosSFunction(ArosShapeAssistRange);
+				else ArosSFunction(FLIP1111SAPS);
+							}
+			FLIP1111SAPS = On;
+			FLIP1111SASR   = On;
+					}
+		if(ArosPickUpMacroToggle && get_val(Pickup)) {
+			combo_run(ArosPickUpMacro);
+					}
+		combo_run(ArosConstantAimBooster1);
+		combo_run(ArosConstantAimBooster2);
+		combo_run(ArosConstantAimBooster3);
+		combo_run(ArosConstantAimBooster4);
+		combo_run(ArosRBGFlow);
+			}
+	}
+combo NonActivated {
+	ArosPickUpMacroToggle = FALSE;
+	ArosRecoilReducerHipFire = FALSE;
+	ArosRecoilReducer = FALSE;
+	ArosAimBooster1 = FALSE;
+	ArosAimBooster1HipFire = FALSE;
+	ArosAimBooster2 = FALSE;
+	ArosAimBooster3 = FALSE;
+	ArosAimBooster4 = FALSE;
+	ArosAimBooster5 = FALSE;
+	ArosAimBooster5HipFire = FALSE;
+	ArosAimBooster6 = FALSE;
+	ArosAimBooster6HipFire = FALSE;
+	ArosAimBooster7 = FALSE;
+	ArosAimBooster8 = FALSE;
+	ArosPolarAssist1ADS = FALSE;
+	ArosPolarAssist1HipFire = FALSE;
+	ArosPolarAssist2 = FALSE;
+	ArosPolarAssist3 = FALSE;
+	ArosPolarAssist3 = FALSE;
+	ArosPolarAssist3Timed = FALSE;
+	ArosPolarAssist3HipFire = FALSE;
+	ArosAssistedTracking = FALSE;
+	ArosShapeAssistBoostToggle = FALSE;
+	ArosBloomReducer = FALSE;
+	}
+combo Activated {
+	ArosPickUpMacroToggle = FALSE;
+	ArosRecoilReducerHipFire = FALSE;
+	ArosRecoilReducer = FALSE;
+	ArosAimBooster1 = TRUE;
+	ArosAimBooster1HipFire = TRUE;
+	ArosAimBooster2 = TRUE;
+	ArosAimBooster3 = TRUE;
+	ArosAimBooster4 = TRUE;
+	ArosAimBooster5 = TRUE;
+	ArosAimBooster5HipFire = TRUE;
+	ArosAimBooster6  = TRUE;
+	ArosAimBooster6HipFire = TRUE;
+	ArosAimBooster7 = TRUE;
+	ArosAimBooster8 = TRUE;
+	ArosPolarAssist1ADS = TRUE;
+	ArosPolarAssist1HipFire = TRUE;
+	ArosPolarAssist2 = TRUE;
+	ArosPolarAssist3 = TRUE;
+	ArosPolarAssist3 = TRUE;
+	ArosPolarAssist3Timed = FALSE;
+	ArosPolarAssist3HipFire = TRUE;
+	ArosAssistedTracking = TRUE;
+	ArosShapeAssistBoostToggle = TRUE;
+	ArosBloomReducer = FALSE;
+	}
+combo ArosConstantAimBooster1  {
+	set_val(AimY,y_val(AimY, FLIP1111CAPY));
+	wait(ArosConstantAADelay);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX));
+	wait(ArosConstantAADelay);
+	set_val(AimY,y_val(AimY, FLIP1111CAPY * -1));
+	wait(ArosConstantAADelay);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX * -1));
+	wait(ArosConstantAADelay);
+	}
+combo ArosConstantAimBooster2  {
+	set_val(AimY,y_val(AimY, FLIP1111CAPY2));
+	wait(ArosConstantAADelay2);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX2));
+	wait(ArosConstantAADelay2);
+	set_val(AimY,y_val(AimY, FLIP1111CAPY2 * -1));
+	wait(ArosConstantAADelay2);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX2 * -1));
+	wait(ArosConstantAADelay2);
+	}
+combo ArosConstantAimBooster3  {
+	set_val(AimY,y_val(AimY, FLIP1111CAPY3));
+	wait(ArosConstantAADelay3);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX3));
+	wait(ArosConstantAADelay3);
+	set_val(AimY,y_val(AimY, FLIP1111CAPY3 * -1));
+	wait(ArosConstantAADelay3);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX3 * -1));
+	wait(ArosConstantAADelay3);
+	}
+combo ArosConstantAimBooster4  {
+	set_val(AimY,y_val(AimY, FLIP1111CAPY4));
+	wait(ArosConstantAADelay4);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX4));
+	wait(ArosConstantAADelay4);
+	set_val(AimY,y_val(AimY, FLIP1111CAPY4 * -1));
+	wait(ArosConstantAADelay4);
+	set_val(AimX,x_val(AimX, FLIP1111CAPX4 * -1));
+	wait(ArosConstantAADelay4);
+	}
+combo ArosAA7 {
+	set_val(AimY,ArosAA7Power);
+	wait(ArosAA7Delay);
+	set_val(AimX,ArosAA7Power);
+	wait(ArosAA7Delay);
+	set_val(AimY,ArosAA7Power * -1);
+	wait(ArosAA7Delay);
+	set_val(AimX,ArosAA7Power * -1);
+	wait(ArosAA7Delay);
+	}
+combo ArosAA6 {
+	set_val(RY,AxisRelease(RY,ArosAA6Power));
+	wait(ArosAA6Delay);
+	set_val(RX,AxisRelease(RX,ArosAA6Power));
+	wait(ArosAA6Delay);
+	set_val(RY,AxisRelease(RY,inv(ArosAA6Power)));
+	wait(ArosAA6Delay);
+	set_val(RX,AxisRelease(RX,inv(ArosAA6Power)));
+	wait(ArosAA6Delay);
+	}
+combo ArosAA5 {
+	ArosSetValFunction(RX,ArosAimBooster5PowerX);
+	wait(ArosAA5Delay);
+	ArosSetValFunction(RY,ArosAimBooster5PowerY);
+	ArosSetValFunction(RX,ArosAimBooster5PowerX * -1);
+	wait(ArosAA5Delay);
+	ArosSetValFunction(RY,ArosAimBooster5PowerY * -1);
+	wait(ArosAA5Delay);
+	}
+combo ArosAA4 {
+	set_val(10, (ArosAA4Power));
+	wait(3)set_val(9, (ArosAA4Power));
+	wait(5)set_val(10, ArosAA4Power * -1);
+	wait(3)set_val(9, ArosAA4Power * -1);
+	wait(5)
+}
+combo ArosAA3 {
+	set_val(10, (ArosAA3Power));
+	wait(5)set_val(9, (ArosAA3Power));
+	wait(7)set_val(10, ArosAA3Power * -1);
+	wait(5)set_val(9, ArosAA3Power * -1);
+	wait(7)
+}
+combo ArosAA2 {
+	set_val(AimY,ArosAA2Power);
+	wait(ArosAA2Delay);
+	set_val(AimX,ArosAA2Power);
+	wait(ArosAA2Delay);
+	set_val(AimY,ArosAA2Power * -1);
+	wait(ArosAA2Delay);
+	set_val(AimX,ArosAA2Power * -1);
+	wait(ArosAA2Delay);
+	}
+combo ArosAA1 {
+	set_val(AimY,AxisR(AimY,ArosAA1Power));
+	wait(ArosAA1Delay);
+	set_val(AimX,AxisR(AimX,ArosAA1Power));
+	wait(ArosAA1Delay);
+	set_val(AimY,AxisR(AimY,inv(ArosAA1Power)));
+	wait(ArosAA1Delay);
+	set_val(AimX,AxisR(AimX,inv(ArosAA1Power)));
+	wait(ArosAA1Delay);
+	}
+combo ArosBloomReducer {
+	set_val(XB1_LX,-31);
+	wait(ArosBloomReducerDelay);
+	set_val(XB1_LX, 31);
+	wait(ArosBloomReducerDelay);
+	set_val(XB1_LY,-13);
+	wait(ArosBloomReducerDelay);
+	set_val(XB1_LY, 13);
+	wait(ArosBloomReducerDelay);
+	if(ArosBloomReducerDelay < 160){
+		ArosBloomReducerDelay = ArosBloomReducerDelay + 10;
+			}
+	else {
+		ArosBloomReducerDelay = 100;
+			}
+	}
+combo ArosFastReset {
+	set_val(ArosResetMacroButton,100);
+	wait(InstantResetDelay);
+	set_val(Edit,100);
+	wait(InstantResetDelay);
+	set_val(Reset,100);
+	wait(InstantResetDelay);
+	combo_run(ArosConfirm);
+	}
+
+	
+combo PerfectionAccuracy {
+set_val(PS4_R2,100);
+wait(100);
+wait(250);
+set_val(PS4_R2,100);
+}
+combo ArosConfirm {
+	set_val(Confirm,100);
+	wait(100);
+	set_val(Confirm,0);
+	wait(10);
+	set_val(Reset,0);
+	wait(10);
+	}
+combo ArosRecoilReducer {
+	AntirecoilVertical = get_val(PS4_RY) + ArosRecoilReducerVerticalPower;
+	if(AntirecoilVertical > 100) AntirecoilVertical = 100;
+	if(abs(get_val(PS4_RY)) < abs(ArosRecoilReducerVerticalPower) + 5) set_val(PS4_RY, (AntirecoilVertical));
+	AntirecoilHorizontal = get_val(PS4_RX) + ArosRecoilReducerHorizontalPower;
+	if(AntirecoilHorizontal > 100) AntirecoilHorizontal = 100;
+	if(abs(get_val(PS4_RX)) < abs(ArosRecoilReducerHorizontalPower) + 5) set_val(PS4_RX, AntirecoilHorizontal);
+	}
+int AntirecoilVertical,AntirecoilHorizontal;
+combo ArosPickUpMacro {
+	set_val(Pickup, 100);
+	wait(ArosResetMacroDelay);
+	set_val(Pickup, 0);
+	wait(ArosResetMacroDelay);
+	set_val(Pickup, 100);
+	wait(ArosResetMacroDelay);
+	set_val(Pickup, 0);
+	wait(ArosResetMacroDelay);
+	set_val(Pickup, 100);
+	wait(ArosResetMacroDelay);
+	set_val(Pickup, 0);
+	}
+function x_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (FLIP1111CAPX + 1))  return f_val;
+	return get_val(f_axis);
+	}
+function y_val(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (FLIP1111CAPY + 1))  return f_val;
+	return get_val(f_axis);
+	}
+function AxisRelease(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= ArosAA6Power) return AxisVal;
+	return get_ival(AxisXY);
+	}
+function ArosAA3PF() {
+	ArosPolarAssist1Speed = (ArosPolarAssist1Speed + ArosAA7Speed) % 360;
+	ArosAA3SPF(ArosPolarAssist1Speed,ArosAA7Range);
+	}
+function ArosAA3SPF(ArosAA7Speed,ArosAA7Range){
+	RX = AimX;
+	RY = AimY;
+	if(ArosAA7Speed < 0) ArosAA7Speed = 360 + (ArosAA7Speed % 360);
+	ArosAA7Speed = (ArosAA7Speed + 90) % 360;
+	ArosAA7Range = clamp(ArosAA7Range, 0, 100);
+	Sin = ArosPolarArray[ArosAA7Speed];
+	Cos = ArosPolarArray[(ArosAA7Speed + 90) % 360];
+	ArosSetValFunction(RX,inv(ArosAA7Range * Cos / 100));
+	ArosSetValFunction(RY,inv(ArosAA7Range * Sin / 100));
+	return;
+	}
+function ArosSetValFunction(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_val(Input))) / 100 + get_val(Input),-100,100));
+	return;
+	}
+function ArosAA1PF() {
+	Angle1 = (Angle1 + ArosAA4Speed) % 360;
+	ArosAA1SPF(2,Angle1, ArosAA4PowerPlus1);
+	}
+function ArosAA1SPF(stick, angle, ArosPolarAssist1Range){
+	x_stick = 8 + stick;
+	y_stick = 9 + stick;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	ArosPolarAssist1Range = clamp(ArosPolarAssist1Range, 0, 100);
+	sin_angle = ArosPolarArray[angle];
+	cos_angle = ArosPolarArray[(angle + 90) % 360];
+	offset(x_stick, inv(ArosPolarAssist1Range * cos_angle / 100));
+	offset(y_stick, inv(ArosPolarAssist1Range * sin_angle / 100));
+	return;
+	}
+function offset(int axis, int offset_val) {
+	set_val(axis, clamp(offset_val * (100 - abs(get_val(axis))) / 100 + get_val(axis), -100, 100));
+	return
+}
+function ArosAA2PF() {
+	ArosPolarAssist1Speed = (ArosPolarAssist1Speed + ArosAA2Speed) % 360;
+	ArosAA2SPF(ArosPolarAssist1Speed,ArosAA2Range);
+	}
+function ArosAA2SPF(angle,ArosPolarAssist1Range){
+	RX = AimX;
+	RY = AimY;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	ArosPolarAssist1Range = clamp(ArosPolarAssist1Range, 0, 100);
+	Sin = ArosPolarArray[angle];
+	Cos = ArosPolarArray[(angle + 90) % 360];
+	ArosSetValFunction(RX,inv(ArosPolarAssist1Range * Cos / 100));
+	ArosSetValFunction(RY,inv(ArosPolarAssist1Range * Sin / 100));
+	return;
+	}
+function FLIP1111AAF (Strength,Step) {
+	if (Power) {
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+			}
+	if (!power) {
+		Xpower += Increment;
+		Ypower -= Increment;
+			}
+	else {
+		Xpower -= Increment;
+		Ypower += Increment;
+			}
+	CountPower ++;
+	if (CountPower >= (Strength / Increment)) {
+		power = !power;
+		CountPower = 0;
+			}
+	if (AxisXY > DeadZone) {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2) + get_ival(RY));
+			set_val(RX,(Xpower - Strength / 2 * -1) + get_ival(RX));
+					}
+			}
+	else {
+		if (Reducer) {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+		else {
+			set_val(RY,(Ypower - Strength / 2));
+			set_val(RX,(Xpower - Strength / 2 * -1));
+					}
+			}
+	}
+function FLIP1111AAF2() {
+	AAT += get_rtime();
+	if (!Axis) ArosSetValFunction(RY,AAT * ArosPolarAssist3Power / 10);
+	if (Axis == 1) ArosSetValFunction(RX,AAT * ArosPolarAssist3Power / 10);
+	if (Axis == 2) ArosSetValFunction(RY,inv(AAT * ArosPolarAssist3Power / 10));
+	if (Axis == 3) {
+		ArosSetValFunction(RX,inv(AAT * ArosPolarAssist3Power / 10));
+		if (AAT > 50) {
+			AAT = 0;
+			Axis = 0;
+					}
+			}
+	else if (AAT > 50) {
+		AAT = 0;
+		Axis += 1;
+			}
+	}
+function AxisR(AxisXY,AxisVal) {
+	if (abs(get_ival(AxisXY)) <= Power) return AxisVal;
+	return get_ival(AxisXY);
+	}
+function ArosRTUFunction() {
+	if (get_rumble(RA) >= get_rumble(RB)) return RA;
+	if (get_rumble(RA) < get_rumble(RB)) return RB;
+	return Off;
+	}
+function ArosSFunction(f_var) {
+	if (!FLIP1111SASP1) {
+		FLIP1111SAIS -= 1;
+		if (FLIP1111SAIS < ArosShapeAssistRangeMin)FLIP1111SASP1 = On;
+			}
+	else {
+		FLIP1111SAIS += 1;
+		if (FLIP1111SAIS > f_var)FLIP1111SASP1 = Off;
+			}
+	if (!FLIP1111SASP2) {
+		FLIP1111SAOS -= 1;
+		if (FLIP1111SAOS < ArosShapeAssistRangeMin)FLIP1111SASP2 = On;
+			}
+	else {
+		FLIP1111SAOS += 1;
+		if (FLIP1111SAOS > f_var)FLIP1111SASP2 = Off;
+			}
+	if (ArosShapeAssist == Circle) {
+		FLIP1111SARY = (get_val(RY)) + ((FLIP1111SASA * f_var))/100;
+		FLIP1111SARX = (get_val(RX)) + ((FLIP1111SACA * f_var))/100;
+			}
+	if (ArosShapeAssist == TallOval) {
+		FLIP1111SARY = (get_val(RY)) + ((FLIP1111SASA * f_var))/100;
+		FLIP1111SARX = (get_val(RX)) + ((FLIP1111SACA * ArosShapeAssistRangeMin))/100;
+			}
+	if (ArosShapeAssist == WideOval) {
+		FLIP1111SARX = (get_val(RX)) + ((FLIP1111SACA * f_var))/100;
+		FLIP1111SARY = (get_val(RY)) + ((FLIP1111SASA * ArosShapeAssistRangeMin))/100;
+			}
+	if (ArosShapeAssist == Spiral) {
+		FLIP1111SARY = (get_val(RY)) + ((FLIP1111SASA * FLIP1111SAIS))/100;
+		FLIP1111SARX = (get_val(RX)) + ((FLIP1111SACA * FLIP1111SAOS))/100;
+			}
+	if (ArosShapeAssist == Helix) {
+		if (FLIP1111SAPT <= 1) {
+			FLIP1111SARX = (get_val(RX)) + ((FLIP1111SACA * f_var))/100;
+					}
+		if (FLIP1111SAPT > 1) {
+			FLIP1111SARY = (get_val(RY)) + ((FLIP1111SASA * f_var))/100;
+					}
+		FLIP1111SAPT++;
+		if (FLIP1111SAPT == 4) FLIP1111SAPT = Off;
+			}
+	set_val(RX,FLIP1111SARX);
+	set_val(RY,FLIP1111SARY);
+	}
+const int8 ArosPolarArray [] = {
+	100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}
+;
+define Circle = 1;
+define TallOval = 2;
+define WideOval = 3;
+define Spiral = 4;
+define Helix = 5;
+int FLIP1111SARX,FLIP1111SARY,FLIP1111SAAM,FLIP1111SAMM,FLIP1111SAA,FLIP1111SAA2,FLIP1111SACA,FLIP1111SASA,FLIP1111SAPT,FLIP1111SASR,FLIP1111SAPS,FLIP1111SASP1,FLIP1111SAIS,FLIP1111SAOS,FLIP1111SASP2;
+int x_stick,y_stick,cos_angle,sin_angle,Angle1,RX,RY,Time,Angle,Cos,Sin,X,Y,M,MaxM,AAT,Axis,BuildTrack,BuildCount,power,Ypower,Xpower,Power,CountPower,AxisXY,Increment;
+int RS_Gradient;
+int FLIP1111AASI;
+int rnd;
+int mn = 326, mx = 328;
+define PY = POLAR_RY ;
+define AimX = PS4_RX;
+define AimY = PS4_RY;
+define Off = FALSE;
+int On = TRUE;
+define PX = POLAR_RX;
+define PS = POLAR_RS;
+define RA = RUMBLE_A;
+define RB = RUMBLE_B;
+define Reducer = TRUE;
+int inc = 1, dec, color[3];
+init{
+	color = 255;
+	}
+combo ArosRBGFlow {
+	wait(1);
+	set_rgb(color, color[1], color[2]);
+	color[dec] -= 1;
+	color[inc] += 1;
+	if(!color[dec]) {
+		inc = (inc + 1) % 3;
+		dec = (dec + 1) % 3;
+			}
+	}
+init{
+	cls_oled(0);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),10,OLED_FONT_SMALL,OLED_WHITE,Script_Text[0]);
+	print(center_x(18, OLED_FONT_SMALL_WIDTH),25,OLED_FONT_SMALL,OLED_WHITE,Script_Text1[0]);
+	}
+function center_x(f_chars,f_font){
+	return (OLED_WIDTH / 2) - ((f_chars * f_font) / 2);
+	}
+int ArosPolarAssist4T,ArosPolarAssist4A,ArosPolarAssist4CA,ArosPolarAssist4SA,ArosPolarAssist4AX,ArosPolarAssist4AY,ArosPolarAssist4AM,ArosPolarAssist4MM;
+int ArosAA1Delay = 1;
+int ArosAA2Delay = 2;
+int ArosAA5Delay = 3;
+int ArosAA6Delay = 4;
+int ArosAA7Delay = 6;
+int ArosConstantAADelay = 8;
+int ArosConstantAADelay2 = 9;
+int ArosConstantAADelay3 = 11;
+int ArosPolarAssist1Delay = 12;
+// #0007
+const string Script_Text[] = {
+	"Discord.GG/",""
+}
+;
+const string Script_Text1[] = {
+	"MSG AROS 26 FOR DEADZONES",""
+}
+
+// HAZE SCRIPT V1 FOR PC
+define aimY   = PS4_RY;
+define LX      = PS4_LX;
+define aimX   = PS4_RX;
+define LY      = PS4_LY;
+main {
+	swap (PS4_TOUCH,PS4_SHARE);
+	// All Other Code Which Is Within The Main Loop Section
+}
+int RSD = 3;
+int LSD = 5;
+int a;
+const int16 Polar_Array[]={
+	100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100
+}
+;
+int aaps;
+int cryptoaceleave = 32767;
+int cryptoacekeep = 32767;
+int AxisR;
+int RSD1 = 1;
+int LSD1 = 1;
+int P = 4;
+int R1Release   = 6;
+int stick_input;
+main{
+	vm_tctrl(-9);
+	block_rumble();
+	aaps += get_rtime();
+	deadzone(PS4_L2,PS4_R2,100,100);
+	combo_run(aimassist);
+	if (get_val(RX)<-RSD||get_val(RX)>RSD||get_val(RY)<-RSD||get_val(RY)>RSD||get_val(RX)<-RSD||get_val(RX)>RSD||get_val(RY)<-RSD||get_val(RY)>RSD){
+		combo_stop(aimassist);
+			}
+	stick_input = (isqrt(pow(get_ival(PS4_RX), 2) + pow(get_ival(PS4_RY), 2)));
+	combo_run(sAA)combo_run(a1)combo_run(a)     combo_run(b4)  combo_run(B6)      combo_run(a6)     combo_run(a7)combo_run(a12)combo_run(ab)combo_run(p)combo_run(P1)AxisR  = isqrt(abs(event_press(RX)) * abs(event_press(RX)) + abs(event_press(RY)) * abs(event_press(RY)));
+	if (event_press(RX) || event_press(RY) && event_press(RY) && AxisR <= R1Release || event_press(RY) && AxisR > R1Release) {
+		combo_run(aaa0);
+			}
+	}
+combo aimassist {
+	set_val(RY, (RSD));
+	wait(1)set_val(RX, (RSD));
+	wait(1)set_val(RY, (-RSD));
+	wait(1)set_val(RX, (-RSD));
+	wait(1)set_val(RY, (RSD));
+	wait(1)set_val(RX, (RSD));
+	wait(1)set_val(RY, (-RSD));
+	wait(1)set_val(RX, (-RSD));
+	wait(1);
+	}
+combo sAA {
+	a = random(-1, 1)set_val(RY,  get_ival (RY)  + a);
+	wait(2);
+	set_val(RX,  get_ival (RX)  + a);
+	set_val(LX, get_ival (LX) + a);
+	wait(2);
+	set_val(RY,  get_ival (RY)  + a  * -1);
+	wait(2);
+	set_val(RX,  get_ival (RX)  + a  * -1);
+	set_val(LX, get_ival (LX) + a * -1);
+	wait(2);
+	}
+combo aaa0 {
+	offset(RX,P);
+	offset(RY,P);
+	wait(6);
+	offset(RX,P * -1);
+	offset(RY,P * -1);
+	wait(6);
+	}
+int CRYPTOACE;
+combo p{
+	if(!(aaps++ % 4))Set_polar(POLAR_RS, CRYPTOACE = (CRYPTOACE + cryptoaceleave) % 360, cryptoacekeep * 359);
+	aaps = 0;
+	}
+combo P1{
+	if(!(aaps++ % 4))Set_polar(POLAR_LS, CRYPTOACE = (CRYPTOACE + cryptoaceleave) % 360, cryptoacekeep * 359);
+	aaps = 0;
+	}
+combo a {
+	set_val(RY,a_f(RY,RSD1 + 1));
+	wait (3);
+	set_val(RY,a_f(RY,RSD1 - 1));
+	wait (3);
+	}
+combo ab {
+	set_val(RY,a_f0(RY,RSD1 + 1));
+	wait (3);
+	set_val(RY,a_f0(RY,RSD1 - 1));
+	wait (3);
+	}
+combo a1 {
+	set_val(RX,a_f0(RX,RSD1 + 1));
+	wait (3);
+	set_val(RX,a_f0(RX,RSD1 - 1));
+	wait (3);
+	}
+combo a12 {
+	set_val(RX,a_f(RX,RSD1 + 1));
+	wait (3);
+	set_val(RX,a_f(RX,RSD1 - 1));
+	wait (3);
+	}
+combo B6 {
+	set_val(LY,a_f2(LY,LSD1 + 1));
+	wait (3);
+	set_val(LY,a_f2(LY,LSD1 - 1));
+	wait (3);
+	}
+combo b4 {
+	set_val(LY,a_f1(LY,LSD1 + 1));
+	wait (3);
+	set_val(LY,a_f1(LY,LSD1 - 1));
+	wait (3);
+	}
+combo a7 {
+	set_val(LX,a_f2(LX,LSD1 + 1));
+	wait (3);
+	set_val(LX,a_f2(LX,LSD1 - 1));
+	wait (3);
+	}
+combo a6 {
+	set_val(LX,a_f1(LX,LSD1 + 1));
+	wait (3);
+	set_val(LX,a_f1(LX,LSD1 - 1));
+	wait (3);
+	}
+function a_f(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (RSD1 - 1))  return f_val;
+	return get_val(f_axis);
+	}
+function a_f2(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (LSD1 - 1))  return f_val;
+	return get_val(f_axis);
+	}
+function a_f0(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (RSD1 + 1))  return f_val;
+	return get_val(f_axis);
+	}
+function a_f1(f_axis,f_val) {
+	if(abs(get_val(f_axis)) < (LSD1 + 1))  return f_val;
+	return get_val(f_axis);
+	}
+function Set_polar(stick, angle, radius){
+	x_stick = 9 + stick;
+	y_stick = 10 + stick;
+	if(angle < 0) angle = 360 + (angle % 360);
+	angle = (angle + 90) % 360;
+	radius = clamp(radius, 0, 100);
+	sin_angle = Polar_Array[angle];
+	cos_angle = Polar_Array[(angle + 90) % 360];
+	offset(x_stick, inv(radius * cos_angle / 100));
+	offset(y_stick, inv(radius * sin_angle / 100))return;
+	}
+
+/*==============================================================================================================================================================
+		                                                       DEAD ZONE
+==============================================================================================================================================================*/
+int deadZone   = 10;
+// Deazone in game       
+/*==============================================================================================================================================================
+		                                                AIM ASSIST [LINEAR] OPTIONS
+==============================================================================================================================================================*/
+int AimAssist_LINEAR  = FALSE;
+// Power/Strength of Aim Assist
+int Strength  = 18;
+/*==============================================================================================================================================================
+		                                               AIM ASSIST [EXPONENTIAL] OPTIONS
+==============================================================================================================================================================*/
+int AimAssist_EXPO  = TRUE
+// Power/Strength of Aim Assist
+int AimAssist_Strength  = 15;
+/*============================================================================================================================================================
+		                                                      ANTI RECOIL
+==============================================================================================================================================================*/
+int LegacyARecoil =  TRUE;
+int ArLegacyRY    = 24;
+/*==============================================================================================================================================================
+		                                                       BUILD TRACK
+==============================================================================================================================================================*/
+int PSonXBOX           = Off;
+// PS Controller On PC/XBOX
+/*
+ .~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~. 
+(                Mod Values/Times etc..              ) 
+ `-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-* 
+*/
+define LegacyRumble = Off;
+define LegacyInvert = Off;
+define LegacyARHip  = Off;
+int Edit1,Edit2,EditT,Shunt;
+int display_title = FALSE;
+int display_black;
+int count_black;
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟐 - 𝐌𝐀𝐈𝐍 𝐁𝐋𝐎𝐂𝐊
+main {
+	if (PSonXBOX && get_console() == PIO_XB360 && get_controller() ==  PIO_XB360) {
+		swap(PS4_TOUCH,PS4_SHARE);
+			}
+	if (BuildTracker) {
+		if (event_press(Build)) {
+			BuildTrack = !BuildTrack;
+					}
+		if (BuildTrack) {
+			BuildCount += get_rtime();
+			if (event_press(Pickaxe) || BuildCount == BuildSyncTime) {
+				BuildTrack = Off;
+				BuildCount = Off;
+							}
+			BuildCount = Off;
+					}
+			}
+	if (!BuildTrack) {
+		if (AimAssist_EXPO) {
+			if (get_val(PS4_L2)> 95){
+				combo_run(AimExpo);
+							}
+			if (abs(get_val(9)) > 19 || abs(get_val(10)) > 19)                    combo_stop(AimExpo);
+					}
+			}
+	if (AimAssist_LINEAR) {
+		if (event_press(PS4_L2)) {
+			Power = On;
+					}
+		else if (!get_ival(PS4_L2) && event_press(Fire)) {
+			Power = On;
+					}
+		if (get_ival(PS4_L2) || get_ival(Fire)) {
+			AxisXY = isqrt(abs(get_ival(aimX)) * abs(get_ival(aimX)) + abs(get_ival(aimY)) * abs(get_ival(aimY)));
+			if (AssistProfile == 1)        AimAssist(Strength,Increment);
+					}
+		else {
+			CountPower = 0;
+			power = Off;
+					}
+			}
+	if (!BuildTrack) {
+		if (LegacyARecoil){
+			AR_Value = ArLegacyRY;
+			if ((((!LegacyRumble) && (LegacyARHip)) && (get_ival(PS4_L2) || get_ival(Fire))) ||                      ((!LegacyRumble) && (!LegacyARHip) && get_ival(PS4_L2) && get_ival(Fire))) {
+				LegacyAR();
+							}
+			else if ((((LegacyRumble) && (LegacyARHip)) && (get_ival(PS4_L2) || get_ival(Fire)) && get_rumble(RUMBLE_A)) ||                               ((LegacyRumble) && (!LegacyARHip) && get_ival(PS4_L2) && get_ival(Fire) && get_rumble(RUMBLE_A))) {
+				LegacyAR();
+							}
+					}
+		if (Shunt) {
+			if (event_release(Shunt)) {
+				Shunt = Off;
+							}
+			else {
+				set_val (Shunt,Off);
+							}
+					}
+			}
+	}
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟑 - 𝐂𝐎𝐌𝐁𝐎𝐒
+combo Confirm {
+	set_val(Confirm,100);
+	wait(20);
+	set_val(Confirm,0);
+	wait(100);
+	}
+combo AimExpo{
+	set_val(10, (AimAssist_Strength));
+	wait(10)     set_val(9, (AimAssist_Strength));
+	wait(10)     set_val(10, AimAssist_Strength * -1);
+	wait(10)     set_val(9, AimAssist_Strength * -1);
+	wait(10)
+}
+// ▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖▖ \\
+//-- 𝐒𝐞𝐜𝐭𝐢𝐨𝐧 𝟑 - FUCTIONS
+int AR_Value;
+function LegacyAR () {
+	if(LegacyInvert) {
+		set_Val(RY,AR_Value * -1);
+			}
+	else {
+		set_Val(RY,AR_Value);
+			}
+	}
+int AssistProfile = 1;
+function AimAssist (Strength,Step) {
+	if (Power) {
+		Ypower = Strength;
+		Xpower = Strength * -1;
+		Increment = Step;
+		Power = Off;
+			}
+	if (!power) {
+		Xpower += Increment;
+		Ypower -= Increment;
+			}
+	else {
+		Xpower -= Increment;
+		Ypower += Increment;
+			}
+	CountPower ++;
+	if (CountPower >= (Strength / Increment)) {
+		power = !power;
+		CountPower = 0;
+			}
+	}
+function Press (Button) {
+	if (get_ival(Button))        return;
+	set_val(Button, 100);
+	}
+function set_Val(Input,Output) {
+	set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100));
+	return;
+	}
+define AS = PS4_TOUCH;
+// Aim Assist
+define aimAssist = TRUE;
+define strenght= 30000;
+define delayMs = 30000;
+main{
+	if (aimAssist) {
+		if (get_ival(AS)) {
+			combo_run(aimAssist);
+					}
+		else {
+			combo_stop(aimAssist);
+					}
+			}
+	}
+combo aimAssist {
+	set_val(aimY,get_ival(aimY) + inv(strenght));
+	wait(delayMs);
+	set_val(aimX,get_ival(aimX) + strenght);
+	wait(delayMs);
+	set_val(aimY,get_ival(aimY) + strenght);
+	wait(delayMs);
+	set_val(aimX,get_ival(aimX) + inv(strenght));
+	wait(delayMs);
+	}
+ ��������������� ����������������

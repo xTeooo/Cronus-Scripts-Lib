@@ -1,0 +1,1057 @@
+#pragma METAINFO("Cheater Bohlen.gpc", 1, 0, "_4U")
+/* Interactive Configuration
+<cfgdesc>
+[Recoil:]
+collapsible = 0
+shortdesc	= <<<MULTILINE
+<font color=#0003ff>
+</font>
+MULTILINE
+color		= #000000
+control		= info
+
+[recoil1:]
+collapsible = 2
+color		= #001298
+
+[PRIMARY RECOIL VERTICAL]
+group		= true
+shortdesc	= <b>VERTICAL RECOIL:</b> Initial vertical recoil amount.
+byteoffset	= 0
+bitsize		= 32
+control		= spinboxf
+decimals    = 2
+default		= 0
+minimum		= 0
+maximum		= 10000
+step		= 10
+
+[SECONDARY TIMEOUT VERTICAL]
+group		= true
+shortdesc	= <b>SECONDARY TIMER VERTICAL:</b>(ms) Timer for applying secondary vertical recoil.
+byteoffset	= 4
+bitsize		= 16
+control		= slider
+default		= 0
+minimum		= 0
+maximum		= 4000
+step		= 1
+
+[SECONDARY RECOIL VERTICAL]
+group		= true
+shortdesc	= <b>SECONDARY VERTICAL RECOIL:</b> Secondary vertical recoil amount.
+byteoffset	= 6
+bitsize		= 32
+control		= spinboxf
+decimals    = 2
+default		= 0
+minimum		= 0
+maximum		= 10000
+step		= 10
+
+[FINAL TIMEOUT VERTICAL]
+group		= true
+shortdesc	= <b>FINAL TIMER VERTICAL:</b>(ms) Timer for applying final vertical recoil.
+byteoffset	= 10
+bitsize		= 16
+control		= slider
+default		= 0
+minimum		= 0
+maximum		= 4000
+step		= 1
+
+[FINAL RECOIL VERTICAL]
+group		= true
+shortdesc	= <b>FINAL VERTICAL RECOIL:</b> Final vertical recoil amount.
+byteoffset	= 12
+bitsize		= 32
+control		= spinboxf
+decimals    = 2
+default		= 0
+minimum		= 0
+maximum		= 10000
+step		= 10
+
+[LOG GAP]
+group		= true
+shortdesc   =<<<MULTILINE
+ <font color=#c0c0c0>_________________________________________________________________________
+ </font>
+MULTILINE
+control		= info
+
+[PRIMARY RECOIL HORIZONTAL]
+group		= true
+shortdesc	= <b>HORIZONTAL RECOIL:</b> Initial horizontal recoil amount.
+byteoffset	= 16
+bitsize		= 32
+control		= spinboxf
+decimals    = 2
+default		= 0
+minimum		= -10000
+maximum		= 10000
+step		= 1
+
+[SECONDARY TIMEOUT HORIZONTAL]
+group		= true
+shortdesc	= <b>SECONDARY TIMER HORIZONTAL:</b>(ms) Timer for applying secondary horizontal recoil.
+byteoffset	= 20
+bitsize		= 16
+control		= slider
+default		= 0
+minimum		= 0
+maximum		= 4000
+step		= 1
+
+[SECONDARY RECOIL HORIZONTAL]
+group		= true
+shortdesc	= <b>SECONDARY HORIZONTAL RECOIL:</b> Secondary horizontal recoil amount.
+byteoffset	= 22
+bitsize		= 32
+control		= spinboxf
+decimals    = 2
+default		= 0
+minimum		= -10000
+maximum		= 10000
+step		= 1
+
+[FINAL TIMEOUT HORIZONTAL]
+group		= true
+shortdesc	= <b>FINAL TIMER HORIZONTAL:</b>(ms) Timer for applying final horizontal recoil.
+byteoffset	= 26
+bitsize		= 16
+control		= slider
+default		= 0
+minimum		= 0
+maximum		= 4000
+step		= 1
+
+[FINAL RECOIL HORIZONTAL]
+group		= true
+shortdesc	= <b>FINAL HORIZONTAL RECOIL:</b> Final horizontal recoil amount.
+byteoffset	= 28
+bitsize		= 32
+control		= spinboxf
+decimals    = 2
+default		= 0
+minimum		= -10000
+maximum		= 10000
+step		= 1
+
+
+
+
+<shortdesc>
+
+</cfgdesc>
+
+***************************************************************************** */
+
+#define float fix32										// Define float as fix32
+#define MinARecoilPercent 20.0 							// Minimum Recoil 
+
+uint16 T;												// Timer
+uint16 T2V;												// Timer
+uint16 T2H;												// Timer
+uint16 ARVT1;											// Vertical Timeout 1
+uint16 ARVT2;											// Vertical Timeout 2
+uint16 ARHT1;											// Horizontal Timeout 1
+uint16 ARHT2;											// Horizontal Timeout 2
+
+float ARV;												// Anti_Recoil Vertical Value
+float ARH;												// Anti_Recoil Horizontal Value
+
+float ARVP1;											// Anti_Recoil Vertical Value1
+float ARHP1;											// Anti_Recoil Horizontal Value1
+float ARVP2;											// Anti_Recoil Vertical Value2
+float ARHP2;											// Anti_Recoil Horizontal Value2
+float ARVP3;											// Anti_Recoil Vertical Value3
+float ARHP3;											// Anti_Recoil Horizontal Value3
+
+init{
+	pmem_load();										// Load Persistent Memory
+	
+	pmem_read(0, 	&ARV);								// Initialize Vertical Recoil Value
+	pmem_read(4, 	&ARVT1);							// Initialize Secondary Recoil Timer
+	pmem_read(6, 	&ARVP2);							// Initialize Secondary Recoil Value
+	pmem_read(10, 	&ARVT2);							// Initialize Final Recoil Timer
+	pmem_read(12, 	&ARVP3);							// Initialize Final Recoil Value
+	
+	pmem_read(16,   &ARH);								// Initialize Vertical Recoil Value
+	pmem_read(20, 	&ARHT1);							// Initialize Secondary Recoil Timer
+	pmem_read(22,  	&ARHP2);							// Initialize Secondary Recoil Value
+	pmem_read(26, 	&ARHT2);							// Initialize Final Recoil Timer
+	pmem_read(28, 	&ARHP3);							// Initialize Final Recoil Value
+	
+	ARVP1 = ARV;										// Initialize Vertical Recoil Placeholder
+	ARHP1 = ARH;										// Initialize Horizontal Recoil Placeholder
+}
+bool aScript=TRUE;
+ 
+main {
+    // Hocke + sprung
+    if (get_actual(BUTTON_15) && event_active(BUTTON_16)) aScript = !aScript;
+ 
+    if (aScript) {
+
+	if(get_val(BUTTON_5)){ 								// If Fire Trigger execute this
+		
+		T += elapsed_time();							// Start Initial Timer
+		
+		AntiRecoil(STICK_1_Y, ARVP1);					// Set Initial Vertical Recoil
+		AntiRecoil(STICK_1_X, ARHP1);					// Set Initial Horizontal Recoil
+		
+		if (ARVP2 != 0.0 && T >= ARVT1){				// If Secondary Vertical Timer Reached execute
+			T2V += elapsed_time();						// Start Secondary Vertical timer
+			ARVP1 = ARVP2;								// Apply Secondary Vertical Recoil
+			if (ARVP3 != 0.0 && T2V >= ARVT2){			// If Final Vertical Timer reached execute 
+				ARVP1 = ARVP3;							// Apply Final Vertical Recoil value 
+			}
+		}
+		if (ARHP2 != 0.0 && T >= ARHT1){				// If Secondary Horizontal Timer Reached execute
+			T2H += elapsed_time();						// Start Secondary Horizontal timer
+			ARHP1 = ARHP2;								// Apply Secondary Horizontal Recoil
+			if (ARHP3 != 0.0 && T2H >= ARHT2){			// If Final Horizontal Timer reached execute 
+				ARHP1 = ARHP3;							// Apply Final Horizontal Recoil value 
+			}
+		}
+	}
+
+	if(event_release(BUTTON_5)){						// If Fire Trigger released execute this
+		T = 0;											// Reset Timer
+		T2V = 0;										// Reset Secondary Vertical Timer
+		T2H = 0;										// Reset Secondary Horizontal Timer
+		ARVP1 = ARV;									// Reset Vertical Recoil Placeholder
+		ARHP1 = ARH;									// Reset Horizontal Recoil Placeholder
+	}
+
+}}
+/* AryanX AntiRecoil Method */
+void AntiRecoil(uint8 AxisToApply, float ARecoilToApply){
+    float CurrentX = get_val(STICK_1_X);
+    float CurrentY = get_val(STICK_1_Y);
+    float MinARecoilFactor = MinARecoilPercent / 100.0;
+    float MinARecoilToApply = MinARecoilFactor * ARecoilToApply;
+    float MovementARecoilToApply = (1.0 - MinARecoilFactor) * ((ARecoilToApply * (100.0 - sqrt(CurrentX*CurrentX + CurrentY*CurrentY))) / (100.0 + abs(CurrentX) + (CurrentY*CurrentY*0.5)));
+    set_val(AxisToApply,clamp(MinARecoilToApply + MovementARecoilToApply + get_val(AxisToApply),-100.00,100.00 - MinARecoilToApply));
+}
+#define DZ 14 //deadzone
+ 
+fix32 AP = (fix32)DZ;
+fix32 AM = (fix32)-DZ;
+fix32 Release = (fix32)DZ+1f;
+ 
+int Delay = 20;
+main {
+  if(is_release(STICK_1_X)^^is_release(STICK_1_Y)) Delay=10;
+  else Delay=20;
+ 
+  c_AS = (is_active(BUTTON_8) || is_active(BUTTON_5));
+}
+ 
+combo c_AS {
+  set_val(STICK_1_Y, f_a_f(STICK_1_Y, AP));
+  wait(Delay);
+  set_val(STICK_1_X, f_a_f(STICK_1_X, AP));
+  wait(Delay);
+  set_val(STICK_1_Y, f_a_f(STICK_1_Y, AM));
+  wait(Delay);
+  set_val(STICK_1_X, f_a_f(STICK_1_X, AM));
+  wait(Delay-1);
+  set_val(STICK_1_X, f_a_f(STICK_1_X, AM));
+}
+ 
+fix32 f_a_f(uint8 p, fix32 m) { return  (abs(get_val(p)) < Release) ? m : get_val(p); }
+ 
+main {
+  if(sqrt(sq(get_actual(STICK_1_X))+sq(get_actual(STICK_1_Y)))>90f){
+    set_val(STICK_1_X, get_actual(STICK_1_X));
+    set_val(STICK_1_Y, get_actual(STICK_1_Y)); 
+  }
+}
+#include <titanone.gph>
+
+//--------------------------------------
+███████▓█████▓▓╬╬╬╬╬╬╬╬▓███▓╬╬╬╬╬╬╬▓╬╬▓█ 
+████▓▓▓▓╬╬▓█████╬╬╬╬╬╬███▓╬╬╬╬╬╬╬╬╬╬╬╬╬█ 
+███▓▓▓▓╬╬╬╬╬╬▓██╬╬╬╬╬╬▓▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█ 
+████▓▓▓╬╬╬╬╬╬╬▓█▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█ 
+███▓█▓███████▓▓███▓╬╬╬╬╬╬▓███████▓╬╬╬╬▓█ 
+████████████████▓█▓╬╬╬╬╬▓▓▓▓▓▓▓▓╬╬╬╬╬╬╬█ 
+███▓▓▓▓▓▓▓╬╬▓▓▓▓▓█▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█ 
+████▓▓▓╬╬╬╬▓▓▓▓▓▓█▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█ 
+███▓█▓▓▓▓▓▓▓▓▓▓▓▓▓▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█ 
+█████▓▓▓▓▓▓▓▓█▓▓▓█▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█ 
+█████▓▓▓▓▓▓▓██▓▓▓█▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬██ 
+█████▓▓▓▓▓████▓▓▓█▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬██ 
+████▓█▓▓▓▓██▓▓▓▓██╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬██ 
+████▓▓███▓▓▓▓▓▓▓██▓╬╬╬╬╬╬╬╬╬╬╬╬█▓╬▓╬╬▓██ 
+█████▓███▓▓▓▓▓▓▓▓████▓▓╬╬╬╬╬╬╬█▓╬╬╬╬╬▓██ 
+█████▓▓█▓███▓▓▓████╬▓█▓▓╬╬╬▓▓█▓╬╬╬╬╬╬███ 
+██████▓██▓███████▓╬╬╬▓▓╬▓▓██▓╬╬╬╬╬╬╬▓███ 
+███████▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓╬╬╬╬╬╬╬╬╬╬╬████ 
+███████▓▓██▓▓▓▓▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓████ 
+████████▓▓▓█████▓▓╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬╬▓█████ 
+█████████▓▓▓█▓▓▓▓▓███▓╬╬╬╬╬╬╬╬╬╬╬▓██████ 
+██████████▓▓▓█▓▓▓╬▓██╬╬╬╬╬╬╬╬╬╬╬▓███████ 
+███████████▓▓█▓▓▓▓███▓╬╬╬╬╬╬╬╬╬▓████████ 
+██████████████▓▓▓███▓▓╬╬╬╬╬╬╬╬██████████ 
+███████████████▓▓▓██▓▓╬╬╬╬╬╬▓███████████ 
+//--------------------------------------
+
+ 
+int aa_p  = 18; 
+int aa_n = -18; 
+int aaa_delay  = 10;
+int release = 10;
+ 
+main {
+    if(get_val(XB1_LT)) {
+        combo_run(AA_XY);
+        
+        }
+     
+}
+ 
+combo AA_XY {
+    set_val(10,xy_val(10,aa_p));
+    wait(aaa_delay);
+    set_val(9,xy_val(9,aa_p));
+    set_val(11,xy_val(11,aa_p));
+    wait(aaa_delay);
+    set_val(10,xy_val(10,aa_n));
+    wait(aaa_delay);
+    set_val(9,xy_val(9,aa_n));
+    set_val(11,xy_val(11,aa_n));
+    wait(aaa_delay);
+}
+ 
+
+ 
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < release)
+    return f_val;
+    return get_val(f_axis); 
+}
+
+
+
+
+bool bScript=FALSE;
+ 
+main {
+    // Hocke + sprung
+    if (get_actual(BUTTON_15) && event_active(BUTTON_16)) bScript = !bScript;
+ 
+    if (bScript) {
+       
+    if(get_val(XB1_RT)) {
+        if(get_val(XB1_LT)) {
+            combo_run(Turbo_1);
+        } else {
+            combo_run(Turbo_2);
+        }
+    }
+
+    get_ptime(0);
+}
+
+
+    }
+combo Turbo_1 {
+    set_val(XB1_RT, 100);
+    wait(40);
+    set_val(XB1_RT, 0);
+    wait(120);
+    set_val(XB1_RT, 0);
+}
+
+combo Turbo_2 {
+    set_val(XB1_RT, 100);
+    wait(40);
+    set_val(XB1_RT, 0);
+    wait(40);
+    set_val(XB1_RT, 0);
+}
+
+
+//LT/L2 plus Dpad Down to toggle between Kar98/AX50
+
+//Kar98 = Green LED
+//AX50  = Blue LED
+#include <xb1.gph>
+ 
+#define scope_time 150 // the time it takes for the characters hand the reach the back of the gun after hitting reload (Kar98)
+
+bool sniper;
+
+init { led(0,255,0); }
+ 
+main {
+	if(is_active(XB1_LT) && event_active(XB1_DOWN)) {
+		sniper = !sniper;
+		if(!sniper) led(0,255,0);
+		else led(0,0,255);
+	}
+		
+    if(event_release(XB1_RT)) {
+		if(!sniper) combo_run(Kar98);
+		else combo_run(AX50);
+	}		
+}
+ 
+combo Kar98 {
+    set_val(XB1_X, 100);
+    wait(60);
+    wait(scope_time);
+    set_val(XB1_RT, 100);                        
+    wait(60);
+}
+
+combo AX50 {
+	set_val(XB1_LB, 100);
+	wait(40); wait(40);
+	set_val(XB1_LB, 100);
+	wait(40);
+}
+
+void led(int8 r, int8 g, int8 b) {
+	led_set(LED_1, (fix32)b, 0);
+	led_set(LED_2, (fix32)r, 0);
+	led_set(LED_3, (fix32)g, 0);
+	return;
+}
+fix32 _COSINE_(fix32 a, bool b) {/*^ */
+  if ((a = mod(a + 6.28319, 6.28319)) < 0.0) a = mod(a += 6.28319, 6.28319);
+  if (a > 0.785522 && a < 3.92761) return b ? sin(1.5708 - a) : cos(1.5708 - a);
+  return b ? cos(a) : sin(a);
+}
+#define sin(a) (_COSINE_(a))
+#define cos(a) (_COSINE_(a, 1))
+
+const fix32 radius = 20.00;
+const fix32 speed = 2.5;
+
+
+const fix32 movement_speed = 4.00;
+const fix32 movement_radius = 5.00;
+fix32 angle;
+main {
+  
+  fix32 x = get_actual(STICK_1_X);
+  fix32 y = get_actual(STICK_1_Y);
+  fix32 m = sqrt(sq(x)+sq(y));
+  
+  
+  if(is_active(BUTTON_8)){
+    angle = mod(angle += (m > radius ? movement_speed : speed), 360.00);
+    set_polar(STICK_1_X, STICK_1_Y, angle, (m > radius ? movement_radius : radius));
+  }
+} 
+
+void set_polar(uint8 X, uint8 Y, fix32 ANGLE, fix32 RADIUS){
+  fix32 angle = rad2deg(mod(deg2rad(ANGLE) + 6.28319, 6.28319));
+  fix32  x_Out = cos(deg2rad(angle));
+  fix32  y_Out = sin(deg2rad(angle));
+  offset(X, clamp(x_Out * RADIUS, -100.00, 100.00));
+  offset(Y, clamp(y_Out * RADIUS, -100.00, 100.00));
+}
+void offset(uint8 axis, fix32 offset_val) {
+  set_val(axis, clamp(offset_val * (100f - abs(get_actual(axis))) / 100f + get_actual(axis), -100f, 100f));
+  return;
+}
+main {
+    if (get_val(XB1_LT) >= 95) {
+        set_val(XB1_LS, 100);
+    }
+}
+int rld_time = 1400;
+int b_reload = FALSE;
+int poli_Target_Tracker = TRUE;
+int aim_speed = 95;
+int AimAssist = TRUE;
+int AimAssist_Strength = 22;
+main {
+	if (event_release(PS4_SQUARE)) {
+		b_reload = TRUE;
+	}
+	if (b_reload) {
+		b_reload = b_reload + get_rtime();
+	}
+	if (b_reload >= rld_time) {
+		b_reload = 0;
+		b_reload = FALSE;
+	}
+	if (poli_Target_Tracker) {
+		if (get_val(PS4_L2) && get_val(PS4_R2)) {
+			sensitivity(PS4_RX, 0, aim_speed);
+			sensitivity(PS4_RY, 0, aim_speed);
+		}
+	}
+if (AimAssist) {
+		if (get_val(PS4_L2)) combo_run(c_Auto_Aimm);
+		else  combo_stop(c_Auto_Aimm);
+		if (get_val(PS4_L2)) {
+			if (abs(get_val(9)) > 21 || abs(get_val(10)) > 21) {
+				combo_stop(c_Auto_Aimm);
+			}
+		}
+	}}
+combo c_Auto_Aimm {
+	set_val(10, AimAssist_Strength *- 1);
+	wait(20);
+	set_val(9, AimAssist_Strength);
+	wait(20);
+	set_val(10, AimAssist_Strength);
+	wait(20);
+	set_val(9, AimAssist_Strength *- 1);
+	wait(20);
+}
+
+// GPC Online Library
+// cod_bo_cold_war_&_mw_-_new_polar_aim_assist_(quick_&_easy).gpc
+
+/*
+ ██████╗ ██████╗ ██████╗     ██████╗  ██████╗                  
+██╔════╝██╔═══██╗██╔══██╗    ██╔══██╗██╔═══██╗                 
+██║     ██║   ██║██║  ██║    ██████╔╝██║   ██║                 
+██║     ██║   ██║██║  ██║    ██╔══██╗██║   ██║                 
+╚██████╗╚██████╔╝██████╔╝    ██████╔╝╚██████╔╝                 
+ ╚═════╝ ╚═════╝ ╚═════╝     ╚═════╝  ╚═════╝                  
+                                                               
+ ██████╗ ██████╗ ██╗     ██████╗     ██╗    ██╗ █████╗ ██████╗ 
+██╔════╝██╔═══██╗██║     ██╔══██╗    ██║    ██║██╔══██╗██╔══██╗
+██║     ██║   ██║██║     ██║  ██║    ██║ █╗ ██║███████║██████╔╝
+██║     ██║   ██║██║     ██║  ██║    ██║███╗██║██╔══██║██╔══██╗
+╚██████╗╚██████╔╝███████╗██████╔╝    ╚███╔███╔╝██║  ██║██║  ██║
+ ╚═════╝ ╚═════╝ ╚══════╝╚═════╝      ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+ P O L A R  A I M  A S S I S T  W I T H  A I M  C O R R E C T I O N S
+ T E S T  V E R S I O N  1 . 5  ( B E T A ) B Y  C R E S C E N S */
+define ADS = XB1_LT;
+define FIRE = XB1_RT;
+define LETHAL = XB1_RB;
+define TAC_G = XB1_LB;
+define AIM_X = XB1_RX;
+define AIM_Y = XB1_RY;
+define STRAFE = XB1_LX;
+define WALK = XB1_LY;
+define SPRINT = XB1_LS;
+define player_slot=6;
+define auto_run=TRUE;
+int	   in_game_menu_sens=14;
+define walk_tresh= -50;//Easy sprint stick treshhold (-75 = pressed more than 75%)
+/*above fill out the buttons you are using and on what slot your main script is to be found*/
+/*below no changes, unless you know what you are doing*/
+define aim_sens_corrections=1; // [0 = OFF / 1 = ON]
+int sticky_tripple_or_polar_aa=3;//[0 = OFF / 1 = STICKY AIM ASSIST / 2 = TRIPPLE STICKY AIM ASSIST /
+/*3 = CRESCENS POLAR WITH AIM SENS CORRECTIONS]*/
+int _v=22; int _w=20;/*---CLASSICAL STICKY AIM ASSIST ONLY: screen shake? Lower value. PS4 users should try 18, or 20).
+Tripple Sticky by:
+╔═╗╔═╗    ╔╗╔╦╦╔═╔═╗╦  ╔═╗╦
+╚═╗╚═╗    ║║║║╠╩╗║ ║║  ╠═╣║
+╚═╝╚═╝────╝╚╝╩╩ ╩╚═╝╩═╝╩ ╩╩
+╔═╗╦ ╦╦  ╔═╗╦ ╦╦           
+║  ╠═╣║  ║  ╠═╣║           
+╚═╝╩ ╩╩  ╚═╝╩ ╩╩ 
+/*TRIPPLE STICKY VALUES*/
+int aim_val_1 = 22;
+int wait_val_1 = 20; 
+int aim_val_2 = 24; 
+int wait_val_2 = 25;
+int aim_val_3 = 28; 
+int wait_val_3 = 15;
+/*CRESCENS POLAR STICKY WITH AIM CORRECTIONS*
+ ██████╗██████╗ ███████╗███████╗ ██████╗███████╗███╗   ██╗███████╗
+██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝██╔════╝████╗  ██║██╔════╝
+██║     ██████╔╝█████╗  ███████╗██║     █████╗  ██╔██╗ ██║███████╗
+██║     ██╔══██╗██╔══╝  ╚════██║██║     ██╔══╝  ██║╚██╗██║╚════██║
+╚██████╗██║  ██║███████╗███████║╚██████╗███████╗██║ ╚████║███████║
+ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝╚══════╝╚═╝  ╚═══╝╚══════╝*/    
+int Crescens_release=22;/*sets the treshhold*/
+int Crescens_quantum=24;/*sets the strength of the polar sticky aim*/
+int Crescens_Sticky_Polar_Aim_Cor;
+int Crescens_gradient;
+int current_x, current_y;
+int hue=0; define Off = 8; define Blue = 1; define Red = 2; define Green = 3; define Pink = 4; define SkyBlue = 5; define Yellow = 6; define White = 7; data(1,2,0,0,0,0,2,0,0,0,0,2,0,0,0,0,2,2,0,2,0, 0,2,2,0,2,2,2,2,0,0,0,0); int pin=222, code; int game_sens; int ads_grenade_sens, ads_fire_sens, Sens, actual_sens; /*int midpoint=NOT_USE;*/ int notify, notifier; int rapid_fire=FALSE;/*toggle on Hold ADS + D-pad right */ int wtime; int record: int once=1; int rld_time; int b_reload; int smart_reload=1; int wpn_holster=FALSE; int switch; int running_p; function btn(f__btn) { if (!g_i(f__btn)) return; s_v(f__btn, 0); } function notify(pos) { if(pos) notify = 1; else notify = 2; } function load_sens (){ game_sens = in_game_menu_sens; code = 223; s_pv (SPVAR_41, game_sens); s_pv (SPVAR_42, code); } function s_v(id,fval){set_val(id,fval);} function e_p(id){return event_press(id);} function e_r(id){return event_release(id);} function g_i(id){return get_ival(id);} function g_pv(id,min,max,fval){return get_pvar(id,min,max,fval);} function s_pv(id,fval){set_pvar(id,fval);} init{ rld_time= g_pv(SPVAR_20, 0, 4000, 1200); code = get_pvar(SPVAR_42, 1, 2000, 222); if (code == pin){load_sens()}else game_sens= get_pvar(SPVAR_41, 3, 20, game_sens);} main { set_val(TRACE_1, current_x); set_val(TRACE_2, current_y); if (g_i (FIRE)) { current_x = dz(AIM_X,0); current_y = dz(AIM_Y,0); } if (g_i (ADS) && e_r (XB1_RIGHT)) {rapid_fire=TRUE; notify (rapid_fire); switch=FALSE wpn_holster=FALSE; } if (g_i (ADS) && e_r (PS4_LEFT)) { switch = TRUE rapid_fire=TRUE; wpn_holster=TRUE; notify (wpn_holster); } if (g_i (ADS) && e_r (PS4_DOWN)) { switch = FALSE; rapid_fire=FALSE; wpn_holster=FALSE; notify (wpn_holster); } if (g_i (XB1_UP)) { if (e_r (XB1_Y) && (XB1_B)){load_slot (player_slot);} btn (XB1_Y); btn (XB1_B); } if (sticky_tripple_or_polar_aa==1) { _w=20; if(g_i(ADS)) { combo_run(STICKY_AIM); } else { combo_stop(STICKY_AIM); } } if (sticky_tripple_or_polar_aa==2) { if(g_i(ADS) && !g_i(FIRE)) { combo_run(STICKY_AIM); _v = aim_val_1; _w = wait_val_1; } else if(g_i(ADS) && g_i(FIRE)) { combo_run(STICKY_AIM); _v = aim_val_2; _w = wait_val_2; } else if(!g_i(ADS) && g_i(FIRE)) { combo_run(STICKY_AIM); _v = aim_val_3; _w = wait_val_3; } } if (sticky_tripple_or_polar_aa ==3) { Crescens_Sticky_Polar_Aim_Cor=1; } else { Crescens_Sticky_Polar_Aim_Cor=0; } if(Crescens_Sticky_Polar_Aim_Cor) { if(get_ival(ADS) || (get_ival(FIRE))) /*when aiming OR firing OR both*/ { running_p=TRUE; if(isqrt(abs(get_ival(AIM_X)) * abs(get_ival(AIM_X)) + abs(get_ival(AIM_Y)) * abs(get_ival(AIM_Y))) <= Crescens_release)/*treshhold*/ { Crescens_gradient = (Crescens_gradient + Crescens_quantum) % 360; set_polar(POLAR_RS, Crescens_gradient, Crescens_release * random(326,328)); } } else running_p=FALSE; } if(g_i(XB1_DOWN) && g_i (XB1_X) && get_ptime (XB1_X)>500 && !record) { record = TRUE; notify (record); } if (record) { rld_time = get_ptime(XB1_X); if (e_r (XB1_X)) { record = FALSE; s_pv(SPVAR_20, rld_time); } } if(e_r(XB1_X) && get_ptime(XB1_X) < 300) b_reload = rld_time; if(smart_reload && b_reload) { b_reload -= get_rtime(); if(b_reload < 0) b_reload = 0; if(e_p(FIRE) || e_p(ADS)) combo_run(CANCEL_RLD); } if(e_r(XB1_Y) && get_ptime(XB1_Y) < 300 && wpn_holster) { switch = !switch; notify (switch); } if (record==FALSE &&wpn_holster && g_i (XB1_X) && get_ptime(XB1_X) > 250 && once == 1) { switch = !switch; notify (switch); once = once - 1; } if (once < 1 && e_r (XB1_X)) once = 1; if (rapid_fire) { wtime = 125 - (g_i(FIRE)); { if (!switch && wpn_holster || !switch &&!wpn_holster) { if (g_i (FIRE) && rapid_fire) { combo_run (RAPID_FIRE); } } } } if(aim_sens_corrections) { ads_grenade_sens=100-(game_sens); ads_fire_sens=96-(game_sens); actual_sens=100; if(!g_i(ADS) && !g_i(FIRE) && !g_i(LETHAL) && !g_i (TAC_G)) { Sens=actual_sens; } else if(g_i(ADS) && !g_i(FIRE)) { Sens=ads_grenade_sens; } else if(!g_i(ADS) && g_i(FIRE)) { Sens=actual_sens; } else if(g_i(ADS) && g_i(FIRE)) { Sens=ads_fire_sens; } else if(g_i(TAC_G) || g_i (LETHAL)) { Sens=ads_grenade_sens; } if(isqrt(abs(get_ival(PS4_RX)) * abs(get_ival(PS4_RX)) + abs(get_ival(PS4_RY)) * abs(get_ival(PS4_RY))) > Crescens_release){ if(Sens > 100) Sens = 100; sensitivity(AIM_X, NOT_USE, Sens); sensitivity(AIM_Y, NOT_USE, Sens); } if (g_i(XB1_DOWN)) { if (e_p(XB1_VIEW)) { game_sens --; notify(1); s_pv (SPVAR_41, game_sens); } if (e_p(XB1_MENU)) { game_sens ++; notify(1); s_pv (SPVAR_41, game_sens); } btn (XB1_VIEW); btn(XB1_MENU); } } if(notify) { notifier += get_rtime(); if(notifier < 150) set_rumble(1,75); else if(notifier < 400) reset_rumble(); else { notify -= 1; notifier = 0; } } if (auto_run) { if (!g_i(ADS)&& g_i(WALK) < (walk_tresh)) combo_run (EASY_RUN); } if (running_p){ hue++; if (hue == 360) hue = 0; set_hsb(hue,100,100)} else if (wpn_holster && !switch||!wpn_holster && rapid_fire && !switch)Led (Red); else Led (Blue); } combo CANCEL_RLD { s_v(XB1_Y, 100); wait(30); wait(20); s_v(XB1_Y, 100); wait(30); wait(20); b_reload=FALSE; } combo STICKY_AIM { s_v(AIM_Y,xy_val(AIM_Y, _v)); wait(_w); s_v(AIM_X,xy_val(AIM_X, _v)); s_v(STRAFE,xy_val(STRAFE, _v)); wait(_w); s_v(AIM_Y,xy_val(AIM_Y, _v * -1)); wait(_w); s_v(AIM_X,xy_val(AIM_X, _v * -1)); s_v(STRAFE,xy_val(STRAFE, _v * -1)); wait(_w); } combo RAPID_FIRE { s_v(FIRE,100); wait(wtime); s_v(FIRE, 0); wait(wtime); } combo EASY_RUN{ s_v(SPRINT,100); wait(30); wait(100); } function dz(f_axis,f_val) { f_val = get_val(f_axis); if(abs(f_val) < 8) { s_v(f_axis,f_val); return f_val; } return f_val; } function xy_val(f_axis,f_val) { if(abs(get_val(f_axis)) < 25) return f_val; return get_val(f_axis); } int C_i; function Led(C) { C_i=(C*4)- 3; set_led(LED_1,duint8(C_i )); set_led(LED_2,duint8(C_i+ 1)); set_led(LED_3,duint8(C_i+ 2)); set_led(LED_4,duint8(C_i+ 3)); }
+
+
+#define _ot_i _ot_i2
+const uint8 _ot_i2[42] = {
+    BUTTON_1,  BUTTON_2,  BUTTON_3,  BUTTON_4,  BUTTON_5,  BUTTON_6, 
+    BUTTON_7,  BUTTON_8,  BUTTON_9,  STICK_1_X, STICK_1_Y, STICK_2_X, 
+    STICK_2_Y, BUTTON_10, BUTTON_11, BUTTON_12, BUTTON_13, BUTTON_14, 
+    BUTTON_15, BUTTON_16, BUTTON_17, ACCEL_1_X, ACCEL_1_Y, ACCEL_1_Z, 
+    GYRO_1_X,  GYRO_1_Y,  GYRO_1_Z,  PADDLE_1, POINT_1_X, POINT_1_Y, 
+    PADDLE_2, PADDLE_3, PADDLE_4, ACCEL_2_X, ACCEL_2_Y, ACCEL_2_Z,
+    0, 0, BUTTON_18, BUTTON_19, BUTTON_20, BUTTON_21,
+};
+// 
+// NOTORIOUS WARZONE BULLY V1.gpc
+/*                                   ,----,                                                                      
+         ,--.    ,----..         ,/   .`|  ,----..                         ,----..                             
+       ,--.'|   /   /   \      ,`   .'  : /   /   \  ,-.----.     ,---,   /   /   \                 .--.--.    
+   ,--,:  : |  /   .     :   ;    ;     //   .     : \    /  \ ,`--.' |  /   .     :          ,--, /  /    '.  
+,`--.'`|  ' : .   /   ;.  \.'___,/    ,'.   /   ;.  \;   :    \|   :  : .   /   ;.  \       ,'_ /||  :  /`. /  
+|   :  :  | |.   ;   /  ` ;|    :     |.   ;   /  ` ;|   | .\ ::   |  '.   ;   /  ` ;  .--. |  | :;  |  |--`   
+:   |   \ | :;   |  ; \ ; |;    |.';  ;;   |  ; \ ; |.   : |: ||   :  |;   |  ; \ ; |,'_ /| :  . ||  :  ;_     
+|   : '  '; ||   :  | ; | '`----'  |  ||   :  | ; | '|   |  \ :'   '  ;|   :  | ; | '|  ' | |  . . \  \    `.  
+'   ' ;.    ;.   |  ' ' ' :    '   :  ;.   |  ' ' ' :|   : .  /|   |  |.   |  ' ' ' :|  | ' |  | |  `----.   \ 
+|   | | \   |'   ;  \; /  |    |   |  ''   ;  \; /  |;   | |  \'   :  ;'   ;  \; /  |:  | | :  ' ;  __ \  \  | 
+'   : |  ; .' \   \  ',  /     '   :  | \   \  ',  / |   | ;\  \   |  ' \   \  ',  / |  ; ' |  | ' /  /`--'  / 
+|   | '`--'    ;   :    /      ;   |.'   ;   :    /  :   ' | \.'   :  |  ;   :    /  :  | : ;  ; |'--'.     /  
+'   : |         \   \ .'       '---'      \   \ .'   :   : :-' ;   |.'    \   \ .'   '  :  `--'   \ `--'---'   
+;   |.'          `---`                     `---`     |   |.'   '---'       `---`     :  ,      .-./            
+'---'     `---'                            `--`----'     
+  
+   NOTORIOUS STICKY AIMBOT WARZONE BULLY V1                                                                                                                                                                   **///========================================================================================================================
+//--Rapid Fire (L2 + LEFT)
+//=======================================================================================================================
+//--Dropshot (L2 + RIGHT)
+//======================================================================================================================== 
+///--Change TRUE TO FALSE if you don't want to play with Hair Triggers
+//======================================================================================================================== 
+//--Change FALSE To True If You Want Easy Slide TAP CROUCH/PRONE BUTTON TO EASY SLIDE
+//======================================================================================================================== 
+//--Change FALSE TO TRUE If you want Hold Breath
+//======================================================================================================================== 
+//--Notorious Sticky Aim Assist if your screen shakes whilst using aim assist - lower this value (try 22, 20)
+//======================================================================================================================== 
+//--Aim Sensitivty Corrections ===========================================================================================
+// PICK 3 HIGHER THEN YOUR REGULAR SENSITIVITY!
+// [0 = OFF / 1 = ON / 2 = ON + ZOOM SENS IS ALSO ON] - zoom sensitivity does not work with bumpers/triggers flipped] 
+/*
+    THE IDEA BEHIND STICKY AIMBOT IS THAT YOU HIGHER YOUR IN-GAME SENSITIVITY WITH 2 OR 3
+    CLICKS. THIS WILL ALLOW YOU TO TURN AROUND FAST WITHOUT LOSING CONTROL OVER YOUR AIM
+    AND LOCK ON TO YOUR TARGET WITH EASE
+                                                                                                                                                                 
+	1) FILL OUT THE IN_GAME_MENU_SENS STICK SENSITIVITY UP ABOVE
+    2) GET READY TO BULLY ENEMIES IN WARZONE!                                                                                                                                                         **///======================================================================================================================
+//--Anti Recoil (L2 + OPTIONS)==========================================================================================
+//( IF INVERTED SET TO  -1  INSTEAD OF  1 )
+/*
+    CHECK THE STICK & BUTTON LAYOUTS BELOW.
+                   STICKS:
+       PS4_CIRCLE            XB1_B 
+       PS4_CROSS             XB1_A
+       PS4_R1                XB1_RB
+       PS4_R2                XB1_RT
+       PS4_R3                XB1_RS
+       PS4_L1                XB1_LB
+       PS4_L2                XB1_LT
+       PS4_L3                XB1_LS
+//======================================================================================================================                                                                                                                                                                  **///--Layout==============================================================================================================  
+//Change To R1 For Flipped Bumpers                  
+//Change To L1 For Flipped Bumpers                     
+//Change To L2 For Flipped Bumpers                  
+//Change To R2 For Flipped Bumpers                   
+//Leave Alone
+//-- NOTORIOUS AIM ABUSE ================================================================================================
+//--======================================================================================================================
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |M|A|I|N| | |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+**///--sens and hip fire sens
+/*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |C|O|M|B|O| |S|E|C|T|I|O|N| | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+**//*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | |F |U | N | C | T | I | O | N | S | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+**//*-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ | | | | | | | | | | | | | | | E | N | | D | | | | | | | | | | | | | | | | | | | | | | |
+ +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+**/
+
+define HairTriggers = TRUE;
+define EASY__SLIDE_DROP = FALSE;
+define holdbreath = FALSE;
+define sticky_aim_assist = TRUE;
+define _v = 23;
+define aim_sens_corrections = 2;
+define antirecoil_ = TRUE;
+define INTVERTED_RECOIL = 1;
+define FIRE = PS4_R2;
+define ADS = PS4_L2;
+define SPRINT = PS4_L3;
+define PRONE = PS4_CIRCLE;
+define MELEE = PS4_R3;
+define JUMP = PS4_CROSS;
+define TACTICAL = PS4_L1;
+define LETHAL = PS4_R1;
+define VIB_A = RUMBLE_A;
+define Sampling_Time = 10;
+define Aim_Boost = 7;
+define Aim_Correction = 5;
+define Aim_Perfection_Limit = 30;
+define POS_Aim_Limit = 70;
+define NEG_Aim_Limit = -70;
+define POS_Micro_MVT_Limit = 25;
+define NEG_Micro_MVT_Limit = -25;
+#define __LAST_COMBO__ c_vibrate
+#define _VM_BTN_COUNT_ 42
+#define DISABLE_VM_ // delete underscore to disable VM mode
+#ifndef DISABLE_VM
+#define VM_TIME 10
+#define vm_tctrl(time) ___vm_time___ = (((10+ time) < 0) ? 0 : (10+ time))
+#define wait(a) wait(vm_tctrl_wait(a));
+#else 
+#define VM_TIME 0
+#endif
+
+int Rapid_Fire = FALSE;
+int DropShot = FALSE;
+int DropShotSpeed = 30;
+int iin_game_menu_sens = 10;
+int DEFAULT_VERTICAL = 16;
+int DEFAULT_HORIZONTAL = 0;
+int X_Last_Value = 0;
+int Y_Last_Value = 0;
+int X_Current_Value = 0;
+int Y_Current_Value = 0;
+int Sampling_Done = FALSE;
+int spiroide_pulse = 0;
+int fine_pulse = 0;
+int Joystick_calibration = FALSE;
+int RX_Axis_Joystick_calibrate = 0;
+int RY_Axis_Joystick_calibrate = 0;
+int ads_grenade_sens,  ads_fire_sens,  Sens;
+int RECOIL, BOOOST, ANTIRECOOIL;
+uint8 __COMBO_RUN__[10];
+int8 __io_vals__[_VM_BTN_COUNT_];
+uint8 __io_val_events__[_VM_BTN_COUNT_];
+uint32 __vm_run_time__ = 0;
+uint8 __run_vm__ = 1,  ___vm_time___ = VM_TIME,  ___i____i;
+
+main {
+	if(__run_vm__) {
+		if (Joystick_calibration == FALSE) {
+			RX_Axis_Joystick_calibrate = get_val(PS4_RX);
+			RY_Axis_Joystick_calibrate = get_val(PS4_RY);
+			Joystick_calibration = TRUE;
+		}
+		X_Last_Value = X_Current_Value;
+		Y_Last_Value = Y_Current_Value;
+		X_Current_Value = get_lval(PS4_RX)  -RX_Axis_Joystick_calibrate;
+		Y_Current_Value = get_lval(PS4_RY)  -RY_Axis_Joystick_calibrate;
+		if (get_val(ADS)) {
+			if (abs(X_Current_Value) <= POS_Micro_MVT_Limit && abs(Y_Current_Value) <= POS_Micro_MVT_Limit) {
+				if (abs(X_Last_Value-X_Current_Value) < 15) {
+					combo_stop(c_Aim_Assist_Perfection);
+					Sampling_Done = FALSE;
+					if (get_val(FIRE) > 95) {
+						combo_stop(c_Fine_Tune_Aim);
+						fine_pulse = 0;
+						combo_run(c_spiroide_Aim_Assit);
+					}
+					else {
+						combo_stop(c_spiroide_Aim_Assit);
+						spiroide_pulse = 0;
+						combo_run(c_Fine_Tune_Aim);
+					}
+				}
+			}
+			else if (abs(X_Current_Value) <= POS_Aim_Limit && abs(Y_Current_Value) <= POS_Aim_Limit) {
+				combo_stop(c_Fine_Tune_Aim);
+				combo_stop(c_spiroide_Aim_Assit);
+				spiroide_pulse = 0;
+				fine_pulse = 0;
+				combo_run(c_Aim_Assist_Perfection);
+			}
+		}
+		else {
+			combo_stop(c_Fine_Tune_Aim);
+			combo_stop(c_spiroide_Aim_Assit);
+			combo_stop(c_Aim_Assist_Perfection);
+			spiroide_pulse = 0;
+			fine_pulse = 0;
+			Sampling_Done = FALSE;
+		}
+		if (sticky_aim_assist) {
+			if (get_val(ADS)) combo_run(c_STICKY_AIM);
+			else  combo_stop(c_STICKY_AIM);
+		}
+		if (holdbreath) {
+			if (get_val(ADS)) combo_run(c_HOLD_BREATH_cmb);
+		}
+		if (HairTriggers) {
+			deadzone(ADS, FIRE, 100, 100);
+		}
+		if (EASY__SLIDE_DROP && get_val(PRONE)) combo_run(c_DROP_SHOT);
+		if (get_val(ADS) && _event_press(PS4_LEFT)) {
+			combo_run(c_vibrate);
+			Rapid_Fire =! Rapid_Fire;
+		}
+		if (Rapid_Fire) {
+			if (get_val(FIRE)) {
+				combo_run(c_Rapiid_Fire);
+			}
+		}
+		if (aim_sens_corrections) {
+			ads_grenade_sens = 100- (iin_game_menu_sens);
+			ads_fire_sens = 96- (iin_game_menu_sens);
+			if (get_val(ADS)) {
+				if (get_val(FIRE) && get_val(ADS)) {
+					Sens = ads_fire_sens;
+				}
+				if (!get_val(FIRE) && !get_val(ADS) || get_val(FIRE) && !get_val(ADS)) {
+					Sens = 100;
+				}
+				if (!get_val(FIRE) && get_val(ADS) || get_val(LETHAL) && !get_val(ADS) || get_val(TACTICAL) && !get_val(ADS)) {
+					Sens = ads_grenade_sens;
+				}
+				if (Sens > 100) Sens = 100;
+				sensitivity(PS4_RX, NOT_USE, Sens);
+				sensitivity(PS4_RY, NOT_USE, Sens);
+			}
+		}
+		if (get_val(ADS) && _event_press(PS4_RIGHT)) {
+			combo_run(c_vibrate);
+			DropShot =! DropShot;
+		}
+		if (DropShot) {
+			if (get_val(FIRE)) {
+				combo_run(c_DroppShott);
+			}
+		}
+		
+		if (abs(get_val(PS4_LY)) < 10 && abs(get_val(PS4_LX)) < 10) {
+			set_val(PS4_LY, 0);
+			set_val(PS4_LX, 0);
+		}
+		if (abs(get_val(PS4_RY)) < 10 && abs(get_val(PS4_RX)) < 10) {
+			set_val(PS4_RY, 0);
+			set_val(PS4_RX, 0);
+		}
+	}
+}
+
+combo c_Aim_Assist_Perfection {
+	X_Last_Value = X_Current_Value;
+	Y_Last_Value = Y_Current_Value;
+	wait(Sampling_Time);
+	X_Current_Value = get_lval(PS4_RX)  -RX_Axis_Joystick_calibrate;
+	Y_Current_Value = get_lval(PS4_RY)  -RY_Axis_Joystick_calibrate;
+	if (Sampling_Done == TRUE) {
+		f_Aim_Perfection(X_Last_Value, X_Current_Value, 1, 0, 1, 0);
+		f_Aim_Perfection(Y_Last_Value, Y_Current_Value, 1, 0, 0, 1);
+	}
+	X_Last_Value = X_Current_Value;
+	Y_Last_Value = Y_Current_Value;
+	wait(Sampling_Time);
+	X_Current_Value = get_lval(PS4_RX)  -RX_Axis_Joystick_calibrate;
+	Y_Current_Value = get_lval(PS4_RY)  -RX_Axis_Joystick_calibrate;
+	if (Sampling_Done == TRUE) {
+		f_Aim_Perfection(X_Last_Value, X_Current_Value, 0, 1, 1, 0);
+		f_Aim_Perfection(Y_Last_Value, Y_Current_Value, 0, 1, 0, 1);
+	}
+	Sampling_Done = TRUE;
+	wait(Sampling_Time);
+}
+
+combo c_Fine_Tune_Aim {
+	set_val(PS4_RX, (15-fine_pulse));
+	set_val(PS4_LX, (  -15+ fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RX, (15-fine_pulse));
+	set_val(PS4_RY, (10-fine_pulse));
+	set_val(PS4_LX, (  -5+ fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RY, (10-fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RX, (  -15+ fine_pulse));
+	set_val(PS4_RY, (10-fine_pulse));
+	set_val(PS4_LX, (5-fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RX, (  -15+ fine_pulse));
+	set_val(PS4_LX, (15-fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RX, (  -15+ fine_pulse));
+	set_val(PS4_RY, (  -10+ fine_pulse));
+	set_val(PS4_LX, (5-fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RY, (  -10+ fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RX, (15-fine_pulse));
+	set_val(PS4_RY, (  -10+ fine_pulse));
+	set_val(PS4_LX, (  -5+ fine_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	fine_pulse = fine_pulse+ 2;
+	if (fine_pulse > 10) {
+		fine_pulse = 0;
+	}
+}
+
+combo c_spiroide_Aim_Assit {
+	set_val(PS4_RX, (4+ spiroide_pulse));
+	set_val(PS4_LX, (  -15+ spiroide_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RY, (5+ spiroide_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RX, (  -4-spiroide_pulse));
+	set_val(PS4_LX, 15-spiroide_pulse);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	set_val(PS4_RY, (5+ spiroide_pulse));
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	wait(Sampling_Time);
+	spiroide_pulse = spiroide_pulse+ 2;
+	if (spiroide_pulse > 10) {
+		spiroide_pulse = 0;
+	}
+}
+
+combo c_HOLD_BREATH_cmb {
+	set_val(SPRINT, 100);
+	wait(100);
+}
+
+combo c_DROP_SHOT {
+	set_val(PRONE, 100);
+	wait(800);
+}
+
+combo c_Rapiid_Fire {
+	set_val(FIRE, 100);
+	wait(40);
+	set_val(FIRE, 0);
+	wait(30);
+}
+
+combo c_DroppShott {
+	set_val(PRONE, 100);
+	wait(40);
+	wait(DropShotSpeed);
+	set_val(PRONE, 100);
+}
+
+combo c_STICKY_AIM {
+	set_val(PS4_RY, f_xy_val(PS4_RY, _v));
+	wait(20);
+	set_val(PS4_RX, f_xy_val(PS4_RX, _v));
+	set_val(PS4_LX, f_xy_val(PS4_LX, _v));
+	wait(20);
+	set_val(PS4_RY, f_xy_val(PS4_RY, _v * -1));
+	wait(20);
+	set_val(PS4_RX, f_xy_val(PS4_RX, _v * -1));
+	set_val(PS4_LX, f_xy_val(PS4_LX, _v * -1));
+	wait(20);
+}
+
+
+combo c_vibrate {
+	set_rumble(RUMBLE_A, 85);
+	wait(225);
+	reset_rumble();
+}
+
+
+function f_xy_val(f_axis, f_val) {
+	if (abs(get_val(f_axis)) < (_v+ 1))
+		return f_val;
+	return get_val(f_axis);
+}
+
+function f_Aim_Perfection(Last_Value, Current_Value, Boost, Correction, X_AXIS, Y_AXIS) {
+	if (abs(Last_Value-Current_Value) < Aim_Perfection_Limit) {
+		if (Last_Value < Current_Value) {
+			if (Boost) {
+				if (X_AXIS) set_val(PS4_RX, (Current_Value+ Aim_Boost));
+				if (Y_AXIS) set_val(PS4_RY, (Current_Value+ Aim_Boost));
+			}
+			else if (Correction) {
+				if (X_AXIS) set_val(PS4_RX, (Current_Value-Aim_Correction));
+				if (Y_AXIS) set_val(PS4_RY, (Current_Value-Aim_Correction));
+			}
+		}
+		else {
+			if (Boost) {
+				if (X_AXIS) set_val(PS4_RX, (Current_Value-Aim_Boost));
+				if (Y_AXIS) set_val(PS4_RY, (Current_Value-Aim_Boost));
+			}
+			else if (Correction) {
+				if (X_AXIS) set_val(PS4_RX, (Current_Value+ Aim_Correction));
+				if (Y_AXIS) set_val(PS4_RY, (Current_Value+ Aim_Correction));
+			}
+		}
+	}
+}
+
+
+main {
+	if(__run_vm__) {
+		__run_vm__ = system_time() >= (__vm_run_time__+ ___vm_time___);
+		if(__run_vm__) __vm_run_time__ = system_time();
+		else {
+			memset( & __io_vals__[0],  0,  _VM_BTN_COUNT_);
+			memset( & __io_val_events__[0],  0,  _VM_BTN_COUNT_);
+			for(___i____i = 0; ___i____i < _VM_BTN_COUNT_; ++ ___i____i) {
+				if(get_val(___i____i)) __io_vals__[___i____i] = get_val(___i____i);
+				if(get_val( ++ ___i____i)) __io_vals__[___i____i] = get_val(___i____i);
+			}
+			#ifdef __LAST_COMBO__
+			for(___i____i = 0; ___i____i < sizeof(__COMBO_RUN__); ++ ___i____i) {
+				if(__LAST_COMBO__[(___i____i * 3) + ___i____i]) {
+					__LAST_COMBO__[(___i____i * 3) + ___i____i] = 0;
+					__COMBO_RUN__[___i____i] = 1;
+				}
+			}
+			#endif
+		}
+	}
+	else {
+		___i____i = 0;
+		do {
+			if(__io_vals__[___i____i]) set_val(___i____i,    __io_vals__[___i____i]);
+			if(event_press(___i____i)) __io_val_events__[___i____i] = 1;
+			if(event_release(___i____i)) __io_val_events__[___i____i] = 3;
+			if(__io_vals__[ ++ ___i____i]) set_val(___i____i,    __io_vals__[___i____i]);
+			if(event_press(___i____i)) __io_val_events__[___i____i] = 1;
+			if(event_release(___i____i)) __io_val_events__[___i____i] = 3;
+		} while( ++ ___i____i < _VM_BTN_COUNT_);
+		if(system_time() >= (__vm_run_time__+ ___vm_time___)) {
+			__run_vm__ = 1; __vm_run_time__ = system_time();
+			#ifdef __LAST_COMBO__
+			for(___i____i = 0; ___i____i < sizeof(__COMBO_RUN__); ++ ___i____i) {
+				if(__COMBO_RUN__[___i____i]) {
+					__LAST_COMBO__[(___i____i * 3) + ___i____i] = 1;
+					__COMBO_RUN__[___i____i] = 0;
+				}
+			}
+			#endif
+		}
+	}
+}
+
+
+int vm_tctrl_wait(int num) { 
+	return ___vm_time___ ? ((num / ___vm_time___) + ((num % ___vm_time___) ? 1 : 0)) : num;
+}
+
+bool _event_press(uint8 io) {
+	return event_press(io) || __io_val_events__[io] == 1;
+}
+
+bool _event_release(uint8 io) {
+	return event_release(io) || __io_val_events__[io] == 3;
+}
+
+

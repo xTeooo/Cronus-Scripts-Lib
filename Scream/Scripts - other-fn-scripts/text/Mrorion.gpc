@@ -1,0 +1,477 @@
+// GPC Online Library
+// orion_fortx.gpc
+
+// GPC Online Library
+// orion_fortx.gpc
+// Version 1.2
+/*--------------------------------------------------------------------------------------
+  __  __                 _              ___           _          _  _         __  __    |
+ |  \/  | _ _  ___  _ _ (_) ___  _ _   | __|___  _ _ | |_  _ _  (_)| |_  ___  \ \/ /    |
+ | |\/| || '_|/ _ \| '_|| |/ _ \| ' \  | _|/ _ \| '_||  _|| ' \ | ||  _|/ -_)  >  <     |
+ |_|  |_||_|  \___/|_|  |_|\___/|_||_| |_| \___/|_|   \__||_||_||_| \__|\___| /_/\_\    |
+                                                                                        |
+---------------------------------------------------------------------------------------*/
+/* Big Thanks to the Wonderful magnificent hooman that is Batts. <3
+/*-------------------------------------------------------------------|
+  ___        _    _                _                            _    |
+ | _ ) _  _ | |_ | |_  ___  _ _   | |    __ _  _  _  ___  _  _ | |_  |
+ | _ \| || ||  _||  _|/ _ \| ' \  | |__ / _` || || |/ _ \| || ||  _| |
+ |___/ \_,_| \__| \__|\___/|_||_| |____|\__,_| \_, |\___/ \_,_| \__| |
+                                               |__/                  |
+--------------------------------------------------------------------*/ 
+define VIEW  =  1;
+define MENU  =  2;
+define RB_R1 =  3;
+define RT_R2 =  4;
+define RS_R3 =  5;
+define LB_L1 =  6;
+define LT_L2 =  7;
+define LS_L3 =  8;
+define RX    =  9;
+define RY    = 10;
+define LX    = 11;
+define LY    = 12;
+define UP    = 13;
+define DOWN  = 14;
+define LEFT  = 15;
+define RIGHT = 16;
+define Y_TRI = 17;
+define B_CIR = 18;
+define A_CROSS= 19;
+define X_SQUARE =20;
+define Off      = 0;
+/*-----------------------------------------------------------
+  ___            _                   _    _                 |
+ |_ _| _ _   ___| |_  _ _  _  _  __ | |_ (_) ___  _ _   ___ |
+  | | | ' \ (_-<|  _|| '_|| || |/ _||  _|| |/ _ \| ' \ (_-< |
+ |___||_||_|/__/ \__||_|   \_,_|\__| \__||_|\___/|_||_|/__/ |
+                                                            | 
+Myth - Fortnite changes settings that affect aimabuse       |
+values. Users constantly change values. Well this script    |
+is a AimAbuse Progression that will start at the min wait   |
+time & work it's way upto the Max wait time.                |                                             |
+            Progression AimAbuse                            | 
+                                                            |
+Progression from min_hold(minimum time in ms that LT        |
+will be held) to max_hold progression (maximum time in      |
+ms that LT will be held)                                    |
+held time will be increased by custom increments(inc_hold =)|
+until it reaches it limit max_hold.                         |
+                                                            |
+Wait time progression for combo section (wait(ab_wait);)    |
+min_wait  = minimum wait time in ms after LT release        |
+max_wait = maximum time in ms after LT release              |
+inc_wait  = value to inc/dec from wait time                 |
+                                                            |
+  int dir_hold = 1;  //-- 1 = increase / 0 = decrease       |
+  int dir_wait = 1;                                         |
+                                                            |
+             1 = Starts from Min - Max                      |
+             0 = Starts from max - Min                      |
+                                                            |
+        SingleShot = Hold L2_LT(ADS) + RB_R1                |
+                                                            |
+         DropShot = Hold L2_LT(ADS) + X_SQURAE              |
+                                                            |
+                                                            |
+                                                            |
+           Strafe = Hold LT_L2(ADS) + Left                  |
+                                                            |
+                                                            |
+                                                            |
+            RapidFire = LT_L2(ADS) + UP                     |        
+                                                            |
+                                                            |
+            BruteExploit RB_R1 + Down                       |
+            Be in the Drivers seat and watch                |
+            your brute Launch across the map                |
+                                                            |
+                                                            |
+                                                            |
+/*----------------------------------------------------------------------------------------------------------------|
+|  ___  ___   ___    ___  ___  ___  ___  ___  ___  ___   _  _     _    ___  __  __     _    ___  _   _  ___  ___  |
+| | _ \| _ \ / _ \  / __|| _ \| __|/ __|/ __||_ _|/ _ \ | \| |   /_\  |_ _||  \/  |   /_\  | _ )| | | |/ __|| __| |
+| |  _/|   /| (_) || (_ ||   /| _| \__ \\__ \ | || (_) || .` |  / _ \  | | | |\/| |  / _ \ | _ \| |_| |\__ \| _|  |
+| |_|  |_|_\ \___/  \___||_|_\|___||___/|___/|___|\___/ |_|\_| /_/ \_\|___||_|  |_| /_/ \_\|___/ \___/ |___/|___| |
+| ----------------------------------------------------------------------------------------------------------------*/
+    define min_hold   = 80;   //--minimum time in ms that LT will be held
+    define max_hold   = 300;   //--maximum time in ms that LT will be held
+    define inc_hold   = 10;    //--value to inc/dec from hold time
+ 
+ 
+    define min_wait  =  5;   //--minimum wait time in ms after LT release
+    define max_wait  =  30;   //--maximum time in ms after LT release
+    define inc_wait  =   5;   //--value to inc/dec from wait time
+ 
+    int ab_hold = min_hold;  //--initial values
+    int ab_wait = min_wait;
+ 
+    int val_idx;
+    int dir_hold = 1;  //-- 1 = increase / 0 = decrease
+    int dir_wait = 1;
+/*--------------------------------------------------------------------------------------------------------------       
+                                     \ \ / /__ _  _ _ (_) __ _ | |__ | | ___  ___                              |
+                                      \ V // _` || '_|| |/ _` || '_ \| |/ -_)(_-<                              |
+                                       \_/ \__,_||_|  |_|\__,_||_.__/|_|\___|/__/                              |
+--------------------------------------------------------------------------------------------------------------*/
+// SingleShot = Hold L2_LT(ADS) + RB_R1
+int SingleShot = TRUE;
+
+//DropShot Hold L2_LT(ADS) + X_SQURAE
+int DropShot = FALSE;
+int DS_BTN = RS_R3;
+int DS_Time = 40;
+
+//Strafe Hold LT_L2(ADS) + Left
+int Strafe = FALSE;
+int strafeLeft, strafeRight;
+int Rand = 32767;
+
+//InstaEdit
+int EDIT_BTN  = 27; //Your Custom edit Button
+int RESET_BTN  = RS_R3;//Your Custom Reset edit button
+int CONFIRM_BTN = B_CIR;//Your custom edit confirm button
+int edit = FALSE;                                                                                                                                              
+int WAIT;                                                                                
+int num, i, a;
+int button;
+
+//Aim Assist
+int aa_p  = 24; 
+int aa_n = -24; 
+int aa_delay  = 20;
+int release = 25;
+
+//RapidFire LT_L2(ADS) + Right
+int RapidFire = FALSE;
+int RF_Time = 40;
+
+//Brute_Exploit
+int Brute_Exploit = FALSE;
+int Brute_Time    = 40;
+
+/*Build Mode- Will disable Mods
+MODS will disable when entering build mode
+mods will have to be manually turned on again.*/
+
+
+// Colour
+int  Col_ind
+define Blue      = 1; 
+define Red       = 2; 
+define Green     = 3; 
+define Pink      = 4; 
+define SkyBlue   = 5; 
+define Yellow    = 6; 
+define White     = 7;
+define Bright_Green = 17; 
+data(1,
+  2,0,0,0, //1. Blue
+  0,2,0,0, //2. Red
+  0,0,2,0, //3. Lime/Green
+  0,0,3,0, // Bright Green
+  0,0,0,2, //4. Fuchsia/Pink
+  2,0,2,0, //5. SkyBlue
+  0,2,2,0, //6. Yellow
+  2,2,2,2  //7. White
+  
+
+);
+ 
+/*-----------------------------------------------------------
+  __  __        _        ___           _    _                |
+ |  \/  | __ _ (_) _ _  / __| ___  __ | |_ (_) ___  _ _      |
+ | |\/| |/ _` || || ' \ \__ \/ -_)/ _||  _|| |/ _ \| ' \     |
+ |_|  |_|\__,_||_||_||_||___/\___|\__| \__||_|\___/|_||_|    |
+------------------------------------------------------------*/                                                       
+main{
+
+    if ((!DropShot && !Strafe &&!RapidFire)) color_led(Red); //EVERYTHING IS OFF
+    if ((DropShot &&  Strafe && RapidFire)) color_led(Green); //EVERYTHING IS ON
+    if ((DropShot && !Strafe &&!RapidFire)) color_led(White); // Dropshot IS ON(LimeGreen)
+    if ((!DropShot && Strafe && !RapidFire)) color_led(Yellow); // Strafe IS ON(LightBlue)
+    if ((!DropShot && !Strafe && RapidFire)) color_led(Pink); // RapidFre IS ON(Green)
+    if ((DropShot &&  Strafe &&!RapidFire)) color_led(SkyBlue); // Dropshot,Strafe ON	
+    if ((DropShot &&  !Strafe && RapidFire)) color_led(Blue); // Dropshot,RapidFire ON(Blue)
+    if ((!DropShot &&  Strafe && RapidFire)) color_led(Bright_Green); // Strafe,RapidFire ON(Purple)
+
+
+
+/*----------------------------------------------------------------------------------------------------------------*
+|  ___  ___   ___    ___  ___  ___  ___  ___  ___  ___   _  _     _    ___  __  __     _    ___  _   _  ___  ___  |
+| | _ \| _ \ / _ \  / __|| _ \| __|/ __|/ __||_ _|/ _ \ | \| |   /_\  |_ _||  \/  |   /_\  | _ )| | | |/ __|| __| |
+| |  _/|   /| (_) || (_ ||   /| _| \__ \\__ \ | || (_) || .` |  / _ \  | | | |\/| |  / _ \ | _ \| |_| |\__ \| _|  |
+| |_|  |_|_\ \___/  \___||_|_\|___||___/|___/|___|\___/ |_|\_| /_/ \_\|___||_|  |_| /_/ \_\|___/ \___/ |___/|___| |
+------------------------------------------------------------------------------------------------------------------|                                                                                                            
+*/
+    //--device monitor
+    set_val(30,ab_hold / 10);
+    set_val(31,ab_wait / 10);
+ 
+    //--ads only 
+    if(get_val(7)){
+    
+    //-- ads press sensitive 95%
+    /*if(get_val(7) >95){*/
+    
+    //-- ads + fire
+    /*if(get_val(7)&& !get_val(4)){*/
+        if(!combo_running(AIM_ABUSE)) {
+            ab_hold = progression(ab_hold,min_hold,max_hold,inc_hold,dir_hold,1);
+            ab_wait = progression(ab_wait,min_wait,max_wait,inc_wait,dir_wait,2);
+            combo_run(AIM_ABUSE);
+        }
+    }
+/*-----------------------------------------------
+  ___            _           ___     _  _  _     |
+ |_ _| _ _   ___| |_  __ _  | __| __| |(_)| |_   |
+  | | | ' \ (_-<|  _|/ _` | | _| / _` || ||  _|  |
+ |___||_||_|/__/ \__|\__,_| |___|\__,_||_| \__|  |
+------------------------------------------------*/ 
+if(get_val(EDIT_BTN) && get_ptime(EDIT_BTN)){
+	edit = TRUE;
+	}
+if(get_val(EDIT_BTN)){
+	edit = TRUE;
+	}
+if (edit == TRUE) {
+if(get_val(RESET_BTN)){
+	{combo_run(wait1);} 
+	set_click(CONFIRM_BTN, 1, 100);
+	edit = FALSE;
+	}
+if (event_release(RT_R2) || get_val(Y_TRI)){
+	set_click(CONFIRM_BTN, 1, 0);edit = FALSE;}}
+ 
+if (a) {
+	if (i < num) {
+  if (!combo_running(master)) {
+   combo_run(master);
+   }
+  } else if 
+  (i > num) {a = FALSE;
+  }
+	}
+/*----------------------------------------------------
+  ___  _              _       ___  _          _       |
+ / __|(_) _ _   __ _ | | ___ / __|| |_   ___ | |_     |
+ \__ \| || ' \ / _` || |/ -_)\__ \| ' \ / _ \|  _|    |
+ |___/|_||_||_|\__, ||_|\___||___/|_||_|\___/ \__|    |
+               |___/                                  |
+-----------------------------------------------------*/
+if (get_val(LT_L2) && get_val(RB_R1)) {
+   SingleShot = !SingleShot
+      combo_run(SingleShot);
+      set_val(RB_R1, 0);
+      } else {
+     combo_stop(SingleShot);
+       }
+
+/*--------------------------------------------
+    ___                   ___  _          _  |
+ |   \  _ _  ___  _ __ / __|| |_   ___ | |_  |
+ | |) || '_|/ _ \| '_ \\__ \| ' \ / _ \|  _| |
+ |___/ |_|  \___/| .__/|___/|_||_|\___/ \__| |
+                 |                           |
+--------------------------------------------*/
+if(get_val(LT_L2) && event_press(X_SQUARE)){
+DropShot =!DropShot;
+}
+if(DropShot){
+if(get_val(LT_L2)&&get_val(RT_R2)){combo_run(DropShot);}
+if (event_press(18)){ DropShot = FALSE; }}
+              
+/*--------------------------------- 
+  ___  _                __         |
+ / __|| |_  _ _  __ _  / _| ___    |
+ \__ \|  _|| '_|/ _` ||  _|/ -_)   |
+ |___/ \__||_|  \__,_||_|  \___|   |
+--------------------------------- */
+if(get_val(LT_L2) && event_press(LEFT)){Strafe=!Strafe;}
+         if(Strafe) {
+          if((get_val(LT_L2)) && (get_val(LT_L2))){        
+              combo_run(AutoStrafe);}
+      if (event_press(18)){Strafe = FALSE; }}
+
+        
+/*-----------------------------------------------
+    _    _            _            _      _     | 
+   /_\  (_) _ __     /_\   ___ ___(_) ___| |_   |
+  / _ \ | || '  \   / _ \ (_-<(_-<| |(_-<|  _|  |
+ /_/ \_\|_||_|_|_| /_/ \_\/__//__/|_|/__/ \__|  |
+-----------------------------------------------*/
+   if (get_val(7)> 98){                    
+     combo_run(AimAssist);
+   if (abs(get_val(9)) > 21 || abs(get_val(10)) > 21){ 
+	   combo_stop(AimAssist);
+          }
+       }
+           
+/*---------------------------------------------
+  ___              _     _  ___  _            |
+ | _ \ __ _  _ __ (_) __| || __|(_) _ _  ___  |
+ |   // _` || '_ \| |/ _` || _| | || '_|/ -_) |
+ |_|_\\__,_|| .__/|_|\__,_||_|  |_||_|  \___| |
+            |_|                               |
+---------------------------------------------*/
+ if(get_val(LT_L2) && event_press(RIGHT))
+  RapidFire = !RapidFire;
+ if(RapidFire && get_val(LT_L2)
+ &&get_val(RT_R2)){combo_run(RapidFire);}
+if (event_press(18)){ RapidFire = FALSE; }
+
+/*-------------------------------------------------
+ ___          _         ___          _     _ _    |
+ | _ )_ _ _  _| |_ ___  | __|_ ___ __| |___(_) |_ |
+ | _ \ '_| || |  _/ -_) | _|\ \ / '_ \ / _ \ |  _||
+ |___/_|  \_,_|\__\___| |___/_\_\ .__/_\___/_|\__||
+                                |_|               |
+-------------------------------------------------*/
+if(get_val(LT_L2) && event_press(LS_L3)){
+Brute_Exploit = !Brute_Exploit; 
+}
+if(Brute_Exploit){
+combo_run(Brute_Exploit);}
+else 
+{combo_stop (Brute_Exploit);}}
+
+/*--------------------------------------------------------------------------
+|  ___  ___   __  __  ___   ___    ___  ___  ___  _____  ___  ___   _  _    |
+| / __|/ _ \ |  \/  || _ ) / _ \  / __|| __|/ __||_   _||_ _|/ _ \ | \| |   |
+|| (__| (_) || |\/| || _ \| (_) | \__ \| _|| (__   | |   | || (_) || .` |   |
+| \___|\___/ |_|  |_||___/ \___/  |___/|___|\___|  |_|  |___|\___/ |_|\_|   |
+---------------------------------------------------------------------------*/
+combo AIM_ABUSE {                                                                         
+set_val(7, 100);                                                                  
+wait(ab_hold);                                                                      
+set_val(7, 0);                                                                     
+wait(ab_wait);                                                                     
+}
+combo SingleShot {
+set_val(4,100);
+wait(100);
+wait(250);
+set_val(4,100);}
+
+combo DropShot {
+set_val(DS_BTN,100);                                                                     
+wait(40);                                                                          
+wait(DS_Time);}
+
+combo AutoStrafe {
+strafeRight = Rand(500, 1000);
+set_val(PS4_LX, 40);
+wait(strafeRight);
+strafeLeft = Rand(500, 1000);
+set_val(PS4_LX, inv(40));
+wait(strafeLeft);
+set_val(PS4_LX, 40);
+}
+
+combo AimAssist{
+set_val(10,xy_val(10,aa_p));
+wait(aa_delay)
+set_val(9,xy_val(9,aa_p));
+wait(aa_delay)
+set_val(10,xy_val(10,aa_n));
+wait(aa_delay)
+set_val(9,xy_val(9,aa_n));
+wait(aa_delay)
+}
+
+combo RapidFire {
+set_val(4,100);
+wait(RF_Time);
+set_val(4,0);
+wait(RF_Time);
+}
+combo Brute_Exploit {
+set_val(18, 100);
+set_val(19, 100);	
+wait(Brute_Time);	
+wait(Brute_Time);
+set_val(18, 100);
+set_val(19, 100);	
+wait(Brute_Time);
+wait(Brute_Time);
+set_val(18, 100);
+set_val(19, 100);	
+wait(Brute_Time);
+wait(Brute_Time);
+Brute_Exploit = FALSE;
+}
+
+combo wait1 {
+wait(50);
+wait(55);
+}
+combo master {
+wait(WAIT);
+set_val(button, 100);
+wait(28);
+set_val(button, 0);
+wait(28);
+i = i + 1;
+}
+/*---------------------------------------------
+   __                  _    _                  |
+  / _| _  _  _ _   __ | |_ (_) ___  _ _   ___  |
+ |  _|| || || ' \ / _||  _|| |/ _ \| ' \ (_-<  |
+ |_|   \_,_||_||_|\__| \__||_|\___/|_||_|/__/  |
+----------------------------------------------*/                                             
+
+function progression(f_val,f_min,f_max,f_inc,f_dir,f_idx) {
+    //--adding to val
+    if(f_dir) {
+        f_val += f_inc;
+        if(f_val <= f_max)  
+            return f_val;
+        //--max reached
+        if(f_val > f_max) {
+            //--change direction
+            val_idx[f_idx] = 0;
+            return f_val - f_inc;
+        }
+    //--subtracting
+    }else{
+        f_val -= f_inc;    
+        if(f_val >= f_min)  
+            return f_val; 
+        //--min reached
+        if(f_val < f_min) {
+            //--change direction
+            val_idx[f_idx] = 1;
+            return f_val + f_inc;
+        } 
+    }
+    return FALSE;    
+}
+
+function xy_val(f_axis,f_val) {
+    if(abs(get_val(f_axis)) < release)
+        return f_val;
+    return get_val(f_axis);
+}
+
+function set_click(B, Num, Wait) {
+	WAIT = Wait;
+	i = 0;
+	button = B;
+	num = Num;
+	a = TRUE;
+}
+
+function Rand(min,max){
+ Rand = Rand *8403 % 32767;
+ if (min>= Off && max >= Off)
+ return abs(min + (Rand && (max - min)));
+ return min + (Rand % (max - min));
+}
+
+function color_led(Colour) {
+    Col_ind=(Colour*4) - 3;
+    set_led(LED_1,dbyte(Col_ind  ));
+    set_led(LED_2,dbyte(Col_ind + 1));
+    set_led(LED_3,dbyte(Col_ind + 2));
+    set_led(LED_4,dbyte(Col_ind + 3));
+}

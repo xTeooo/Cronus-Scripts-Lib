@@ -1,0 +1,1682 @@
+/* * * * * * * * * * * * * * * * * * * * * * *
+// GPC Private Library "MY PERSONAL DAILY"	||
+// noobProof-NOBuild-V14.0.gpc				||
+// FORT9 SCRIPT -- "Chapter 3 Season 4"		||
+// SERIE = 14-E    for  EXPONENCIAL PLAYERS || 
+'                          _                                            _       
+'                         / |_                                         / \      
+'   _ .--.   .--.   .---.`| |-'_   _   __  _ .--.  _ .--.    _   __   / _ \     
+'  [ `.-. |/ .'`\ \/ /'`\]| | [ \ [ \ [  ][ `/'`\][ `.-. |  [ \ [  ] / ___ \    
+'   | | | || \__. || \__. | |, \ \/\ \/ /  | |     | | | |   \ '/ /_/ /   \ \_  
+'  [___||__]'.__.' '.___.'\__/  \__/\__/  [___]   [___||__][\_:  /|____| |____| 
+'                          __       _______                 \__.'       ___     
+'                         [  |     |_   __ \                          .' ..]    
+'   _ .--.   .--.    .--.  | |.--.   | |__) |_ .--.   .--.    .--.   _| |_      
+'  [ `.-. |/ .'`\ \/ .'`\ \| '/'`\ \ |  ___/[ `/'`\]/ .'`\ \/ .'`\ \'-| |-'     
+'   | | | || \__. || \__. ||  \__/ |_| |_    | |    | \__. || \__. |  | |       
+'  [___||__]'.__.'  '.__.'[__;.__.'|_____|  [___]    '.__.'  '.__.'  [___]      
+'                                                                              
+/////////////////////////////////////////////////////////////////////////
+//	 	I (noctwrnyA) provide support for the Script, u can reachme at //
+//	  	Discord - noctwrnyA#5797									   //
+//	  	EPIC 	- noctwrnyA											   //
+//	  	PSN		- noctwrnyA											   //
+//	  	E-mail 	- noctwrny@gmail.com								   //
+/////////////////////////////////////////////////////////////////////////
+
+ 					Credits To :
+ - SS_Nikolai for sharin some codes n knowledge.
+ - DoNotAtMe For Polar Aim Assist
+ - TaylorDrift For Customizing DNAM Polar With Shapes
+ - Sweet_Evil for his Polar Aim Assist
+ - Me lol! noctwrnyA. 
+
+			F	E	A	T	U	R	E	S
+========================FORT9===============================
+TRACKINMODES V8 ----------------------- [PICKAXE/COMBAT/INVENTORY/MAPVIEW/OPTION]
+DEADZONE ------------------------------ LEFT/RIGHT STICKS
+JOYSTICK CALIBRATION ------------------ OPTIMIZED DEADZONE for the Right Stick
+AIM SENS CORRECTION ------------------- FORT9 OPTIMIZED (u can set different sens for each mode)
+HAIR TRIGGERS ------------------------- ADS/FIRE (ADS adjusted for SCOPES WEAPONS)
+AIM ASSIST(SHAPE SHIFTER) ------------	ADS-WIDEOVAL / ADS+FIRE-TALLOVAL / FIRE-HELIX (it also track enemies while in combat)
+3 AIM ABUSE	--------------------------- only-ADS / ADS+FIRE   -note: for ADS AIM ABUSE, press ADS more than half way-
+HEAD SHOT ASSIST ---------------------- flick the aim stick up in search for a headshot
+TURN OFF WIRELESS CONTROLLER ---------- R3 + PS (need to power circle the ZEN to reconnect)
+BLOCK RUMBLE -------------------------- Block Controller's VIBRATION
+
+// COMBAT || PICKAXE MODS ===========================================
+-AIM ABUSE TOGGLE (**)----------------- R1+tapJUMP //AIM ABUSE TOGGLE ON/OFF
+-ANTI-RECOIL (**)---------------------- ON by default *adjustment on the fly. //HoldJUMP+tapRIGHT/LEFT/UP/DOWN on the DPAD.
+-GHOST SHAKE (**)---------------------- ADS+tapLEFT (releasin ADS will stop it)
+-SINGLE-SHOT|RapidFire+AIM-Abuse (**)-- ADS+tapNEXT_WEAPON=Single//ADS+HoldNEXT_WEAPON=RapidFire
+-PRIME_SHOT (**)--((NEW))-------------- NEXT_WEAPON+SQUARE //Auto Reload After First Shot
+-AUTOPICKUP (*)------------------------ pressSQUARE while in PICKAXE (Auto Pick Up Loot).
+-INSTA_PICK (*)------------------------ FIRE+tapSQUARE will go to COMBAT .
+//--(**) = ONLY COMBAT MODS -/  ---   /- (*) = ONLY PICKAXE MODS -----\\
+		
+		- 10-60 PING. (tested)
+		- RUNNING AT ( 5 ms ).
+		  
+	/////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////
+								THE SCRIPT START AS ((OFF))
+
+			IF FORT9  // ADS + OPTIONS to turn ON	*PICKAXE mode will display 
+	
+				TO TURN OFF EVERYTHIN  // ADS + MAPVIEW_B.    (( KILLSWITCH ))
+				When SCRIPT OFF (KILLSWITCH)/////////////////////////////////
+				-- OLED SCREEN OFF after 8s
+				-- CONTROLLER BATTERY NOTIFICATION --
+					Green(Bright) 		= When Charging
+					Green(Bright/Dim) 	= FULLYCHARGED
+					Blue(Dim)  	  		= Excellent|70-100%
+					Blue(Dim/Light) 	= Good|40-70%
+					Purple(Dim)	  		= Low|20-40% 
+					Red(Dim)   	  		= Dying|20% or Less *will rumble*  .
+
+		
+*/
+////////////////////////////////////MATCH IN-GAME///////////////////////////////////////////////
+//COMBAT LAYOUT
+define ADS     		= PS4_L2;		//in-game ADS BUTTON
+define FIRE     	= PS4_R2;		//in-game FIRE BUTTON
+define NEXT_WEAPON 	= PS4_R1;		//in-game NEXT_WEAPON BUTTON
+define PREV_WEAPON 	= PS4_L1;		//in-game PREV_WEAPON BUTTON
+
+//MISCELLANEOUS
+define PICKAXE 		= PS4_TRIANGLE; //in-game PICKAXE BUTTON
+define JUMP     	= PS4_CROSS;	//in-game JUMP BUTTON
+define CROUCH   	= PS4_R3;		//in-game CROUCH BUTTON
+define INTERACT 	= PS4_SQUARE;	//in-game INTERACT BUTTON
+define MAPVIEW_B	= PS4_TOUCH;    //in-game MAP BUTTON
+define CIRCLE 		= PS4_CIRCLE; 	//DO NOT CHANGE
+define R3		   	= PS4_R3;		//DO NOT CHANGE
+define L3		   	= PS4_L3;		//DO NOT CHANGE
+
+/*NOTE: XBOX controller Players need to change buttons accordingly
+		by changing PS4_TOUCH FOR PS4_SHARE or (XB1_VIEW / XB360_BACK).
+		
+		XBOX one and 360 buttons identifiers list below.
+		
+		XB1_XBOX	XB360_XBOX
+		XB1_VIEW	XB360_BACK
+		XB1_MENU	XB360_START
+		XB1_RB		XB360_RB
+		XB1_RT		XB360_RT
+		XB1_RS		XB360_RS
+		XB1_LB		XB360_LB
+		XB1_LT		XB360_LT
+		XB1_LS		XB360_LS
+		XB1_Y		XB360_Y
+		XB1_B		XB360_B
+		XB1_A		XB360_A
+		XB1_X		XB360_X
+		XB1_PR1
+		XB1_PR2
+		XB1_PL1
+		XB1_PL2
+
+*/////////////////////////////////////////////////////
+///////////////////DO NOT CHANGE /////////////////////
+//LAYOUT  
+define On  = TRUE;
+define Off = FALSE;
+
+define UP     = PS4_UP;    
+define DOWN   = PS4_DOWN;   
+define LEFT   = PS4_LEFT; 
+define RIGHT  = PS4_RIGHT;
+
+define OPTIONS	= PS4_OPTIONS;  
+define TOUCHPAD = PS4_TOUCH;
+define SHARE 	= PS4_SHARE;
+define PS 		= PS4_PS;
+
+    define AIM_X 	= PS4_RX;
+    define AIM_Y 	= PS4_RY;
+    define LX 		= PS4_LX;
+    define LY 		= PS4_LY;
+//////////////////////////////////////////////////////
+// AIM ASSIST SHAPES variables
+// 1 = Circular, 2 = Tall Oval, 3 = Wide Oval, 4 = Spiral, 5 = Helix
+int DNAM_Polar; 
+define ADS_DNAM_Polar = 2;
+define HIPFIRE_DNAM_Polar = 4;
+define ADS_FIRE_DNAM_Polar = 3;
+
+define ADS_polar_Values = 21;//21
+define ADS_angle_Values = 21;//21
+
+define HIPFIRE_polar_Values = 12;//12
+define HIPFIRE_angle_Values = 12;//12
+
+define ADS_FIRE_polar_Values = 28;//28
+define ADS_FIRE_angle_Values = 28;//28
+
+define TAP_FIRE_polar_Values = 26;//26
+define TAP_FIRE_angle_Values = 26;//26
+
+	int Polar_Radius;
+	int Polar_Angle;
+	int Radius_Min   =  6;
+
+define Angular_Direction  = On;
+	int _RX,
+		_RY, 
+		angleee, 
+		CosAngle, 
+		SinAngle, 
+		OuterSpiral, 
+		ActualMagnitude,
+		AngleDirection,
+		SpiralPosition1,
+		SpiralPosition2,
+		MaxMagnitude, 
+		InnerSpiral,
+		Position;
+	const int32 DNAMPolarArray16[] 	  = { 100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100};	
+	const int32 DNAMPolarArray8[] 	  = {-100,-100,-100,-100,-100,-100,-100,-100,-100,-99,-99,-99,-98,-98,-98,-97,-97,-96,-96,-95,-94,-94,-93,-93,-92,-91,-90,-90,-89,-88,-87,-86,-85,-84,-83,-82,-81,-80,-79,-78,-77,-76,-75,-74,-72,-71,-70,-69,-67,-66,-65,-63,-62,-61,-59,-58,-56,-55,-53,-52,-50,-49,-47,-46,-44,-43,-41,-40,-38,-36,-35,-33,-31,-30,-28,-26,-25,-23,-21,-20,-18,-16,-14,-13,-11,-9,-7,-6,-4,-2,0,2,4,6,7,9,11,13,14,16,18,20,21,23,25,26,28,30,31,33,35,36,38,40,41,43,44,46,47,49,51,52,54,55,56,58,59,61,62,63,65,66,67,69,70,70,72,73,74,75,77,78,79,80,81,82,83,84,85,86,87,88,89,89,90,91,92,92,93,94,94,95,95,96,97,97,97,98,98,99,99,99,99,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,99,99,99,99,98,98,97,97,97,96,95,95,94,94,93,92,92,91,90,89,89,88,87,86,85,84,83,82,81,80,79,78,77,75,74,73,72,71,70,69,67,66,65,63,62,61,59,58,56,55,53,52,50,49,47,46,44,43,41,40,38,36,35,33,31,30,28,26,25,23,21,20,18,16,14,13,11,9,7,6,4,2,0,-1,-3,-5,-7,-8,-10,-12,-13,-15,-17,-19,-20,-22,-24,-25,-27,-29,-30,-32,-34,-35,-37,-39,-40,-42,-43,-45,-46,-48,-50,-51,-53,-54,-55,-57,-58,-60,-61,-62,-64,-65,-66,-68,-69,-70,-71,-73,-74,-75,-76,-77,-78,-79,-80,-81,-82,-83,-84,-85,-86,-87,-88,-89,-89,-90,-91,-92,-92,-93,-93,-94,-95,-95,-96,-96,-97,-97,-97,-98,-98,-99,-99,-99,-99,-100,-100,-100,-100,-100};
+
+
+//ENEMY TRACKER
+int ENEMY_TRACKER = On;
+int _v 		= 8; //Aim Assist STRENGTH Value (Screen Shake)
+int Delay 	= 8; //How fast Aim Assist Run
+int Release = 9; //Must be 1 higher than STRENGTH
+int _strafe = 10;  //STRAFIN for ROTATIONAL Aim Assit
+////////////////////////////////////////////////////
+
+//AA ROTATIONAL WHEN FIRE
+int ROTATIONAL_AIM = On;
+int aa_r_ST = 40; //STRENGH
+int aa_r_sp = 5; //SPEED
+int tapR = On;
+//////////////////_______
+
+//////////////////
+//HEAD SHOT ASSIST
+int HEADSHOT = On;
+int HeadShotStrength = 6;
+int HeadShotHoldTime = 1300;
+//////////////////__________
+
+////////////////////////
+//FOTRT9 - ANTI-RECOIL//
+int Anti_Recoil 	= On;
+int R2Vertical_v   	= 18; 
+int R2Horizontal_v  = -22;
+int SmartRumble, 
+	AntirecoilStrength;
+////////////////////////_______
+
+/////////////////////
+//INSTA-PICK
+int INSTA_PICK = On;		//WILL GO TO COMBAT AFTER RELEASIN FIRE
+////////////////////______
+
+//////////////////////////////////////
+//AIM ABUSE
+int abADSv 			= 8;// ADS Aim Abuse values 
+int Aab1_release 	= 8;
+
+int abFIREv 		= 110;// FIRE Aim Abuse values 
+int Aab2_release 	= 30;
+
+int abANFv	 		= 30;// ADS+FIRE Aim Abuse values
+int Aab3_release 	= 30;
+////////////////////////////////_______________
+
+////////////////////////////////
+//GHOST SHAKE
+int GHOSTSHAKE;		// help dodge bullets.
+int dsdown = 30;     // Time you are down
+int dsup   = 115;    // Time you are up
+//////////////////////////_______________
+
+///////////////////////////
+// BLOCK RUMBLE
+int Block_Rumble  = On; 
+//Block Controller VIBRATION
+//////////////////////______
+
+//////////////////////////////
+//FORT9 OPTIMIZED
+//AIM SENS CORRECTION
+int Sens,
+	AimSensCorrections = On;
+define InGame_Menu_Sens = 30;//MATCH IN-GAME
+define Actual_Sens = 100;//DO NOT TOUCH leave it at 100
+define ADS_Sens 		= 78;//ADJUST TO UR LIKIN
+define FIRE_Sens 		= 90;//ADJUST TO UR LIKIN
+define ADS_FIRE_Sens 	= 86;//ADJUST TO UR LIKIN
+define PICK_Sens		= 96;//ADJUST TO UR LIKIN
+//////////////////////_________
+
+///////////////////////////////
+int JoyStick_Calibration = On; //OPTIMIZED Deadzone for RIGHT STICK
+define _Rv = 10;
+/////////////////////////////////////
+
+///////////////////////////
+//DEADZONE values//////////////
+int DEADZONE	= On;
+define DZ_L 	= 10;
+define invDZ_L 	= -10;
+
+define DZ_R 	= 10;
+define invDZ_R 	= -10;
+//////////////////////////________
+
+///////////////////////////////
+//HAIR TRIGGERS
+int HAIR_TRIGGERS = On;
+//////////////////////////_____
+//------------------------------------------------------------------------------------------
+/////////////////////////////////////////////
+//ADS + Hold_R1 RapidFire
+  int presses_per_sec    = 40; 
+	  /*Higher Number = Slower Rapid Fire
+    	Lower Number = Faster Rapid Fire*/
+//////////////////////////////////////////////   	  
+    	  
+//MODES
+int PickAxeMode,
+	PICKtap;
+
+int CombatMode,
+	COMBATtap;
+
+int INVENT,
+	P_INVENT,
+	C_INVENT,
+	B_INVENT,
+	E_INVENT,
+	SIDEGRADE;
+
+int OPTION,
+	OPTIONStap,
+	OPTIONStap2,
+	P_OPTION,
+	C_OPTION;
+
+int MAPVIEW,
+	MAPtap,
+	P_MAP,
+	C_MAP;
+
+//--  --//
+int Fort9,
+	F_AimAssist,
+	AIM_ABUSE,
+	F_MACRO1,
+	//F_MACROS,
+	PRIMESHOT,
+	goCOMBAT,
+	AutoPickUp,
+	SmartF, SmartF2;
+
+
+///////////////////////////////////////////////////////////////////////
+	int Display_Black,
+		count_black;
+	int ZENOLED = On; //Only for Cronus ZEN. turn OFF for Cronus Max, TITAN 1 ....
+	
+// Text to display
+	const string TITLE = "noctwrnyA's";
+	const string Script = "ScriptV14"; 
+	const string NoBUILD = "noBUILD";
+	const string KillSwitch = " OFF";
+	//Action Trackin
+		const string CombatModeOLED = "COMBAT";
+		const string PickAxeModeOLED = "PICKAXE";
+		const string INVENT_OLED = "INVENTO";
+		const string MAPVIEW_OLED = "MAPVIEW";
+		const string OPTIONS_OLED = "OPTIONS";
+		
+////////////////////////////////////////////////////////////////////////// 
+
+main {
+    
+      vm_tctrl(-5);
+     _MODMENUTOGGLE();
+     _ledBATTERY(); //LED BATTERY NOTIFICATION END
+     if(ZENOLED) { _ZENOLED(); }
+     if(DEADZONE){_DEADZONE();}
+     if(JoyStick_Calibration){_JoyStick_Calibration();}
+     if(Fort9 && AimSensCorrections){_AimSensCorrections();}
+     if(get_ival(R3) && get_ival(PS)){set_val(PS,0);turn_off();}
+     if(Block_Rumble){block_rumble();}
+	 if(get_console() == PIO_XB360 && get_controller() == PIO_PS4) {    
+        swap(PS4_TOUCH,PS4_SHARE);}
+        	 
+     
+//IF FORT9 
+if(Fort9) {
+	
+	_TrackinMODESv8();
+
+if(!PickAxeMode && CombatMode){
+	
+	AutoPickUp = Off;
+	
+////////////////////////////////////
+if(HAIR_TRIGGERS){
+
+//HAIR TRIGGERS
+	//LEFT TRIGGER
+	if(abs(get_ival(ADS)) > 10){
+		set_val(ADS, 40);}
+		if(abs(get_ival(ADS)) > 60){
+			set_val(ADS, 100);
+}
+	//RIGHT TRIGGER
+	if(abs(get_ival(FIRE)) > 10){
+		set_val(FIRE, 40);}
+		if(abs(get_ival(FIRE)) > 60){
+			set_val(FIRE, 100);
+}
+}//IF HAIRTRIGGERS END
+/////////////////////////////////////
+
+//ENEMY TRACKER ////////////////////////////////////
+	if(ENEMY_TRACKER){
+		combo_run(cENEMY_TRACKER);
+		}
+		if(get_ival(INTERACT) || get_ival(ADS) || get_ival(FIRE) || 
+			abs(get_val(AIM_Y)) > 30 || abs(get_val(AIM_X)) > 30){ 
+			combo_stop(cENEMY_TRACKER);
+			
+}//ENEMY TRACKER END /////////////////////////////////
+	
+if(F_AimAssist){
+		
+		if(abs(get_val(AIM_X)) <= 10)
+			set_val(AIM_X, 0); 
+		if(abs(get_val(AIM_Y)) <= 10)
+			set_val(AIM_Y, 0);
+
+		if(Angular_Direction)	{
+			AngleDirection = (get_val(AIM_X) > 0);
+			}
+
+		_RX = get_val(AIM_X);
+		_RY = get_val(AIM_Y);
+		
+		ActualMagnitude = isqrt(pow(_RX, 2) + pow(_RY, 2));
+		MaxMagnitude    = (ActualMagnitude < 100);
+
+		angleee += Polar_Angle;
+		angleee = angleee % 360;
+		CosAngle = DNAMPolarArray8[(angleee + 270) % 360];
+		SinAngle = DNAMPolarArray16[angleee % 360];
+	
+	//ADS POLAR AIM ASSIST
+	if(get_ival(ADS) && !get_ival(NEXT_WEAPON) || 
+		get_ival(ADS) && !get_ival(FIRE)) {
+		
+		DNAM_Polar = ADS_DNAM_Polar;
+		Polar_Radius = ADS_polar_Values;
+		Polar_Angle  = ADS_angle_Values;
+		if(ActualMagnitude < Polar_Radius)
+			{
+				SinAngle -= _RY;
+				CosAngle -= _RX;
+			}
+			else
+			{
+				SinAngle = (SinAngle * (200 - ((abs(_RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(_RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+			}
+		GetShapes(Polar_Radius);
+		
+/////////////////////////////////////////////////		
+	if(AIM_ABUSE && !get_val(FIRE) && 
+		!get_val(NEXT_WEAPON) && get_ival(ADS) >= 96){
+			
+		combo_run(cAAbuseADS);
+		}
+		else {combo_stop(cAAbuseADS);}
+//////////////////////////////////////////////////	
+
+}//IF ADS POLAR END
+
+/////////////////////////////////////////////
+	//ADS N' FIRE POLAR AIM ASSIST
+	if(get_ival(ADS) && get_ival(FIRE) && !get_ival(NEXT_WEAPON)) {
+		
+		DNAM_Polar = ADS_FIRE_DNAM_Polar;
+		Polar_Radius = ADS_FIRE_polar_Values;
+		Polar_Angle  = ADS_FIRE_angle_Values;
+		
+		if(ActualMagnitude < Polar_Radius)
+			{
+				SinAngle -= _RY;
+				CosAngle -= _RX;
+			}
+			else
+			{
+				SinAngle = (SinAngle * (200 - ((abs(_RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(_RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+			}
+		GetShapes(Polar_Radius);
+/////////////////////////////////////////////////		
+	if(AIM_ABUSE && !get_val(NEXT_WEAPON) && 
+		get_val(ADS) && get_ival(FIRE) >= 96){
+			
+		combo_run(cAAbuseADS_FIRE);
+		combo_stop(cAAbuseADS);
+		}
+		else {combo_stop(cAAbuseADS_FIRE);}
+//////////////////////////////////////////////////		
+}//IF FIRE POLAR END
+
+
+/////////////////////////////////////////////
+	//HIPFIRE POLAR AIM ASSIST
+	if(get_ival(FIRE) && !get_ival(ADS)) {
+		
+		DNAM_Polar = HIPFIRE_DNAM_Polar;
+		Polar_Radius = HIPFIRE_polar_Values;
+		Polar_Angle  = HIPFIRE_angle_Values;
+		
+		if(ActualMagnitude < Polar_Radius)
+			{
+				SinAngle -= _RY;
+				CosAngle -= _RX;
+			}
+			else
+			{
+				SinAngle = (SinAngle * (200 - ((abs(_RY) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+				CosAngle = (CosAngle * (200 - ((abs(_RX) + ActualMagnitude) / 10) * 10) / 200) * MaxMagnitude;
+			}
+		GetShapes(Polar_Radius);
+////////////////////////////////////////////_________
+
+///////////////////////////////////////////////////////		
+		if(ROTATIONAL_AIM && tapR){
+			combo_stop(cAA_ROTATIONAL_FIRE2);
+			combo_run(cAA_ROTATIONAL_FIRE1);
+			}
+			else{combo_stop(cAA_ROTATIONAL_FIRE1);
+				 combo_run(cAA_ROTATIONAL_FIRE2);
+				 }
+////////////////////////////////////////////////////_____
+		
+/////////////////////////////////////////////////		
+	if(AIM_ABUSE && !get_ival(ADS) && 
+		get_ival(FIRE) >= 96){
+			
+		combo_run(cAAbuseFIRE);
+		combo_stop(cAAbuseADS_FIRE);
+		}
+		else {combo_stop(cAAbuseFIRE);}
+/////////////////////////////////////////_______
+}//IF HIPFIRE POLAR END
+	
+	
+}//IF F_AimAssist END
+
+
+if(F_MACRO1) {
+//SINGLE / RAPID FIRE * aka 100% accuracy * plus AIM Assist & AIM Abuse.
+	if(get_val(ADS)){
+		
+		set_val(NEXT_WEAPON, 0);
+			
+		if(get_ival(NEXT_WEAPON)) {
+	
+			DNAM_Polar = ADS_FIRE_DNAM_Polar;
+			Polar_Radius = TAP_FIRE_polar_Values;
+			Polar_Angle  = TAP_FIRE_angle_Values;
+			
+			SmartF  = 35; //40
+			SmartF2 = 120; //100
+					
+			combo_run(cPerfectAccuracy);
+			combo_suspend(cRapidFire);
+			
+			if(AIM_ABUSE){combo_run(cAAbuseFIRE);}
+		}		
+		if(combo_running(cPerfectAccuracy) && event_press(NEXT_WEAPON) 
+			&& get_ptime(NEXT_WEAPON) > 15){ 
+			
+				set_val(NEXT_WEAPON, 0);
+		
+				DNAM_Polar = ADS_FIRE_DNAM_Polar;
+				Polar_Radius = TAP_FIRE_polar_Values;
+				Polar_Angle  = TAP_FIRE_angle_Values;
+				
+				combo_suspend(cPerfectAccuracy);
+				combo_stop(cAAbuseADS);
+				combo_run(cRapidFire);
+				if(AIM_ABUSE){combo_run(cAAbuseFIRE);}
+				}
+
+	}//IF ADS END
+	
+////////////////////////////////////////////////////
+
+//ANTIRECOIL - START
+	if(Anti_Recoil){
+	
+		if(get_ival(ADS) && get_ival(NEXT_WEAPON) && 
+				get_ptime(NEXT_WEAPON) > 60){
+				set_val(NEXT_WEAPON, 0);
+				R2Horizontal_v = -0;
+				}
+		if(get_ival(ADS) && get_ival(FIRE) ||
+			get_ival(ADS) && get_ival(NEXT_WEAPON) && 
+			get_ptime(NEXT_WEAPON) > 80){
+		
+			SmartRumble = get_rumble(RumbleToUse());
+
+		if(SmartRumble > 10 && SmartRumble < 80){
+			AntirecoilStrength = R2Vertical_v + SmartRumble / 2;
+          	}
+
+       	if(SmartRumble < 10){
+	        Set_Val(AIM_Y, R2Vertical_v);
+	        Set_Val(AIM_X, R2Horizontal_v);
+	        }
+          	else{
+	             Set_Val(AIM_Y, AntirecoilStrength);
+	             Set_Val(AIM_X, R2Horizontal_v);
+	             }
+    	}
+     	AntirecoilStrength  = 0;
+     	SmartRumble         = 0;
+      	
+	//ANTI-RECOIL CHANGE ON FLY
+	if (get_ival(JUMP) && get_ptime(JUMP) >= 600) {
+                
+        set_val(UP, 0);
+        set_val(DOWN, 0);
+        set_val(LEFT, 0);
+        set_val(RIGHT, 0);
+                
+	    if (event_press(DOWN)) {
+	            	
+	         R2Vertical_v = clamp(R2Vertical_v++,1,50);
+	         combo_run(cRumbleTwice);
+	         }
+	    if (event_press(UP)) {
+	            	
+	         R2Vertical_v = clamp(R2Vertical_v--,1,50);
+	         combo_run(cRumbleOnce);
+	         }
+	    if (event_press(RIGHT)) {
+	            	
+	         R2Horizontal_v = clamp(R2Horizontal_v++,1,50);
+	         combo_run(cRumbleTwice);
+	         }
+	    if (event_press(LEFT)) {
+	            	
+	         R2Horizontal_v = clamp(R2Horizontal_v--,1,50);
+	         combo_run(cRumbleOnce);
+	         }
+                
+}	//ANTI-RECOIL CHANGE ON FLY
+}	//ANTIRECOIL - END
+
+////////////////////////////////////////
+//--HEADSHOT ASSIST - START
+	if(HEADSHOT){
+	   
+		_RY = inv(HeadShotStrength);
+
+		if(get_ival(FIRE) && get_ptime(FIRE) < HeadShotHoldTime){
+			
+			Set_Val(AIM_Y, _RY);	
+			}
+	}//--HEADSHOT ASSIST - END
+/////////////////////////////////////////
+
+//GHOST SHAKE 
+		if(CombatMode && get_val(ADS) && get_val(LEFT)) {	
+    		GHOSTSHAKE = On;
+    		set_val(LEFT,0); 
+    		combo_run(cENEMYPING);
+		}
+    	  	if(GHOSTSHAKE) { 
+    	  	
+    	  		combo_run(cGHOSTSHAKE);
+    	  		if(GHOSTSHAKE && event_release(ADS)) {
+		
+					GHOSTSHAKE = Off;
+					combo_stop(cGHOSTSHAKE);
+					}
+			}
+////////////////////////////////////////
+	
+		//////////////////////////////////
+		//PRIME SHOTGUN MOD
+    	if(get_ival(NEXT_WEAPON) && event_press(INTERACT)) {	
+    
+    		set_val(INTERACT,0);
+        	PRIMESHOT = On;
+		} 
+		else if(PRIMESHOT && event_press(PREV_WEAPON) || 
+				event_press(NEXT_WEAPON) || event_press(PICKAXE) || 
+				event_press(CIRCLE)){
+				PRIMESHOT = Off;
+				}
+		//PRIME SHOTGUN MOD //////////////////////////////////////
+		if(PRIMESHOT && get_val(FIRE)){combo_run(cPRIMESHOT);}
+//////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////
+
+		//AIM ABUSE TOGGLE
+		if(get_val(NEXT_WEAPON) && event_press(JUMP)) {	
+    
+    		AIM_ABUSE = !AIM_ABUSE;
+} 
+/////////////////////////////////////////////////////////
+			
+} //IF F_MACRO1 END
+
+}	//IF COMBATMODE END
+
+////////////////////////
+//IF ONLY PICKAXE MODE
+if(F_MACRO1 && !CombatMode && PickAxeMode){
+
+	////////////////////////////
+	//AUTO PICK UP LOOT
+	if(!get_ival(FIRE) && get_ival(INTERACT)) {AutoPickUp = On;}
+		
+		if(AutoPickUp && event_release(INTERACT)) {combo_run(cAutoPickUp);}
+		
+		if(!PickAxeMode && event_press(PREV_WEAPON) || 
+			event_press(NEXT_WEAPON)) {
+	 
+		 	AutoPickUp = Off;
+		 	combo_stop(cAutoPickUp);
+		 	}
+/////////////////////////////////////////////////////////////_____________		 	
+
+///////////////////////////////////////////////
+//INSTA PICK
+if(INSTA_PICK) {
+                    
+    if(PickAxeMode && get_ival(FIRE) && event_press(INTERACT)) {
+        set_val(INTERACT, 0);
+        goCOMBAT = On;
+        }
+        if(PickAxeMode && goCOMBAT &&
+            event_release(FIRE)){
+                combo_run(cgoCOMBAT);
+                
+            if(event_press(CIRCLE) || 
+            	event_press(PICKAXE) || 
+            	event_press(NEXT_WEAPON) || 
+            	event_press(PREV_WEAPON)) { 
+                goCOMBAT = Off;
+                }
+                
+         }
+         
+}//IF INSTA-PICK END
+/////////////////////////////////////
+
+}//IF ONLY F_MACRO1 PICKAXE MODE
+/////////////////////////_________________
+
+
+}//IF FORT9 END
+
+} //IF MAIN END
+
+combo cENEMY_TRACKER { 
+	    
+	  	set_val(AIM_Y,xy_val(AIM_Y, _v)); 
+		wait(Delay);
+		set_val(AIM_X,xy_val(AIM_X, _v)); 
+		set_val(LX,xy_val(LX, _strafe));
+		wait(5);
+		set_val(LY,xy_val(LY, _strafe));
+		wait(Delay); 
+		set_val(AIM_Y,xy_val(AIM_Y, _v * -1)); 
+		wait(Delay);
+		set_val(AIM_X,xy_val(AIM_X, _v * -1)); 
+		set_val(LX,xy_val(LX, _strafe * -1)); 
+		wait(5);
+		set_val(LY,xy_val(LY, _strafe * -1)); 
+		wait(Delay);
+}
+
+combo cAAbuseADS {		
+	
+	set_val(ADS, 0);
+	wait(abADSv);
+	wait(450);
+	set_val(ADS, 100);
+	wait(Aab1_release);
+}
+combo cAAbuseFIRE {		
+	
+	set_val(ADS, 100);
+	wait(abFIREv);
+	set_val(ADS, 0);
+	wait(Aab2_release);
+}
+combo cAAbuseADS_FIRE {		
+	
+		call(cWAIT);
+	set_val(ADS, 0);
+	wait(abANFv);
+	wait(450);
+	set_val(ADS, 100);
+	wait(Aab3_release);
+}
+
+combo cAA_ROTATIONAL_FIRE1 {
+	Set_Val(LX, aa_r_ST); //to the RIGHT
+	wait(aa_r_sp);
+	Set_Val(LX, -aa_r_ST); //to the LEFT
+	wait(aa_r_sp);
+	tapR = Off;
+}
+combo cAA_ROTATIONAL_FIRE2 {
+	Set_Val(LX, -aa_r_ST); //to the LEFT
+	wait(aa_r_sp);
+	Set_Val(LX, aa_r_ST); //to the RIGHT
+	wait(aa_r_sp);
+	tapR = On;
+}
+
+combo cRapidFire {
+    set_val(FIRE, 100);
+    wait(560 / presses_per_sec);
+    set_val(FIRE, 0);
+    wait(560 / presses_per_sec - get_rtime());
+    set_val(FIRE, 0);
+}
+
+combo cPerfectAccuracy {
+	
+	set_val(FIRE,100);
+	wait(SmartF);
+	wait(SmartF2);
+}
+
+
+combo cPRIMESHOT {
+	wait(100);
+    set_val(INTERACT,100);
+    wait(40);
+}
+
+//////////////////
+//End of Aim Combo
+
+combo cgoCOMBAT {
+    
+    wait(12);
+    set_val(PICKAXE, 100);
+    wait(12);
+    set_val(PICKAXE, 0);
+    CombatMode = On;
+    COMBATtap = On;
+}
+
+combo cENEMYPING {
+
+	set_val(LEFT, 100);		//ENEMY PING
+    wait(8);
+    set_val(LEFT, 0);
+    wait(8);
+    set_val(LEFT, 100);
+}
+
+combo cGHOSTSHAKE{
+	
+	set_val(CROUCH,100);
+	wait(dsdown);
+	wait(dsup);
+	set_val(CROUCH,0);
+}
+
+combo cAutoPickUp {               
+
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+	set_val(INTERACT, 100);
+	wait(8);
+	set_val(INTERACT, 0);
+	wait(8);
+}
+
+combo cWAIT {
+	
+	wait(8);
+	wait(8);
+}
+
+//////////////////////////////////////////
+//RUMBLE
+combo cRumbleOnce {
+    
+    set_rumble(RUMBLE_A, 100);
+    wait(250);
+    reset_rumble();
+}
+combo cRumbleTwice {
+    
+    set_rumble(RUMBLE_A, 100);
+    wait(250);
+    set_rumble(RUMBLE_A, 0);
+    wait(250);
+    set_rumble(RUMBLE_A, 100);
+    wait(250);
+    reset_rumble();
+}
+combo cBatteryRumble {
+    
+    set_rumble(RUMBLE_A, 5);
+    set_rumble(RUMBLE_B, 5);
+    wait(250);
+    reset_rumble();
+}
+//////////////////////////////
+
+
+function _MODMENUTOGGLE () {
+//FORTNITE ADS+OPTIONS
+	if(get_val(ADS)) {
+		
+		if(get_val(OPTIONS)) {
+			set_val(OPTIONS, 0);
+			set_led(LED_1, 1);
+			set_led(LED_2, 0);
+			set_led(LED_3, 0);
+			set_led(LED_4, 0);	
+			Fort9 = On;
+			PickAxeMode = On;
+			PICKtap = On;
+			ZENOLED = On;
+			combo_run(cRumbleOnce);
+			//printf("PICKAXE-Mode");
+			}
+		//ADS+TOUCH ((KILLSWITCH))
+		if(get_val(MAPVIEW_B)) {
+			set_val(MAPVIEW_B, 0);
+			Fort9 = Off;
+			PickAxeMode = Off;
+			PICKtap = Off;
+			CombatMode = Off;
+			COMBATtap = Off;
+			INVENT = Off;
+			P_INVENT = Off;
+			C_INVENT = Off;
+			B_INVENT = Off;
+			E_INVENT = Off;
+			OPTION = Off;
+			C_OPTION = Off;
+			P_OPTION = Off;
+			OPTIONStap = Off;
+			MAPVIEW = Off;
+			MAPtap = Off;
+			ZENOLED = On;
+			combo_run(cRumbleTwice);
+			//printf("KillSwitch - SCRIPT is OFF");
+			}
+}//IF ADS END
+}// Function _MODMENUTOGGLE END
+
+function _TrackinMODESv8() {
+	
+if(!MAPVIEW && !INVENT && !OPTION){
+///////////////////////////////////
+//// PICKAXE || COMBAT MENU //////////
+
+ 	if(PickAxeMode  && PICKtap && event_press(PICKAXE)){
+		
+		set_val(PICKAXE,0);
+		PickAxeMode = Off;
+		PICKtap = Off;
+		goCOMBAT = Off;
+		CombatMode = On;
+		COMBATtap = On;
+		//printf("COMBAT-Mode");
+		}
+		else if(CombatMode && COMBATtap && event_press(PICKAXE)){
+		
+				set_val(PICKAXE,0);
+				CombatMode = Off;
+				COMBATtap = Off;
+				goCOMBAT = Off;
+				PickAxeMode = On;
+				PICKtap = On;
+				if(AimSensCorrections){
+					Sens = PICK_Sens;}
+				//printf("PICKAXE-Mode");
+				}
+				else if(PickAxeMode && goCOMBAT && event_release(FIRE)){
+			
+						combo_run(cgoCOMBAT);
+						PickAxeMode = Off;
+						PICKtap = Off;
+						goCOMBAT = Off;
+						CombatMode = On;
+						COMBATtap = On;
+						//printf("COMBAT-Mode");
+						}
+
+///////////////////////////////////////////////////////////////
+if(PickAxeMode || CombatMode) {
+ 
+	if(event_press(PREV_WEAPON) || event_press(NEXT_WEAPON)) {
+
+		PickAxeMode = Off;
+		PICKtap = Off;
+		CombatMode = On;
+		COMBATtap = On;
+		//printf("COMBAT-Mode");
+		} 
+		
+}//IF PickAxeMode || CombatMode END
+
+
+}//IF !MAPVIEW && !INVENT && !OPTION END
+
+//// MAPVIEW MENU ////////////////////
+if(PickAxeMode && !P_MAP && !MAPtap && event_press(MAPVIEW_B)){
+	
+	PickAxeMode = Off;
+	PICKtap = Off;
+	MAPVIEW = On;
+    MAPtap = On;
+    P_MAP = On;
+	//printf("MAPVIEW-Mode");
+    }
+    else if(MAPVIEW && MAPtap && P_MAP && event_press(MAPVIEW_B)){
+     		
+     		MAPVIEW = Off;
+		    MAPtap = Off;
+		    P_MAP = Off;
+		    PickAxeMode = On;
+     		PICKtap = On;
+     		if(AimSensCorrections){
+				Sens = PICK_Sens;}
+			//printf("PICKAXE-Mode");
+     		}
+	     	else if(MAPVIEW && P_MAP && event_press(CIRCLE)){
+		     		
+		     		MAPVIEW = Off;
+				    MAPtap = Off;
+				    P_MAP = Off;
+				    PickAxeMode = On;
+		     		PICKtap = On;
+		     		if(AimSensCorrections){
+						Sens = PICK_Sens;}
+					//printf("PICKAXE-Mode");
+		     		}
+	if(CombatMode && !C_MAP && !MAPtap && event_press(MAPVIEW_B)){
+     	
+     	CombatMode = Off;
+     	COMBATtap = Off;
+     	MAPVIEW = On;
+     	MAPtap = On;
+     	C_MAP = On;
+		//printf("MAPVIEW-Mode");
+     	}
+     	else if(MAPVIEW && C_MAP && MAPtap && event_press(MAPVIEW_B)){
+     			MAPVIEW = Off;
+		     	MAPtap = Off;
+		     	C_MAP = Off;
+		     	CombatMode = On;
+     			COMBATtap = On;
+				//printf("COMBAT-Mode");
+     			}
+	     		else if(MAPVIEW && C_MAP && event_press(CIRCLE)){
+		     			MAPVIEW = Off;
+				     	MAPtap = Off;
+				     	C_MAP = Off;
+				     	CombatMode = On;
+		     			COMBATtap = On;
+						//printf("COMBAT-Mode");
+		     			}
+ // MAPVIEW MENU END
+///////////////////////////
+
+//////////////////////////////////////////
+/////////////INVENTORY MENU////////////
+if(!OPTION && !get_val(JUMP)){
+		
+	if(PickAxeMode && !P_INVENT && event_press(UP)){
+		
+		PickAxeMode = Off;
+		PICKtap = Off;
+		INVENT = On;
+     	P_INVENT = On;
+		SIDEGRADE = Off;
+		//printf("INVENTORY-Mode");
+     	}
+     	else if(INVENT && P_INVENT && event_press(CIRCLE)){
+     			
+     			INVENT = Off;
+     			P_INVENT = Off;
+     			PickAxeMode = On;
+     			PICKtap = On;
+     			if(AimSensCorrections){
+					Sens = PICK_Sens;}
+				//printf("PICKAXE-Mode");
+     			}
+	if(CombatMode && COMBATtap && !C_INVENT && event_press(UP)){
+     	
+     	CombatMode = Off;
+     	COMBATtap = Off;
+     	INVENT = On;
+     	C_INVENT = On;
+		SIDEGRADE = Off;
+		//printf("INVENTORY-Mode");
+     	}
+     	else if(INVENT && C_INVENT && event_press(CIRCLE)){
+     			
+     			INVENT = Off;
+     			C_INVENT = Off;
+     			CombatMode = On;
+     			COMBATtap = On;
+				//printf("COMBAT-Mode");
+     			}
+		if(INVENT && event_release(NEXT_WEAPON)){
+			SIDEGRADE = On;
+			INVENT = On;
+			}
+			if(SIDEGRADE){
+				if(INVENT && C_INVENT || INVENT && P_INVENT){
+					if(event_press(INTERACT)){
+						SIDEGRADE = Off;
+						INVENT = Off;
+						P_INVENT = Off;
+						C_INVENT = Off;
+						CombatMode = On;
+						COMBATtap = On;
+						//printf("COMBAT-Mode");
+						}
+					}
+				}
+	
+} //!PickAxeMode && !OPTION && !CROSS END
+////////////////////////////////////////////////////
+
+//////////////////////////////////////////
+///////////// OPTION MENU ////////////
+if(!get_val(ADS)){
+		
+	if(PickAxeMode && PICKtap && !P_OPTION && !OPTIONStap2 && event_press(OPTIONS)){
+		
+     	PickAxeMode = Off;
+     	PICKtap = Off;
+     	P_OPTION = On;
+     	OPTION = On;
+     	OPTIONStap2 = On;
+     	OPTIONStap = Off;
+		//printf("OPTIONS-Mode");
+	    }
+     	else if(OPTION && OPTIONStap2 && P_OPTION && event_press(OPTIONS) || 
+     				OPTION && OPTIONStap && P_OPTION && event_press(OPTIONS) || 
+     				OPTION && !OPTIONStap2 && P_OPTION && event_press(CIRCLE)) {
+     			
+     			OPTION = Off;
+	     		OPTIONStap = Off;
+	     		OPTIONStap2 = Off;
+	     		P_OPTION = Off;
+	     		PickAxeMode = On;
+	     		PICKtap = On;
+				//printf("PICKAXE-Mode");
+	     		}
+	     		else if(OPTION && OPTIONStap2 && P_OPTION && event_press(CIRCLE) ||
+	     				OPTION && OPTIONStap2 && P_OPTION && event_press(JUMP)) {
+	
+						OPTIONStap2 = Off;
+				     	OPTION = On;
+				     	OPTIONStap = On;
+				     	P_OPTION = On;
+						//printf("OPTIONS-Mode");
+				     	}
+	if(CombatMode && COMBATtap && !C_OPTION && !OPTIONStap2 && event_press(OPTIONS)){
+     	
+     	CombatMode = Off;
+     	COMBATtap = Off;
+     	C_OPTION = On;
+     	OPTION = On;
+     	OPTIONStap2 = On;
+		//printf("OPTIONS-Mode");
+     	}
+     	else if(OPTION && OPTIONStap2 && C_OPTION && event_press(OPTIONS) || 
+     				OPTION && OPTIONStap && C_OPTION && event_press(OPTIONS) || 
+     				OPTION && !OPTIONStap2 && C_OPTION && event_press(CIRCLE)) {
+     			
+     			OPTION = Off;
+	     		OPTIONStap = Off;
+	     		OPTIONStap2 = Off;
+	     		C_OPTION = Off;
+	     		CombatMode = On;
+	     		COMBATtap = On;
+				//printf("COMBAT-Mode");
+	     		}
+				else if(OPTION && OPTIONStap2 && C_OPTION && event_press(CIRCLE) ||
+						OPTION && OPTIONStap2 && C_OPTION && event_press(JUMP)) {
+		
+					OPTION = On;
+			     	OPTIONStap = On;
+			     	OPTIONStap2 = Off;
+			     	C_OPTION = On;
+					//printf("OPTIONS-Mode");
+			     	}
+		
+} //!ADS END
+   
+}//FUNCTION TRACKINMODES END
+
+function _ledBATTERY() {
+
+//BATTERY LEVEL START
+//1 blue	//0			//0			//0
+//0			//1 red		//0			//0
+//0			//0			//1 green	//0
+//0			//0			//0			//1 purple
+
+if( get_battery() >= 11 )  { // equal or greater than  100% battery (CHARGING)
+        // GREEN bright
+        set_led(LED_1, 0);
+        set_led(LED_2, 0);
+        set_led(LED_3, 3);
+        set_led(LED_4, 0);
+}
+else if( get_battery() >= 9 && get_battery() < 10)  { // greater than  90% battery (FULLYCHARGED)
+	        // GREEN
+	        set_led(LED_1, 0);
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 1);
+	        set_led(LED_4, 0);
+}
+else if( get_battery() >= 7 && get_battery() < 9 )  { // greater than or equal to 70|90% battery (EXCELLENT)
+	        // BLUE
+	        set_led(LED_1, 1);
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 0);
+	        set_led(LED_4, 0);
+}
+else if( get_battery() >= 4 && get_battery() < 7 ) { // between 40|70% battery (GOOD)
+	        // SKYBLUE
+	        set_led(LED_1, 1); 
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 1);  
+	        set_led(LED_4, 0);
+}
+else if( get_battery() > 2 && get_battery() < 4 ) { // between 20|40% battery (LOW)
+	        // PURPLE
+	        set_led(LED_1, 0);
+	        set_led(LED_2, 0);
+	        set_led(LED_3, 0);
+	        set_led(LED_4, 1);
+        
+}
+if( get_battery() <= 2 ) { // less than or equal to 20% battery (DYING)
+	        // RED
+	        set_led(LED_1, 0);
+	        set_led(LED_2, 1);
+	        set_led(LED_3, 0);
+	        set_led(LED_4, 0);
+        
+        if( get_battery() <= 1 ) {
+
+            combo_run(cBatteryRumble);
+} 
+} //BATTERY LEVEL END
+
+}
+
+function _ZENOLED (){
+
+					//PICKAXEMODE ON
+					if(PickAxeMode == On) {
+						PickAxeMode = On;
+						PICKtap = On;
+						//F_MACROS 	= On;
+						set_led(LED_1, 2);//BLUE
+						set_led(LED_2, 0);
+						set_led(LED_3, 0);
+						set_led(LED_4, 0);
+						
+						cls_oled(0);	// clear OLED screen
+    					print(8, 25, 2, 1, PickAxeModeOLED[0]);
+						
+}
+					//COMBATMODE
+				else if(CombatMode == On) {
+						CombatMode = On;
+						COMBATtap = On;
+						F_AimAssist = On;
+						//F_MACROS 	= On;
+						F_MACRO1 	= On;
+						set_led(LED_1, 0);
+						set_led(LED_2, 1);//BRIGHT
+						set_led(LED_3, 2);//GREEN
+						set_led(LED_4, 0);
+						
+						cls_oled(0);	// clear OLED screen
+    					print(16, 25, 2, 1, CombatModeOLED[0]);
+   						
+}
+
+					//INVENT ON
+				else if(P_INVENT || C_INVENT || B_INVENT || E_INVENT) {
+						INVENT = On;
+						set_led(LED_1, 0);
+						set_led(LED_2, 1);
+						set_led(LED_3, 0);
+						set_led(LED_4, 0);
+						
+						cls_oled(0);	// clear OLED screen
+    					print(6, 25, 2, 1, INVENT_OLED[0]);
+}
+					//MAPVIEW ON
+				else if(P_MAP || C_MAP) {
+						MAPVIEW = On;
+						MAPtap = On;
+						set_led(LED_1, 0);
+						set_led(LED_2, 1);
+						set_led(LED_3, 0);
+						set_led(LED_4, 0);
+						
+						cls_oled(0);	// clear OLED screen
+    					print(8, 25, 2, 1, MAPVIEW_OLED[0]);
+}
+
+					//OPTIONS ON
+				else if(C_OPTION || P_OPTION) {
+						OPTION = On;
+						OPTIONStap = On;
+						set_led(LED_1, 0);
+						set_led(LED_2, 2);
+						set_led(LED_3, 0);
+						set_led(LED_4, 2);
+						
+						cls_oled(0);	// clear OLED screen
+    					print(6, 25, 2, 1, OPTIONS_OLED[0]);
+}
+          			
+					
+				if(Fort9 == Off) {
+	    				F_AimAssist = Off;
+						//F_MACROS 	= Off;
+						F_MACRO1 	= Off;
+						
+	    				cls_oled(0);	// clear OLED screen
+	    				print(5, 5, 1, 1, TITLE[0]);
+	   					print(65, 28, 0, 1, Script[0]);
+	    		    	print(70, 40, 0, 0, NoBUILD[0]);
+	    		    	print(0, 27, 2, 1, KillSwitch[0]);
+	    		    	_ledBATTERY();
+                                                       
+						Display_Black = On;
+    		    		if(Display_Black){                            
+         					count_black += get_rtime();
+
+							if(count_black >= 9000){ 
+								ZENOLED = Off;
+								cls_oled(0);         
+								count_black = 0; 	      	      
+          		      
+}} //DISPLAY BLACK END
+} //IF FORTNITE IS OFF END (KILLSWITCH)
+
+}
+
+//ANTI-RECOIL FUCTIONS ////////////////////////////////////
+function Set_Val(Stick, Value) {
+    set_val(Stick, clamp(Value * (100 - abs(get_val(Stick)))
+    	/ 100 + get_val(Stick), -100, 100));
+        return;
+}
+
+function RumbleToUse() {
+    if(get_rumble(RUMBLE_A) == get_rumble(RUMBLE_B)){
+       return RUMBLE_A;
+    }
+    if(get_rumble(RUMBLE_A) == 100){
+       return RUMBLE_B;
+    }
+    if(get_rumble(RUMBLE_B) == 100){
+       return RUMBLE_A;
+    }
+    if(get_rumble(RUMBLE_A) > get_rumble(RUMBLE_B)){
+       return RUMBLE_A;
+    }
+    if(get_rumble(RUMBLE_A) < get_rumble(RUMBLE_B)){
+       return RUMBLE_B;
+    }
+    return 0;
+}
+//////////////////////////////////////////////
+
+function xy_val(f_axis,f_val) { 
+	
+	if(abs(get_val(f_axis)) < Release) 
+	
+		return f_val; 
+		return get_val(f_axis); 
+} 
+
+function GetShapes(f_var) {
+    if(!SpiralPosition1){
+		InnerSpiral -= 1;
+
+		if(InnerSpiral < Radius_Min)
+			SpiralPosition1 = On;
+	}
+	else {
+	    InnerSpiral += 1;
+
+		if(InnerSpiral > f_var)
+			SpiralPosition1 = Off;
+	}
+	if(!SpiralPosition2)
+	{
+		OuterSpiral -= 1;
+
+		if(OuterSpiral < Radius_Min)
+			SpiralPosition2 = On;
+	}
+	else {
+		OuterSpiral += 1;
+
+		if(OuterSpiral >  f_var)
+			SpiralPosition2 = Off;
+	}
+    if(DNAM_Polar == 0)
+	{
+		if(AngleDirection) {
+
+        	_RX = (get_val(AIM_X))  + ( (SinAngle * f_var) ) / 100;
+            _RY = (get_val(AIM_Y))  + ( (CosAngle * f_var) ) / 100;
+        }
+        else {
+        	_RY = (get_val(AIM_Y))  + ( (SinAngle * f_var) ) / 100;
+            _RX = (get_val(AIM_X))  + ( (CosAngle * f_var) ) / 100;
+        }
+	}
+	if(DNAM_Polar == 1)
+	{
+		if(AngleDirection) {
+
+            _RX = (get_val(AIM_X))  + ( (SinAngle * Radius_Min) ) / 100;
+            _RY = (get_val(AIM_Y))  + ( (CosAngle * f_var) ) / 100;
+        }
+        else {
+        	_RY = (get_val(AIM_Y))  + ( (SinAngle * f_var) ) / 100;
+        	_RX = (get_val(AIM_X))  + ( (CosAngle * Radius_Min) ) / 100;
+        }
+	}
+	if(DNAM_Polar == 2)
+	{
+		if(AngleDirection) {
+
+        	_RY = (get_val(AIM_Y))  + ( (CosAngle * Radius_Min) ) / 100;
+        	_RX = (get_val(AIM_X))  + ( (SinAngle * f_var) ) / 100;
+        }
+        else  {
+        	_RX = (get_val(AIM_X))  + ( (CosAngle * f_var) ) / 100;
+       		_RY = (get_val(AIM_Y))  + ( (SinAngle * Radius_Min) ) / 100;
+        }
+	}
+	if(DNAM_Polar == 3)
+	{
+		if(AngleDirection) {
+
+        	_RX = (get_val(AIM_X))  + ( (SinAngle * OuterSpiral) ) / 100;
+            _RY = (get_val(AIM_Y))  + ( (CosAngle * InnerSpiral) ) / 100;
+        }
+        else {
+        	_RY = (get_val(AIM_Y))  + ( (SinAngle * InnerSpiral) ) / 100;
+       	    _RX = (get_val(AIM_X))  + ( (CosAngle * OuterSpiral) ) / 100;
+        }
+	}
+    if(DNAM_Polar == 4)
+	{
+		if(Position == 0 || Position == 1)
+    	{
+		    _RX = (get_val(AIM_X))  + ( (CosAngle * f_var) )/100;
+		}
+	    if(Position == 2 || Position == 3)
+		{
+		    _RY = (get_val(AIM_Y))  + ( (SinAngle * f_var) )/100;
+		}
+
+			Position++;
+
+		if(Position == 4)
+		{
+			Position = 0;
+		}
+	}
+	set_val(AIM_X, _RX);
+    set_val(AIM_Y, _RY);
+}
+
+////////////////////////
+//AIM SENS CORRECTION 
+function _AimSensCorrections(){
+	//AIM SENS CORRECTION - START
+	
+		if(CombatMode){
+		if(!get_ival(ADS) && !get_ival(FIRE) && 
+			!get_ival(NEXT_WEAPON) && !get_ival(PREV_WEAPON)){
+			
+			Sens = Actual_Sens;
+			}
+		else if(get_ival(ADS) && !get_ival(FIRE)){
+				
+				Sens = ADS_Sens;
+				}
+		else if(!get_ival(ADS) && get_ival(FIRE)){
+				
+				Sens = FIRE_Sens;
+				}
+		else if(get_ival(ADS) && get_ival(FIRE)){
+				
+				Sens = ADS_FIRE_Sens;
+				}
+		else if(get_ival(PREV_WEAPON) || get_ival(NEXT_WEAPON)){
+				
+				Sens = Actual_Sens;
+				}
+		}//IF COMBAT MODE END
+
+			if(Sens > 100)
+				Sens = 100;
+/*sensitivity*/	sensitivity(AIM_X, NOT_USE, Sens); 
+/*stickize*/	sensitivity(AIM_Y, NOT_USE, Sens);
+		
+		
+}//AIM SENS CORRECTION - END
+
+/////////////////////////////////
+//DEADZONE
+function _DEADZONE (){
+//DEAD ZONE CORECTION\\
+   // DEAD ZONE CORECTION : LEFT STICK                                 
+   if(abs(get_val(LY)) < DZ_L && abs(get_val(LX)) < DZ_L || abs(get_val(LY)) < invDZ_L && abs(get_val(LX)) < invDZ_L){        
+        set_val(LY, 0);                                                
+        set_val(LX, 0);                                                
+}
+   // DEAD ZONE CORECTION : RIGHT STICK                                 
+    if(abs(get_val(_RY)) < DZ_R && abs(get_val(_RX)) < DZ_R || abs(get_val(_RY)) < invDZ_R && abs(get_val(_RX)) < invDZ_R){         
+        set_val(_RY,0);                                                 
+        set_val(_RX,0);                                                
+}
+}////////////////////////_____________
+
+//////////////////////////////////
+//JOYSTICK CALIBRATION CODE
+function _JoyStick_Calibration() {
+
+/*	 This script eliminates stick drift while avoiding a deadzone.
+	 Apex Legends, for example, has a setting that allows you to alter your deadzone for smaller, more precise movements with the right stick.
+	 That isn't to say that this script is limited to Apex Legends.
+	 This script will fix your issue if you discover that you have stick drift in a game and are unable to alter your deadzone.
+	 
+	 First and foremost, some values in this script must be adjusted.
+	 Because no one else's stick drift is the same as yours.
+	 Wear on the joysticks can cause stick drift.
+	 Keep in mind that if your controller has stick drift due to wear, this script may not be able to remove all of it.
+	 
+	 If you replaced the joystick modules on your controller, this script will completely solve your stick drift.
+	 When you solder on a new joystick, you'll see that it has stick drift because the controllers are calibrated in the factory.
+	
+	 This script was written to eliminate stick drift on my Xbox Elite V1 controller, which is equipped with brand new Kailh JP1311 joysticks. 
+	 
+	 How do I get these values to put into the script?
+	 In your Cronus software you have a tool called Device Monitor
+	 With that tool you can read all values that your controller is sending to your Cronus Device
+	 
+	 For example, if you pull your right stick all the way to the right you see a value +96
+	 And if you pull your right stick all the way up you see a value -98
+	 Now we know the value of RX_Plus that is 96
+	 You need to fill in the list like this 
+	 int RX_dk_max=  96;
+	 int RX_dk_min= -98;
+	 
+	 If the controller value is +100 or -100 just fill in 100 to cancel any correction */
+/////////////////////////////////////////////////////////////////////////////////////////////////	 
+
+	
+  do { o[i] = get_val(9 + i);
+  } while (i = (i + 1) % 4);
+  
+  do {
+    ValInY[i] = get_oval(STICK_Y[i]);
+    ValInX[i] = get_oval(STICK_X[i]); 
+    if (isqrt(pow(get_val(STICK_X[i]), 2) + pow(get_val(STICK_Y[i]), 2)) <  StickDZ[i]) {
+      if (ValInY[i] != ValPrevY[i] || ValInX[i] != ValPrevX[i]) {
+        ValPrevX[i] = ValInX[i];
+        ValPrevY[i] = ValInY[i];
+        XY[i]  = 100;
+      }
+      if (XY[i]) {
+        XY[i] -= get_rtime();
+        if (XY[i] <= 0) {
+          OffsetX[i] = inv(ValInX[i]);
+          OffsetY[i] = inv(ValInY[i]);
+          offset(STICK_X[i], OffsetX[i]);
+          offset(STICK_Y[i], OffsetY[i]);
+          ValOutX[i] = inv(get_val(STICK_X[i]));
+          ValOutY[i] = inv(get_val(STICK_Y[i]));
+        }
+      }
+    }
+    offset(STICK_X[i], OffsetX[i] + ValOutX[i]);
+    offset(STICK_Y[i], OffsetY[i] + ValOutY[i]);
+  } while(i = (i + 1) % 2);
+  
+  do {
+    temp = (i / 2) + PS4_RX;
+    i_val = get_val(temp);
+    
+     if(i_val >= RX_dk_max[i]) set_val(temp, 100);
+     if(i_val <= RX_dk_max[i + 1]) set_val(temp, -100);
+  
+  }while((i + 2) % 8 == i );
+}
+int StickDZ[2],
+	STICK_X[2],
+	STICK_Y[2],
+	OffsetX[2],
+	OffsetY[2],
+	ValOutX[2], 
+	ValOutY[2],
+	ValPrevX[2],
+	ValPrevY[2],
+	XY[2],
+	ValInY[2],
+	ValInX[2],
+	o[4],
+	i;
+
+init {
+  STICK_X = 9;  STICK_X[1] = 11; 
+  STICK_Y = 10; STICK_Y[1] = 12; 
+  StickDZ = dk_max(abs(get_val(9)), abs(get_val(10))) + 5;
+  StickDZ[1]  = dk_max(abs(get_val(11)), abs(get_val(12))) + 5;
+}
+// Joystick outer edge adjustment
+int RX_dk_max=  80;
+int RX_dk_min= -80;
+int RY_dk_max=  80;
+int RY_dk_min= -80;
+int LX_dk_max=  80;
+int LX_dk_min= -80;
+int LY_dk_max=  80;
+int LY_dk_min= -80;
+
+int temp, i_val;
+
+function dk_min(a, b) { if(a<=b) return a; return b; }
+function dk_max(a, b) { if(a>=b) return a; return b; }
+function dk_clamp(v, lo, hi) { return dk_min(hi, dk_max(v, lo)); }
+function get_oval(io) { return o[io- 9]; }
+function offset(axis, offset_val) { 
+  set_val(axis, dk_clamp(offset_val * (100 - abs(get_oval(axis))) / 100 + get_oval(axis), -100, 100));
+  if(abs(get_val(axis)) < _Rv ) set_val(axis, 0); 
+  return;
+}
+//////////////////JOYSTICK CALIBRATION END
+ ú¸ˆ½Š¸€²‚³€·€·‡Æ

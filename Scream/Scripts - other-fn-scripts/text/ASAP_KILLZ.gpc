@@ -1,0 +1,67 @@
+define Fire = PS4_R2; // Fire In Game
+define ADS  = PS4_L2; // Ads In Game
+define AimY = PS4_RY; // Vertical Aim Axis In Game
+define AimX = PS4_RX; // Horizontal Aim Axis In Game
+define On   = TRUE
+define Off  = FALSE
+define Build = PS4_CIRCLE
+define Edit  = PS4_L3
+define Pickaxe = PS4_TRIANGLE
+define Roof    = PS4_L1
+define Floor   = PS4_R1
+define Wall    = PS4_R2
+define Ramp   = PS4_L2
+define Trap   = PS4_SQUARE
+define FastResetB = XB1_RS; // MUST BE SOMETHING YOU DON'T USE IN GAME
+define EditAssist = XB1_LEFT; //
+
+define RX = XB1_RX;   //PS4_RX
+define RY = XB1_RY;   //PS4_RY
+define LX = XB1_LX;   //PS4_LX
+define LY = XB1_LY;   //PS4_LY 
+int AAT,Axis;
+
+//polar Aim Assist 
+int PolarAA =  On; 
+int PolarTimed = On;
+int PolarHipFire = On;
+int PolarPower = 5.9; 
+int PolarTime = 10000;
+
+//touchpad Edit
+int TouchPad = Off;
+
+int AimAssist    = TRUE;  // Aim Assist [ON / OFF]
+int AimAssistHip = TRUE;  // Operate on Fire Or Ads [If FALSE It Will Only Run On ADS]
+int AATimed      = TRUE; // Aim Assist Will Cut Out After 2 seconds By Default (Change Below)
+define BuildTracker  = On; // Isolate Aim Assist And Head Shot Mod In Build Mode
+define BuildSyncTime = 2000; // Auto De-Sync After 2 Seconds Of being Idol [Pickaxe == Manual Re-Sync]
+int BuildTrack,BuildPro,BuildCount, Edit1, EditT, EditDelay, Select, EditHold, EditHoldTime, Edit2, Reset, Confirm, ARecoil, ARecoilV
+int Power  = 1;    //  Aim Assist Power [1,2,3] ==> (>> 1 = 10 , 2 = 20 , 3 = 30  <<) 
+int AATime = 1000; //  Aim Assist Will Cut Out After Time [1000] = 1 Second, [2000] = 2 Second
+// more mods
+int InstantTriggers = On;
+int QuickEditAssist = Off;
+int InstaEditReset = Off;
+int InstaFastReset = Off;
+//anti recoil
+// ANTI-RECOIL
+int ARecoilMOD = 0; 
+int ARecoilStrength = 25;
+int ARecoilH = 0;
+
+main { if (TouchPad) swap(PS4_SHARE, PS4_TOUCH); if (AimAssist) { if (AATimed)
+{ if (get_ival(ADS) && get_ptime(ADS) <= AATime || AimAssistHip && get_ival(Fire)
+&& get_ptime(Fire) <= AATime) { AimAssist(); } } else if (get_ival(ADS)|| AimAssistHip && get_ival(Fire))
+{ AimAssist(); } if (!get_ival(ADS) && !get_ival(Fire)) { AAT = 0; Axis = 0; } } if (BuildTracker)
+{ if (event_press(Build)) { BuildTrack = !BuildTrack; } if (BuildTrack && !BuildPro) { BuildCount += get_rtime();
+if (event_press(Pickaxe) || BuildCount == BuildSyncTime) { BuildTrack = Off; BuildCount = 0; } if (get_ival(Roof)
+|| get_ival(Floor) || get_ival(Ramp) || get_ival(Wall) || get_ival(Trap)) BuildCount = 0; } } if (InstantTriggers)
+{ deadzone(ADS,Fire,99,99) } if (QuickEditAssist) { if (get_ival(EditAssist)) { EditAssist(); Edit1 = TRUE; }
+if (event_release(EditAssist)) { EditT = 0; Edit1 = FALSE; } } if (InstaFastReset) { if (event_press(FastResetB)) { combo_run(FastReset); } } if (InstaEditReset) { if (EditHold) { if (get_ival(Edit) && get_ptime(Edit) > EditHoldTime) { Edit1 = TRUE; Edit2 = TRUE; } } }
+if(ARecoil) { if(get_val(ADS) && get_val(Fire)) { if(ARecoilMOD == 1) { combo_run(ARecoilS); } } } } function AimAssist() { AAT += get_rtime(); if (!Axis) set_Val(AimY,AAT * Power / 10 * 2); if (Axis == 1) set_Val(AimX,AAT * Power / 10 * 2); if (Axis == 2) set_Val(AimY,inv(AAT * Power / 10 * 2)); if (Axis == 3) { set_Val(AimX,inv(AAT * Power / 10 * 2)); if (AAT > 50) { AAT = 0; Axis = 0; } } else if (AAT > 50) { AAT = 0; Axis += 1; } if (PolarAA) { if (PolarTimed) { if (get_ival(ADS) && get_ptime(ADS)
+<= PolarTime || PolarHipFire && get_ival(Fire) && get_ptime(Fire) <= PolarTime) 
+{  AimAssist(); } } else if (get_ival(ADS)|| PolarHipFire && get_ival(Fire)) {}}
+AimAssist(); if (!get_ival(ADS) && !get_ival(Fire)) { AAT = 0; Axis = 0; }}combo BuildPro { set_val(Switch,0); wait(50); set_val(Switch,100); wait(50); } combo FastReset { set_val(EditAssist,100); wait(20) set_val(Reset,100); wait(20); combo_run(Confirm); } combo Confirm { set_val(Confirm,100); wait(50); set_val(Confirm,0); wait(100); } combo ARecoilS { ARecoilV = get_val(RX) + ARecoilStrength;
+if(ARecoilV > 100) ARecoilV = 100; if(abs(get_val(RY)) < abs(ARecoilStrength) + 5) set_val(RY,ARecoilV); ARecoilH = get_val(RX) + ARecoilH; if(ARecoilH > 100) ARecoilH = 100; if(abs(get_val(RX)) < abs(ARecoilH) + 5) set_val(RY,ARecoilH); } function set_Val(Input,Output) { set_val(Input,clamp(Output * (100 - abs(get_ival(Input))) / 100 + get_ival(Input),-100,100)); return; } function EditAssist () { EditT += get_rtime(); if (get_val(EditAssist)) { if (EditT >= EditDelay) Press(Select); } } function Press(Button) { if (get_ival(Button)) return; set_val(Button, 100); }
+
